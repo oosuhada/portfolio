@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ink Effect on Shapes</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #f0f0f0 0%, #dcdcdc 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 20px auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c2c2c;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .effects-grid {
+            display: grid;
+            /* Adjusted minmax to better fit potentially wider sample areas if needed */
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            gap: 30px;
+        }
+
+        .effect-container {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .effect-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #444;
+            text-align: center;
+        }
+
+        .shape-sample-area { /* Renamed from .shape-sample for clarity */
+            width: 160px;  /* Increased size to better show bleed */
+            height: 160px; /* Increased size to better show bleed */
+            background-color: #f8f8f8; /* Neutral background for the "paper" */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #e8e8e8;
+            overflow: visible; /* Crucial for bleed effects to extend beyond shape's original bounds */
+        }
+        
+        /* Common class for the actual ink shape that gets filtered */
+        .base-ink-shape {
+            background-color: #1a1a1a; /* This is the "ink" color */
+            /* The filter will be applied via inline style to this element */
+        }
+
+        .shape-circle1 {
+            width: 70px; /* Adjusted size to fit better in new sample area */
+            height: 70px;
+            border-radius: 50%;
+        }
+
+        .shape-circle2 {
+            width: 90px; /* Adjusted size */
+            height: 90px;
+            border-radius: 50%;
+        }
+
+        .shape-organic-blob1 {
+            width: 80px; /* Adjusted size */
+            height: 60px;
+            border-radius: 45% 55% 60% 40% / 50% 40% 60% 50%;
+        }
+
+        .shape-organic-blob2 {
+            width: 60px; /* Adjusted size */
+            height: 80px;
+            border-radius: 70% 30% 30% 70% / 80% 20% 20% 80%;
+        }
+
+        .shape-thin-rect-v1 {
+            width: 25px; /* Adjusted size */
+            height: 90px;
+            border-radius: 5px;
+        }
+
+        .shape-thin-rect-v2 {
+            width: 35px; /* Adjusted size */
+            height: 110px;
+            border-radius: 8px;
+        }
+
+        .shape-vertical-asymmetric-blob {
+            width: 50px; /* Adjusted size */
+            height: 90px;
+            border-radius: 20% 80% 30% 70% / 70% 40% 60% 30%;
+        }
+
+        .shape-vertical-pill {
+            width: 35px; /* Adjusted size */
+            height: 90px;
+            border-radius: 17.5px; /* half the width */
+        }
+
+        .effect-label {
+            font-size: 0.9em;
+            color: #666;
+            text-align: center;
+            margin-top: 5px; /* Added some space above label */
+        }
+    </style>
+</head>
+<body>
+    <svg style="position:absolute; width:0; height:0; overflow:hidden;" aria-hidden="true">
+        <defs>
+            <filter id="classicWetInk">
+                <feTurbulence type="fractalNoise" baseFrequency="0.02 0.04" numOctaves="3" seed="1" result="noise"/>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="15" xChannelSelector="R" yChannelSelector="G" result="displaced"/>
+                <feGaussianBlur in="displaced" stdDeviation="2" result="blurred"/>
+            </filter>
+
+            <filter id="heavyBleed">
+                <feTurbulence type="fractalNoise" baseFrequency="0.015 0.015" numOctaves="4" seed="4" result="bleedNoise"/>
+                <feDisplacementMap in="SourceGraphic" in2="bleedNoise" scale="35" xChannelSelector="R" yChannelSelector="G" result="heavyDisplaced"/>
+                <feGaussianBlur in="heavyDisplaced" stdDeviation="5" result="heavyBlurred"/>
+            </filter>
+
+            <filter id="stormCloud">
+                <feTurbulence type="fractalNoise" baseFrequency="0.005 0.01" numOctaves="6" seed="12" result="stormNoise"/>
+                <feDisplacementMap in="SourceGraphic" in2="stormNoise" scale="60" xChannelSelector="R" yChannelSelector="G" result="stormy"/>
+                <feGaussianBlur in="stormy" stdDeviation="3" result="stormBlur"/>
+            </filter>
+        </defs>
+    </svg>
+
+    <div class="container">
+        <h1>Ink Effects on Various Shapes</h1>
+
+        <div class="effects-grid">
+            <div class="effect-container">
+                <div class="effect-title">Classic Wet Ink</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-circle1" style="filter: url(#classicWetInk);"></div></div>
+                <div class="effect-label">Circle 1</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-circle2" style="filter: url(#classicWetInk);"></div></div>
+                <div class="effect-label">Circle 2</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-organic-blob1" style="filter: url(#classicWetInk);"></div></div>
+                <div class="effect-label">Organic Blob 1</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-organic-blob2" style="filter: url(#classicWetInk);"></div></div>
+                <div class="effect-label">Organic Blob 2</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-thin-rect-v1" style="filter: url(#classicWetInk);"></div></div>
+                <div class="effect-label">Thin Vertical Rectangle 1</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-thin-rect-v2" style="filter: url(#classicWetInk);"></div></div>
+                <div class="effect-label">Thin Vertical Rectangle 2</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-vertical-asymmetric-blob" style="filter: url(#classicWetInk);"></div></div>
+                <div class="effect-label">Vertical Asymmetric Blob</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-vertical-pill" style="filter: url(#classicWetInk);"></div></div>
+                <div class="effect-label">Vertical Pill Shape</div>
+            </div>
+
+            <div class="effect-container">
+                <div class="effect-title">Heavy Bleed</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-circle1" style="filter: url(#heavyBleed);"></div></div>
+                <div class="effect-label">Circle 1</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-circle2" style="filter: url(#heavyBleed);"></div></div>
+                <div class="effect-label">Circle 2</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-organic-blob1" style="filter: url(#heavyBleed);"></div></div>
+                <div class="effect-label">Organic Blob 1</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-organic-blob2" style="filter: url(#heavyBleed);"></div></div>
+                <div class="effect-label">Organic Blob 2</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-thin-rect-v1" style="filter: url(#heavyBleed);"></div></div>
+                <div class="effect-label">Thin Vertical Rectangle 1</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-thin-rect-v2" style="filter: url(#heavyBleed);"></div></div>
+                <div class="effect-label">Thin Vertical Rectangle 2</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-vertical-asymmetric-blob" style="filter: url(#heavyBleed);"></div></div>
+                <div class="effect-label">Vertical Asymmetric Blob</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-vertical-pill" style="filter: url(#heavyBleed);"></div></div>
+                <div class="effect-label">Vertical Pill Shape</div>
+            </div>
+
+            <div class="effect-container">
+                <div class="effect-title">Storm Cloud</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-circle1" style="filter: url(#stormCloud);"></div></div>
+                <div class="effect-label">Circle 1</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-circle2" style="filter: url(#stormCloud);"></div></div>
+                <div class="effect-label">Circle 2</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-organic-blob1" style="filter: url(#stormCloud);"></div></div>
+                <div class="effect-label">Organic Blob 1</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-organic-blob2" style="filter: url(#stormCloud);"></div></div>
+                <div class="effect-label">Organic Blob 2</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-thin-rect-v1" style="filter: url(#stormCloud);"></div></div>
+                <div class="effect-label">Thin Vertical Rectangle 1</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-thin-rect-v2" style="filter: url(#stormCloud);"></div></div>
+                <div class="effect-label">Thin Vertical Rectangle 2</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-vertical-asymmetric-blob" style="filter: url(#stormCloud);"></div></div>
+                <div class="effect-label">Vertical Asymmetric Blob</div>
+                <div class="shape-sample-area"><div class="base-ink-shape shape-vertical-pill" style="filter: url(#stormCloud);"></div></div>
+                <div class="effect-label">Vertical Pill Shape</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

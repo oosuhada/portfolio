@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hobby | Oosu Portfolio</title>
+  <meta name="viewport" content="width=1000, initial-scale=1.0">
+  <!-- 우수 포트폴리오 공통 CSS 연결 -->
+  <link rel="stylesheet" href="../common/common.css" />
+  <link rel="stylesheet" href="main.css">
+  <!-- 폰트 등 추가 리소스 -->
+  <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <!-- 필수 라이브러리 CDN -->
+  <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body>
+  <!-- Toggle 버튼: 좌상단 -->
+  <div class="mode-toggle-container">
+    <button class="mode-toggle-btn creative" id="mode-toggle-btn" aria-label="Toggle Mode">
+      <span class="toggle-slider"></span>
+      <span class="toggle-label creative">CREATIVE</span>
+      <span class="toggle-label cardview">CARD VIEW</span>
+    </button>
+  </div>
+
+  <!-- Oosu 포트폴리오 스타일 내비게이션 -->
+  <header class="nav-header" aria-label="Site">
+    <nav class="nav-menu nav-center">
+      <a href="../portfolio/portfolio.html" data-nav="portfolio">✧ portfolio</a>
+      <a href="../about/about.html" data-nav="about">? about</a>
+      <a href="../experience/experience.html" data-nav="experience">⌗ experience</a>
+      <a href="../hobby/hobby1.html" data-nav="hobby">: hobby</a>
+      <a href="../connect/connect.html" data-nav="connect">⌲ connect</a>
+    </nav>
+  </header>
+
+  <!-- 히어로 + 카테고리 점프 -->
+  <main class="carousel-main">
+    <div class="carousel-hero">
+      <div class="carousel-hero-desc big-hero-desc">
+        Welcome to my playground.<br>
+        Where my passion meets creativity.
+      </div>
+      <div class="carousel-category-jump">
+        <!-- Creative 카테고리 버튼 -->
+        <button class="category-jump-btn" data-category="creative" title="Creative">
+          <img src="creative.png" alt="Creative Icon" style="width:2.5rem;height:2.5rem;">
+        </button>
+        <!-- Sensory 카테고리 버튼 -->
+        <button class="category-jump-btn" data-category="sensory" title="Sensory">
+          <img src="sensory.png" alt="Sensory Icon" style="width:2.5rem;height:2.5rem;">
+        </button>
+        <!-- Sports 카테고리 버튼 -->
+        <button class="category-jump-btn" data-category="sports" title="Sports">
+          <img src="sports.png" alt="Sports Icon" style="width:2.5rem;height:2.5rem;">
+        </button>
+        <!-- Writing 카테고리 버튼 -->
+        <button class="category-jump-btn" data-category="writing" title="Writing">
+          <img src="writing.png" alt="Writing Icon" style="width:2.5rem;height:2.5rem;">
+        </button>
+      </div>
+    </div>
+
+    <!-- ====== fff clone carousel 본체 ====== -->
+    <div id="preloader">
+      <div class="preloader-content">
+        <div class="loader"></div>
+        <div style="font-size:13px; color:#888; margin-top:10px;">Loading...</div>
+      </div>
+    </div>
+    <div id="main" style="display:none;">
+      <!-- fff 스타일 상단 로고는 삭제 -->
+      <section class="carousel-section">
+        <div class="carousel-labels"></div>
+        <div class="carousel">
+          <!-- Creative -->
+          <div class="poster poster-creative" data-title="Interactive Programming" data-num="01">
+            ISSUE 01<br>Interactive Programming
+          </div>
+          <div class="poster poster-creative" data-title="Logo Design" data-num="02">
+            ISSUE 02<br>Logo Design
+          </div>
+          <div class="poster poster-creative" data-title="YouTube Channel" data-num="03">
+            ISSUE 03<br>YouTube Channel
+          </div>
+          <div class="poster poster-creative" data-title="Etsy Art Print Shop" data-num="04">
+            ISSUE 04<br>Etsy Art Print Shop
+          </div>
+          <!-- Sensory -->
+          <div class="poster poster-sensory" data-title="Aroma Candle" data-num="05">
+            ISSUE 05<br>Aroma Candle
+          </div>
+          <div class="poster poster-sensory" data-title="Perfumers" data-num="06">
+            ISSUE 06<br>Perfumers
+          </div>
+          <div class="poster poster-sensory" data-title="WSET Diploma" data-num="07">
+            ISSUE 07<br>WSET Diploma
+          </div>
+          <div class="poster poster-sensory" data-title="Museum Exhibition Visit" data-num="08">
+            ISSUE 08<br>Museum Exhibition Visit
+          </div>
+          <!-- Sports -->
+          <div class="poster poster-sports" data-title="World Travel" data-num="09">
+            ISSUE 09<br>World Travel
+          </div>
+          <div class="poster poster-sports" data-title="Scuba Diving" data-num="10">
+            ISSUE 10<br>Scuba Diving
+          </div>
+          <div class="poster poster-sports" data-title="Hiking" data-num="11">
+            ISSUE 11<br>Hiking
+          </div>
+          <div class="poster poster-sports" data-title="Cycling" data-num="12">
+            ISSUE 12<br>Cycling
+          </div>
+          <div class="poster poster-sports" data-title="Pilates" data-num="13">
+            ISSUE 13<br>Pilates
+          </div>
+          <!-- Writing -->
+          <div class="poster poster-writing" data-title="English Essays" data-num="14">
+            ISSUE 14<br>English Essays
+          </div>
+          <div class="poster poster-writing" data-title="Korean Essays" data-num="15">
+            ISSUE 15<br>Korean Essays
+          </div>
+        </div>
+      </section>
+      <footer class="footer">
+        <span>about fff project · screen saver</span><br>
+        <span>share · exit fullscreen</span>
+      </footer>
+    </div>
+    <!-- 모달 요소 -->
+    <div id="card-modal" style="display:none;">
+      <div class="modal-bg"></div>
+      <div class="modal-card">
+        <!-- 카드 내용 동적 삽입 -->
+        <div class="modal-x" style="position:absolute;right:28px;top:18px;font-size:2.1rem;cursor:pointer;">×</div>
+      </div>
+    </div>
+  </main>
+  <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,321 @@
+/* ======================= about-skills.css ======================= */
+/* Ink Blot Theme – Advanced (Refactored for Overflow Prevention) */
+
+.about-skills {
+  position: relative;
+  overflow: visible !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding-bottom: 2rem;
+}
+
+.about-skills-cols {
+  display: flex;
+  flex-wrap: nowrap; /* 카드가 다음 줄로 넘어가지 않도록 함 */
+  justify-content: center; /* 카드들을 중앙 정렬 */
+  align-items: flex-start;
+  /* 화면 크기에 따라 카드 간 간격을 유동적으로 조절합니다.
+     최소 0.2rem, 선호하는 값 1.33vw (뷰포트 너비의 1.33%), 최대 1rem으로 설정됩니다. */
+  gap: clamp(0.2rem, 6vw, 10rem);
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0.5rem; /* 컨테이너 내부 여백 */
+  transition: min-height 0.5s cubic-bezier(.23,1.12,.67,1.08);
+  overflow-x: visible; /* 카드가 정말 너무 많거나 작아질 수 없을 때 가로 스크롤 허용 */
+  -webkit-overflow-scrolling: touch; /* iOS 부드러운 스크롤 */
+}
+
+.skill-card {
+  position: relative;
+  cursor: default; /* 카드 자체는 클릭 대상이 아님을 암시 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  opacity: 0; /* JS로 in-view 시 opacity: 1 처리 */
+
+  flex-grow: 0;
+  flex-shrink: 1;
+  flex-basis: 200px;
+  min-width: 170px;
+
+  min-height: 260px;
+  padding-bottom: 0;
+  z-index: 1;
+  transition: min-height 0.5s cubic-bezier(.23,1.12,.67,1.08),
+              opacity 0.5s ease, transform 0.3s ease;
+  overflow: visible;
+  /* .skill-card 자체에는 box-shadow나 직접적인 hover 효과를 적용하지 않습니다.
+     모든 인터랙티브 효과(호버, 그림자 등)는 자식 요소인 .skill-ink-blot 또는 .skill-ink-shape에서 처리됩니다. */
+}
+
+.skill-card.in-view {
+  opacity: 1;
+}
+
+
+.skill-card.expanded {
+  min-height: 540px;
+  z-index: 10; /* 확장된 카드가 다른 카드 위로 오도록 함 */
+  /* flex-shrink: 0; /* 확장 시에는 줄어들지 않도록 할 수 있음 (선택 사항) */
+}
+
+/* 마우스 오버시 의미단위 밑줄 효과 */
+.skill-chunk {
+  display: inline-block;
+  cursor: pointer;
+  transition: text-decoration 0.18s, background 0.14s;
+  border-radius: 3px;
+  outline: none;
+}
+.skill-chunk:hover,
+.skill-chunk:focus {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  background: #f5f5f555;
+  outline: none;
+}
+
+.skill-ink-blot {
+  cursor: pointer;
+  width: 180px;
+  height: 180px;
+  position: relative;
+  margin-bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  transition: height 0.7s cubic-bezier(.23,1.12,.67,1.08), transform 0.7s cubic-bezier(.23,1.12,.67,1.08);
+  z-index: 2; /* ink-splash-container 보다 위에 있도록 설정 */
+  overflow: visible;
+}
+
+/* 1, 2번째 카드 - 더 길게 */
+/* .skill-card:nth-child(1).expanded .skill-ink-blot,
+.skill-card:nth-child(2).expanded .skill-ink-blot {
+  height: 480px;
+} */
+
+/* 3, 4번째 카드 - 더 짧게 */
+/* .skill-card:nth-child(3).expanded .skill-ink-blot,
+.skill-card:nth-child(4).expanded .skill-ink-blot {
+  height: 340px;
+} */
+
+.skill-ink-blot:hover .skill-ink-shape::before {
+  opacity: 1;
+}
+.skill-ink-blot:hover .skill-ink-shape {
+  transform: scale(1.08);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.28), 0 4px 12px rgba(0,0,0,0.19);
+}
+
+.skill-ink-shape {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0; left: 0;
+  background: radial-gradient(ellipse at center, #252525 0%, #141414 100%);
+  color: #b0b0b0;
+  box-shadow: 0 6px 22px rgba(0,0,0,0.23), 0 1px 4px rgba(0,0,0,0.11);
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+  overflow: visible;
+  z-index: 1; /* .skill-ink-blot 내부에서 다른 컨텐츠보다 아래 */
+  border-radius: 50% 45% 55% 40%;
+  filter: url(#classicWetInk);
+  transition:
+    background 0.7s cubic-bezier(.23,1.12,.67,1.08),
+    color 0.5s cubic-bezier(.23,1.12,.67,1.08),
+    border-radius 0.8s cubic-bezier(.23,1.12,.67,1.08),
+    box-shadow 0.7s cubic-bezier(.23,1.12,.67,1.08),
+    transform 0.7s cubic-bezier(.23,1.12,.67,1.08);
+}
+
+.strengths-closed-shape { border-radius: 45% 58% 62% 37% / 52% 38% 67% 49%; }
+.strengths-opened-shape { border-radius: 62px 64px 58px 60px / 170px 110px 170px 110px; }
+.uxui-closed-shape { border-radius: 54% 42% 62% 57% / 54% 42% 62% 47%; }
+.uxui-opened-shape { border-radius: 62px 68px 60px 56px / 170px 120px 170px 110px; }
+.frontend-closed-shape { border-radius: 63% 38% 70% 33% / 53% 62% 39% 46%; }
+.frontend-opened-shape { border-radius: 65px 70px 65px 68px / 185px 114px 174px 110px; }
+.tools-closed-shape { border-radius: 48% 56% 35% 38% / 54% 42% 62% 47%; }
+.tools-opened-shape { border-radius: 66px 75px 65px 70px / 166px 115px 166px 120px; }
+
+
+.skill-ink-shape::before {
+  content: '';
+  position: absolute;
+  top: -60%; left: -60%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.09) 0%, transparent 58%);
+  transform: rotate(34deg);
+  opacity: 0;
+  z-index: 2; /* shape 배경보다 위 */
+  pointer-events: none;
+  transition: opacity 0.5s;
+}
+
+.skill-card.expanded .skill-ink-shape {
+  background: linear-gradient(135deg, #242424 80%, #444 100%);
+  color: #fff !important;
+  box-shadow: 0 22px 70px rgba(0,0,0,0.49), 0 8px 32px rgba(0,0,0,0.25);
+  padding: 0;
+}
+
+.skill-initial-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  z-index: 3; /* shape 반사 효과보다 위 */
+  padding: 1rem 0;
+  box-sizing: border-box;
+  transition: opacity 0.4s, transform 0.4s;
+}
+.skill-initial-content .skill-icon {
+  color: #d9d9d9 !important;
+  font-size: 2.8rem;
+  margin-bottom: 0;
+}
+.skill-initial-text { display: none !important; }
+
+.skill-card.expanded .skill-initial-content {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+.skill-expanded-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 3; /* initial-content와 같은 레벨 */
+  position: absolute;
+  top: 0; left: 0;
+  padding: 2.5rem 0.8rem;
+  box-sizing: border-box;
+  transition: opacity 0.4s 0.2s, color 0.4s;
+  color: #fff;
+}
+
+/* .skill-card:nth-child(1).expanded .skill-expanded-content { left: -0.5rem; top: 2rem; }
+.skill-card:nth-child(2).expanded .skill-expanded-content { left: -1.2rem; }
+.skill-card:nth-child(3).expanded .skill-expanded-content { left: -1.7rem; }
+.skill-card:nth-child(4).expanded .skill-expanded-content { left: -2.3rem; } */
+
+
+.skill-card.expanded .skill-expanded-content {
+  opacity: 1;
+  pointer-events: auto;
+  position: relative;
+  color: #fff !important;
+}
+
+.skill-expanded-content .skill-icon.expanded-icon,
+.skill-expanded-content .skill-expanded-title {
+  display: none !important;
+}
+
+.skill-details-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.98rem;
+  text-align: left;
+  width: 100%;
+  color: inherit;
+}
+.skill-card.expanded .skill-details-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  width: 100%;
+  height: 100%;
+  color: #fff !important;
+  font-size: 1.08rem;
+}
+.skill-card.expanded .skill-details-list li {
+  color: #fff !important;
+  text-align: left;
+  font-size: 1.07rem;
+  font-family: 'Pretendard', sans-serif;
+  font-weight: 400;
+  margin: 0.4rem 0;
+  padding: 0;
+  line-height: 1.8;
+  opacity: 1;
+  transform: none;
+  position: static;
+}
+
+.skill-main-title {
+  display: block;
+  font-family: 'Do Hyeon', 'Pretendard', sans-serif;
+  font-size: 1.13rem;
+  font-weight: 600;
+  color: var(--gray-dark);
+  margin-top: 1.4rem;
+  margin-bottom: 0.2rem;
+  text-align: center;
+  width: 100%;
+  opacity: 1;
+  transition: margin 0.3s, opacity 0.3s;
+}
+.skill-card.expanded .skill-main-title {
+  opacity: 1 !important;
+  margin-top: 2.4rem;
+}
+
+.click-drag-hint {
+  opacity: 0.6;
+  font-size: 0.7rem;
+  color: #777;
+  margin-top: 0.4rem;
+  font-style: italic;
+  width: 100%;
+  text-align: center;
+  transition: margin 0.3s, opacity 0.3s;
+}
+.skill-card.expanded .click-drag-hint {
+  opacity: 0.6 !important;
+  margin-top: 1.2rem;
+}
+
+/* SPLASH EFFECT (애니메이션) */
+.ink-splash-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 5; /* 중요: 스플래시 효과가 다른 요소들 위에 보이도록 z-index 값 증가 (기존 0) */
+}
+
+.ink-splash-drop {
+  position: absolute;
+  border-radius: 60% 40% 50% 50% / 50% 55% 45% 50%;
+  opacity: 0;
+  background-color: #222;
+  animation: inkSplashAnimation 0.6s cubic-bezier(.25,.46,.45,.94) forwards;
+  transform-origin: center;
+  /* 필터는 부모(.ink-splash-container)나 여기서 직접 지정할 수 있습니다.
+     만약 JS에서 개별 드롭에 필터를 적용하고 있다면 이 CSS는 필요 없을 수 있습니다. */
+  /* filter: url(#classicWetInk); /* 필요하다면 여기에 필터 적용 */
+}
+@keyframes inkSplashAnimation {
+  0% { opacity: 0.9; transform: scale(0.2); }
+  50% { opacity: 0.6; transform: scale(1.3); }
+  100% { opacity: 0; transform: scale(1.6); }
+}

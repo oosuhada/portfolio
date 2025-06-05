@@ -1,0 +1,252 @@
+/* ======================= FUN FACTS (and Common Card) SECTION ======================= */
+
+/* 카드가 나타날 동적 영역 스타일 */
+.funfacts-card-display-area {
+  height: 0; /* JS에 의해 동적으로 조절될 초기 높이 */
+  overflow: hidden; /* 내용이 넘칠 경우 숨김 */
+  box-sizing: border-box;
+  /* background-color: rgba(240,240,240,0.1); /* 디버깅용 배경색 */
+  /* margin-bottom: 1rem; /* 산 이미지와의 간격 필요시 */
+}
+
+.about-funfacts-cols {
+  display: flex; 
+  justify-content: center; 
+  align-items: flex-start; /* 카드가 여러 줄로 쌓이지 않도록 flex-start 또는 center */
+  gap: 1rem; /* 카드가 여러 개일 때의 갭 (현재는 단일 카드만 표시) */
+  margin-top: 0; /* 부모인 .funfacts-card-display-area 가 타이틀과의 간격 관리 */
+  padding: 2rem 1rem; /* 카드 영역이 확장되었을 때 내부 카드 위아래, 좌우 여백 */
+  box-sizing: border-box;
+  opacity: 0; 
+  visibility: hidden; 
+}
+
+@media (max-width: 520px) {
+  .about-funfacts-cols {
+    padding: 1.5rem 0.5rem;
+    gap: 0.7rem; /* 단일 카드 표시시에는 갭이 큰 의미 없음 */
+  }
+}
+
+/* ---------- 카드 기본 스타일: 한지 질감 적용 ---------- */
+.funfact-card {
+  background: #FDFCEF; 
+  border-radius: 0.8rem; 
+  padding: 2rem;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.05); 
+  color: var(--gray-dark); 
+  position: relative;
+  min-height: 220px; /* 카드의 최소 높이 */
+  display: none; /* JS가 .is-active-fact 로 display: flex 설정 */
+  opacity: 0; /* JS가 애니메이션으로 1로 변경 */
+  transform: translateY(20px); /* 등장 애니메이션 시작 위치 */
+  width: 100%; /* 부모(.about-funfacts-cols)가 중앙 정렬, 카드는 가능한 너비 사용 */
+  max-width: 480px; /* 카드의 최대 너비 제한 */
+  flex-direction: column;
+  align-items: flex-start;
+  cursor: pointer;
+  overflow: hidden; 
+  transition:
+    box-shadow 0.4s ease-out,
+    /* transform 0.35s cubic-bezier(.23,1.12,.67,1.08), GSAP으로 제어하므로 제거 또는 주의 */
+    border-radius 0.4s ease-out;
+
+  /* 한지 질감 오버레이 */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" result="noise" /><feColorMatrix type="saturate" values="0" /><feBlend in="SourceGraphic" in2="noise" mode="multiply" /></filter><rect width="100" height="100" fill="%23fdfceb" filter="url(%23noise)" /></svg>') repeat;
+    opacity: 0.7; 
+    pointer-events: none;
+    z-index: 1; 
+  }
+}
+
+.funfact-card.is-active-fact {
+  display: flex; 
+}
+
+/* ---------- Hover 시 약간 강조 (그림자, 약간의 한지 색 변화) ---------- */
+.funfact-card:hover {
+  /* GSAP으로 active-ink-state가 아닐 때만 적용되도록 JS에서 제어 중 */
+  /* 이 CSS 호버는 JS 제어와 별개로 항상 작동할 수 있음. */
+  /* 만약 GSAP 호버와 충돌한다면, 이 부분을 주석처리하거나 JS 로직에 통합 */
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12), 0 3px 12px rgba(0,0,0,0.08);
+  transform: translateY(-3px); /* JS 애니메이션과 충돌 가능성 있음, 주의 */
+  background: #FCFBF0;
+}
+
+/* ---------- 드래그/Sortable 상태 ---------- */
+.funfact-card.drag-chosen { /* SortableJS 사용 시 */
+  box-shadow: 0 0 0 3px var(--gray-dark) !important; 
+  z-index: 20;
+  outline: none !important;
+  opacity: 0.96;
+}
+
+/* ---------- 잉크 번짐 효과 (.ink-splash) ---------- */
+.funfact-card .ink-splash-container {
+  position: absolute;
+  top: 0; left: 0;
+  width: 200%; height: 200%;
+  pointer-events: none; 
+  overflow: visible; 
+  z-index: 2; 
+  filter: url(#classicWetInk); /* HTML에 정의된 SVG 필터 ID와 일치해야 함 */
+}
+
+.ink-blot-drop {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background-color: rgba(30, 30, 30, 0.6); 
+  opacity: 0;
+  transform: scale(0.1);
+  animation: ink-blot-animation 1.0s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  pointer-events: none;
+}
+
+@keyframes ink-blot-animation {
+  0% { opacity: 0; transform: scale(0.1); }
+  20% { opacity: 0.8; transform: scale(0.8); }
+  80% { opacity: 0.6; transform: scale(1.1); }
+  100% { opacity: 0; transform: scale(1.3); } /* 마지막에 투명해지면서 사라짐 */
+}
+
+/* ---------- 아이콘, 제목, 텍스트 ---------- */
+.fact-icon {
+  font-size: 2.2rem; 
+  margin-bottom: 1rem;
+  color: #555; 
+  position: relative; 
+  z-index: 3;
+}
+.funfact-card h3 {
+  font-family: 'Noto Serif TC', 'LXGW WenKai TC', serif; 
+  font-size: 1.4rem; 
+  font-weight: 600; 
+  margin-bottom: 1rem; 
+  line-height: 1.3;
+  color: #333; 
+  position: relative;
+  z-index: 3;
+}
+
+.funfact-card p { /* 실제로는 .fact-text-content 내의 p > span 에 적용될 수 있음 */
+  font-family: 'Pretendard', sans-serif; 
+  font-size: 0.95rem; 
+  line-height: 1.7;
+  color: #666; 
+  position: relative;
+  z-index: 3;
+}
+.fact-text-content span.meaning-chunk { /* p 태그 안의 span에 직접 스타일 적용 */
+  display: block; /* 줄바꿈 효과처럼 보이게 */
+}
+
+
+.hidden {
+  display: none !important;
+}
+.click-me-msg {
+  color: #555; 
+  opacity: 0.7;
+  letter-spacing: 0.02em; 
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 1.5rem;   
+  margin-bottom: 0.2rem;
+  width: 100%;
+  text-align: right;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.3s;
+  position: relative;
+  z-index: 3;
+}
+
+/* "먹물" Confetti Particle 스타일 (전역) */
+.confetti-particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 10001; 
+  opacity: 1; /* JS에서 애니메이션으로 조절 */
+  will-change: transform, opacity;
+}
+
+/* ======================= MOUNTAIN INTERACTIVE STYLES ======================= */
+.mountain-interactive-container {
+  position: relative;
+  width: 100%;
+  max-width: 1000px; 
+  margin: 1rem auto 2.5rem auto; /* 카드 영역 확장 시 자연스럽게 밀려나도록 위쪽 마진 조정 */
+  cursor: default; 
+  /* overflow: hidden; 자식인 스파클이 잘릴 수 있으므로 주의 */
+}
+
+.mountain-background-image {
+  display: block;
+  width: 100%;
+  height: auto; 
+  border-radius: 8px;
+  user-select: none; 
+  pointer-events: none; 
+}
+
+.sparkle-dot {
+  position: absolute;
+  width: 14px; 
+  height: 14px;
+  background-color: rgba(158, 158, 158, 0.75); 
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(210, 210, 210, 0.6), 0 0 10px rgba(210, 210, 210, 0.4);
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), 
+              width 0.3s cubic-bezier(.34,1.56,.64,1), 
+              height 0.3s cubic-bezier(.34,1.56,.64,1),
+              background-color 0.3s ease;
+  animation: sparkleAnimation 2.5s infinite ease-in-out alternate;
+  will-change: transform, opacity, box-shadow;
+  transform-origin: center center;
+}
+
+.sparkle-dot:hover {
+  transform: scale(2); 
+  background-color: rgba(188, 188, 188, 0.9);
+  animation-play-state: paused; 
+  box-shadow: 0 0 10px rgba(230, 230, 230, 0.8), 0 0 16px rgba(230, 230, 230, 0.6);
+}
+
+@keyframes sparkleAnimation {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.95);
+    box-shadow: 0 0 5px rgba(200, 200, 200, 0.5), 0 0 8px rgba(200, 200, 200, 0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(220, 220, 220, 0.8), 0 0 15px rgba(220, 220, 220, 0.6);
+  }
+  100% {
+    opacity: 0.6;
+    transform: scale(0.95);
+    box-shadow: 0 0 5px rgba(200, 200, 200, 0.5), 0 0 8px rgba(200, 200, 200, 0.3);
+  }
+}
+
+/* .about-funfacts-cols.revealed 와 @keyframes fadeInFunFactsContainer 는 */
+/* 현재 JS 로직에서는 직접 사용되지 않으므로 주석 처리하거나 삭제 가능 */
+/*
+.about-funfacts-cols.revealed {
+  animation: fadeInFunFactsContainer 0.6s ease-out forwards;
+}
+
+@keyframes fadeInFunFactsContainer {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+*/

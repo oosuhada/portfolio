@@ -1,0 +1,141 @@
+/* ======================= VALUES SECTION ======================= */
+.about-values-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: 1rem;
+}
+@media (max-width: 520px) {
+  .about-values-cols {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+}
+
+/* --- 값 카드 (거울/글래스 느낌 그라데이션 적용) --- */
+.value-card {
+  background: linear-gradient(
+    120deg,
+    rgba(230, 233, 237, 0.54) 0%,
+    rgba(208, 211, 216, 0.34) 40%,
+    rgba(255, 255, 255, 0.32) 100%
+  );
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  padding-left: 2.0rem;
+  padding-right: 2.0rem;
+  box-shadow: 0 12px 38px 0 rgba(120,140,170,0.09), 0 2px 16px 0 rgba(160,180,210,0.11);
+  color: var(--gray-dark);
+  position: relative;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow: hidden;
+  transition:
+    box-shadow 0.4s cubic-bezier(.23,1.12,.67,1.08),
+    background 0.5s cubic-bezier(.23,1.12,.67,1.08),
+    color 0.4s cubic-bezier(.23,1.12,.67,1.08);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1.7px solid rgba(180, 190, 210, 0.23);
+  cursor: pointer;
+}
+.value-card .value-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--main-pink);
+  filter: drop-shadow(0 1px 5px #ffa4d355);
+  transition: color 0.3s, filter 0.4s, transform 0.3s;
+}
+.value-card.glass-effect {
+  background: rgba(255,255,255,0.48);
+  box-shadow: 0 20px 48px #B8FFD5cc, 0 3px 30px #3332;
+  border: 1.5px solid rgba(190,210,230,0.28);
+}
+.value-card.gradient-effect {
+  background: linear-gradient(120deg,#F8FFAE,#43C6AC,#B8FFD5);
+  color: #212123;
+}
+.value-card .light-sweep-slot {
+  position: absolute;
+  top: 0; left: 0; height: 100%; width: 100%;
+  pointer-events: none; z-index: 3;
+  overflow: visible;
+}
+.value-card .light-sweep-anim {
+  position: absolute;
+  top: -20%; left: -60px; width: 60px; height: 140%;
+  background: linear-gradient(100deg,#fff3 0%,#fff9 50%,#fff3 100%);
+  opacity: 0.8;
+  filter: blur(2px);
+  border-radius: 60px;
+  z-index: 4;
+  pointer-events: none;
+}
+.value-card h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  color: var(--gray-main, #222);
+}
+
+/* --- 빛반사 글래스 느낌(선택, 원하지 않으면 삭제 가능) --- */
+.value-card::before {
+  content: "";
+  position: absolute;
+  left: 12%;
+  top: -18%;
+  width: 65%;
+  height: 45%;
+  background: linear-gradient(120deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.05) 100%);
+  filter: blur(7px);
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 44% 40% 45% 55%;
+}
+
+/* --- Drag & drop용 클래스 (Sortable.js용) --- */
+.drag-ghost {
+  opacity: 0.4;
+  background: #e3f2fd !important;
+}
+.drag-chosen {
+  box-shadow: 0 0 0 3px var(--main-pink);
+  opacity: 0.9;
+}
+.drag-dragging {
+  opacity: 0.7;
+}
+
+/* --- 카드 등장 애니메이션 (GSAP에서 in-view 추가 시) --- */
+.value-card {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: none !important;
+}
+.value-card.in-view {
+  opacity: 1;
+  transform: none;
+  transition:
+    transform 0.3s cubic-bezier(.23,1.12,.67,1.08),
+    box-shadow 0.3s cubic-bezier(.23,1.12,.67,1.08),
+    background 0.35s cubic-bezier(.23,1.12,.67,1.08),
+    color 0.35s cubic-bezier(.23,1.12,.67,1.08);
+}
+
+/* --- hover(마우스오버) 시 위로 올라오는 효과, 클릭/포커스 효과 없음 --- */
+.value-card.in-view:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  z-index: 2;
+}
+.value-card.in-view, .value-card:hover {
+  background: linear-gradient(
+    110deg,
+    rgba(245, 247, 250, 0.7) 0%,
+    rgba(210, 215, 225, 0.45) 30%,
+    rgba(255,255,255,0.35) 100%
+  );
+  box-shadow: 0 24px 54px 0 rgba(140,160,200,0.13), 0 2px 22px 0 rgba(180,190,210,0.19);
+}

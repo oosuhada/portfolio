@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oosu Portfolio</title>
+    <link rel="icon" type="image/png" href="../apple-touch-icon.png" />
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+    <link rel="stylesheet" href="../common/common.css" />
+    <link rel="stylesheet" href="portfolio.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  </head>
+<body>
+  <header class="nav-header" aria-label="Site">
+    <nav class="nav-menu nav-center">
+      <a href="../portfolio/portfolio.html" data-nav="portfolio">✧ portfolio</a>
+      <a href="../about/about.html" data-nav="about">? about</a>
+      <a href="../experience/experience.html" data-nav="experience">⌗ experience</a>
+      <a href="../hobby/hobby.html" data-nav="hobby">: hobby</a>
+      <a href="../connect/connect.html" data-nav="connect">⌲ connect</a>
+    </nav>
+  </header>
+  <div id="top-sentinel"></div>
+  <div id="guide-overlay" style="display:none;">
+    <div class="guide-bg"></div>
+    <div class="guide-tooltip" id="guide-tooltip"></div>
+    <button class="guide-close" style="display:none;">close</button>
+  </div>
+
+  <div class="main-content" style="display:none;">
+    <section class="hero hero-bg-default" id="hero">
+  <div class="hero-grid">
+    <div class="hero-text-area">
+      <h1 class="hero-text">
+        I'm <span class="hover-name guide-onboard" id="onboard-name">Oosu,</span>
+        <span class="sparkle" id="sparkle-name"></span><br>
+        a UX/UI designer<br>
+        <div class="hero-slider-wrapper">
+          <div class="hero-slider">
+            <div class="slider-text active">
+              who believes that design exists<br>
+              to solve problems and support people in meaningful ways.<br>  
+            </div>
+            <div class="slider-text">
+              I create <b>brands</b>,
+              design <b>websites</b>, and
+              shape <b>digital products</b>
+              passionately and thoughtfully.
+            </div>
+            <div class="slider-text">
+              I craft intuitive, scalable design systems that are as beautiful as they are functional.
+            </div>
+          </div>
+        </div>
+      </h1>
+    </div>
+    <div class="hero-img-area">
+      <div class="img-sparkle-wrap">
+        <img src="profile/1.png" class="hover-img" alt="Oosu Photo" />
+        <span class="sparkle" id="sparkle-img"></span>
+      </div>
+    </div>
+    <div class="hero-slider-dots-area">
+      <div class="hero-slider-dots">
+        <span class="slider-dot guide-onboard" data-index="0" id="onboard-dot-0">
+          <span class="sparkle" id="sparkle-dot"></span>
+        </span>
+        <span class="slider-dot" data-index="1"></span>
+        <span class="slider-dot" data-index="2"></span>
+      </div>
+    </div>
+    <div class="hero-gauge-area">
+      <div class="horizontal-gauge">
+        <div class="gauge-bar"></div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span class="scroll-icon">
+      <i class="fa-regular fa-hand-point-down"></i>
+    </span>
+  </div>      
+</section>
+    
+  <section class="projects" id="portfolio">
+    <div class="project" id="project1" data-project-color="#1abc9c">
+      <div class="project-info">
+        <div class="project-number">1</div>
+        <div class="project-title">Cross-platform App<br>Nomad Market</div><br>
+        <div class="project-meta">
+          <span class="project-date">Bootcamp | Oct 2024 - Feb 2025</span>
+          <span class="project-tools">Figma, Flutter, Notion, Firebase</span>
+        </div>
+      </div>
+      <a href="project1.html" class="project-image grayscale">
+        <img src="project1.png" alt="Nomad Market App" />
+        <div class="view-project-overlay">View Project</div>
+      </a>
+      <div class="project-social-fixed">
+        <a href="https://linkedin.com/" target="_blank" aria-label="LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="https://instagram.com/oosu.hada" target="_blank" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="1em" height="1em" style="vertical-align: middle;">
+            <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/>
+          </svg>
+        </a>
+        <a href="../connect/connect.html" aria-label="Connect">
+          <i class="fa-solid fa-paper-plane"></i>
+        </a>
+      </div>      
+    </div>
+    <div class="project" id="project2" data-project-color="#3498db">
+      <div class="project-info">
+        <div class="project-number">2</div>
+        <div class="project-title">Cross-platform App<br>Onjung</div><br>
+        <div class="project-meta">
+          <span class="project-date">Boot Camp | Oct 2024 - Feb 2025</span>
+          <span class="project-tools">Figma, Flutter, Notion, Firebase</span>
+        </div>
+      </div>
+      <a href="project2-link.html" class="project-image grayscale">
+        <img src="project2.png" alt="Onjung App" />
+        <div class="view-project-overlay">View Project</div>
+      </a>
+      <div class="project-social-fixed">
+        <a href="https://linkedin.com/" target="_blank" aria-label="LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="https://instagram.com/oosu.hada" target="_blank" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="1em" height="1em" style="vertical-align: middle;">
+            <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/>
+          </svg>
+        </a>
+        <a href="../connect/connect.html" aria-label="Connect">
+          <i class="fa-solid fa-paper-plane"></i>
+        </a>
+      </div>      
+    </div>
+    <div class="project" id="project3" data-project-color="#9b59b6">
+      <div class="project-info">
+        <div class="project-number">3</div>
+        <div class="project-title">Responsive Website<br>Oosu Salon</div><br>
+        <div class="project-meta">
+          <span class="project-date">Boot Camp | Oct 2024 - Feb 2025</span>
+          <span class="project-tools">Figma, HTML, CSS, JavaScript</span>
+        </div>
+      </div>
+      <a href="project3-link.html" class="project-image grayscale">
+        <img src="project3.png" alt="Oosu Salon Website" />
+        <div class="view-project-overlay">View Project</div>
+      </a>
+      <div class="project-social-fixed">
+        <a href="https://linkedin.com/" target="_blank" aria-label="LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="https://instagram.com/oosu.hada" target="_blank" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="1em" height="1em" style="vertical-align: middle;">
+            <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/>
+          </svg>
+        </a>
+        <a href="../connect/connect.html" aria-label="Connect">
+          <i class="fa-solid fa-paper-plane"></i>
+        </a>
+      </div>      
+    </div>
+    <div class="project" id="project4" data-project-color="#e67e22">
+      <div class="project-info">
+        <div class="project-number">4</div>
+        <div class="project-title">Responsive Website<br>Sticks and Stones</div><br>
+        <div class="project-meta">
+          <span class="project-date">Boot Camp | Oct 2024 - Feb 2025</span>
+          <span class="project-tools">Figma, HTML, CSS, JavaScript</span>
+        </div>
+      </div>
+      <a href="project4-link.html" class="project-image grayscale">
+        <img src="project4.png" alt="Sticks and Stones Website" />
+        <div class="view-project-overlay">View Project</div>
+      </a>
+      <div class="project-social-fixed">
+        <a href="https://linkedin.com/" target="_blank" aria-label="LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="https://instagram.com/oosu.hada" target="_blank" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="1em" height="1em" style="vertical-align: middle;">
+            <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/>
+          </svg>
+        </a>
+        <a href="../connect/connect.html" aria-label="Connect">
+          <i class="fa-solid fa-paper-plane"></i>
+        </a>
+      </div>      
+    </div>
+    <div class="project" id="project5" data-project-color="#e91e63">
+      <div class="project-info">
+        <div class="project-number">5</div>
+        <div class="project-title">App Redesign<br>Skyscanner</div><br>
+        <div class="project-meta">
+          <span class="project-date">Boot Camp | Oct 2024 - Feb 2025</span>
+          <span class="project-tools">Figma</span>
+        </div>
+      </div>
+      <a href="project5-link.html" class="project-image grayscale">
+        <img src="project5.png" alt="Skyscanner Redesign" />
+        <div class="view-project-overlay">View Project</div>
+      </a>
+      <div class="project-social-fixed">
+        <a href="https://linkedin.com/" target="_blank" aria-label="LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="https://instagram.com/oosu.hada" target="_blank" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="1em" height="1em" style="vertical-align: middle;">
+            <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/>
+          </svg>
+        </a>
+        <a href="../connect/connect.html" aria-label="Connect">
+          <i class="fa-solid fa-paper-plane"></i>
+        </a>
+      </div>      
+    </div>
+  </section>
+    <div class="section-bottom-gap"></div>
+  <footer>
+    <div class="footer-row">
+      <div class="footer-content">
+        <p>You've hit the footer,<br>thanks for stopping by.<br>Still curious?<br>→ <a href="mailto:oosu.salon@gmail.com">oosu.salon@gmail.com</a></p>
+        <span class="footer-copyright">© Oosu Jang 2025</span>
+      </div>
+      <img src="../footer.png" alt="Footer Image" class="footer-image" id="footer-img">
+    </div>
+  </footer>
+    <script src="../common/common.js"></script>
+  <script src="portfolio.js"></script>
+</div>
+</body>
+</html>

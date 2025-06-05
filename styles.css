@@ -1,0 +1,582 @@
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  font-family: 'Do Hyeon', sans-serif;
+}
+
+.loading-text {
+  font-size: 2rem;
+  animation: fade 1s ease-in-out infinite alternate;
+}
+
+@keyframes fade {
+  0% { opacity: 0.2; }
+  100% { opacity: 1; }
+}
+
+/* === 풍선 Balloons (Ink Styled) === */
+.balloon {
+  position: fixed;
+  bottom: -140px; /* Initial position for GSAP animation */
+  width: 30px;   /* Base width, JS can vary */
+  height: 42px;  /* Base height, JS can vary */
+  border-radius: 18px 18px 26px 26px / 15px 15px 34px 34px; /* Original shape */
+  box-shadow: 0 8px 20px 0 #0002;
+  z-index: 9;
+  pointer-events: auto;
+  opacity: 0.8; /* Base opacity, JS can vary */
+  transition: filter 0.2s;
+  display: flex;             
+  justify-content: center;   
+  align-items: center;
+  filter: url(#classicWetInk); /* Apply Ink Filter */
+  cursor: pointer;
+  /* Background color will be set by JavaScript to an achromatic color */
+}
+
+.fast-text-balloon {
+  font-family: 'Do Hyeon', 'sans-serif';
+  letter-spacing: 0.03em;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff; /* Text color */
+  /* background: transparent !important; /* REMOVED - JS will set achromatic background */
+  display: flex; 
+  justify-content: center;
+  align-items: center;
+  width: 69px !important; /* Fixed size for this type */
+  height: 69px !important;/* Fixed size for this type */
+  z-index: 9999; /* Higher z-index */
+  opacity: 1;
+  pointer-events: auto;
+  /* 가상 요소의 위치 및 스택 컨텍스트를 위해 추가 */
+  position: relative;
+  /* JavaScript에서 filter: none; 이 적용되어 내부 콘텐츠는 선명하게 유지됩니다. */
+  /* JavaScript에서 background-color 가 설정됩니다. */
+  cursor: pointer;
+}
+
+/* 테두리 번짐 효과를 위한 가상 요소 */
+.fast-text-balloon::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* 부모 요소(.fast-text-balloon -> .balloon)의 border-radius 상속 */
+  border-radius: inherit;
+  /* 번지는 잉크의 색상 (예: 매우 어두운 회색) */
+  background-color: #1a1a1a;
+  /* 부모보다 약간 크게 만들어 테두리처럼 보이게 함 */
+  /* 값을 조절하여 번짐의 두께를 조절할 수 있습니다. */
+  transform: scale(1.08); /* 예: 1.05 ~ 1.1 사이 값으로 조절 */
+  /* 여기에 잉크 번짐 필터 적용 */
+  filter: url(#classicWetInk);
+  /* 또는 더 간단한 흐림 효과를 원한다면: */
+  /* filter: blur(3px) opacity(0.7); */
+  /* 가상 요소를 부모의 실제 내용 뒤로 보냄 */
+  z-index: -1;
+  /* 클릭 이벤트 등이 방해되지 않도록 */
+  pointer-events: none;
+}
+
+.balloon.pop {
+  animation: balloon-pop 0.6s cubic-bezier(.7,-0.5,.7,2.2);
+  opacity: 0 !important;
+  z-index: 99; /* Ensure popped balloon is above non-popped ones during animation */
+}
+
+@keyframes balloon-pop {
+  0% { transform: scale(1); opacity: 1;}
+  60% { transform: scale(1.18); opacity: 0.8;}
+  80% { transform: scale(0.97);}
+  100% { transform: scale(1.33); opacity: 0;}
+}
+
+/* === Internal Ink Splash Effect (for inside balloons) === */
+.ink-splash {
+  position: absolute;
+  border-radius: 50%;
+  /* background-color will be set by JS */
+  transform: scale(0);
+  opacity: 0.7;
+  pointer-events: none;
+  animation: splash-effect 0.6s cubic-bezier(.4,0,.2,1);
+  z-index: 1; /* Above balloon's direct background, affected by parent's filter */
+  filter: blur(0.5px);
+}
+
+@keyframes splash-effect {
+  0% {
+    transform: scale(0);
+    opacity: 0.7;
+    filter: blur(0.5px);
+  }
+  50% {
+    opacity: 0.5;
+    filter: blur(2.5px);
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+    filter: blur(8px);
+  }
+}
+
+@keyframes ink-splash-fade-blur {
+  0% {
+      opacity: 0.85;
+      transform: scale(1);
+      filter: blur(0.5px);
+  }
+  40% {
+      opacity: 0.28;
+      transform: scale(2.2);
+      filter: blur(2.5px);
+  }
+  100% {
+      opacity: 0;
+      transform: scale(2.7);
+      filter: blur(8px);
+  }
+}
+
+/* === External "먹물" Confetti Particle Styles === */
+.confetti-particle {
+  position: fixed; /* Fixed position for document-wide spread */
+  /* width, height, background-color, border-radius are set by JS */
+  pointer-events: none;
+  z-index: 10001; /* High z-index to appear above most things */
+  opacity: 1; /* Initial opacity, animation will fade it out */
+  will-change: transform, opacity;
+  /* filter: blur(0.5px); /* Optional: can be set in JS if desired */
+}
+
+/* Reset & Base Styles */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Arial', sans-serif; overflow: hidden; }
+
+/* Font Declarations */
+@font-face {
+  font-family: 'Hiragino Kaku Gothic Std';
+  src: local('Hiragino Kaku Gothic Std');
+  unicode-range: U+3000-9FFF, U+ff??;
+}
+.font-anton { font-family: 'Anton', sans-serif; text-transform: uppercase; letter-spacing: 4px; }
+.font-dohyeon { font-family: 'Do Hyeon', sans-serif; }
+.font-hiragino { font-family: 'Hiragino Kaku Gothic Std', 'MS Gothic', 'Yu Gothic', sans-serif; }
+
+/* ================== 슬라이드 Y축 고정, 중앙정렬 ================== */
+.slider-container::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 1; /* 슬라이드 내용보다 위에 올릴 땐 2, 배경 느낌이면 0 */
+  pointer-events: none;
+  background:
+    url('https://grainy-gradients.vercel.app/noise.svg'),
+    url('https://grainy-gradients.vercel.app/noise.svg');
+  opacity: 0.99;
+  mix-blend-mode:overlay;
+  /* filter: contrast(180%) brightness(110%); */
+}
+.slider-container {
+  position: relative; /* 반드시 있어야 ::before가 겹침 */
+  width: 100%;
+  height: 100vh;
+}
+.slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.6s cubic-bezier(0.63, 0, 0.7, 1), opacity 0.6s cubic-bezier(0.63, 0, 0.7, 1);
+  opacity: 0;
+  visibility: hidden;
+}
+.slide.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+.slide-content {
+  position: relative;
+  width: 100%;
+  height: 340px;  /* 또는 원하는 전체 높이 */
+  /* gap/align 무시: absolute 배치로 변경 */
+}
+
+/* slide-title 최소 높이로 baseline 정렬 (폰트차이에도 Y축 고정) */
+.slide-title {
+  min-height: 110px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  font-size: 6rem;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  padding: 10px 20px;
+}
+#slide3 .slide-title,
+#slide9 .slide-title {
+  font-size: 7.2rem;    /* 기본보다 더 크게! 필요시 조정 */
+  min-height: 130px;    /* 더 크게/아래로 내리기 */
+  align-items: flex-end;
+  margin-bottom: 0.1em; /* 타이틀과 welcome-banner 간격 더 좁게 */
+}
+.welcome-banner-link {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  display: flex;
+  justify-content: center;
+  text-decoration: none;
+  z-index: 3;
+}
+/* 필요시 폰트마다 min-height 조절
+.font-anton.slide-title { min-height: 94px; }
+.font-dohyeon.slide-title { min-height: 84px; }
+.font-hiragino.slide-title { min-height: 94px; }
+*/
+
+/* ================== 슬라이드 배경 ================== */
+#slide1 { background: linear-gradient(135deg, #ADB0B0, #E1E1E1); }
+#slide2 { background: linear-gradient(135deg, #ADB0B0, #FFDEC2); }
+#slide3 { background: linear-gradient(135deg, #D279EE, #F8C390); }
+#slide4 { background: linear-gradient(135deg, #F78FAD, #FDEB82); }
+#slide5 { background: linear-gradient(135deg, #6DE195, #C4E759); }
+#slide6 { background: linear-gradient(135deg, #41C7AF, #54E38E); }
+#slide7 { background: linear-gradient(135deg, #5583EE, #41D8DD); }
+#slide8 { background: linear-gradient(135deg, #6CACFF, #8DEBFF); }
+#slide9 { background: linear-gradient(135deg, #A16BFE, #DEB0DF); }
+#slide10 { background: linear-gradient(135deg, #BC3D2F, #A16BFE); }
+
+/* slide-title 기존 hover 스타일(참고, 유지) */
+
+#slide1 .slide-title:hover {
+  color: #333; /* 호버 시 텍스트 색상 (선명하게 유지) */
+  /* 텍스트 자체의 transform은 제거하거나, 가상 요소의 번짐과 조화를 이루도록 미세 조정 */
+  /* transform: scale(1.05); */ 
+  text-shadow: none; /* 또는 매우 약한 그림자 */
+}
+
+#slide1 .slide-title:hover::before {
+  transform: scale(1.15); /* 잉크가 퍼지는 최종 범위 (1.1 ~ 1.25 사이 값으로 조절) */
+  opacity: 0.55;          /* 번진 잉크의 최종 투명도 (0.4 ~ 0.65 사이 값으로 조절) */
+  filter: url(#lightTextInk) blur(6px); /* SVG 필터 + 더 강한 CSS blur로 번짐 극대화 */
+}
+#slide2 .slide-title:hover { letter-spacing: 8px; color: #FF8C42; transform: translateY(-5px);}
+#slide3 .slide-title:hover { transform: perspective(500px) rotateX(10deg); color: #F8C390; text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);}
+#slide4 .slide-title:hover {
+  transform: scale(1.1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-image: linear-gradient(
+    to right, 
+    #e43970 25%,    /* 진한 핑크 */
+    #c21d54 50%,    /* 짙은 핑크~보라 */
+    #db0567 75%,    /* 버건디 계열 */
+    #f63e72 100%    /* 밝은 쨍한 컬러 */
+  );
+  color: transparent;
+  text-shadow:
+    0 1px 10px #fff,       /* 흰색 glow */
+    0 2px 4px #c21d54cc,   /* outline 효과 */
+    0 0px 2px #db056799;
+  /* 필요시 폰트 무게도 올리기 */
+  font-weight: 900;
+}
+#slide5 .slide-title:hover { transform: skewX(-10deg); color: #2C5E1A; text-shadow: 2px 2px 0 #C4E759, 4px 4px 0 rgba(0, 0, 0, 0.1);}
+#slide6 .slide-title:hover { letter-spacing: -2px; color: #155D47; transform: scale(0.95); font-weight: 900;}
+#slide7 .slide-title:hover { transform: translateY(-10px); text-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); color: #41D8DD;}
+#slide8 .slide-title:hover { transform: scale(1.05);}
+#slide8 .slide-title:hover::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 5px; background: white; transform: scaleX(1); transition: transform 0.3s ease;}
+#slide9 .slide-title:hover { text-shadow: 3px 3px 0 #A16BFE, 6px 6px 0 rgba(0, 0, 0, 0.2); transform: translate(-3px, -3px); color: white;}
+#slide10 .slide-title:hover { transform: scale(1.1); animation: glowing 1.5s infinite alternate;}
+@keyframes glowing { 0% { text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #BC3D2F, 0 0 20px #BC3D2F;} 100% { text-shadow: 0 0 10px #fff, 0 0 15px #A16BFE, 0 0 20px #A16BFE, 0 0 25px #A16BFE;} }
+
+#slide8 .slide-title:hover::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 33.33%;     /* 중앙으로 이동 (1/3 지점부터 시작) */
+  width: 33.33%;    /* 전체의 1/3만큼만 너비 */
+  height: 5px;
+  background: white;
+  transform: scaleX(1);
+  transition: transform 0.3s ease;
+}
+
+/* ================== Welcome Banner ================== */
+.welcome-banner-link {
+  display: flex;
+  justify-content: center;
+  text-decoration: none;
+}
+.welcome-banner {
+  font-family: 'Anton', 'Do Hyeon', sans-serif;
+  font-size: 1.2rem;
+  color: #fff !important;
+  margin-top: 300px;
+  padding: 0.6em 2em;
+  border-radius: 2em;
+  text-align: center;
+  letter-spacing: 0.08em;
+  background: var(--welcome-bg, #222);
+  box-shadow: var(--neon-box, 0 0 24px 4px #ffcaf7, 0 0 8px #fff);
+  text-shadow: var(--neon-text, 0 0 7px #ffcaf7, 0 0 10px #fd67d6, 1px 1px 2px #222);
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  transition: 
+    background 0.5s, 
+    color 0.5s, 
+    box-shadow 0.5s, 
+    text-shadow 0.5s,
+    transform 0.3s cubic-bezier(.5,1.7,.6,.85);
+  min-width: 280px;
+  cursor: pointer;
+}
+.welcome-banner[data-hovered="true"]::after {
+  content: 'Learn more';
+  color: #fff !important;
+  font-size: 1.15em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  position: absolute;
+  left: 0; right: 0; top: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  z-index: 10;
+  animation: fadeinBanner 0.23s;
+  pointer-events: none;
+}
+.welcome-banner[data-hovered="true"] {
+  transform: scale(1.0);
+  box-shadow: 0 0 38px 10px #fff7, 0 0 24px 8px var(--banner-hover-fg, #fff);
+}
+.welcome-banner[data-hovered="true"] span {
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+@keyframes fadeinBanner {
+  from { opacity: 0; transform: translateY(10px);}
+  to { opacity: 1; transform: none;}
+}
+
+/* 슬라이드별 배경 및 텍스트/hover 컬러 변수 */
+#slide1 .welcome-banner { --welcome-bg: #ADB0B0; --banner-fg: #212121; --banner-hover-fg: #4b4b4b;}
+#slide2 .welcome-banner { --welcome-bg: #FFDEC2; --banner-fg: #444; --banner-hover-fg: #FF8C42;}
+#slide3 .welcome-banner { --welcome-bg: #D279EE; --banner-fg: #fff; --banner-hover-fg: #D279EE;}
+#slide4 .welcome-banner {
+  /* --welcome-bg: #F78FAD; /* 기존 핑크색 배경 */
+  --welcome-bg: linear-gradient(45deg, #F78FAD, #FDD090); /* 핑크에서 피치오렌지로 변하는 그라데이션 */
+  color: #5a2835; /* 기존 텍스트 색상 유지 */
+  --banner-hover-fg: #F78FAD; /* 호버 시 글로우 효과에 사용할 오렌지 계열 색상 */
+  
+  /* 네온 효과는 기존 값 유지 또는 새 배경에 맞춰 미세 조정 가능 */
+  --neon-box: 0 0 28px 9px rgba(252, 174, 140, 0.6), 0 0 8px #fde68c; /* 핑크-오렌지 톤으로 변경 */
+  --neon-text: 0 0 12px #F78FAD, 0 0 16px #FDD090; /* 핑크와 피치오렌지 혼합 */
+}
+#slide5 .welcome-banner { --welcome-bg: #6DE195; --banner-fg: #193c2e; --banner-hover-fg: #6DE195;}
+#slide6 .welcome-banner { --welcome-bg: #41C7AF; --banner-fg: #fff; --banner-hover-fg: #41C7AF;}
+#slide7 .welcome-banner { --welcome-bg: #5583EE; --banner-fg: #fff; --banner-hover-fg: #5583EE;}
+#slide8 .welcome-banner { --welcome-bg: #6CACFF; --banner-fg: #222; --banner-hover-fg: #6CACFF;}
+#slide9 .welcome-banner { --welcome-bg: #A16BFE; --banner-fg: #fff; --banner-hover-fg: #A16BFE;}
+#slide10 .welcome-banner {
+  --welcome-bg: linear-gradient(90deg, #a16bfeb4, #bc3d2feb);
+  --neon-box: 0 0 34px 10px #bc3d2faa, 0 0 18px 7px #a16bfeb4, 0 0 24px 0 #fff2;
+  --neon-text: 0 0 12px #bc3d2faa, 0 0 18px #a16bfeb4;
+  --banner-hover-fg: #e9dffa5b;
+}
+/* Navigation Buttons */
+.nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  border: 2px solid white;
+  border-radius: 50%;
+  background-color: transparent;
+  color: white;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s cubic-bezier(0.63, 0, 0.7, 1);
+  outline: none;
+}
+.nav-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-50%) scale(1.1);
+}
+.prev {
+  left: 20px;
+}
+.next {
+  right: 20px;
+}
+/* Page Indicator */
+.page-indicator {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 5px 10px;
+  border-radius: 12px;
+}
+
+/* ============================= */
+/* 슬라이드 내부 Welcome Banner 기본 네온 스타일  */
+/* ============================= */
+.welcome-banner {
+  font-family: 'Anton', 'Do Hyeon', sans-serif;
+  font-size: 1.2rem;
+  color: #fff;
+  padding: 0.6em 2em;
+  border-radius: 2em;
+  margin-top: 2.5em;
+  margin-bottom: 1.5em;
+  text-align: center;
+  letter-spacing: 0.08em;
+  background: var(--welcome-bg, #222);
+  transition: 
+    background 0.5s, 
+    color 0.5s, 
+    box-shadow 0.5s, 
+    text-shadow 0.5s;
+  cursor: pointer;
+  min-width: 280px;
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  box-shadow: var(--neon-box, 0 0 24px 4px #ffcaf7, 0 0 8px #fff);
+  text-shadow: var(--neon-text, 0 0 7px #ffcaf7, 0 0 10px #fd67d6, 1px 1px 2px #222);
+}
+
+.welcome-banner-link {
+  display: flex;
+  justify-content: center;
+  text-decoration: none;
+}
+
+/* 슬라이드별 배경에 따라 배너 색상/글자색 변경 */
+/* 슬라이드별 컬러(네온/배경/글자) 세트 */
+#slide1 .welcome-banner {
+  --welcome-bg: #ADB0B0;
+  color: #212121;
+  --neon-box: 0 0 24px 6px #adb0b0cc, 0 0 9px #fff;
+  --neon-text: 0 0 7px #adb0b0, 0 0 14px #e1e1e1;
+}
+#slide2 .welcome-banner {
+  --welcome-bg: #FFDEC2;
+  color: #444;
+  --neon-box: 0 0 28px 6px #ffd8b6, 0 0 8px #ffb951;
+  --neon-text: 0 0 8px #ffc970, 0 0 15px #ffdec2;
+}
+#slide3 .welcome-banner {
+  --welcome-bg: #D279EE;
+  --neon-box: 0 0 26px 7px #d279ee99, 0 0 12px #fff6;
+  --neon-text: 0 0 12px #d279ee, 0 0 18px #f8c390;
+}
+#slide4 .welcome-banner {
+  --welcome-bg: #F78FAD;
+  color: #5a2835;
+  --neon-box: 0 0 28px 9px #f78fad99, 0 0 8px #fde68c;
+  --neon-text: 0 0 12px #f78fad, 0 0 16px #fde68c;
+}
+#slide5 .welcome-banner {
+  --welcome-bg: #6DE195;
+  color: #193c2e;
+  --neon-box: 0 0 28px 8px #6de19599, 0 0 9px #c4e759;
+  --neon-text: 0 0 10px #6de195, 0 0 18px #c4e759;
+}
+#slide6 .welcome-banner {
+  --welcome-bg: #41C7AF;
+  --neon-box: 0 0 24px 8px #41c7af99, 0 0 8px #54e38e;
+  --neon-text: 0 0 10px #41c7af, 0 0 15px #54e38e;
+}
+#slide7 .welcome-banner {
+  --welcome-bg: #5583EE;
+  --neon-box: 0 0 28px 7px #5583eeaa, 0 0 10px #41d8dd;
+  --neon-text: 0 0 12px #5583ee, 0 0 17px #41d8dd;
+}
+#slide8 .welcome-banner {
+  --welcome-bg: #6CACFF;
+  color: #222;
+  --neon-box: 0 0 24px 8px #6cacffaa, 0 0 9px #8debff;
+  --neon-text: 0 0 10px #6cacff, 0 0 13px #8debff;
+}
+#slide9 .welcome-banner {
+  --welcome-bg: #A16BFE;
+  --neon-box: 0 0 32px 8px #a16bfe99, 0 0 12px #deb0df;
+  --neon-text: 0 0 14px #a16bfe, 0 0 19px #deb0df;
+}
+#slide10 .welcome-banner {
+  --welcome-bg: linear-gradient(90deg, #a16bfeb4, #bc3d2feb);
+  --neon-box: 0 0 36px 8px #bc3d2f, 0 0 13px #a16bfe;
+  --neon-text: 0 0 14px #bc3d2f, 0 0 19px #a16bfe;
+}
+
+/* 호버 시 텍스트 변화 */
+.welcome-banner[data-hovered="true"]::after {
+  content: 'Learn more';
+  color: #333;
+  font-size: 1.15em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  position: absolute;
+  left: 0; right: 0; top: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  z-index: 10;
+  animation: fadeinBanner 0.23s;
+  pointer-events: none;
+}
+.welcome-banner[data-hovered="true"] span {
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+@keyframes fadeinBanner {
+  from { opacity: 0; transform: translateY(10px);}
+  to { opacity: 1; transform: none;}
+}
+
+@media (max-width: 600px) {
+  .welcome-banner {
+    font-size: 0.98rem;
+    padding: 0.38em 1em;
+    min-width: 180px;
+    margin-top: 1.3em;
+  }
+}

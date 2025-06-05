@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oosu</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Do+Hyeon&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body>
+    <svg width="0" height="0" style="position:absolute; z-index:-1;">
+        <defs>
+          <filter id="classicWetInk">
+            <feTurbulence type="fractalNoise" baseFrequency="0.02 0.04" numOctaves="3" seed="1" result="noise"/>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" xChannelSelector="R" yChannelSelector="G" result="displaced"/>
+            <feGaussianBlur in="displaced" stdDeviation="2" result="blurred"/>
+          </filter>
+          <filter id="lightTextInk">
+            <feTurbulence type="fractalNoise" 
+                          baseFrequency="0.04 0.08" numOctaves="2"            seed="3"                  result="lightNoise"/>
+            <feDisplacementMap in="SourceGraphic" 
+                               in2="lightNoise" 
+                               scale="5"             xChannelSelector="R" 
+                               yChannelSelector="G" 
+                               result="lightDisplaced"/>
+            <feGaussianBlur in="lightDisplaced" 
+                            stdDeviation="0.8"      result="lightBlurred"/>
+          </filter>
+          <filter id="inkParticleSurface">
+            <feTurbulence type="fractalNoise" 
+                          baseFrequency="0.15 0.3"  
+                          numOctaves="2"            
+                          seed="2"                  
+                          result="particleNoise"/>
+            <feDisplacementMap in="SourceGraphic" 
+                               in2="particleNoise" 
+                               scale="4"             
+                               xChannelSelector="R" 
+                               yChannelSelector="G" 
+                               result="particleDisplaced"/>
+            <feGaussianBlur in="particleDisplaced" 
+                            stdDeviation="0.7"      
+                            result="particleBlurred"/>
+          </filter>
+          <filter id="inkSpreadEffectFilter">
+            <feTurbulence type="fractalNoise" 
+                          baseFrequency="0.05 0.1" numOctaves="2" 
+                          seed="6" result="spreadNoise"/>
+            <feDisplacementMap in="SourceGraphic" 
+                               in2="spreadNoise" 
+                               scale="6" xChannelSelector="R" 
+                               yChannelSelector="G" 
+                               result="spreadDisplaced"/>
+            <feGaussianBlur in="spreadDisplaced" 
+                            stdDeviation="1.5" result="spreadBlurred"/>
+          </filter>
+        </defs>
+      </svg>
+
+    <div id="preloader">
+        <div class="loading-text" id="loadingText">Oosu</div>
+    </div>
+      
+    <div class="slider-container" style="display:none">
+        <div class="slide" id="slide1">
+            <div class="slide-content">
+                <h1 class="slide-title font-anton">OH. SO. GOOD</h1>
+                <a href="portfolio/portfolio.html?from=index" class="welcome-banner-link">
+                    <div class="welcome-banner"><span>Welcome to my playground</span></div>
+                </a>
+            </div>
+        </div>
+        <div class="slide" id="slide2">
+            <div class="slide-content">
+                <h1 class="slide-title font-anton">OOSU HADA</h1>
+                <a href="portfolio/portfolio.html?from=index" class="welcome-banner-link">
+                    <div class="welcome-banner"><span>Welcome to my playground</span></div>
+                </a>
+            </div>
+        </div>
+        <div class="slide" id="slide3">
+            <div class="slide-content">
+                <h1 class="slide-title font-dohyeon">우수하다</h1>
+                <a href="portfolio/portfolio.html?from=index" class="welcome-banner-link">
+                    <div class="welcome-banner"><span>Welcome to my playground</span></div>
+                </a>
+            </div>
+        </div>
+        <div class="slide" id="slide4">
+            <div class="slide-content">
+                <h1 class="slide-title font-hiragino">佑守</h1>
+                <a href="portfolio/portfolio.html?from=index" class="welcome-banner-link">
+                    <div class="welcome-banner"><span>Welcome to my playground</span></div>
+                </a>
+            </div>
+        </div>
+        <div class="slide" id="slide5">
+            <div class="slide-content">
+                <h1 class="slide-title font-hiragino">優秀</h1>
+                <a href="portfolio/portfolio.html?from=index" class="welcome-banner-link">
+                    <div class="welcome-banner"><span>Welcome to my playground</span></div>
+                </a>
+            </div>
+        </div>
+        <div class="slide" id="slide6">
+            <div class="slide-content">
+                <h1 class="slide-title font-hiragino">憂愁</h1>
+                <a href="portfolio/portfolio.html?from=index" class="welcome-banner-link">
+                    <div class="welcome-banner"><span>Welcome to my playground</span></div>
+                </a>
+            </div>
+        </div>
+        <div class="slide" id="slide7">
+            <div class="slide-content">
+                <h1 class="slide-title font-anton">OH. SO.</h1>
+                <a href="portfolio/portfolio.html?from=index" class="welcome-banner-link">
+                    <div class="welcome-banner"><span>Welcome to my playground</span></div>
+                </a>
+            </div>
+        </div>
+        <div class="slide" id="slide8">
+            <div class="slide-content">
+                <h1 class="slide-title font-anton">OOSU</h1>
+                <a href="portfolio/portfolio.html?from=index" class="welcome-banner-link">
+                    <div class="welcome-banner"><span>Welcome to my playground</span></div>
+                </a>
+            </div>
+        </div>
+        <div class="slide" id="slide9">
+            <div class="slide-content">
+                <h1 class="slide-title font-dohyeon">우수</h1>
+                <a href="portfolio/portfolio.html?from=index" class="welcome-banner-link">
+                    <div class="welcome-banner"><span>Welcome to my playground</span></div>
+                </a>
+            </div>
+        </div>
+        <div class="slide" id="slide10">
+            <div class="slide-content">
+                <h1 class="slide-title font-anton">YÒU SHǑU</h1>
+                <a href="portfolio/portfolio.html?from=index" class="welcome-banner-link">
+                    <div class="welcome-banner"><span>Welcome to my playground</span></div>
+                </a>
+            </div>
+        </div>
+        <button class="nav-button prev" id="prevBtn">&#10094;</button>
+        <button class="nav-button next" id="nextBtn">&#10095;</button>
+        
+        <div class="page-indicator">
+            <span id="currentPage">1</span> / <span id="totalPages">10</span>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1000, initial-scale=1.0" />
+  <title>About | Oosu Portfolio</title>
+  <link rel="icon" type="image/png" href="apple-touch-icon.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+  <!-- (공통 CSS) -->
+  <link rel="stylesheet" href="about-hero.css" />
+  <link rel="stylesheet" href="about-main.css" />
+  <link rel="stylesheet" href="about-skills.css" />
+  <link rel="stylesheet" href="about-values.css" />
+  <link rel="stylesheet" href="about-process.css" />
+  <link rel="stylesheet" href="about-funfacts.css" />
+  <link rel="stylesheet" href="../common/common.css" />
+
+  <!-- (폰트/아이콘) -->
+  <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+
+  <!-- (애니메이션/플러그인) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+</head>
+<body>
+  <!-- 헤더: 페이지 내에 직접 위치 -->
+  <header class="nav-header" aria-label="Site">
+    <nav class="nav-menu nav-center">
+      <a href="../portfolio/portfolio.html" data-nav="portfolio">✧ portfolio</a>
+      <a href="../about/about.html" data-nav="about">? about</a>
+      <a href="../experience/experience.html" data-nav="experience">⌗ experience</a>
+      <a href="../hobby/hobby.html" data-nav="hobby">: hobby</a>
+      <a href="../connect/connect.html" data-nav="connect">⌲ connect</a>
+    </nav>
+  </header>
+
+  <main class="about-main">
+    <section class="about-hero">
+      <div class="about-purpose">
+        <h1 class="about-purpose-title">
+          <span class="purpose-section section1">MY PURPOSE</span><br>
+          <span class="purpose-section section1">RESULTS FROM</span><br>
+          <span class="purpose-section section2">INTERSECTING</span><br>
+          <span class="purpose-section section2">WHAT I LOVE,</span><br>
+          <span class="purpose-section section3">WHAT I'M GOOD AT</span><br>
+          <span class="purpose-section section4">AND WHAT THE</span><br>
+          <span class="purpose-section section4">WORLD NEEDS,</span><br>
+          <span class="purpose-section section5">WHICH LED ME</span><br>
+          <span class="purpose-section section5">TO YOU.</span>
+        </h1>
+      </div>
+      <div class="about-divider">
+        <div class="about-divider-hitzone"></div>
+        <span class="drag-icon left" id="icon-left"><i class="fa-regular fa-hand-point-left"></i></span>
+        <span class="drag-icon right" id="icon-right"><i class="fa-regular fa-hand-point-right"></i></span>
+      </div>      
+      <div class="about-profile">
+        <div class="about-profile-photo">
+          <img src="profile.png" alt="Profile Photo" />
+        </div>
+        <div class="about-profile-desc">
+          <p><b>Hi, I'm Oosu.</b></p>
+          <p>In Korean, my name "Oosu" carries multiple meanings: 
+            <br><b>to help and to guard (佑守),<br>
+            to be excellent (優秀),<br>
+            and to feel deeply (憂愁).</b>
+          </p>
+          <p>
+            These meanings reflect how I approach design —<br>
+            <b>with purpose, excellency, and empathy.</b>
+          </p>
+          <p>
+            With a background in data analysis, frontend development, and entrepreneurship, I create elegant, human-centered digital experiences that balance aesthetics with usability, while always keeping the bigger picture in sight.
+          </p>
+        </div>
+      </div>
+    </section>
+    
+    <div class="about-section-gap"></div>
+    <section class="about-skills">
+      <h2 class="section-title">MY SKILLSET FOR OUR COLLABORATION</h2>
+      <div class="about-skills-carousel horizontal-layout" id="about-skills-carousel">
+        <div class="about-skills-cols" id="skills-sortable">
+    
+          <!-- STRENGTHS -->
+          <div class="skill-card" tabindex="0">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <div class="skill-header">
+                  <div class="skill-icon"><i class="fas fa-lightbulb"></i></div>
+                  <h3>STRENGTHS</h3>
+                </div>
+                <ul>
+                  <li>Creative intuition</li>
+                  <li>Fast learning</li>
+                  <li>Cross-functional communication</li>
+                  <li>Designing within constraints</li>
+                  <li>Collaboration with engineers, PMs, and users</li>
+                </ul>
+              </div>
+              <div class="flip-card-back">
+                <div class="skill-header">
+                  <div class="skill-icon"><i class="fas fa-lightbulb"></i></div>
+                  <h3>STRENGTHS</h3>
+                </div>
+                <ul class="icon-list only-icon-list">
+                  <li><i class="fas fa-brain" title="Creative intuition"></i></li>
+                  <li><i class="fas fa-bolt" title="Fast learning"></i></li>
+                  <li><i class="fas fa-comments" title="Cross-functional communication"></i></li>
+                  <li><i class="fas fa-compress-arrows-alt" title="Designing within constraints"></i></li>
+                  <li><i class="fas fa-users" title="Collaboration"></i></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+    
+          <!-- UX/UI & PRODUCT DESIGN -->
+          <div class="skill-card" tabindex="0">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <div class="skill-header">
+                  <div class="skill-icon"><i class="fas fa-paint-brush"></i></div>
+                  <h3>UX/UI & PRODUCT DESIGN</h3>
+                </div>
+                <ul>
+                  <li>Wireframing</li>
+                  <li>User Flow</li>
+                  <li>Prototyping</li>
+                  <li>Responsive Web</li>
+                  <li>Mobile App Design</li>
+                  <li>Design Systems</li>
+                </ul>
+              </div>
+              <div class="flip-card-back">
+                <div class="skill-header">
+                  <div class="skill-icon"><i class="fas fa-paint-brush"></i></div>
+                  <h3>UX/UI & PRODUCT DESIGN</h3>
+                </div>
+                <ul class="icon-list only-icon-list">
+                  <li><i class="fas fa-object-group" title="Wireframing"></i></li>
+                  <li><i class="fas fa-route" title="User Flow"></i></li>
+                  <li><i class="fas fa-play-circle" title="Prototyping"></i></li>
+                  <li><i class="fas fa-desktop" title="Responsive Web"></i></li>
+                  <li><i class="fas fa-mobile-alt" title="Mobile App Design"></i></li>
+                  <li><i class="fas fa-cubes" title="Design Systems"></i></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+    
+          <!-- FRONTEND DEVELOPMENT -->
+          <div class="skill-card" tabindex="0">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <div class="skill-header">
+                  <div class="skill-icon"><i class="fas fa-code"></i></div>
+                  <h3>FRONTEND DEVELOPMENT</h3>
+                </div>
+                <ul>
+                  <li>Flutter</li>
+                  <li>HTML/CSS</li>
+                  <li>JavaScript</li>
+                  <li>Firebase</li>
+                </ul>
+              </div>
+              <div class="flip-card-back">
+                <div class="skill-header">
+                  <div class="skill-icon"><i class="fas fa-code"></i></div>
+                  <h3>FRONTEND DEVELOPMENT</h3>
+                </div>
+                <ul class="icon-list only-icon-list">
+                  <li><i class="fab fa-flutter" title="Flutter"></i></li>
+                  <li><i class="fab fa-html5" title="HTML/CSS"></i></li>
+                  <li><i class="fab fa-js-square" title="JavaScript"></i></li>
+                  <li><i class="fas fa-database" title="Firebase"></i></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+    
+          <!-- TOOLS & SYSTEMS -->
+          <div class="skill-card" tabindex="0">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <div class="skill-header">
+                  <div class="skill-icon"><i class="fas fa-tools"></i></div>
+                  <h3>TOOLS & SYSTEMS</h3>
+                </div>
+                <ul>
+                  <li>Figma</li>
+                  <li>Adobe CC</li>
+                  <li>Python</li>
+                  <li>Notion</li>
+                </ul>
+              </div>
+              <div class="flip-card-back">
+                <div class="skill-header">
+                  <div class="skill-icon"><i class="fas fa-tools"></i></div>
+                  <h3>TOOLS & SYSTEMS</h3>
+                </div>
+                <ul class="icon-list only-icon-list">
+                  <li><i class="fab fa-figma" title="Figma"></i></li>
+                  <li><i class="fab fa-adobe" title="Adobe CC"></i></li>
+                  <li><i class="fab fa-python" title="Python"></i></li>
+                  <li><i class="fas fa-sticky-note" title="Notion"></i></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+    
+        </div>
+      </div>
+    </section>
+    
+    <div class="about-section-gap2"></div>
+    <section class="about-values">
+      <h2 class="section-title">MY VALUES</h2>
+      <div class="about-values-cols">
+        <div class="value-card">
+          <div class="value-icon"><i class="fas fa-heart"></i></div>
+          <h3>EMPATHY OVER AESTHETICS</h3>
+          <p>Design is not just about how things look - it's about how they work and how they feel.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon"><i class="fas fa-globe"></i></div>
+          <h3>BIG-PICTURE THINKING</h3>
+          <p>From system logic to final pixels, I strive to understand the full design ecosystem.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon"><i class="fas fa-rocket"></i></div>
+          <h3>CONTINUOUS GROWTH</h3>
+          <p>I learn fast, try often, and embrace feedback as fuel for growth.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon"><i class="fas fa-check"></i></div>
+          <h3>DESIGN WITH CONVICTION</h3>
+          <p>I put users first and solve actual problems, not just make things pretty.</p>
+        </div>
+      </div>
+
+    </section>
+    <div class="about-section-gap2"></div>
+    <section class="about-process">
+      <h2 class="section-title">
+        MY ADAPTABLE PROCESS
+      </h2>
+      <div class="process-visual">
+        <svg id="process-svg" width="1000" height="390" viewBox="0 0 980 390">
+          <defs>
+            <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#888;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#ff8e8e;stop-opacity:1" />
+            </linearGradient>
+            <marker id="arrowhead" markerWidth="7" markerHeight="4" refX="3" refY="2" orient="auto" markerUnits="strokeWidth">
+              <polygon points="0,0 0,4 5,2" fill="#888"/>
+            </marker>
+          </defs>
+          <!-- 타원 곡선 경로: 더 부드러운 형태 (y값 +15) -->
+          <path d="M541 62C643.535 62 730.202 81.3333 801 120"
+                stroke="url(#processGradient)" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+          <path d="M820 206C820 253.952 730 289.286 550 312"
+                stroke="url(#processGradient)" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+          <path d="M440 320C338.182 320 258.182 300 200 260"
+                stroke="url(#processGradient)" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+          <path d="M179 172C179 125.44 262.333 90.7737 429 68"
+                stroke="url(#processGradient)" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+          <!-- 단계 원 (circle) y값 +15 -->
+          <circle class="step-circle" cx="490" cy="68" r="35"/>
+          <circle class="step-circle" cx="845" cy="147" r="35"/>
+          <circle class="step-circle" cx="490" cy="312" r="35"/>
+          <circle class="step-circle" cx="160" cy="230" r="35"/>
+          <!-- 단계 번호 (중앙 정렬, y값 +15) -->
+          <text x="490" y="75" text-anchor="middle" font-size="1.5rem" font-weight="bold" fill="#333">1</text>
+          <text x="845" y="154" text-anchor="middle" font-size="1.5rem" font-weight="bold" fill="#333">2</text>
+          <text x="490" y="319" text-anchor="middle" font-size="1.5rem" font-weight="bold" fill="#333">3</text>
+          <text x="160" y="237" text-anchor="middle" font-size="1.5rem" font-weight="bold" fill="#333">4</text>
+          <!-- 단계 라벨 (원 외부, 각 위치, y값 +15) -->
+          <text x="490" y="21" text-anchor="middle" font-size="1.2rem" font-weight="700" fill="#333">DISCOVER</text>
+          <text x="892" y="152" text-anchor="start" font-size="1.2rem" font-weight="700" fill="#333">DEFINE</text>
+          <text x="490" y="375" text-anchor="middle" font-size="1.2rem" font-weight="700" fill="#333">TEST & DESIGN</text>
+          <text x="102" y="235" text-anchor="end" font-size="1.2rem" font-weight="700" fill="#333">IMPLEMENT</text>
+        </svg>
+      </div>
+      
+      <div class="about-process-cols">
+        <!-- DISCOVER -->
+        <div class="process-card" tabindex="0">
+          <!-- <div class="process-icon"><i class="fas fa-search"></i></div> -->
+          <h3>DISCOVER – Research Insights</h3>
+          <div class="card-divider"></div>
+          <div class="process-body">
+            Define the problem, map user needs, research context.<br>
+          </div>
+        </div>
+        <!-- DEFINE -->
+        <div class="process-card" tabindex="0">
+          <!-- <div class="process-icon"><i class="fas fa-map-signs"></i></div> -->
+          <h3>DEFINE – Solution Framing</h3>
+          <div class="card-divider"></div>
+          <div class="process-body">
+            Structure the solution with flows, wireframes, and clear goals.<br>
+          </div>
+        </div>
+        <!-- DESIGN -->
+        <div class="process-card" tabindex="0">
+          <!-- <div class="process-icon"><i class="fas fa-pen-nib"></i></div> -->
+          <h3>DESIGN – Interface Creation</h3>
+          <div class="card-divider"></div>
+          <div class="process-body">
+            Craft intuitive, elegant interfaces grounded in human behavior.<br>
+          </div>
+        </div>
+        <!-- DELIVER -->
+        <div class="process-card" tabindex="0">
+          <!-- <div class="process-icon"><i class="fas fa-paper-plane"></i></div> -->
+          <h3>DELIVER – Launch & Iterate</h3>
+          <div class="card-divider"></div>
+          <div class="process-body">
+            Build, prototype, and refine through feedback and iteration.<br>
+          </div>
+        </div>
+      </div>      
+    </section>
+    
+    <div class="about-section-gap2"></div>
+    <section class="about-funfacts">
+  <h2 class="section-title">
+    AND NOW SOME FUN FACTS ABOUT MYSELF
+  </h2>
+  <div class="about-funfacts-cols">
+    <div class="funfact-card">
+      <i class="fas fa-seedling fact-icon"></i>
+      <h3>Name-Guided Path</h3>
+      <p>I'm a believer in old wisdoms, especially the idea that we grow into our names. Mine certainly guided me to where I am today.</p>
+    </div>
+    <div class="funfact-card">
+      <i class="fas fa-certificate fact-icon"></i>
+      <h3>Certified Sensory Player</h3>
+      <p>I'm certified in aroma candle-making, perfumery, and wine sommelier – all about crafting sensory experiences. I bring that same approach to digital experiences.</p>
+    </div>
+    <div class="funfact-card">
+      <i class="fas fa-music fact-icon"></i>
+      <h3>Piano Precision Mindset</h3>
+      <p>My parents got rid of my piano so I wouldn't become a pianist. Still, that precision and obsession with detail now shape my design process.</p>
+    </div>
+    <div class="funfact-card">
+      <i class="fas fa-wine-glass fact-icon"></i>
+      <h3>Holistic Experience Design</h3>
+      <p>I used to run a wine bar. Branding, service, and sensory experience, all designed by me. It taught me design isn't just visual – it's holistic.</p>
+    </div>
+    <div class="funfact-card">
+      <i class="fas fa-compass fact-icon"></i>
+      <h3>Curiosity-Driven Journey</h3>
+      <p>I've moved across fashion, data, wine, and design fields – chasing curiosity, but always grounded in understanding people and crafting better experiences for them.</p>
+    </div>
+    <div class="funfact-card">
+      <i class="fas fa-trophy fact-icon"></i>
+      <h3>Resilient Creative Journey</h3>
+      <p>I got bullied after I ranked #1 in art class among the boys. That pushed me away from art for a while. But in the long run, the detour gave me broader life experience – so no hard feelings.</p>
+    </div>
+  </div>
+</section>
+
+  </main>
+
+  <footer class="footer-fixed">
+    <div class="footer-row">
+      <div class="footer-content">
+        <p>You've hit the footer,<br>thanks for stopping by.<br>Still curious?<br>→ <a href="mailto:oosu.salon@gmail.com">oosu.salon@gmail.com</a></p>
+        <span class="footer-copyright">© Oosu Jang 2025</span>
+      </div>
+      <img src="../footer.png" alt="Footer Image" class="footer-image">
+    </div>
+  </footer>
+  <!-- (공통/섹션별 JS 연결) -->
+  <script src="../common/common.js"></script>
+  <script src="about-hero.js"></script>
+  <script src="about-main.js"></script>
+  <script src="about-skills.js"></script>
+  <script src="about-values.js"></script>
+  <script src="about-process.js"></script>
+  <script src="about-funfacts.js"></script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+/* ======================= FUN FACTS (and Common Card) SECTION ======================= */
+.about-funfacts-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: 1rem;
+}
+@media (max-width: 520px) {
+  .about-funfacts-cols {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+}
+
+/* ---------- 카드 기본 스타일: 차가운 한지 질감 적용 ---------- */
+.funfact-card {
+  /* 기존 background 대신 더 차갑고 밝은 미색 한지 */
+  background: #F8F8F4; /* 밝고 살짝 차가운 미색 */
+  border-radius: 0.8rem;
+  padding: 2rem;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.05);
+  color: var(--gray-dark);
+  position: relative;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column; /* 기존 유지: 내부 요소들은 여전히 세로 정렬 */
+  align-items: flex-start;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    box-shadow 0.4s ease-out,
+    transform 0.35s cubic-bezier(.23,1.12,.67,1.08),
+    border-radius 0.4s ease-out;
+
+  /* 한지 질감 오버레이 - 색상 조정 */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    /* 배경 SVG의 fill 색상 조정 */
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" result="noise" /><feColorMatrix type="saturate" values="0" /><feBlend in="SourceGraphic" in2="noise" mode="multiply" /></filter><rect width="100" height="100" fill="%23f8f8f4" filter="url(%23noise)" /></svg>') repeat;
+    opacity: 0.7;
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+/* ---------- Hover 시 약간 강조 ---------- */
+.funfact-card:hover {
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12), 0 3px 12px rgba(0,0,0,0.08);
+  transform: translateY(-3px);
+  background: #FDFDF7; /* 호버 시 더 밝게 */
+}
+
+/* ---------- 잉크 번짐 효과 (.ink-splash) ---------- */
+.funfact-card .ink-splash-container {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  overflow: hidden; /* 카드의 overflow hidden에 맞춤 */
+  z-index: 2;
+  filter: url(#wetInkFilter);
+}
+
+.ink-blot-drop {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background-color: rgba(30, 30, 30, 0.7); /* 먹물 색상, 투명도 약간 높임 */
+  opacity: 0;
+  transform: scale(0.1);
+  animation: ink-blot-animation 0.9s cubic-bezier(0.3, 0.0, 0.7, 1.0) forwards; /* 애니메이션 커브 변경, 속도 약간 빠르게 */
+  pointer-events: none;
+}
+
+@keyframes ink-blot-animation {
+  0% { opacity: 0; transform: scale(0.1); }
+  10% { opacity: 0.9; transform: scale(0.6); } /* 초기 번짐 강하게 */
+  50% { opacity: 0.7; transform: scale(1.1); }
+  100% { opacity: 0; transform: scale(1.4); } /* 더 크게 퍼지면서 사라짐 */
+}
+
+/* ---------- 아이콘, 제목, 텍스트 ---------- */
+.fact-header {
+  display: flex; /* 아이콘과 제목을 한 줄에 */
+  align-items: center; /* 세로 중앙 정렬 */
+  margin-bottom: 1rem; /* 제목-본문 간격 유지 */
+  position: relative;
+  z-index: 3;
+  width: 100%; /* 부모에 꽉 차게 */
+}
+
+.fact-icon {
+  font-size: 2.2rem;
+  margin-right: 0.8rem; /* 아이콘과 제목 사이 간격 */
+  color: #555;
+}
+
+.funfact-card h3 {
+  font-family: 'Noto Serif TC', 'LXGW WenKai TC', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #333;
+  margin: 0; /* flex 컨테이너 내부이므로 margin 초기화 */
+}
+
+.funfact-card p {
+  font-family: 'Pretendard', sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #666;
+  position: relative;
+  z-index: 3;
+  /* span들이 줄바꿈 없이 이어지도록 */
+  white-space: normal; /* 기본값 유지, span의 display 속성 제어는 HTML에 직접 */
+  word-break: keep-all; /* 단어가 잘리지 않도록 */
+  hyphens: auto; /* 필요 시 하이픈 처리 */
+}
+
+/* 텍스트가 나타날 때의 초기 상태 */
+.fact-text-content {
+  opacity: 0; /* 초기에는 숨김 */
+  transform: translateY(10px); /* 살짝 아래에서 시작 */
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  position: relative;
+  z-index: 3;
+}
+
+/* reveal 상태일 때 */
+.funfact-card.is-revealed .fact-text-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hidden {
+  display: none !important;
+}
+
+.click-me-msg {
+  color: #555;
+  opacity: 0.7;
+  letter-spacing: 0.02em;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 1.5rem;
+  margin-bottom: 0.2rem;
+  width: 100%;
+  text-align: right;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.3s;
+  position: relative;
+  z-index: 3;
+}
+
+/* 미디어 쿼리(모바일 1열)는 그대로 유지 */
+@media (max-width: 520px) {
+  .about-funfacts-cols {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+}

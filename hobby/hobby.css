@@ -1,0 +1,311 @@
+/* === Background Slideshow CSS === */
+#background-slideshow {
+  position: absolute; /* 변경: fixed -> absolute */
+  top: 0;             /* 초기 top 값. JS가 스크롤에 따라 이 값을 변경합니다. */
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -10;       /* 다른 콘텐츠 뒤에 있도록 보장 */
+  /* overflow: hidden; */ /* 내부 이미지가 테두리를 넘지 않도록 하려면 주석 해제 */
+  /* transition: top 0.22s cubic-bezier(.24,.88,.47,1.09); */ /* 삭제: JS가 top을 직접 제어하므로 CSS transition은 방해가 될 수 있음 */
+  background-color: #000; /* Optional: fallback background color */
+}
+
+#background-slideshow img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 영역을 채우도록, 필요시 잘라냄 */
+  opacity: 0;       /* 초기에는 숨김, GSAP가 제어 */
+}
+
+/* === 헤더 숨김 === */
+.nav-header {
+  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.22s;
+  will-change: transform, opacity;
+}
+.nav-header.hide {
+  transform: translateY(-110%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nav-menu.nav-center {
+  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.22s;
+  will-change: transform, opacity;
+}
+.nav-menu.nav-center.hide {
+  transform: translateY(-110%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+#top-sentinel {
+  height: 1px;
+  width: 100%;
+  pointer-events: none;
+}
+
+/* === 기본 세팅 === */
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  font-family: 'Pretendard', 'Do Hyeon', sans-serif;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100vh;
+  position: relative;
+}
+
+/* === 프리로더 === */
+#preloader {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: #fff; z-index: 10000;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.8s ease;
+}
+.preloader-content { text-align: center; }
+.loader {
+  width: 40px; height: 40px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* --- Hero 영역 --- */
+.carousel-hero {
+  position: absolute;
+  top: 160px; 
+  left: 0;
+  width: 100vw;   /* 슬라이더 폭에 맞게 */
+  z-index: 900;
+  text-align: center;
+}
+.big-hero-desc {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #4a4a4a;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  margin-bottom: 1.8rem;
+}
+.carousel-category-jump {
+  display: flex;
+  gap: 1.7rem;
+  justify-content: center;
+  margin-bottom: 0.2rem;
+}
+.category-jump-btn {
+  width: 2.5rem; height: 2.5rem;
+  border-radius: 50%;
+  border: none;
+  background: #fff;
+  font-size: 1.65rem;
+  cursor: pointer;
+  box-shadow: 0 2px 18px #ffd16644;
+  transition: background 0.18s, color 0.16s, transform 0.14s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.category-jump-btn:hover, .category-jump-btn.active {
+  background: #ffd166;
+  color: #24243e;
+  transform: scale(1.12);
+}
+
+/* === 메인 === */
+.carousel-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 90vh;
+  justify-content: flex-end;
+  /* padding-bottom: 3vh; */
+}
+.carousel {
+  position: relative;
+  width: 98vw;
+  height: 340px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: auto;
+  z-index: 1;
+}
+.poster {
+  opacity: 0;
+  width: 200px;
+  height: 280px;
+  margin: 0 -50px;
+  background: #eee;
+  /* border-radius: 7px; */
+  color: #fff;
+  font-size: 2.1rem;
+  font-family: 'Georgia', serif;
+  font-weight: bold;
+  box-shadow: 0 8px 32px #0002, 0 2px 12px #0001;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding: 2.5rem 1.3rem 1.2rem 1.5rem;
+  cursor: pointer;
+  transition: box-shadow 0.18s;
+  user-select: none;
+  position: absolute;
+  top: 50px;
+  will-change: transform;
+}
+.poster:hover {
+  box-shadow: 0 16px 38px #2225, 0 3px 14px #0001;
+}
+.poster-creative {
+  background: #00A181 !important;
+  color: #fff;
+}
+.poster-sensory {
+  background: #FFAA2B !important;
+  color: #fff;
+}
+.poster-sports {
+  background: #8BBAE6 !important;
+  color: #fff;
+}
+.poster-writing {
+  background: #FFA4D3 !important;
+  color: #fff;
+}
+
+.carousel-labels {
+  pointer-events: none;
+  width: 100vw;
+  text-align: center;
+  height: 0em;
+  margin-top: 20px;
+  position: relative;
+}
+.carousel-labels .label {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  color: #c1c1c1;
+  font-size: 1.05em;
+  font-family: 'Georgia', serif;
+  opacity: 0.7;
+  transform-origin: bottom center;
+  pointer-events: none;
+}
+
+.footer {
+  text-align: center;
+  color: #222;
+  font-size: 1.08rem;
+  margin: 2.2rem 0 1.1rem 0;
+}
+
+/* ======= Modal (통합버전) ======= */
+#card-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-bg {
+  position: fixed; /* 기존 absolute → fixed */
+  left: 0; top: 0; width: 100vw; height: 100vh;
+  background: #282828; /* 딥블랙 배경 */
+  z-index: 999;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: background 0.5s, opacity 0.5s;
+}
+.modal-bg.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-card {
+  width: 340px;
+  height: 480px;
+  background: #fff;
+  border-radius: 32px;
+  box-shadow: 0 8px 38px #1118;
+  transform: scale(0.7);
+  opacity: 0;
+  transition: transform 0.65s cubic-bezier(.76,0,.24,1), opacity 0.4s;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  font-size: 2.1rem;
+  font-family: 'Georgia', serif;
+  font-weight: bold;
+  padding: 2.5rem 1.5rem 1.2rem 1.5rem;
+  color: #222;
+  position: relative;
+  will-change: transform, opacity;
+}
+.modal-bg.active .modal-card {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.modal-x {
+  font-family: Arial, sans-serif;
+  position: absolute;
+  right: 56px;
+  top: 54px;
+  font-size: 2.8rem;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: color 0.2s, transform 0.4s, opacity 0.3s;
+  z-index: 10;
+}
+.modal-x:hover { color: #ffe1e1; opacity: 1; }
+
+.modal-bg.zoom-out {
+  animation: zoomOutModal 0.45s cubic-bezier(.68,-0.55,.27,1.55) forwards;
+}
+@keyframes zoomOutModal {
+  0% { opacity: 1; transform: scale(1);}
+  100% { opacity: 0; transform: scale(0.4);}
+}
+
+/* Spacer DIV between main content and the standard footer on the hobby page */
+.footer-spacer-hobby {
+  height: 250px; /* Adjust this value to increase or decrease the empty space */
+  width: 100%;   /* Ensures it occupies the full width */
+}
+
+/* Increase the height and adjust padding for the hobby page's standard footer */
+#hobbyPageStandardFooter {
+  min-height: 350px; 
+  padding-top: 3rem;    
+  padding-bottom: 4rem; 
+}
+
+/* Optional: If you want to ensure the content within the footer (text and image)
+   is vertically centered or aligned differently in the taller footer.
+   The default from common.css for .footer-row is align-items: flex-end; */
+#hobbyPageStandardFooter .footer-row {
+  /* align-items: center; */ /* Example: to vertically center items in the footer row */
+}

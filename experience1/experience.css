@@ -1,0 +1,674 @@
+:root {
+  --main-pink: #FFA4D3;
+  --gray-main: #222;
+  --gray-sub: #444;
+  --gray-border: #e1e1e1;
+  --gray-bg: #fafafb;
+  --gray-card: #fff;
+  --gray-dot: #bbb;
+  --gray-tag: #f0f0f0;
+  --gray-tag-hover: #bbb;
+}
+
+#top-sentinel {
+  height: 1px;
+  width: 100%;
+  pointer-events: none;
+}
+
+.nav-header.experience-header-hidden-override {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: translateY(-100%) !important;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0.3s ease-in-out !important;
+}
+
+/* ====================== Hero 영역 ====================== */
+.hero-section-winery {
+  position: relative;
+  width: 100%;
+  height: 60vh; /* 또는 원하는 초기 높이 */
+  min-height: 600px;
+  display: flex; /* 내부 .hero-content 중앙 정렬용 */
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-winery-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  will-change: transform;
+  transition: transform 2.5s cubic-bezier(.25,1,.5,1);
+  z-index: 1;
+  /* Flexbox로 내부 비디오와 클릭 캐처를 중앙 정렬하고 꽉 채움 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-winery-bg video#heroVideo {
+  position: absolute; /* .hero-winery-bg를 기준으로 절대 위치 */
+  top: 0;
+  left: 0;
+  width: 100%; /* 부모(.hero-winery-bg) 크기에 맞춤 */
+  height: 100%; /* 부모(.hero-winery-bg) 크기에 맞춤 */
+  object-fit: cover; /* 비율 유지하며 꽉 채움 */
+  z-index: 1; /* 클릭 캐처보다 아래에 있도록 명시 (선택 사항) */
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10; /* 스크롤 버튼 등이 최상단에 오도록 */
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.scroll-down-btn {
+  position: absolute;
+  bottom: 20px;
+  color: #fff;
+  font-size: 2rem;
+  z-index: 10;
+  cursor: pointer;
+  animation: bounce 2s infinite;
+  padding: 10px 14px;
+  border-radius: 50%;
+  background-color: rgba(0,0,0,0.2);
+  transition: background-color 0.3s, opacity 0.3s, visibility 0.3s;
+  opacity: 0;
+  visibility: hidden;
+}
+.scroll-down-btn:hover { background-color: rgba(0,0,0,0.4); }
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+.experience-content-wrapper {
+  position: relative;
+  z-index: 3; /* Ensure this is above hero when scrolled, but timeline-outer z-index can be managed separately */
+  /* background: #fff; */ /* Removed, as timeline-outer will have its own background */
+}
+
+.video-speed-badge {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  background: rgba(0,0,0,0.82);
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 12px;
+  font-size: 2rem;
+  font-weight: bold;
+  z-index: 99999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s cubic-bezier(.6,2.1,.3,1), transform 0.45s cubic-bezier(.17,.67,.83,.67);
+}
+.video-speed-badge.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.06);
+}
+.video-speed-badge.hide {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.96);
+}
+
+/* ====================== 메인 영역 ====================== */
+.experience-main {
+  margin-top: 6.5rem;
+  margin-bottom: 8rem;
+  max-width: 1040px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 3vw;
+}
+
+.section-top-gap { height: 4.5rem; }
+.section-gap { margin-top: 7.5rem; }
+.section-bottom-gap { height: 7rem; }
+
+@media (max-width: 900px) {
+  .experience-main { max-width: 98vw; padding: 0 1vw; }
+  .section-gap { margin-top: 4.5rem; }
+}
+
+/* ====================== 메트릭 카드 (Not part of current refactor focus) ====================== */
+.exp-metrics {
+  display: flex;
+  justify-content: center;
+  gap: 1.8rem;
+  margin: 0 auto;
+  max-width: 950px;
+  width: 100%;
+}
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1 1 0;
+}
+.metric-card.in-view {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: opacity 0.9s cubic-bezier(.19,1,.22,1), transform 0.75s cubic-bezier(.19,1,.22,1);
+}
+.metric-card:hover { transform: translateY(-8px) scale(1.035); }
+.metric-value {
+  color: var(--gray-main);
+  font-size: 2.3rem;
+  font-weight: 800;
+  line-height: 1.0;
+  margin-bottom: 0.7rem;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+.metric-value span {
+  font-size: 1.13rem;
+  font-weight: 700;
+  color: #888;
+  letter-spacing: -0.01em;
+}
+.metric-desc {
+  color: #888;
+  font-size: 1.08rem;
+  font-weight: 600;
+  margin-top: 0.2rem;
+  text-align: center;
+}
+@media (max-width: 700px) {
+  .exp-metrics { flex-direction: column; gap: 1.1rem; }
+  .metric-card { min-width: 0; width: 100%; }
+}
+
+/* ====================== 좌우 배치 메인 ====================== */
+.experience-row-wrap {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  gap: 3vw;
+  max-width: 1080px;
+  margin: 0 auto;
+  background: var(--gray-bg); /* Added a subtle background for the content wrapper if needed, or remove if timeline-outer covers all */
+}
+
+/* ====================== 왼쪽: 포도 성장 타임라인 ====================== */
+.grape-visual-story-col {
+  flex: 0 0 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.8rem;
+  padding-right: 1.2vw;
+  position: sticky;
+  top: 6.5rem;
+  height: fit-content;
+  z-index: 3; /* Higher than timeline-outer to stay on top */
+}
+
+.vine-gauge-and-text-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+}
+
+#vineSideGauge {
+  width: 22px;
+  margin-right: 10px;
+  position: relative;
+}
+
+.vine-gauge-track-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.vine-gauge-stage-block {
+  width: 100%;
+  background-color: var(--gray-dot);
+  border-radius: 3px;
+  transition: background-color 0.2s ease-in-out, height 0.3s ease-out;
+  cursor: pointer;
+}
+
+.vine-gauge-thumb {
+  position: absolute;
+  width: 100%;
+  background-color: var(--main-pink);
+  border-radius: 3px;
+  transition: top 0.3s ease-out, height 0.3s ease-out, opacity 0.3s ease-out;
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+.fade-in-list {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.18rem;
+  gap: 0.22em;
+  flex-grow: 1;
+  width: 100%;
+}
+
+.fade-in-list > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #bbb;
+  opacity: 1;
+  font-weight: 500;
+  transform: translateY(16px);
+  transition:
+      color 0.35s cubic-bezier(.4,1,.5,1),
+      opacity 0.7s cubic-bezier(.4,1,.5,1),
+      transform 0.7s cubic-bezier(.4,1,.5,1);
+  cursor: pointer;
+}
+
+.fade-in-list > div span {
+  color: inherit !important;
+  font-weight: 600;
+  flex-grow: 1;
+  text-align: left;
+}
+
+.embedded-gauge-block {
+  width: 22px;
+  min-height: 16px;
+  background-color: var(--gray-dot);
+  border-radius: 3px;
+  transition: background-color 0.2s ease-in-out, height 0.3s ease-out;
+  flex-shrink: 0;
+}
+
+.fade-in-list > div.active .embedded-gauge-block {
+  background-color: var(--main-pink);
+}
+
+.fade-in-list > div.active span {
+  color: var(--main-pink, #FFA4D3) !important;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-shadow: 0 2px 6px #ffa4d34a;
+}
+
+.fade-in-list .grape-divider {
+  height: 1.2em;
+  border-bottom: 1.5px dashed #bbb;
+  margin: 0.8em 0 0.4em 0;
+  width: 80%;
+  opacity: 1;
+}
+
+.fade-in-list b {
+  color: inherit !important;
+  font-size: 1.13em;
+}
+
+.grape-story-img-area {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  margin-top: 1.8rem;
+}
+
+.grape-story-img-area img {
+  width: 98%;
+  max-width: unset;
+  min-width: 80px;
+  height: auto;
+  margin-top: 0.2em;
+}
+
+/* ====================== 오른쪽: 타임라인 영역 ====================== */
+.timeline-outer {
+  flex: 1 1 0;
+  min-width: 0;
+  z-index: 2; /* Below grape-visual-story-col if they overlap conceptually */
+  margin-top: 4.5rem;
+  margin-left: 0;
+  padding-left: 0.6rem; /* Existing padding */
+  position: relative; /* For background and pseudo-elements */
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* Parallax effect for background image */
+  transition: background-image 0.7s ease-in-out;
+  /* Add some padding to ensure content doesn't stick to edges if background is lighter */
+  padding-top: 2rem; /* Adjust as needed */
+  padding-bottom: 2rem; /* Adjust as needed */
+}
+
+/* Optional: Dark overlay on background for better text/card contrast if images are too bright */
+/* .timeline-outer::before {
+  content: "";
+  position: fixed; // Match background-attachment: fixed
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); // Adjust darkness
+  z-index: -1; // Behind content
+} */
+
+
+#education-section-header, #exp-section-header {
+  margin-top: 6rem;
+  padding-top: 6rem;
+  position: relative; /* To ensure they are above the timeline-outer's pseudo-elements if any */
+  z-index: 1;
+}
+
+.timeline-all {
+  position: relative;
+  z-index: 1; /* Ensure timeline rows are above the main background/overlay */
+}
+.timeline-all::before {
+  content: "";
+  position: absolute;
+  left: -2.1rem;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.5); /* Make line visible on various backgrounds */
+  border-radius: 2px;
+  z-index: 0; /* Behind timeline dots and cards */
+  box-shadow: 0 0 5px rgba(0,0,0,0.2); /* Optional shadow for the line */
+}
+
+.timeline-title {
+  font-weight: 800;
+  font-size: 1.14rem;
+  margin-bottom: 0.05em;
+  color: var(--gray-main); /* Ensure good contrast on glass card */
+  letter-spacing: -0.01em;
+}
+.company {
+  font-weight: 600;
+  font-size: 1.09rem;
+  color: var(--gray-sub); /* Ensure good contrast on glass card */
+  margin-bottom: 0.16em;
+}
+.timeline-date {
+  font-size: 1.00rem;
+  color: #777; /* Slightly darker for better readability on glass */
+  font-weight: 500;
+  font-style: italic;
+  margin-bottom: 0.13em;
+}
+.timeline-field {
+  font-size: 1.01rem;
+  color: #666; /* Slightly darker for better readability on glass */
+  margin-bottom: 0.9em;
+}
+.timeline-desc {
+  margin-top: 0.3em;
+  margin-bottom: 1.2em;
+  font-size: 1.07rem;
+  line-height: 1.85;
+  color: var(--gray-sub); /* Ensure good contrast on glass card */
+  letter-spacing: -0.01em;
+}
+
+.timeline-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+.exp-title.center,
+.exp-history-desc.center,
+.exp-edu-desc.center {
+  text-align: left;
+  margin-left: 0;
+  margin-right: auto;
+  /* Add text shadow for readability on dynamic background */
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+.exp-title.center h2, .exp-title.center .main-pink {
+   color: #fff !important; /* Make title pop more on dark/varied backgrounds */
+}
+.exp-title.center .main-pink {
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3), 0 0 10px var(--main-pink); /* Pink glow */
+}
+
+
+.main-pink {
+  color: var(--main-pink) !important;
+}
+.exp-history-desc .plain-strong, .exp-edu-desc .plain-strong, .exp-history-desc strong, .exp-edu-desc strong {
+  color: #f0f0f0 !important; /* Lighter color for strong text on dynamic background */
+  font-weight: 700;
+}
+.exp-history-desc span:not(.main-pink):not(strong), .exp-edu-desc span:not(.main-pink):not(strong) {
+  color: #e0e0e0 !important; /* Lighter color for normal text on dynamic background */
+}
+
+
+.exp-history-desc.center,
+.exp-edu-desc.center {
+  font-size: 1.10rem;
+  /* color: #414141; */ /* Base color updated above */
+  line-height: 1.72;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.timeline-row, .edu-row {
+  display: flex;
+  position: relative;
+  margin-bottom: 3.3rem;
+  min-height: 160px;
+  /* Glassmorphism styles */
+  background: rgba(255, 255, 255, 0.15); /* More subtle glass */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); /* Safari support */
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.17); /* Softer, more modern shadow */
+  padding: 1.8rem; /* Increased padding for better spacing in card */
+
+  opacity: 0.7; /* Keep existing inactive opacity */
+  transform: translateY(60px); /* Keep existing inactive transform */
+  transition: opacity 0.8s cubic-bezier(.12,1,.23,1), transform 0.8s cubic-bezier(.12,1,.23,1),
+              background 0.3s, backdrop-filter 0.3s, border 0.3s, box-shadow 0.3s; /* Added glass properties to transition */
+  cursor: pointer;
+  z-index: 1; /* Ensure cards are above timeline-all::before */
+}
+.timeline-row.in-view, .edu-row.in-view {
+  opacity: 1;
+  transform: translateY(0);
+  /* transition: all 0.72s cubic-bezier(.19,1,.22,1); */ /* Already covered by individual properties above */
+}
+.timeline-row.active, .edu-row.active {
+  opacity: 1.0;
+  background: rgba(255, 255, 255, 0.25); /* Slightly more prominent active card */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
+}
+
+.timeline-dot {
+  width: 22px;
+  height: 22px;
+  background-image: url('images/seed.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  position: absolute;
+  left: -2.75rem; /* Position relative to the timeline-row/edu-row */
+  top: 2.2rem; /* Adjust vertical alignment with new card padding */
+  z-index: 2; /* Above the timeline line and card background */
+  transition: box-shadow 0.19s, transform 0.25s ease-in-out;
+}
+.timeline-row.active .timeline-dot,
+.edu-row.active .timeline-dot {
+  transform: rotate(45deg) scale(1.15);
+  transition: transform 0.22s cubic-bezier(.19,1,.22,1);
+}
+.timeline-dot:hover {
+  transform: scale(1.25) !important;
+  z-index: 3; /* Ensure hover is on top */
+  box-shadow: 0 0 0 4px rgba(255,164,211,0.2); /* Using main-pink with alpha */
+  transition: transform 0.15s cubic-bezier(.19,1,.22,1), box-shadow 0.13s;
+}
+
+.timeline-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(6, auto);
+  gap: 0.18em 0;
+  width: 100%;
+  padding-left: 1.1rem; /* Existing padding, relative to dot position */
+}
+.timeline-title { grid-column: 1; grid-row: 1; font-weight: 700; font-size: 1.14rem; margin-bottom: 0.32em; }
+.company { grid-column: 1; grid-row: 2; font-weight: 700; font-size: 1.10rem; color: #313a4d; margin-bottom: 1em; }
+.timeline-date { grid-column: 1; grid-row: 3; color: #777; font-size: 1.06rem; font-weight: 500; margin-bottom: 0.19em; }
+.timeline-field { grid-column: 1; grid-row: 4; color: #888; font-size: 1.01rem; margin-bottom: 0.4em; }
+.timeline-desc { grid-column: 1; grid-row: 5; }
+.timeline-tags { grid-column: 1; grid-row: 6; display: flex; flex-wrap: wrap; gap: 0.4em; margin-bottom: 0.2em; }
+
+
+.timeline-tags span, .edu-tags span {
+  display: inline-block;
+  background: var(--gray-tag);
+  color: #555; /* Darker text for tags */
+  font-size: 1.01rem;
+  font-weight: 600;
+  border-radius: 1.3rem;
+  padding: 0.19em 1.25em 0.23em 1.25em;
+  margin-bottom: 0.2em;
+  cursor: pointer;
+  opacity: 1 !important;
+  transition: background 0.2s, color 0.18s;
+}
+.timeline-tags span:hover, .timeline-tags span.active,
+.edu-tags span:hover, .edu-tags span.active {
+  background: var(--main-pink); /* Use main pink for active/hover tags */
+  color: #fff;
+}
+
+.timeline-row:not(.active) .timeline-title,
+.timeline-row:not(.active) .company,
+.edu-row:not(.active) .edu-title,
+.timeline-row:not(.active) .timeline-tags span,
+.edu-row:not(.active) .edu-tags span {
+  opacity: 0.7; /* Existing opacity for non-active elements within cards */
+}
+
+
+.timeline-chunk {
+  cursor: pointer;
+  transition: text-decoration 0.15s;
+}
+.timeline-chunk:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+  text-decoration-thickness: 2px;
+}
+
+/* ====================== 하단 와인 문구 ====================== */
+.grape-footer-quote {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.8rem;
+  padding: 12rem 2.4rem 8rem 2.4rem;
+  border-radius: 1.8em;
+  max-width: 700px;
+  margin: 5.4rem auto 1.6rem auto;
+  position: relative;
+  display: flex;
+  min-height: 440px;
+}
+.footer-image-container {
+  position: relative;
+  display: inline-block;
+}
+.grape-footer-img {
+  display: block;
+  width: 600px;
+  max-width: 800px;
+  min-width: 200px;
+  height: auto;
+  transition: transform 0.7s cubic-bezier(.22,1,.36,1), box-shadow 0.7s cubic-bezier(.22,1,.36,1);
+  transform: scale(1.2);
+}
+.footer-overlay-image {
+  position: absolute;
+  right: 100%;
+  bottom: 100%;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  width: 40px;
+  height: auto;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+.grape-footer-img.zoomed-in { transform: scale(1.5); }
+.grape-footer-img.zoomed-out { transform: scale(1.2); }
+
+.grape-footer-text {
+  position: absolute;
+  left: 0; right: 0;
+  top: 105%;
+  transform: translate(-1%, -50%);
+  margin: 0 auto;
+  width: 100%;
+  text-align: center;
+  font-size: 1.2rem;
+  line-height: 1.2;
+  color: #fff;
+  background: rgba(32,32,32,0.5);
+  border-radius: 6px;
+  padding: 0.8rem 1rem 0.8rem 1rem;
+  box-shadow: 0 6px 32px rgba(0,0,0,0.15);
+  z-index: 2;
+  pointer-events: none;
+  font-weight: 500;
+}
+
+@media (max-width: 700px) {
+  .grape-footer-quote { padding: 2.0rem 0.6rem 4rem 0.6rem; max-width: 96vw; }
+  .grape-footer-img { width: 120px; }
+  .footer-overlay-image { width: 25px; margin-right: 3px; margin-bottom: 3px; }
+  .grape-footer-text { font-size: 1.05rem; }
+
+  .timeline-row, .edu-row {
+      padding: 1.2rem; /* Adjust padding for smaller screens */
+      border-radius: 12px;
+  }
+  .timeline-dot {
+      left: -2.2rem;
+      top: 1.5rem; /* Adjust dot position for smaller cards */
+  }
+  .timeline-outer {
+      padding-left: 0.2rem; /* Adjust overall padding */
+  }
+  .exp-title.center, .exp-history-desc.center, .exp-edu-desc.center {
+      padding: 0 1rem; /* Add some horizontal padding for text on dynamic background */
+  }
+}

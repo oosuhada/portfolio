@@ -1,0 +1,257 @@
+/* ======================= VALUES SECTION (Compact Grid Layout) ======================= */
+.about-values-cols {
+  display: flex; /* Flexbox container remains */
+  flex-direction: row; /* Cards are arranged horizontally */
+  /* flex-wrap: wrap; REMOVED: We want cards to shrink, not wrap */
+  justify-content: center; /* Center cards horizontally */
+  align-items: flex-start; /* Align cards to the top vertically */
+  gap: 1rem; /* Gap between cards (horizontal and vertical if wrapped, but no wrap now) */
+  max-width: 1200px; /* Max width for the entire section */
+  width: 90%;
+  margin: 0 auto;
+  padding: 1rem 0;
+  overflow: visible;
+}
+
+@media (max-width: 620px) {
+  .about-values-cols {
+    flex-direction: column; /* On small screens, switch back to column layout */
+    align-items: center; /* Center horizontally in column layout */
+    width: 90%;
+    gap: 2rem;
+  }
+}
+
+.value-card {
+  position: relative;
+  display: flex; /* Flex container for internal elements */
+  flex-direction: column; /* Ink blot, title, description stack vertically */
+  align-items: center; /* Center internal elements horizontally */
+  gap: 1.2rem; /* Gap between internal elements */
+  padding: 1.5rem 1rem;
+  z-index: 1;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.5s ease, transform 0.5s ease, background 0.3s ease;
+  min-height: auto;
+  
+  /* ADJUSTED: Make cards flexible to shrink */
+  flex-basis: 250px; /* Initial ideal width for each card */
+  flex-grow: 1;    /* Allow cards to grow if space is available */
+  flex-shrink: 1;  /* IMPORTANT: Allow cards to shrink when space is constrained */
+  max-width: 300px; /* Max width each card can reach */
+  min-width: 150px; /* Minimum width before content might break */
+}
+
+@media (max-width: 620px) {
+  .value-card {
+    width: 100%; /* On small screens, still take full width of parent column */
+    max-width: 350px; /* Max width for single column card (adjustable) */
+    flex-basis: auto; /* Reset flex-basis for column layout */
+    flex-grow: 0;   /* Don't grow unnecessarily in column */
+    flex-shrink: 0; /* Don't shrink unnecessarily in column */
+  }
+}
+
+.value-card.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Ink blot container - Increased size to accommodate elongated shape */
+.value-ink-blot {
+  width: 200px; /* 더 넓게 */
+  height: 80px; /* 더 납작하게 */
+  position: relative;
+  cursor: pointer;
+  z-index: 2;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.value-ink-shape {
+  position: absolute;
+  width: 120%; /* 부모 .value-ink-blot 보다 넓게 (붓 자국이 컨테이너를 벗어나는 느낌) */
+  height: 150%; /* 부모 .value-ink-blot 보다 높게 */
+  top: -25%; /* 위로 당겨서 중앙 정렬 */
+  left: -10%; /* 왼쪽으로 당겨서 중앙 정렬 */
+  background: radial-gradient(ellipse at center, #2D2D33 0%, #18181B 100%);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.25), 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 1;
+  
+  /* MODIFIED: Aggressively irregular border-radius for brush stroke feel */
+  border-radius: 
+    60% 40% 70% 30% / 
+    30% 70% 40% 60%; /* 매우 불규칙하게 조정 */
+  transform: 
+    rotate(-5deg)    /* 살짝 회전 */
+    scaleY(0.9);     /* Y축으로 살짝 찌그러뜨려 납작한 붓 자국 느낌 */
+  
+  filter: url(#classicWetInk); /* 잉크 번짐/거친 필터 적용 */
+  transition:
+    background 0.6s cubic-bezier(.23,1.12,.67,1.08),
+    box-shadow 0.6s cubic-bezier(.23,1.12,.67,1.08),
+    transform 0.6s cubic-bezier(.23,1.12,.67,1.08),
+    border-radius 0.6s cubic-bezier(.23,1.12,.67,1.08); /* border-radius도 트랜지션 추가 */
+}
+
+.value-ink-shape::before { /* Light sheen on hover - now acts as a rough inner highlight/stroke */
+  content: '';
+  position: absolute;
+  top: 15%; /* 내부에서 하이라이트 위치 조정 */
+  left: 5%; /* 내부에서 하이라이트 위치 조정 */
+  width: 90%;
+  height: 70%;
+  /* 배경을 반투명한 흰색으로 변경하여 붓 자국 내부의 마른 부분처럼 보이게 함 */
+  background: linear-gradient(90deg, rgba(194, 180, 180, 0.05) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.05) 100%);
+  /* 형태를 붓 자국과 유사하게 조정 */
+  border-radius: 
+    50% 50% 50% 50% / 
+    10% 90% 10% 90%; /* 가늘고 길게 만듦 */
+  transform: rotate(2deg); /* 살짝 회전 */
+  opacity: 0;
+  z-index: 2;
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  filter: url(#heavyBleed); /* 번짐 필터 추가하여 질감 강화 */
+}
+
+.value-ink-blot:hover .value-ink-shape {
+  transform: 
+    rotate(-7deg) /* 호버 시 더 회전 */
+    scaleY(0.85); /* 호버 시 더 찌그러뜨림 */
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3), 0 3px 12px rgba(0,0,0,0.22);
+}
+
+.value-ink-blot:hover .value-ink-shape::before {
+  opacity: 0.8; /* 호버 시 하이라이트가 더 잘 보이도록 */
+  transform: rotate(0deg) scaleY(1); /* 호버 시 약간 변형 */
+}
+
+/* Icon and Hanja wrapper */
+.value-blot-content-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+/* Font Awesome icon style */
+.value-icon {
+  font-size: 2.8rem;
+  color: #d9d9d9;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  opacity: 1;
+  z-index: 10;
+  filter: blur(0.7px);
+  transition: opacity 0.4s ease, transform 0.4s ease, font-size 0.2s ease, color 0.2s ease, filter 0.2s ease;
+  position: relative;
+  transform: translate(0, 0);
+}
+
+/* Hanja style - now horizontal */
+.value-hanja {
+  font-family: 'LXGW WenKai TC', 'Noto Serif TC', serif;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #d9d9d9;
+  line-height: 1;
+  text-shadow: 0 0 4px rgba(0,0,0,0.25);
+  opacity: 0;
+  transform: scale(0.8);
+  z-index: 9;
+  filter: blur(0.5px);
+  position: relative;
+  white-space: nowrap;
+}
+
+/* Toggle states */
+.value-card.show-hanja .value-icon {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.value-card.show-hanja .value-hanja {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Title */
+.value-title {
+  font-family: 'Do Hyeon', 'Pretendard', sans-serif;
+  font-size: clamp(1rem, 3vw, 1.3rem);
+  font-weight: 400;
+  color: #222;
+  line-height: 1.25;
+  position: relative;
+  text-align: center;
+  padding-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.value-card:hover .value-title {
+  color: #C84131;
+}
+
+.value-title::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 3px;
+  background-color: #AD343E;
+  border-radius: 1.5px;
+  margin: 0.3em auto 0 auto;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.value-card:hover .value-title::after {
+  transform: scaleX(1.2);
+  background-color: #C84131;
+}
+
+/* Description */
+.value-description {
+  font-family: 'Pretendard', sans-serif;
+  font-size: clamp(0.75rem, 2vw, 0.9rem);
+  color: #B0B0B0;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.value-description .meaning-chunk {
+  display: inline-block;
+}
+
+/* Ink Splash Effect (positioning relative to value-ink-blot) */
+.ink-splash-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 0;
+}
+
+.ink-splash-drop {
+  position: absolute;
+  border-radius: 55% 40% 50% 45% / 50% 50% 45% 50%;
+  opacity: 0;
+  background-color: #434343;
+  animation: valueInkSplashAnimation 0.65s cubic-bezier(.25,.46,.45,.94) forwards;
+  transform-origin: center;
+  filter: url(#classicWetInk);
+}
+
+@keyframes valueInkSplashAnimation {
+  0% { opacity: 0.8; transform: scale(0.15); }
+  50% { opacity: 0.5; transform: scale(1.1); }
+  100% { opacity: 0; transform: scale(1.5); }
+}

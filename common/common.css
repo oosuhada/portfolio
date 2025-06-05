@@ -1,0 +1,222 @@
+/* ==== 기존 CSS 시작 (Root Variables, html, body, Header) ==== */
+:root {
+  --main-left-gap: 5vw;
+  --site-min-width: 860px;
+
+  --gray-dark: #222;
+  --gray-dark2: #22222293; /* transparent */
+  --gray: #555;
+  --gray2: #555555a9; /* transparent */
+  --gray-mid: #888;
+  --gray-mid2:rgba(136, 136, 136, 0.69); /* transparent */
+  --gray-light: #aaa;
+  --gray-bg: #f5f5f5; /* 테두리 및 밝은 활성 배경에 사용 */
+  --gray-bg2: #e9e9e9aa;
+  --gray-section: #f5f8fa;
+  --white: #fff;
+  --white2: #ffffff9a; /* transparent */
+  --black: #000; /* 먹물 효과에 사용 */
+  --black2: #00000069; /* transparent */
+
+  --yellow: #FFD166;        /* apple-touch-icon, sparkle 등에 사용 */
+  --yellow-pale: #fff9b2;
+  --yellow-line: #ffe26b;
+  --yellow-dark: #ffd93a;
+
+  --pink: #FFA4D3;          /* 포인트 핑크, 활성 및 호버 배경 */
+  --pink-strong: #E36498;   /* 진한 핑크(소셜 hover) */
+
+  /* 활성 네비게이션 항목을 위한 밝은 회색 */
+  --gray-active-nav-bg: #e9ecef; 
+  --gray-active-nav-text: var(--gray-dark); /* 위 배경에 사용될 텍스트 색상 */
+}
+
+html, body {
+  min-width: var(--site-min-width);
+  font-family: 'Pretendard', 'Do Hyeon', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', Arial, sans-serif;
+  background: var(--white);
+}
+
+/* =========================== */
+/* Header (공통) */
+.nav-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  background: var(--white);
+  z-index: 1000;
+  border-bottom: 1px solid var(--gray-bg);
+  height: 3rem;
+  /* 수정: transform 외에 opacity 트랜지션 추가 */
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s ease-in-out;
+  overflow: hidden; /* 자식 요소의 createScreenInkSplash가 잘릴 수 있으나, body에 추가되므로 문제 없을 수 있음 */
+  min-width: var(--site-min-width);
+  /* 수정: 기본적으로 보이도록 opacity 1 설정 */
+  opacity: 1; 
+}
+
+/* 수정: 이 클래스는 이제 전체 헤더의 숨김 상태를 페이드 효과와 함께 제어합니다 */
+.nav-header.hidden {
+  transform: translateY(-100%);
+  /* 수정: 페이드 아웃 효과를 위한 opacity 추가 */
+  opacity: 0;
+  /* 수정: 숨겨졌을 때 상호작용 방지를 위한 pointer-events 추가 */
+  pointer-events: none; 
+}
+
+.nav-center {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+/* ==== 기존 CSS Header 부분 종료 ==== */
+
+/* --- 추가/수정된 CSS (nav-center a 관련 스타일은 기존 유지) --- */
+.nav-center a {
+  text-decoration: none !important;
+  color: var(--gray-mid) !important; /* 기본 텍스트 색상 */
+  font-size: 1rem !important;
+  padding: 1rem 1rem !important;
+  flex: 1 1 0% !important;
+  text-align: center !important;
+  border-right: 1px solid var(--gray-bg) !important;
+  line-height: 1rem !important;
+  box-sizing: border-box !important;
+  position: relative;
+  overflow: hidden; /* 내부 .ink-splash를 잘라내기 위함 (의도된 동작) */
+  transition: background-color 0.3s ease;
+}
+
+/* 현재 페이지에 해당하는 링크 스타일 */
+.nav-center a.truly-active {
+  background-color: var(--gray-active-nav-bg) !important; /* 밝은 회색 배경 */
+}
+.nav-center a.truly-active > span.nav-text-wrapper {
+  color: var(--gray-active-nav-text) !important; /* 밝은 배경에 어두운 텍스트 */
+}
+
+/* 모든 링크에 대한 HOVER 스타일 (일시적 활성) */
+/* .truly-active 링크에 호버하는 경우에도 적용됨 */
+.nav-center a.is-splashed {
+  background-color: var(--gray-active-nav-bg) !important; /* 호버 시 배경 (이전 --gray-dark 에서 변경됨) */
+}
+.nav-center a.is-splashed > span.nav-text-wrapper {
+  color: var(--gray-active-nav-text) !important; /* 호버 시 텍스트 색상 (이전 --white 에서 변경됨) */
+}
+
+/* 텍스트 래퍼 - 잉크 스플래시 위에 오도록 z-index 설정, 색상 트랜지션 */
+.nav-center a > span.nav-text-wrapper {
+  position: relative;
+  z-index: 1;
+  transition: color 0.3s ease;
+}
+/* --- 추가/수정된 CSS 종료 --- */
+
+
+/* ==== 기존 CSS 시작 (Ink Splash, Confetti, Footer etc.) ==== */
+/* Ink Splash Effect (링크 내부용 - 헤더용) - JS에서 헤더 링크용으로 더 이상 생성되지 않음 */
+.ink-splash {
+  position: absolute;
+  border-radius: 50%;
+  background-color: var(--gray);
+  transform: scale(0);
+  opacity: 0.7;
+  pointer-events: none;
+  animation: splash-effect 0.6s cubic-bezier(.4,0,.2,1);
+  z-index: 0;
+}
+
+@keyframes splash-effect {
+  0% { transform: scale(0); opacity: 0.7; }
+  50% { opacity: 0.5; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* "먹물" Confetti Particle 스타일 (전역) */
+.confetti-particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 10001;
+  opacity: 1;
+  will-change: transform, opacity, filter;
+}
+
+/* 화면 전체 클릭 시 나타나는 잉크 번짐 효과 (블롭 형태) */
+.screen-click-splash-blob {
+  position: absolute; /* JS에서 fixed로 변경될 수 있음, fixed 사용 시 이 초기 CSS는 대체되거나 폴백으로 사용됨 */
+  transform: scale(0);
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 9999;
+  animation: screen-blob-effect 0.7s cubic-bezier(.4,0,.2,1) forwards;
+}
+
+@keyframes screen-blob-effect {
+  0% { transform: scale(0.8); opacity: 0.85; filter: blur(1px); }
+  40% { opacity: 0.3; filter: blur(3px); }
+  /* 참고: JS에서 초기 크기가 다양하게 설정되더라도, 이 애니메이션의 최종 scale(4.0)은 모든 스플래시에 동일하게 적용됨 */
+  100% { transform: scale(4.0); opacity: 0; filter: blur(10px); }
+}
+
+/* Footer (공통) */
+footer {
+  width: 100vw;
+  height: 30vw;
+  min-width: var(--site-min-width);
+  padding: 2rem var(--main-left-gap) 5rem 0;
+  text-align: right;
+  color: var(--gray);
+  background: var(--white);
+  box-sizing: border-box;
+}
+.footer-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 2rem;
+  height: 100%;
+  min-height: 50px;
+}
+.footer-content {
+  display: inline-block;
+  text-align: right;
+  vertical-align: bottom;
+}
+.footer-content p {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.16rem;
+  line-height: 2.1;
+}
+.footer-content a {
+  color: var(--pink-strong);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+.footer-content a:hover {
+  color: var(--pink);
+  text-decoration: underline;
+}
+.footer-copyright {
+  font-size: 0.96rem;
+  color: var(--gray-light);
+  display: block;
+  margin-top: 1.2rem;
+}
+.footer-image{
+  width: 200px;
+  height: 250px;
+}
+@keyframes shakeX {
+  0%   { transform: rotate(6deg);}
+  25%  { transform: rotate(12deg);}
+  58%  { transform: rotate(18deg);}
+  75%  { transform: rotate(12deg);}
+  100% { transform: rotate(6deg);}
+}
+.footer-image.shake-x {
+  animation: shakeX 2.6s cubic-bezier(.66,0,.35,1) infinite;
+  transform-origin: 50% 85%;
+}
+/* ==== 기존 CSS 종료 ==== */
