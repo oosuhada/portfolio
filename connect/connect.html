@@ -34,7 +34,7 @@
                 <button id="brush-theme-btn" title="Eastern Theme">
                     <i class="fa-solid fa-torii-gate"></i> <span class="theme-style-text">Eastern</span> </button>
             </div>
-
+        
             <div class="floating-menu2">
                 <button id="pen-style-indicator-btn" title="Pen Style">
                     <i class="fa-solid fa-pen-fancy"></i>
@@ -54,69 +54,50 @@
                     <button id="font-size-large" aria-label="Increase font size">A+</button>
                 </div>
             </div>
-
+        
             <div class="postcard-front western-theme">
                 <div class="postcard-image-container">
                     <img src="western/ezgif-frame-001.jpg" alt="Western Postcard Theme" class="postcard-cover-img" id="western-front-img">
                 </div>
                 <div class="postcard-info">
-                    <img src="qr-code.png" alt="QR Code" class="qr-code"> <p class="info-text western-text" data-lang-en="Scan for more info or send a message!" data-lang-ko="QR코드를 스캔하시거나 메시지를 보내주세요!">Scan for more info or send a message!</p>
+                    <img src="qr-code.png" alt="QR Code" class="qr-code">
+                    <p class="info-text western-text" data-lang-en="Scan for more info or send a message!" data-lang-ko="QR코드를 스캔하시거나 메시지를 보내주세요!">Scan for more info or send a message!</p>
                 </div>
             </div>
-
+        
             <div class="postcard-front eastern-theme hidden">
                 <div class="postcard-image-container">
                     <img src="eastern/ezgif-frame-001.jpg" alt="Eastern Postcard Theme" class="postcard-cover-img" id="eastern-front-img">
                 </div>
                 <div class="postcard-info">
-                    <img src="qr-code.png" alt="QR Code" class="qr-code"> <p class="info-text eastern-text" data-lang-en="Scan for more info or send a message!" data-lang-ko="QR코드를 스캔하시거나 메시지를 보내주세요!">QR코드를 스캔하시거나 메시지를 보내주세요!</p>
+                    <img src="qr-code.png" alt="QR Code" class="qr-code">
+                    <p class="info-text eastern-text" data-lang-en="Scan for more info or send a message!" data-lang-ko="QR코드를 스캔하시거나 메시지를 보내주세요!">QR코드를 스캔하시거나 메시지를 보내주세요!</p>
                 </div>
             </div>
-
-            <div class="postcard-back western-theme" id="western-postcard-back">
+        
+            <div class="postcard-back western-theme" id="main-postcard-back">
                 <div class="stamp-area">
-                    <div class="stamp western-stamp">oosu hada</div>
+                    <div class="stamp western-stamp" id="main-stamp" data-lang-en="oosu hada" data-lang-ko="우수하다">oosu hada</div>
                 </div>
                 <div class="form-container">
                     <h3 class="western-text" data-lang-en="Inquiries" data-lang-ko="문의사항">Inquiries</h3>
-                    <form id="inquiry-form-western">
+                    <form id="inquiry-form" novalidate>
                         <div class="form-group">
-                            <label for="name-western" class="western-text" data-lang-en="Name:" data-lang-ko="이름:">Name:</label>
-                            <input type="text" id="name-western" name="name-western" required class="western-text">
+                            <label for="name" class="western-text" data-lang-en="Name:" data-lang-ko="이름:">Name:</label>
+                            <input type="text" id="name" name="name" required class="western-text">
+                            <span class="error-message"></span>
                         </div>
                         <div class="form-group">
-                            <label for="email-western" class="western-text" data-lang-en="Email:" data-lang-ko="이메일:">Email:</label>
-                            <input type="email" id="email-western" name="email-western" required class="western-text">
+                            <label for="email" class="western-text" data-lang-en="Email:" data-lang-ko="이메일:">Email:</label>
+                            <input type="email" id="email" name="email" required class="western-text">
+                            <span class="error-message"></span>
                         </div>
                         <div class="form-group">
-                            <label for="message-western" class="western-text" data-lang-en="Message:" data-lang-ko="메시지:">Message:</label>
-                            <textarea id="message-western" name="message-western" rows="4" required class="western-text"></textarea>
+                            <label for="message" class="western-text" data-lang-en="Message:" data-lang-ko="메시지:">Message:</label>
+                            <textarea id="message" name="message" rows="4" required class="western-text"></textarea>
+                            <span class="error-message"></span>
                         </div>
                         <button type="submit" class="send-button western-text" data-lang-en="Send" data-lang-ko="보내기">Send</button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="postcard-back eastern-theme hidden" id="eastern-postcard-back">
-                <div class="stamp-area">
-                    <div class="stamp eastern-stamp">우수하다</div>
-                </div>
-                <div class="form-container">
-                    <h3 class="eastern-text" data-lang-en="Inquiries" data-lang-ko="문의사항">문의사항</h3>
-                    <form id="inquiry-form-eastern">
-                        <div class="form-group">
-                            <label for="name-eastern" class="eastern-text" data-lang-en="Name:" data-lang-ko="이름:">이름:</label>
-                            <input type="text" id="name-eastern" name="name-eastern" required class="eastern-text">
-                        </div>
-                        <div class="form-group">
-                            <label for="email-eastern" class="eastern-text" data-lang-en="Email:" data-lang-ko="이메일:">이메일:</label>
-                            <input type="email" id="email-eastern" name="email-eastern" required class="eastern-text">
-                        </div>
-                        <div class="form-group">
-                            <label for="message-eastern" class="eastern-text" data-lang-en="Message:" data-lang-ko="메시지:">메시지:</label>
-                            <textarea id="message-eastern" name="message-eastern" rows="4" required class="eastern-text"></textarea>
-                        </div>
-                        <button type="submit" class="send-button eastern-text" data-lang-en="Send" data-lang-ko="보내기">보내기</button>
                     </form>
                 </div>
             </div>
@@ -136,14 +117,33 @@
     <footer>
         <div class="footer-row">
             <div class="footer-content">
-                <p data-lang-en="You've hit the footer,<br>thanks for stopping by.<br>Still curious?<br>→ <a href='mailto:oosu.salon@gmail.com'>oosu.salon@gmail.com</a>" data-lang-ko="푸터에 도달하셨네요,<br>들러주셔서 감사합니다.<br>여전히 궁금한 점이 있으신가요?<br>→ <a href='mailto:oosu.salon@gmail.com'>oosu.salon@gmail.com</a>"> "You've hit the footer,<br>thanks for stopping by.<br>Still curious?<br>→ <a href='mailto:oosu.salon@gmail.com'>oosu.salon@gmail.com</a>"</p>
+                <p data-lang-en="You've hit the footer,<br>thanks for stopping by.<br>Still curious?<br>→ <a href='mailto:oosu.salon@gmail.com'>oosu.salon@gmail.com</a>" data-lang-ko="푸터에 도달하셨네요,<br>들러주셔서 감사합니다.<br>여전히 궁금한 점이 있으신가요?<br>→ <a href='mailto:oosu.salon@gmail.com'>oosu.salon@gmail.com</a>">You've hit the footer,<br>thanks for stopping by.<br>Still curious?<br>→ <a href='mailto:oosu.salon@gmail.com'>oosu.salon@gmail.com</a></p>
                 <span class="footer-copyright">© Oosu Jang 2025</span>
             </div>
-            <img src="footer.png" alt="Footer Decorative Image" class="footer-image" id="footer-target-img">
+            <div id="lottie-container" style="width:200px; height:300px; position:relative; overflow:hidden;">
+                <div id="lottie-inner-section" style="
+                    position: absolute;
+                    left: 50%; top: 60%;
+                    width: 250px; height: 300px;
+                    transform: translate(-50%, -50%);
+                    pointer-events: none;">
+                </div>
+            </div>
         </div>
     </footer>
 
     <script src="../common/common.js"></script>
     <script src="connect.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <script>
+        lottie.loadAnimation({
+            container: document.getElementById('lottie-inner-section'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'https://gist.githubusercontent.com/oosuhada/1dae5ec01e7d44e4218ec38b94d40301/raw/d6f975e987e6b233d88bb9daf3cbb6debba31dee/connect.json',
+            rendererSettings: { preserveAspectRatio: 'none' }
+        });
+    </script>
 </body>
 </html>

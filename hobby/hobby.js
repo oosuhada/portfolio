@@ -59,9 +59,13 @@ if (window.hobbyScriptHasFullyInitialized) {
         angleStep: 26, curveRadius: 700, labelVerticalOffset: 250
       };
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => this.setupDomReferences(), { once: true });
+        document.addEventListener('DOMContentLoaded', () => {
+          this.setupDomReferences();
+          this.setupCategoryJump();
+        }, { once: true });
       } else {
         this.setupDomReferences();
+        this.setupCategoryJump();
       }
     }
     setupDomReferences() {
@@ -173,36 +177,42 @@ if (window.hobbyScriptHasFullyInitialized) {
       }
       this.posters.forEach((poster, i) => {
         let rel = ((i - centerIdx + this.n) % this.n + Math.floor(this.n / 2)) % this.n - Math.floor(this.n / 2);
-        const visible = Math.abs(rel) <= this.maxVisible;
+        const distance = Math.abs(rel);
+        const visible = distance <= this.maxVisible;
+        const blurValue = Math.max(0, distance - 2) * 1.5;
         const angle = rel * cardAngle * (Math.PI / 180);
         const x = Math.sin(angle) * R;
         const y = verticalOffset - Math.cos(angle) * (R * 0.38);
         const rotation = angle * (180 / Math.PI) * 0.55;
-        const scale = 1 - Math.abs(rel) * scaleStep;
-        const z = 1000 - Math.abs(rel) * 60;
+        const scale = 1 - distance * scaleStep;
+        const z = 1000 - distance * 60;
         const opacity = visible ? 1 : 0;
         const isCenterCard = rel === 0;
+        const animationProps = {
+          x, y, rotation, scale, zIndex: z, opacity,
+          filter: `blur(${blurValue}px)`,
+          ease: this.isEntranceAnimation ? "power2.out" : "expo.out"
+        };
         if (animate) {
           if (this.isEntranceAnimation || !isCenterCard || moveDirection === 0) {
-            gsap.to(poster, { duration: this.isEntranceAnimation ? 0.6 : 0.8, x, y, rotation, scale, zIndex: z, opacity, ease: this.isEntranceAnimation ? "power2.out" : "expo.out" });
+            gsap.to(poster, { ...animationProps, duration: this.isEntranceAnimation ? 0.6 : 0.8 });
           } else {
             const timeline = gsap.timeline();
             const bounceMultiplier = moveDirection;
             const overshootX = x + (15 * bounceMultiplier);
             const overshootRotation = rotation + (12 * bounceMultiplier);
-            timeline.to(poster, { duration: 0.66, x: overshootX, rotation: overshootRotation, ease: "power2.out" }).to(poster, { duration: 0.22, x, rotation, ease: "power1.out" });
-            gsap.to(poster, { duration: 0.38, y, scale, zIndex: z, opacity, ease: "expo.out" });
+            timeline.to(poster, { duration: 0.66, x: overshootX, rotation: overshootRotation, ease: "circ.out" }).to(poster, { duration: 0.33, x, rotation, ease: "power1.inOut" });
+            gsap.to(poster, { ...animationProps, duration: 0.38, ease: "expo.out" });
           }
-        } else { gsap.set(poster, { x, y, rotation, scale, zIndex: z, opacity }); }
+        } else {
+          gsap.set(poster, animationProps);
+        }
       });
       if (this.labels) this.renderLabels(centerIdx, 5);
+      this.updateActiveCategoryButton(centerIdx);
     }
     runCarousel(isFirst = false) {
-      // console.log(`[CAROUSEL] runCarousel called. isFirst: ${isFirst}.`);
-      if (!this || typeof this.playEntranceAnimation !== 'function') {
-        // console.error("[CAROUSEL CRITICAL ERROR] In runCarousel, 'this' is incorrect or playEntranceAnimation is missing.");
-        return;
-      }
+      if (!this || typeof this.playEntranceAnimation !== 'function') { return; }
       this.isEntranceAnimation = isFirst;
       if (isFirst) {
         this.playEntranceAnimation();
@@ -212,11 +222,7 @@ if (window.hobbyScriptHasFullyInitialized) {
       }
     }
     playEntranceAnimation() {
-      // console.log("[CAROUSEL] playEntranceAnimation (NEW DESIRED VERSION) started.");
-      if (this.n === 0 || !this.carousel) {
-        // console.warn("[CAROUSEL PA] No items or carousel element. Aborting.");
-        return;
-      }
+      if (this.n === 0 || !this.carousel) { return; }
       this.carousel.style.opacity = '0';
       const entranceOffset = Math.min(6, Math.max(0, Math.floor(this.n / 2) - 1));
       let startCenter = (this.center - entranceOffset + this.n) % this.n;
@@ -226,54 +232,37 @@ if (window.hobbyScriptHasFullyInitialized) {
       gsap.to(this.carousel, { opacity: 1, duration: 0.5, ease: "power2.out" });
       this.posters.forEach((poster, i) => {
         let relToStart = ((i - startCenter + this.n) % this.n + Math.floor(this.n / 2)) % this.n - Math.floor(this.n / 2);
-        gsap.to(poster, {
-          opacity: 1,
-          duration: 0.4,
-          delay: Math.abs(relToStart) * 0.05 + 0.2,
-          ease: "power2.out"
-        });
+        gsap.to(poster, { opacity: 1, duration: 0.4, delay: Math.abs(relToStart) * 0.05 + 0.2, ease: "power2.out" });
       });
-      // console.log(`[CAROUSEL PA] Posters faded in at startCenter: ${startCenter}. Target center: ${this.center}. Offset: ${entranceOffset}`);
       setTimeout(() => {
         let currentAnimatedCenter = startCenter;
         let rotationStep = 0;
         const totalSteps = (this.center - startCenter + this.n) % this.n;
         if (totalSteps === 0) {
-          // console.log("[CAROUSEL PA] Already at target center or no steps to take for rotation.");
           this.isEntranceAnimation = false;
           this.lastCenter = this.center;
           this.renderCarousel(this.center, false);
           this.setupEvents();
-          if (window.appBackgroundChanger && typeof window.appBackgroundChanger.initializeCarouselModeBackground === 'function') {
-            window.appBackgroundChanger.initializeCarouselModeBackground(this.center);
-          }
-          // console.log("[CAROUSEL PA] (NEW DESIRED VERSION) finished early (no rotation), events set up.");
+          if (window.appBackgroundChanger) window.appBackgroundChanger.initializeCarouselModeBackground(this.center);
           return;
         }
-        // console.log(`[CAROUSEL PA] Starting rotation: ${startCenter} to ${this.center} in ${totalSteps} steps.`);
         const rotateFn = () => {
           this.lastCenter = currentAnimatedCenter;
           currentAnimatedCenter = (currentAnimatedCenter + 1) % this.n;
           this.renderCarousel(currentAnimatedCenter, true);
           rotationStep++;
-          // console.log(`[CAROUSEL PA] Rot. step ${rotationStep}/${totalSteps}, currentCenter: ${currentAnimatedCenter}`);
           if (rotationStep < totalSteps) {
             setTimeout(rotateFn, 100);
           } else {
-            // console.log("[CAROUSEL PA] Rotation sequence finished.");
             setTimeout(() => {
               this.lastCenter = currentAnimatedCenter;
               this.center = currentAnimatedCenter;
               this.renderCarousel(this.center, true);
-              // console.log(`[CAROUSEL PA] Final render to center ${this.center}.`);
               setTimeout(() => {
                 this.isEntranceAnimation = false;
                 this.lastCenter = this.center;
                 this.setupEvents();
-                if (window.appBackgroundChanger && typeof window.appBackgroundChanger.initializeCarouselModeBackground === 'function') {
-                  window.appBackgroundChanger.initializeCarouselModeBackground(this.center);
-                }
-                // console.log("[CAROUSEL PA] (NEW DESIRED VERSION) finished, events set up.");
+                if (window.appBackgroundChanger) window.appBackgroundChanger.initializeCarouselModeBackground(this.center);
               }, 700);
             }, 150);
           }
@@ -290,9 +279,7 @@ if (window.hobbyScriptHasFullyInitialized) {
         }
         if (this.isMoving) { return; }
         if (oldActualCenter === targetCenter && !this.pendingMoveQueue.length) {
-          if (window.appBackgroundChanger && typeof window.appBackgroundChanger.triggerDramaticAnimation === 'function') {
-            window.appBackgroundChanger.triggerDramaticAnimation(0, 0, 0);
-          }
+          if (window.appBackgroundChanger) window.appBackgroundChanger.triggerDramaticAnimation(0, 0, 0);
           return;
         }
       }
@@ -300,29 +287,21 @@ if (window.hobbyScriptHasFullyInitialized) {
       this.lastCenter = oldActualCenter;
       this.center = targetCenter;
       this.renderCarousel(this.center, true);
-      if (window.appBackgroundChanger && typeof window.appBackgroundChanger.triggerDramaticAnimation === 'function') {
+      if (window.appBackgroundChanger) {
         let cardDeltaMagnitude = 0;
         let bgCycleDirection = 0;
         if (oldActualCenter !== this.center) {
           const distForward = (this.center - oldActualCenter + this.n) % this.n;
           const distBackward = (oldActualCenter - this.center + this.n) % this.n;
           if (userDirection !== null && userDirection !== 0) {
-            cardDeltaMagnitude = 1; // User direct interaction (wheel, one drag unit) means 1 card step
+            cardDeltaMagnitude = 1;
             bgCycleDirection = userDirection > 0 ? 1 : -1;
-          } else { // Click on a poster
-            if (distForward <= distBackward) {
-              cardDeltaMagnitude = distForward;
-              bgCycleDirection = 1;
-            } else {
-              cardDeltaMagnitude = distBackward;
-              bgCycleDirection = -1;
-            }
-          }
-          if (cardDeltaMagnitude > 0) {
-            window.appBackgroundChanger.triggerDramaticAnimation(cardDeltaMagnitude, bgCycleDirection, 800);
           } else {
-            window.appBackgroundChanger.triggerDramaticAnimation(0, 0, 0);
+            if (distForward <= distBackward) { cardDeltaMagnitude = distForward; bgCycleDirection = 1; } 
+            else { cardDeltaMagnitude = distBackward; bgCycleDirection = -1; }
           }
+          if (cardDeltaMagnitude > 0) window.appBackgroundChanger.triggerDramaticAnimation(cardDeltaMagnitude, bgCycleDirection, 800);
+          else window.appBackgroundChanger.triggerDramaticAnimation(0, 0, 0);
         } else {
           window.appBackgroundChanger.triggerDramaticAnimation(0, 0, 0);
         }
@@ -336,17 +315,15 @@ if (window.hobbyScriptHasFullyInitialized) {
       }, 900);
     }
     setupEvents() {
-      // console.log("[CAROUSEL] setupEvents called.");
       if (!this.carousel) { return; }
-      const newCarousel = this.carousel.cloneNode(true); // Simple way to clear old listeners
+      const newCarousel = this.carousel.cloneNode(true);
       if (this.carousel.parentNode) {
         this.carousel.parentNode.replaceChild(newCarousel, this.carousel);
       }
       this.carousel = newCarousel;
-      this.posters = Array.from(this.carousel.querySelectorAll('.poster')); // Re-query posters
-      this.carousel.addEventListener('wheel', (e) => { e.preventDefault(); if (e.deltaY > 0) this.moveTo(this.center + 1, 1); else this.moveTo(this.center - 1, -1); }, { passive: false });
+      this.posters = Array.from(this.carousel.querySelectorAll('.poster'));
+      this.carousel.addEventListener('wheel', (e) => { e.preventDefault(); if (this.isMoving) return; if (e.deltaY > 0) this.moveTo(this.center + 1, 1); else this.moveTo(this.center - 1, -1); }, { passive: false });
       this.carousel.addEventListener('mousedown', (e) => { e.preventDefault(); this.isDragging = true; this.startX = e.pageX; this.carousel.style.cursor = 'grabbing'; });
-      // Remove previous document listeners if they were stored on the instance
       if (this._mouseMoveHandler) document.removeEventListener('mousemove', this._mouseMoveHandler);
       if (this._mouseUpHandler) document.removeEventListener('mouseup', this._mouseUpHandler);
       this._mouseMoveHandler = (e) => { if (!this.isDragging) return; e.preventDefault(); };
@@ -367,11 +344,192 @@ if (window.hobbyScriptHasFullyInitialized) {
       }, { passive: true });
       this.posters.forEach((poster, idx) => {
         poster.addEventListener('click', () => {
-          if (idx === this.center) this.showModal(poster);
-          else this.moveTo(idx);
+          if (this.isMoving) return;
+          if (idx === this.center) {
+            this.showModal(poster);
+          } else {
+            this.performFastScroll(idx);
+          }
         });
       });
       this.carousel.style.cursor = 'grab';
+    }
+    setupCategoryJump() {
+      const jumpButtons = document.querySelectorAll('.category-jump-btn');
+      jumpButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const category = button.dataset.category;
+          if (!category) return;
+          const targetIndex = this.posters.findIndex(p => p.classList.contains(`poster-${category}`));
+          if (targetIndex !== -1 && targetIndex !== this.center) {
+            this.performFastScroll(targetIndex);
+          }
+        });
+      });
+    }
+    updateActiveCategoryButton(centerIdx) {
+      const centerPoster = this.posters[centerIdx];
+      if (!centerPoster) return;
+      let currentCategory = '';
+      for (const cls of centerPoster.classList) {
+        if (cls.startsWith('poster-')) {
+          currentCategory = cls.replace('poster-', '');
+          break;
+        }
+      }
+      const jumpButtons = document.querySelectorAll('.category-jump-btn');
+      jumpButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.category === currentCategory);
+      });
+    }
+    renderFastScrollFrame(currentCenterFloat) {
+      this.posters.forEach((poster, i) => {
+        let rel = i - currentCenterFloat;
+        if (Math.abs(rel) > this.n / 2) {
+          rel = rel < 0 ? rel + this.n : rel - this.n;
+        }
+        const distance = Math.abs(rel);
+        const proximityFactor = Math.min(1, distance);
+        const blur = Math.min(8, Math.pow(proximityFactor, 2) * 4);
+        const opacity = Math.max(0, 1 - proximityFactor * 0.25);
+        const { R, verticalOffset, cardAngle, scaleStep } = this.animParams;
+        const angle = rel * cardAngle * (Math.PI / 180);
+        const x = Math.sin(angle) * R;
+        const y = verticalOffset - Math.cos(angle) * (R * 0.38);
+        const rotation = angle * (180 / Math.PI) * 0.55;
+        const scale = 1 - distance * scaleStep;
+        const z = 1000 - distance * 60;
+        gsap.set(poster, {
+          x, y, rotation, scale, zIndex: z, opacity,
+          filter: `blur(${blur}px)`
+        });
+      });
+    }
+    performFastScroll(targetCenter) {
+      if (this.isMoving) return;
+      this.isMoving = true;
+
+      const oldCenter = this.center;
+      const distForward = (targetCenter - oldCenter + this.n) % this.n;
+      const distBackward = (oldCenter - targetCenter + this.n) % this.n;
+      
+      let endValue;
+      let direction;
+      const steps = Math.min(distForward, distBackward);
+
+      if (distForward <= distBackward) {
+        endValue = oldCenter + distForward;
+        direction = 1;
+      } else {
+        endValue = oldCenter - distBackward;
+        direction = -1;
+      }
+
+      const dynamicDuration = 0.5 + (steps * 0.12);
+      const dummy = { value: oldCenter };
+      let lastBgIndex = oldCenter;
+
+      gsap.to(dummy, {
+        value: endValue,
+        duration: dynamicDuration,
+        ease: "power3.easeInOut",
+        onUpdate: () => {
+          this.renderFastScrollFrame(dummy.value);
+          const currentBgIndex = Math.round(dummy.value);
+          if (currentBgIndex !== lastBgIndex) {
+            if (window.appBackgroundChanger) {
+              window.appBackgroundChanger.initializeCarouselModeBackground(currentBgIndex);
+            }
+            lastBgIndex = currentBgIndex;
+          }
+        },
+        onComplete: () => {
+          this.center = targetCenter;
+          this.lastCenter = targetCenter; 
+          this.updateActiveCategoryButton(this.center);
+          if (this.labels) this.renderLabels(this.center, 5);
+
+          const targetPoster = this.posters[this.center];
+          const { R, verticalOffset, cardAngle, scaleStep } = this.animParams;
+
+          this.posters.forEach((poster, i) => {
+            if (i === this.center) return; 
+
+            let rel = ((i - this.center + this.n) % this.n + Math.floor(this.n / 2)) % this.n - Math.floor(this.n / 2);
+            const distance = Math.abs(rel);
+            const visible = distance <= this.maxVisible;
+            
+            const blurValue = Math.max(0, distance - 2) * 1.5;
+            const angle = rel * cardAngle * (Math.PI / 180);
+            const x = Math.sin(angle) * R;
+            const y = verticalOffset - Math.cos(angle) * (R * 0.38);
+            const rotation = angle * (180 / Math.PI) * 0.55;
+            const scale = 1 - distance * scaleStep;
+            const z = 1000 - distance * 60;
+            const opacity = visible ? 1 : 0;
+
+            gsap.to(poster, {
+              x, y, rotation, scale, zIndex: z, opacity,
+              filter: `blur(${blurValue}px)`,
+              duration: 0.5,
+              ease: "power2.out"
+            });
+          });
+
+          const finalX = 0;
+          const finalY = verticalOffset - (R * 0.38);
+          const finalRotation = 0;
+          const finalScale = 1;
+          const finalZ = 1000;
+          const finalOpacity = 1;
+
+          // --- DYNAMIC ANGLE & SPEED CALCULATION ---
+          const minAngle = 2; // Decreased minimum angle
+          const maxAngle = 12;
+          const maxStepsForAngle = 7; // The number of steps over which the angle increases to max
+          const angleMultiplier = Math.min(1, (steps - 1) / (maxStepsForAngle - 1));
+          const dynamicTiltAngle = minAngle + (maxAngle - minAngle) * angleMultiplier;
+          
+          const maxDurationOut = 0.6;
+          const minDurationOut = 0.25;
+          const dynamicDurationOut = minDurationOut + (maxDurationOut - minDurationOut) * angleMultiplier;
+
+          const maxDurationIn = 0.4;
+          const minDurationIn = 0.15;
+          const dynamicDurationIn = minDurationIn + (maxDurationIn - minDurationIn) * angleMultiplier;
+
+
+          const overshootX = finalX + (15 * -direction);
+          const overshootRotation = 0 + (dynamicTiltAngle * -direction);
+
+          gsap.timeline()
+            .to(targetPoster, {
+              x: overshootX,
+              rotation: overshootRotation,
+              ease: "circ.out",
+              duration: dynamicDurationOut
+            }, 0)
+            .to(targetPoster, {
+              y: finalY,
+              scale: finalScale,
+              zIndex: finalZ,
+              opacity: finalOpacity,
+              filter: 'blur(0px)',
+              ease: "power2.out",
+              duration: 0.5,
+            }, 0)
+            .to(targetPoster, {
+              x: finalX,
+              rotation: finalRotation,
+              ease: "power1.inOut",
+              duration: dynamicDurationIn
+            });
+
+          setTimeout(() => {
+            this.isMoving = false;
+          }, 900);
+        }
+      });
     }
     showModal(poster) {
       const idx = this.posters.indexOf(poster);
@@ -440,17 +598,20 @@ if (window.hobbyScriptHasFullyInitialized) {
     restoreCarousel() {
       this.posters.forEach((poster, i) => {
         let rel = ((i - this.center + this.n) % this.n + Math.floor(this.n / 2)) % this.n - Math.floor(this.n / 2);
-        const visible = Math.abs(rel) <= this.maxVisible;
+        const distance = Math.abs(rel);
+        const visible = distance <= this.maxVisible;
+        const blurValue = Math.max(0, distance - 2) * 1.5;
         const angle = rel * this.animParams.cardAngle * (Math.PI / 180);
         const x = Math.sin(angle) * this.animParams.R;
         const y = this.animParams.verticalOffset - Math.cos(angle) * (this.animParams.R * 0.38);
         const rotation = angle * (180 / Math.PI) * 0.55;
-        const scale = 1 - Math.abs(rel) * this.animParams.scaleStep;
-        const z = 1000 - Math.abs(rel) * 60;
+        const scale = 1 - distance * this.animParams.scaleStep;
+        const z = 1000 - distance * 60;
         const opacity = visible ? 1 : 0;
         gsap.to(poster, {
           x, y, rotation, scale, zIndex: z, opacity,
-          duration: 0.33, delay: 0.13 * Math.abs(rel) + 0.1, ease: "power2.out"
+          filter: `blur(${blurValue}px)`,
+          duration: 0.33, delay: 0.13 * distance + 0.1, ease: "power2.out"
         });
       });
       const carouselSection = document.querySelector('.carousel-section');
@@ -466,8 +627,10 @@ if (window.hobbyScriptHasFullyInitialized) {
     const introImageBaseUrl = 'images/';
     const carouselImageBaseUrl = 'images/';
     const totalSpecialImages = 15;
+    
     let introImagePaths = Array.from({ length: totalSpecialImages }, (_, i) => `${introImageBaseUrl}intro${i + 1}.jpg`);
     let carouselImagePaths = Array.from({ length: totalSpecialImages }, (_, i) => `${carouselImageBaseUrl}${i + 1}.jpg`);
+    
     const bgImageA = document.getElementById('bgImageA');
     const bgImageB = document.getElementById('bgImageB');
     let onBgIntroCallbackProcessed = false; 
@@ -650,32 +813,7 @@ if (window.hobbyScriptHasFullyInitialized) {
     window.appContentLoadedAndInitialized = true;
     // console.log("DOMContentLoaded (hobby.js): Main initialization sequence starting.");
     if (typeof initHeaderObserver === 'function') initHeaderObserver();
-    const hobbyFooterImageElement = document.getElementById('hobbyFooterImage');
-    if (hobbyFooterImageElement) {
-      if (hobbyFooterImageElement.classList.contains('shake-x')) {
-        hobbyFooterImageElement.classList.remove('shake-x');
-      }
-      const footerShakeObserver = new MutationObserver(mutationsList => {
-        for (const mutation of mutationsList) {
-          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-            if (hobbyFooterImageElement.classList.contains('shake-x')) {
-              hobbyFooterImageElement.classList.remove('shake-x');
-            }
-          }
-        }
-      });
-      footerShakeObserver.observe(hobbyFooterImageElement, { attributes: true });
-      const footerImageSources = ['images/footer1.png', 'images/footer2.png', 'images/footer3.png', 'images/footer2.png'];
-      let currentImageIndex = 0;
-      const imageCycleInterval = 1200;
-      function cycleHobbyFooterImage() {
-        currentImageIndex = (currentImageIndex + 1) % footerImageSources.length;
-        hobbyFooterImageElement.src = footerImageSources[currentImageIndex];
-      }
-      setInterval(cycleHobbyFooterImage, imageCycleInterval);
-    } else {
-      // console.warn("HOBBY_FOOTER: Hobby page footer image element ('hobbyFooterImage') not found.");
-    }
+    
     if (typeof ModernCarousel !== 'undefined') {
       window.modernCarouselInstanceForHobby = new ModernCarousel();
       if (typeof initBackgroundSlideshow === 'function') {
@@ -689,60 +827,6 @@ if (window.hobbyScriptHasFullyInitialized) {
           } else {
             // console.error("[CALLBACK FROM BG_MODULE (hobby.js)] CRITICAL: ModernCarousel instance or runCarousel method not found!");
           }
-          
-          // ===== BACKGROUND LIMITED SCROLL LOGIC (AFTER INTRO) - COMMENTED OUT =====
-          /*
-          const bgSlideshow = document.getElementById('background-slideshow');
-          let bgScrollAnchorY = null; 
-          let isBgAnchored = false; 
-          const maxScrollDown = 200; 
-
-          function limitedScrollBackgroundHandler() {
-            if (!bgSlideshow) {
-              // console.warn("LIMITED_SCROLL: bgSlideshow not found.");
-              return;
-            }
-            const currentScrollY = window.scrollY;
-            const currentComputedPosition = getComputedStyle(bgSlideshow).position;
-
-            if (!isBgAnchored) {
-              if (currentComputedPosition === 'fixed') {
-                bgScrollAnchorY = currentScrollY;
-                bgSlideshow.style.position = 'absolute';
-                bgSlideshow.style.top = `${bgScrollAnchorY}px`;
-                isBgAnchored = true; 
-                // console.log(`LIMITED_SCROLL: Anchored from 'fixed'. AnchorY = ${bgScrollAnchorY}, Top = ${bgSlideshow.style.top}`);
-              } else if (currentComputedPosition === 'absolute') {
-                bgScrollAnchorY = currentScrollY; 
-                bgSlideshow.style.top = `${bgScrollAnchorY}px`; 
-                isBgAnchored = true;
-                // console.log(`LIMITED_SCROLL: Anchored from 'absolute' (initial state or fast intro). AnchorY = ${bgScrollAnchorY}, Top = ${bgSlideshow.style.top}`);
-              } else {
-                // console.warn(`LIMITED_SCROLL: Cannot anchor. bgSlideshow in unexpected state: ${currentComputedPosition}`);
-                return; 
-              }
-            }
-
-            if (isBgAnchored && getComputedStyle(bgSlideshow).position === 'absolute') {
-              if (bgScrollAnchorY === null) {
-                bgScrollAnchorY = currentScrollY;
-                bgSlideshow.style.top = `${currentScrollY}px`; 
-              }
-              
-              const newTop = Math.min(currentScrollY, bgScrollAnchorY + maxScrollDown);
-              bgSlideshow.style.top = `${newTop}px`;
-            } else if (isBgAnchored && getComputedStyle(bgSlideshow).position !== 'absolute') {
-              // console.warn(`LIMITED_SCROLL: Position changed from 'absolute' to '${getComputedStyle(bgSlideshow).position}' AFTER anchoring. Scroll behavior may stop.`);
-            }
-          }
-
-          if (bgSlideshow) {
-            window.addEventListener('scroll', limitedScrollBackgroundHandler, { passive: true });
-            window.addEventListener('resize', limitedScrollBackgroundHandler); 
-            limitedScrollBackgroundHandler(); 
-          }
-          */
-          // ===== END OF BACKGROUND LIMITED SCROLL LOGIC - COMMENTED OUT =====
         });
         if (window.modernCarouselInstanceForHobby && typeof window.modernCarouselInstanceForHobby.startVisuals === 'function') {
           window.modernCarouselInstanceForHobby.startVisuals();
@@ -765,58 +849,27 @@ if (window.hobbyScriptHasFullyInitialized) {
   (function() {
     const bgSlideshow = document.getElementById('background-slideshow');
     if (!bgSlideshow) return;
-
-    // Ensure 'position: absolute' for the logic to work as "scroll with page".
-    // This is a one-time check and set when this IIFE runs.
-    // If the intro animation relies on 'fixed', this might conflict if the IIFE runs too early.
-    // It's assumed this IIFE takes over control *after* any such fixed-position intro.
     let initialTopSet = false;
     if (getComputedStyle(bgSlideshow).position !== 'absolute') {
-        // console.log('IIFE_SCROLL: Initial position is not absolute, changing.');
         if (getComputedStyle(bgSlideshow).position === 'fixed') {
-            // Smooth transition from fixed: set top based on current scroll
             bgSlideshow.style.top = window.scrollY + 'px';
             initialTopSet = true;
         }
         bgSlideshow.style.position = 'absolute';
     }
-    // If it was already absolute, and had a 'top' from CSS (e.g. '0px'), 
-    // and scrollY is > 0, updateBgPosition will adjust it.
-    // If it became absolute above and top was set to scrollY, initialTopSet helps.
 
     function updateBgPosition() {
       const scrollY = window.scrollY;
-      // Ensure position is absolute, in case something else changed it.
-      // More robust would be to only run this if it IS absolute.
       if (getComputedStyle(bgSlideshow).position !== 'absolute') {
-          // If it's no longer absolute, this logic shouldn't run or should re-initialize.
-          // For now, let's assume if it's not absolute, we don't touch 'top'.
-          // console.warn('IIFE_SCROLL: bgSlideshow is no longer absolute. Halting top updates.');
-          // To be more aggressive, you could force it back:
-          // bgSlideshow.style.position = 'absolute';
-          // bgSlideshow.style.top = scrollY + 'px'; // Re-baseline
           return; 
       }
-
-      if (!initialTopSet && scrollY > 0 && bgSlideshow.style.top === '0px') {
-        // If it started absolute, top 0, but page is scrolled, it means the initial top
-        // was just its CSS value. Adjust it to current scrollY for the first "real" update.
-        // This avoids a jump if CSS is `absolute; top:0;` and page loads scrolled.
-        // This is a bit of a heuristic.
-        // console.log('IIFE_SCROLL: Adjusting initial absolute top from 0px to current scrollY');
-        // bgSlideshow.style.top = scrollY + 'px'; 
-        // The logic below will handle this naturally if top starts at 0 and scrollY is, say, 50.
-        // scrollY(50) < 300 -> top = 50px. This is correct. No special handling needed here.
-      }
-      initialTopSet = true; // Mark that we've gone through at least one update cycle.
-
+      initialTopSet = true; 
 
       if (scrollY < 300) {
         bgSlideshow.style.top = scrollY + 'px';
       } else {
         bgSlideshow.style.top = '300px';
       }
-      // console.log(`IIFE_SCROLL: scrollY=${scrollY}, bgTop=${bgSlideshow.style.top}`);
     }
     window.addEventListener('scroll', updateBgPosition, { passive: true });
     window.addEventListener('resize', updateBgPosition);

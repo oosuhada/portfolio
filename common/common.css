@@ -48,20 +48,15 @@ html, body {
   z-index: 1000;
   border-bottom: 1px solid var(--gray-bg);
   height: 3rem;
-  /* 수정: transform 외에 opacity 트랜지션 추가 */
   transition: transform 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s ease-in-out;
-  overflow: hidden; /* 자식 요소의 createScreenInkSplash가 잘릴 수 있으나, body에 추가되므로 문제 없을 수 있음 */
+  overflow: hidden;
   min-width: var(--site-min-width);
-  /* 수정: 기본적으로 보이도록 opacity 1 설정 */
   opacity: 1; 
 }
 
-/* 수정: 이 클래스는 이제 전체 헤더의 숨김 상태를 페이드 효과와 함께 제어합니다 */
 .nav-header.hidden {
   transform: translateY(-100%);
-  /* 수정: 페이드 아웃 효과를 위한 opacity 추가 */
   opacity: 0;
-  /* 수정: 숨겨졌을 때 상호작용 방지를 위한 pointer-events 추가 */
   pointer-events: none; 
 }
 
@@ -70,9 +65,7 @@ html, body {
   justify-content: space-between;
   width: 100%;
 }
-/* ==== 기존 CSS Header 부분 종료 ==== */
 
-/* --- 추가/수정된 CSS (nav-center a 관련 스타일은 기존 유지) --- */
 .nav-center a {
   text-decoration: none !important;
   color: var(--gray-mid) !important; /* 기본 텍스트 색상 */
@@ -84,38 +77,31 @@ html, body {
   line-height: 1rem !important;
   box-sizing: border-box !important;
   position: relative;
-  overflow: hidden; /* 내부 .ink-splash를 잘라내기 위함 (의도된 동작) */
+  overflow: hidden;
   transition: background-color 0.3s ease;
 }
 
-/* 현재 페이지에 해당하는 링크 스타일 */
 .nav-center a.truly-active {
-  background-color: var(--gray-active-nav-bg) !important; /* 밝은 회색 배경 */
+  background-color: var(--gray-active-nav-bg) !important;
 }
 .nav-center a.truly-active > span.nav-text-wrapper {
-  color: var(--gray-active-nav-text) !important; /* 밝은 배경에 어두운 텍스트 */
+  color: var(--gray-active-nav-text) !important;
 }
 
-/* 모든 링크에 대한 HOVER 스타일 (일시적 활성) */
-/* .truly-active 링크에 호버하는 경우에도 적용됨 */
 .nav-center a.is-splashed {
-  background-color: var(--gray-active-nav-bg) !important; /* 호버 시 배경 (이전 --gray-dark 에서 변경됨) */
+  background-color: var(--gray-active-nav-bg) !important;
 }
 .nav-center a.is-splashed > span.nav-text-wrapper {
-  color: var(--gray-active-nav-text) !important; /* 호버 시 텍스트 색상 (이전 --white 에서 변경됨) */
+  color: var(--gray-active-nav-text) !important;
 }
 
-/* 텍스트 래퍼 - 잉크 스플래시 위에 오도록 z-index 설정, 색상 트랜지션 */
 .nav-center a > span.nav-text-wrapper {
   position: relative;
   z-index: 1;
   transition: color 0.3s ease;
 }
-/* --- 추가/수정된 CSS 종료 --- */
 
-
-/* ==== 기존 CSS 시작 (Ink Splash, Confetti, Footer etc.) ==== */
-/* Ink Splash Effect (링크 내부용 - 헤더용) - JS에서 헤더 링크용으로 더 이상 생성되지 않음 */
+/* ==== 기존 CSS 종료 (Ink Splash, Confetti, Footer etc. 는 유지) ==== */
 .ink-splash {
   position: absolute;
   border-radius: 50%;
@@ -133,7 +119,6 @@ html, body {
   100% { transform: scale(2.5); opacity: 0; }
 }
 
-/* "먹물" Confetti Particle 스타일 (전역) */
 .confetti-particle {
   position: fixed;
   pointer-events: none;
@@ -142,9 +127,8 @@ html, body {
   will-change: transform, opacity, filter;
 }
 
-/* 화면 전체 클릭 시 나타나는 잉크 번짐 효과 (블롭 형태) */
 .screen-click-splash-blob {
-  position: absolute; /* JS에서 fixed로 변경될 수 있음, fixed 사용 시 이 초기 CSS는 대체되거나 폴백으로 사용됨 */
+  position: absolute;
   transform: scale(0);
   opacity: 0.85;
   pointer-events: none;
@@ -155,11 +139,9 @@ html, body {
 @keyframes screen-blob-effect {
   0% { transform: scale(0.8); opacity: 0.85; filter: blur(1px); }
   40% { opacity: 0.3; filter: blur(3px); }
-  /* 참고: JS에서 초기 크기가 다양하게 설정되더라도, 이 애니메이션의 최종 scale(4.0)은 모든 스플래시에 동일하게 적용됨 */
   100% { transform: scale(4.0); opacity: 0; filter: blur(10px); }
 }
 
-/* Footer (공통) */
 footer {
   width: 100vw;
   height: 30vw;
@@ -219,4 +201,92 @@ footer {
   animation: shakeX 2.6s cubic-bezier(.66,0,.35,1) infinite;
   transform-origin: 50% 85%;
 }
-/* ==== 기존 CSS 종료 ==== */
+
+
+/* ======================================================= */
+/* ==== 하이라이터 및 팝업 메뉴 CSS 추가 ==== */
+/* ======================================================= */
+
+/* 하이라이트 가능한 텍스트 청크의 기본 스타일 */
+.meaning-chunk,
+.timeline-chunk,
+.skill-chunk {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  /* 인라인 요소들이 줄바꿈될 때 자연스럽게 보이도록 설정 */
+  display: inline;
+  padding-top: 0.1em;
+  padding-bottom: 0.1em;
+  margin-top: -0.1em;
+  margin-bottom: -0.1em;
+  border-radius: 3px;
+}
+
+/* 하이라이트 색상별 클래스 */
+.highlight-yellow { background-color: rgba(255, 226, 107, 0.7); } /* --yellow-line 과 유사 */
+.highlight-pink   { background-color: rgba(255, 164, 211, 0.6); } /* --pink 과 유사 */
+.highlight-orange { background-color: rgba(255, 159, 67, 0.6); }
+.highlight-green  { background-color: rgba(130, 212, 167, 0.7); }
+.highlight-blue   { background-color: rgba(137, 196, 244, 0.7); }
+.highlight-gray   { background-color: rgba(204, 204, 204, 0.8); }
+
+
+/* 하이라이트 색상 변경 팝업 메뉴 */
+#highlight-menu {
+  position: absolute;
+  display: none; /* 평소에는 숨김 */
+  align-items: center;
+  gap: 8px;
+  background-color: #fff;
+  border: 1px solid var(--gray-bg);
+  border-radius: 20px;
+  padding: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  z-index: 10001; /* 다른 요소들 위에 오도록 설정 */
+  user-select: none;
+}
+
+/* 메뉴 드래그 핸들 (':' 모양) */
+#highlight-menu .drag-handle {
+  cursor: move;
+  padding: 4px;
+  color: var(--gray-mid);
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 1;
+  writing-mode: vertical-rl;
+  letter-spacing: 2px;
+}
+
+/* 색상 선택 옵션들을 담는 컨테이너 */
+#highlight-menu .color-palette {
+  display: flex;
+  gap: 6px;
+}
+
+/* 개별 색상 선택 버튼 */
+#highlight-menu .color-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+#highlight-menu .color-swatch:hover {
+  transform: scale(1.15);
+}
+
+#highlight-menu .color-swatch.active {
+    border-color: var(--gray-dark);
+    transform: scale(1.1);
+}
+
+/* 색상별 스타일 */
+.color-swatch[data-color="yellow"] { background-color: #FFD166; }
+.color-swatch[data-color="pink"]   { background-color: #FFA4D3; }
+.color-swatch[data-color="orange"] { background-color: #FF9F43; }
+.color-swatch[data-color="green"]  { background-color: #82D4A7; }
+.color-swatch[data-color="blue"]   { background-color: #89C4F4; }
+.color-swatch[data-color="gray"]   { background-color: #CCC; }

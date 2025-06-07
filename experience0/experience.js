@@ -492,25 +492,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateFixedImagePosition() {
-        // 필요한 요소들을 가져옵니다.
         const dragger = document.getElementById('timeline-dragger');
-        const fixedGrapeImageContainer = document.querySelector('.fixed-image-container');
-    
-        // 이미지 컨테이너와 분할기가 화면에 보일 때만 로직을 실행합니다.
-        if (fixedGrapeImageContainer && dragger && fixedGrapeImageContainer.classList.contains('visible')) {
-            
-            // 분할기(dragger)의 화면상 위치 정보를 가져옵니다.
+        const resizableArea = document.querySelector('.resizable-timeline-area');
+        if (fixedGrapeImageContainer && dragger && resizableArea) {
             const draggerRect = dragger.getBoundingClientRect();
-            
-            // 이미지를 분할기의 오른쪽 가장자리에서 20px 떨어진 곳에 위치시킵니다.
-            // 이것이 원래 코드와 가장 유사하면서도 안정적인 위치 계산 방식입니다.
-            const newLeftPosition = draggerRect.right + 20;
-    
-            // right 속성은 사용하지 않도록 초기화하여 left 위치만으로 제어합니다.
-            fixedGrapeImageContainer.style.right = 'auto';
-            fixedGrapeImageContainer.style.left = `${newLeftPosition}px`;
-    
-            // bottom 위치는 원래 코드처럼 20px로 유지합니다.
+            const resizableAreaRect = resizableArea.getBoundingClientRect();
+            const draggerRight = draggerRect.right - resizableAreaRect.left;
+            fixedGrapeImageContainer.style.left = `${draggerRight+280}px`;
+            fixedGrapeImageContainer.style.right = `${draggerRight-80}px`;
             fixedGrapeImageContainer.style.bottom = '20px';
         }
     }
@@ -1035,17 +1024,10 @@ document.addEventListener('DOMContentLoaded', () => {
         grapeTexts.forEach((textEl, visualIndexInList) => {
             const stageIndex = stageMapping.findIndex(s => s.visualTextIndex === visualIndexInList);
             if (stageIndex !== -1 && stageMapping[stageIndex]) {
-                
-                /* MODIFIED: 아래의 if문과 return을 삭제하여 헤더도 클릭 가능하게 만듭니다. */
-                // if (textEl.classList.contains('gauge-section-header')) {
-                //     return;
-                // }
-                
-                textEl.style.cursor = 'pointer'; // 모든 항목에 커서 적용
+                textEl.style.cursor = 'pointer';
                 textEl.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const clickedStage = stageMapping[stageIndex];
-                    // 'Intro'가 아닌 모든 항목은 클릭 시 해당 위치로 스크롤됩니다.
                     if (!clickedStage.isIntro && !isAutoScrollingToWorkExp && !vineAnimationCurrentlyPlaying) {
                         userInteractedDuringAnimation = false;
                         _hoveredStageIndex = -1;
@@ -1118,32 +1100,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 150);
     }
 
+    // --- Lottie Animation ---
+    const lottieContainer = document.getElementById('lottie-footer');
+    if(lottieContainer && typeof lottie !== 'undefined') {
+        lottie.loadAnimation({
+            container: lottieContainer,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'experiencelottie.json' 
+        });
+    }
+
     // --- Initializations ---
     populateTimeline();
     finalizePageSetup();
     if (heroBg) initialHeroSetup();
-
-    // --- ADDED: Gauge container collapse/expand logic ---
-    const gaugeContainer = document.getElementById('fixed-vine-gauge-container');
-    const toggleBtn = document.getElementById('gauge-toggle-btn');
-    const bodyEl = document.body;
-
-    if (toggleBtn && gaugeContainer && bodyEl) {
-        toggleBtn.addEventListener('click', () => {
-            const isCollapsed = gaugeContainer.classList.toggle('collapsed');
-            bodyEl.classList.toggle('gauge-collapsed', isCollapsed);
-            toggleBtn.textContent = isCollapsed ? '+' : '-';
-            toggleBtn.setAttribute('aria-label', isCollapsed ? 'Expand Menu' : 'Collapse Menu');
-            toggleBtn.setAttribute('title', isCollapsed ? 'Expand Menu' : 'Collapse Menu');
-
-            // After the transition, re-calculate element alignment
-            // This ensures other components adjust to the new layout
-            setTimeout(() => {
-                alignWorkIntro();
-                updateFixedImagePosition();
-                // Dispatching a resize event can help other JS components that listen for it
-                window.dispatchEvent(new Event('resize')); 
-            }, 450); // This duration should be slightly longer than the CSS transition time
-        });
-    }
 });

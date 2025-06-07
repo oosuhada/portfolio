@@ -1,4 +1,3 @@
-Gemini
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +7,7 @@ Gemini
     <link rel="icon" type="image/png" href="../apple-touch-icon.png" />
     <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
     <link rel="stylesheet" href="../common/common.css" />
-    <link rel="stylesheet" href="experience.css" />
+    <link rel="stylesheet" href="experience1.css" />
     <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
@@ -24,6 +23,38 @@ Gemini
         </nav>
     </header>
     <div id="top-sentinel"></div>
+
+    <div id="fixed-vine-gauge-container">
+        <div class="vine-gauge-and-text-wrapper">
+             <div class="fade-in-list" id="vineStageList">
+                <div>
+                    <span></span> </div>
+                <div> <div class="embedded-gauge-block"></div>
+                    <span>Ripening</span>
+                </div>
+                <div> <div class="embedded-gauge-block"></div>
+                    <span>Fruit Set</span>
+                </div>
+                <div> <div class="embedded-gauge-block"></div>
+                    <span>Vine Flowering</span>
+                </div>
+                <div> <div class="embedded-gauge-block"></div>
+                    <span>Keep Growing</span>
+                </div>
+                <div> <div class="embedded-gauge-block"></div>
+                    <span>Bud break</span>
+                </div>
+                <div> <div class="embedded-gauge-block"></div>
+                    <span>Plant rootstock</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed-image-container">
+        <img id="central-timeline-image" src="images/1.png" alt="Grape vine stage" draggable="false" />
+    </div>
+
     <main class="experience-main">
         <section class="hero-section-winery">
             <div class="hero-winery-bg">
@@ -40,293 +71,132 @@ Gemini
             </div>
         </section>
         <div class="section-top-gap"></div>
+
         <div class="experience-content-wrapper">
             <div class="section-top-gap"></div>
 
-            <div class="experience-row-wrap">
-                <section class="grape-visual-story-col vine-side">
-                    <div class="vine-gauge-and-text-wrapper">
-                        <div class="fade-in-list" id="vineStageList">
-                            <div>
-                                <span></span>
+            <div class="resizable-timeline-area">
+                <div class="timeline-outer-refactored" id="timeline-left-pane"> <div class="timeline-items-column">
+                        <section class="timeline-section" id="work-experience-section-refactored">
+                            <div class="timeline-entry timeline-entry-header-section"> <div class="timeline-dot-new"></div>
+                                <div class="timeline-section-spanning-header" id="work-exp-header-refactored">
+                                    <h2 class="exp-title center main-highlight-text">Work Experience</h2>
+                                    <div class="exp-history-desc center" id="exp-history-desc-refactored">
+                                        <strong>
+                                            <span class="timeline-chunk">Multidisciplinary UX/UI designer</span>
+                                            <span class="timeline-chunk">with end-to-end experience</span>
+                                            <span class="timeline-chunk">from planning to technical execution.</span>
+                                        </strong><br>
+                                        <span class="timeline-chunk">
+                                            With a <span class="main-highlight-text">holistic business perspective</span>
+                                        </span>
+                                        <span class="timeline-chunk">
+                                            and data analytics skills developed in global organizations,
+                                        </span>
+                                        <span class="timeline-chunk">
+                                            and <span class="main-highlight-text">luxury brand</span>-driven customer-centric thinking,
+                                        </span>
+                                        <span class="timeline-chunk">
+                                            I provide design solutions that satisfy both users and businesses.
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
-                            <div> <div class="embedded-gauge-block"></div>
-                                <span>Ripening</span>
-                            </div>
-                            <div> <div class="embedded-gauge-block"></div>
-                                <span>Fruit Set</span>
-                            </div>
-                            <div> <div class="embedded-gauge-block"></div>
-                                <span>Vine Flowering</span>
-                            </div>
-                            <div> <div class="embedded-gauge-block"></div>
-                                <span>Keep Growing</span>
-                            </div>
-                            <div> <div class="embedded-gauge-block"></div>
-                                <span>Bud break</span>
-                            </div>
-                            <div> <div class="embedded-gauge-block"></div>
-                                <span>Plant rootstock</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grape-story-img-area">
-                        <div class="section-floating-title" id="floatingSectionTitle"></div>
-                        <img id="vine-stage-img" src="images/1.png" alt="Grape vine stage" draggable="false" />
-                    </div>
-                </section>
+                            <div id="work-experience-cards-container">
+                                </div>
+                        </section>
 
-                <section class="timeline-outer">
-                    <div class="timeline-header" id="exp-section-header">
-                        <h2 class="exp-title center main-pink">Work Experience</h2>
-                    </div>
-                    <div class="exp-history-desc center" id="exp-history-desc">
-                        <strong>
-                            <span class="timeline-chunk">Multidisciplinary UX/UI designer</span>
-                            <span class="timeline-chunk">with end-to-end experience</span>
-                            <span class="timeline-chunk">from planning to technical execution.</span>
-                        </strong><br>
-                        <span class="timeline-chunk">
-                            With a <span class="main-pink">holistic business perspective</span>
-                        </span>
-                        <span class="timeline-chunk">
-                            and data analytics skills developed in global organizations,
-                        </span>
-                        <span class="timeline-chunk">
-                            and <span class="main-pink">luxury brand</span>-driven customer-centric thinking,
-                        </span>
-                        <span class="timeline-chunk">
-                            I provide design solutions that satisfy both users and businesses.
-                        </span>
-                    </div>
-                    <div class="timeline-all">
-                        <div class="timeline-row" data-animate>
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-grid">
-                                <div class="timeline-title">Founder & CEO</div>
-                                <div class="company">OOSU SALON YEONNAM</div>
-                                <div class="timeline-date">Feb 2020 - Jan 2025</div>
-                                <div class="timeline-field">Customer Experience Design</div>
-                                <div class="timeline-desc">
-                                    <span class="timeline-chunk">
-                                        Led the overall business planning, spatial design, branding,
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        and customer experience design for a casual wine bar in Seoul,
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        leading it to operational success.
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        Developed a customer-centric service system,
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        and streamlined operations for a sustainable business model,
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        continuously improving customer satisfaction and retention
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        through ongoing feedback collection and improvement.
-                                    </span>
-                                </div>
-                                <div class="timeline-tags">
-                                    <span>Hospitality</span>
-                                    <span>F&amp;B</span>
-                                    <span>Business</span>
+                        <section class="timeline-section" id="education-section-refactored">
+                            <div class="timeline-entry timeline-entry-header-section"> <div class="timeline-dot-new"></div>
+                                <div class="timeline-section-spanning-header" id="edu-header-refactored">
+                                    <h2 class="exp-title center main-highlight-text">Education</h2>
+                                    <div class="exp-edu-desc center" id;MAAA:exp-edu-desc-refactored">
+                                        <strong>
+                                            <span class="timeline-chunk">Through hands-on UX research and UI design training,</span>
+                                            <span class="timeline-chunk">Flutter-based app development experience,</span>
+                                            <span class="timeline-chunk">and studies in business and communication theory,</span>
+                                        </strong>
+                                        <span class="timeline-chunk">I have developed problem-solving skills</span>
+                                        <span class="timeline-chunk">and user-centered thinking.</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="timeline-row" data-animate>
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-grid">
-                                <div class="timeline-title">Global Key Account Manager</div>
-                                <div class="company">GfK Retail and Technology Korea</div>
-                                <div class="timeline-date">Apr 2018 - Mar 2019</div>
-                                <div class="timeline-field">Consumer Data Analytics & Consulting</div>
-                                <div class="timeline-desc">
-                                    <span class="timeline-chunk">
-                                        Handled global Samsung accounts,
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        delivering business insights and strategy consulting
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        through analysis of POS tracking and consumer behavior data.
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        Identified consumer trends and insights through market analysis,
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        empowering clients’ data-driven decision making
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        and helping them reach their marketing objectives.
-                                    </span>
+                            <div id="education-cards-container">
                                 </div>
-                                <div class="timeline-tags">
-                                    <span>MarketResearch</span>
-                                    <span>DataAnalytics</span>
-                                    <span>ConsumerInsights</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="timeline-row" data-animate>
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-grid">
-                                <div class="timeline-title">Marketing - MD Intern</div>
-                                <div class="company">Ermenegildo Zegna Korea</div>
-                                <div class="timeline-date">Dec 2017 - Feb 2018</div>
-                                <div class="timeline-field">Enhancing Consumer Experience</div>
-                                <div class="timeline-desc">
-                                    <span class="timeline-chunk">
-                                        Analyzed customer journeys for a luxury fashion brand,
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        focusing on in-store and online omnichannel touchpoints.
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        Proposed targeted marketing communication strategies
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        by analyzing high-value customer preferences and purchasing behaviors.
-                                    </span>
-                                </div>
-                                <div class="timeline-tags">
-                                    <span>LuxuryFashion</span>
-                                    <span>ConsumerAnalysis</span>
-                                    <span>BrandExperience</span>
-                                </div>
-                            </div>
-                        </div>
+                        </section>
                     </div>
-
-                    <div class="timeline-header" id="education-section-header">
-                        <h2 class="exp-title center main-pink">Education</h2>
+                </div>
+                <div class="dragger-handle" id="timeline-dragger"></div>
+                <div class="timeline-right-pane" id="timeline-right-pane">
                     </div>
-                    <div class="exp-edu-desc center" id="exp-edu-desc">
-                        <strong>
-                            <span class="timeline-chunk">Through hands-on UX research and UI design training,</span>
-                            <span class="timeline-chunk">Flutter-based app development experience,</span>
-                            <span class="timeline-chunk">and studies in business and communication theory,</span>
-                        </strong>
-                        <span class="timeline-chunk">I have developed problem-solving skills</span>
-                        <span class="timeline-chunk">and user-centered thinking.</span>
-                    </div>
-                    <div class="timeline-all">
-                        <div class="edu-row" data-animate>
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-grid">
-                                <div class="timeline-title edu-title">UX/UI Design Course</div>
-                                <div class="company edu-org">Seoul City Digital Training Program</div>
-                                <div class="timeline-date edu-date">Apr 2025 - Jul 2025</div>
-                                <div class="timeline-field edu-role">Student</div>
-                                <div class="timeline-desc edu-desc">
-                                    <span class="timeline-chunk">
-                                        Systematically learned the entire process of user experience design,
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        acquiring practical UX/UI skills such as UX research, user testing,
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        and design prototyping through the Seoul City Digital Training Program.
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        Repeatedly practiced the full design process
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        by designing and verifying diverse user journeys through various projects.
-                                    </span>
-                                </div>
-                                <div class="timeline-tags edu-tags">
-                                    <span>UXDesign</span>
-                                    <span>UserResearch</span>
-                                    <span>Prototyping</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="edu-row" data-animate>
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-grid">
-                                <div class="timeline-title edu-title">Programming Course</div>
-                                <div class="company edu-org">Korea Digital Training Bootcamp by Team Sparta</div>
-                                <div class="timeline-date edu-date">Oct 2024 - Feb 2025</div>
-                                <div class="timeline-field edu-role">Student</div>
-                                <div class="timeline-desc edu-desc">
-                                    <span class="timeline-chunk">
-                                        Strengthened my hands-on ability to bridge design and development
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        by completing the Korea Digital Training Bootcamp from Team Sparta,
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        focusing on Flutter app development.
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        Enhanced my understanding of the technical implementation of UX/UI design
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        and improved collaboration skills through real project work.
-                                    </span>
-                                </div>
-                                <div class="timeline-tags edu-tags">
-                                    <span>Frontend</span>
-                                    <span>Programming</span>
-                                    <span>Flutter</span>
-                                    <span>UXUIDesign</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="edu-row" data-animate>
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-grid">
-                                <div class="timeline-title edu-title">Business Administration/Media Communication Major</div>
-                                <div class="company edu-org">Hankuk University Of Foreign Studies</div>
-                                <div class="timeline-date edu-date">Mar 2012 - Dec 2017</div>
-                                <div class="timeline-field edu-role">Student</div>
-                                <div class="timeline-desc edu-desc">
-                                    <span class="timeline-chunk">
-                                        Built a solid theoretical foundation in business strategy and communications
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        by double-majoring in Business Administration and Media Communication.
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        Gained expertise in marketing, branding, and consumer behavior,
-                                    </span>
-                                    <span class="timeline-chunk">
-                                        building a solid foundation for user-centered design.
-                                    </span>
-                                </div>
-                                <div class="timeline-tags edu-tags">
-                                    <span>BusinessStrategy</span>
-                                    <span>ConsumerBehavior</span>
-                                    <span>IntegratedMarketing</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
             </div>
-
+            
             <div class="grape-footer-quote">
                 <div class="footer-image-container"> <img id="grapeFooterImg" src="images/footer1.png" alt="grape to wine" class="grape-footer-img"/>
-                    <div class="grape-footer-text" id="grapeFooterText">
-                        Now,
-                    </div>
+                    <div class="grape-footer-text" id="grapeFooterText">Now,</div>
                 </div>
             </div>
-        </main>
-        <footer>
-            <div class="footer-row">
-                <div class="footer-content">
-                    <p>You've hit the footer,<br>thanks for stopping by.<br>Still curious?<br>→ <a href="mailto:oosu.salon@gmail.com">oosu.salon@gmail.com</a></p>
-                    <span class="footer-copyright">© Oosu Jang 2025</span>
-                </div>
-                <img src="images/footer.png" alt="Footer Image" class="footer-image">
+        </div> 
+    </main>
+
+    <div id="original-timeline-data" style="display:none;">
+        <div id="original-work-exp-items">
+            <div class="timeline-row" data-item-id="work-0">
+                <div class="timeline-dot"></div><div class="timeline-grid"><div class="timeline-title">Founder & CEO</div><div class="company">OOSU SALON YEONNAM</div><div class="timeline-date">Feb 2020 - Jan 2025</div><div class="timeline-field">Customer Experience Design</div><div class="timeline-desc"><span class="timeline-chunk">Led the overall business planning, spatial design, branding,</span><span class="timeline-chunk">and customer experience design for a casual wine bar in Seoul,</span><span class="timeline-chunk">leading it to operational success.</span><span class="timeline-chunk">Developed a customer-centric service system,</span><span class="timeline-chunk">and streamlined operations for a sustainable business model,</span><span class="timeline-chunk">continuously improving customer satisfaction and retention</span><span class="timeline-chunk">through ongoing feedback collection and improvement.</span></div><div class="timeline-tags"><span>Hospitality</span><span>F&B</span><span>Business</span></div></div>
             </div>
-        </footer>
-        <script src="../common/common.js"></script>
-        <script src="experience.js"></script>
-    </body>
+            <div class="timeline-row" data-item-id="work-1">
+                <div class="timeline-dot"></div><div class="timeline-grid"><div class="timeline-title">Global Key Account Manager</div><div class="company">GfK Retail and Technology Korea</div><div class="timeline-date">Apr 2018 - Mar 2019</div><div class="timeline-field">Consumer Data Analytics & Consulting</div><div class="timeline-desc"><span class="timeline-chunk">Handled global Samsung accounts,</span><span class="timeline-chunk">delivering business insights and strategy consulting</span><span class="timeline-chunk">through analysis of POS tracking and consumer behavior data.</span><span class="timeline-chunk">Identified consumer trends and insights through market analysis,</span><span class="timeline-chunk">empowering clients’ data-driven decision making</span><span class="timeline-chunk">and helping them reach their marketing objectives.</span></div><div class="timeline-tags"><span>MarketResearch</span><span>DataAnalytics</span><span>ConsumerInsights</span></div></div>
+            </div>
+            <div class="timeline-row" data-item-id="work-2">
+                <div class="timeline-dot"></div><div class="timeline-grid"><div class="timeline-title">Marketing - MD Intern</div><div class="company">Ermenegildo Zegna Korea</div><div class="timeline-date">Dec 2017 - Feb 2018</div><div class="timeline-field">Enhancing Consumer Experience</div><div class="timeline-desc"><span class="timeline-chunk">Analyzed customer journeys for a luxury fashion brand,</span><span class="timeline-chunk">focusing on in-store and online omnichannel touchpoints.</span><span class="timeline-chunk">Proposed targeted marketing communication strategies</span><span class="timeline-chunk">by analyzing high-value customer preferences and purchasing behaviors.</span></div><div class="timeline-tags"><span>LuxuryFashion</span><span>ConsumerAnalysis</span><span>BrandExperience</span></div></div>
+            </div>
+        </div>
+        <div id="original-edu-exp-items">
+            <div class="edu-row" data-item-id="edu-0">
+                <div class="timeline-dot"></div><div class="timeline-grid"><div class="timeline-title edu-title">UX/UI Design Course</div><div class="company edu-org">Seoul City Digital Training Program</div><div class="timeline-date edu-date">Apr 2025 - Jul 2025</div><div class="timeline-field edu-role">Student</div><div class="timeline-desc edu-desc"><span class="timeline-chunk">Systematically learned the entire process of user experience design,</span><span class="timeline-chunk">acquiring practical UX/UI skills such as UX research, user testing,</span><span class="timeline-chunk">and design prototyping through the Seoul City Digital Training Program.</span><span class="timeline-chunk">Repeatedly practiced the full design process</span><span class="timeline-chunk">by designing and verifying diverse user journeys through various projects.</span></div><div class="timeline-tags edu-tags"><span>UXDesign</span><span>UserResearch</span><span>Prototyping</span></div></div>
+            </div>
+            <div class="edu-row" data-item-id="edu-1">
+                <div class="timeline-dot"></div><div class="timeline-grid"><div class="timeline-title edu-title">Programming Course</div><div class="company edu-org">Korea Digital Training Bootcamp by Team Sparta</div><div class="timeline-date edu-date">Oct 2024 - Feb 2025</div><div class="timeline-field edu-role">Student</div><div class="timeline-desc edu-desc"><span class="timeline-chunk">Strengthened my hands-on ability to bridge design and development</span><span class="timeline-chunk">by completing the Korea Digital Training Bootcamp from Team Sparta,</span><span class="timeline-chunk">focusing on Flutter app development.</span><span class="timeline-chunk">Enhanced my understanding of the technical implementation of UX/UI design</span><span class="timeline-chunk">and improved collaboration skills through real project work.</span></div><div class="timeline-tags edu-tags"><span>Frontend</span><span>Programming</span><span>Flutter</span><span>UXUIDesign</span></div></div>
+            </div>
+            <div class="edu-row" data-item-id="edu-2">
+                <div class="timeline-dot"></div><div class="timeline-grid"><div class="timeline-title edu-title">Business Administration/Media Communication Major</div><div class="company edu-org">Hankuk University Of Foreign Studies</div><div class="timeline-date edu-date">Mar 2012 - Dec 2017</div><div class="timeline-field edu-role">Student</div><div class="timeline-desc edu-desc"><span class="timeline-chunk">Built a solid theoretical foundation in business strategy and communications</span><span class="timeline-chunk">by double-majoring in Business Administration and Media Communication.</span><span class="timeline-chunk">Gained expertise in marketing, branding, and consumer behavior,</span><span class="timeline-chunk">building a solid foundation for user-centered design.</span></div><div class="timeline-tags edu-tags"><span>BusinessStrategy</span><span>ConsumerBehavior</span><span>IntegratedMarketing</span></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="experience-modal-overlay" id="experience-modal-container">
+        <div class="experience-modal-content">
+            <button class="experience-modal-close-btn" id="modal-close-button" aria-label="Close modal">×</button>
+            <div class="experience-modal-image-pane">
+                <img src="" alt="Experience Image" id="modal-image-element" class="experience-modal-image">
+                <div class="experience-modal-nav">
+                    <button class="experience-modal-nav-btn" id="modal-prev-button" aria-label="Previous image"><</button>
+                    <button class="experience-modal-nav-btn" id="modal-next-button" aria-label="Next image">></button>
+                </div>
+            </div>
+            <div class="experience-modal-details-pane">
+                <h3 id="modal-title" class="experience-modal-title"></h3>
+                <p id="modal-company" class="experience-modal-company"></p>
+                <p id="modal-date" class="experience-modal-date"></p>
+                <p id="modal-field" class="experience-modal-field"></p>
+                <div id="modal-description" class="experience-modal-description"></div>
+                <div id="modal-tags" class="experience-modal-tags"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-row">
+            <div class="footer-content">
+                <p>You've hit the footer,<br>thanks for stopping by.<br>Still curious?<br>→ <a href="mailto:oosu.salon@gmail.com">oosu.salon@gmail.com</a></p>
+                <span class="footer-copyright">© Oosu Jang 2025</span>
+            </div>
+            <img src="images/footer.png" alt="Footer Image" class="footer-image">
+        </div>
+    </footer>
+
+    <script src="../common/common.js"></script>
+    <script src="experience1.js"></script>
+    <script src="experience2.js"></script>
+</body>
 </html>

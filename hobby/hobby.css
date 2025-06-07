@@ -9,6 +9,7 @@
   /* overflow: hidden; */ /* 내부 이미지가 테두리를 넘지 않도록 하려면 주석 해제 */
   /* transition: top 0.22s cubic-bezier(.24,.88,.47,1.09); */ /* 삭제: JS가 top을 직접 제어하므로 CSS transition은 방해가 될 수 있음 */
   background-color: #000; /* Optional: fallback background color */
+  opacity: 0.5;     
 }
 
 #background-slideshow img {
@@ -168,7 +169,7 @@ body {
   user-select: none;
   position: absolute;
   top: 50px;
-  will-change: transform;
+  will-change: transform, opacity, filter; /* MODIFIED LINE */
 }
 .poster:hover {
   box-shadow: 0 16px 38px #2225, 0 3px 14px #0001;
@@ -202,7 +203,7 @@ body {
   position: absolute;
   left: 50%;
   top: 0;
-  color: #c1c1c1;
+  color: var(--gray-dark);
   font-size: 1.05em;
   font-family: 'Georgia', serif;
   opacity: 0.7;
@@ -292,7 +293,7 @@ body {
 
 /* Spacer DIV between main content and the standard footer on the hobby page */
 .footer-spacer-hobby {
-  height: 250px; /* Adjust this value to increase or decrease the empty space */
+  height: 21rem; /* Adjust this value to increase or decrease the empty space */
   width: 100%;   /* Ensures it occupies the full width */
 }
 

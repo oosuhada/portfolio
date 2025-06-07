@@ -1,123 +1,138 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Theme Buttons (Now in floating-menu1, using original IDs for JS compatibility)
-    const penThemeBtn = document.getElementById('pen-theme-btn'); // Points to the "Western" theme button in floating-menu1
-    const brushThemeBtn = document.getElementById('brush-theme-btn'); // Points to the "Eastern" theme button in floating-menu1
-
-    // Language Buttons (in floating-menu2)
-    const langEnBtn = document.getElementById('lang-en-btn');
-    const langKoBtn = document.getElementById('lang-ko-btn');
-
-    // Font Size Buttons (in floating-menu2)
+    // --- 1. 요소 선택 (Selectors) ---
+    const westernThemeBtn = document.getElementById('pen-theme-btn'); // Western theme (front image)
+    const easternThemeBtn = document.getElementById('brush-theme-btn'); // Eastern theme (front image)
+    const penStyleBtn = document.getElementById('pen-style-indicator-btn'); // Pen cursor
+    const brushStyleBtn = document.getElementById('brush-style-indicator-btn'); // Brush cursor
+    const langEnBtn = document.getElementById('lang-en-btn'); // English language
+    const langKoBtn = document.getElementById('lang-ko-btn'); // Korean language
     const fontSizeSmallBtn = document.getElementById('font-size-small');
     const fontSizeMediumBtn = document.getElementById('font-size-medium');
     const fontSizeLargeBtn = document.getElementById('font-size-large');
 
-    const westernElements = document.querySelectorAll('.western-theme');
-    const easternElements = document.querySelectorAll('.eastern-theme');
-
-    const westernFrontImg = document.getElementById('western-front-img');
-    const easternFrontImg = document.getElementById('eastern-front-img');
-
-    const westernPostcardBack = document.getElementById('western-postcard-back');
-    const easternPostcardBack = document.getElementById('eastern-postcard-back');
-    const footerElement = document.querySelector('footer');
-    const footerTargetImg = document.getElementById('footer-target-img');
-
+    const postcardFronts = document.querySelectorAll('.postcard-front');
+    const postcardBack = document.getElementById('main-postcard-back');
+    const formInputs = postcardBack.querySelectorAll('input[type="text"], input[type="email"], textarea');
     const langDataElements = document.querySelectorAll('[data-lang-en], [data-lang-ko]');
     const bodyElement = document.body;
+    const footerElement = document.querySelector('footer');
+    const brushStyleIcon = brushStyleBtn.querySelector('i'); // Icon element for brush button
 
-    let currentTheme = 'western';
+    // --- 2. 상태 변수 (State Variables) ---
+    let currentFrontTheme = 'western';
+    let currentCursorStyle = 'pen';
     let currentLang = 'en';
 
+    // --- 3. 핵심 기능 함수 (Core Functions) ---
+
+    /**
+     * 카드 앞면의 테마(이미지)를 변경합니다.
+     * @param {string} theme - 'western' 또는 'eastern'
+     */
+    function applyFrontTheme(theme) {
+        currentFrontTheme = theme;
+        postcardFronts.forEach(front => {
+            front.classList.toggle('hidden', !front.classList.contains(theme + '-theme'));
+        });
+        westernThemeBtn.classList.toggle('active', theme === 'western');
+        easternThemeBtn.classList.toggle('active', theme === 'eastern');
+        localStorage.setItem('oosuPortfolioFrontTheme', theme);
+    }
+
+    /**
+     * 폼 입력 필드의 커서 스타일을 변경하고 brush 버튼 아이콘을 업데이트합니다.
+     * @param {string} style - 'pen' 또는 'brush'
+     */
+    function applyCursorStyle(style) {
+        currentCursorStyle = style;
+        formInputs.forEach(input => {
+            input.classList.remove('pen-cursor', 'brush-cursor');
+            input.classList.add(`${style}-cursor`);
+        });
+        penStyleBtn.classList.toggle('active', style === 'pen');
+        brushStyleBtn.classList.toggle('active', style === 'brush');
+        
+        // Update brush button icon
+        if (brushStyleIcon) {
+            brushStyleIcon.style.backgroundImage = style === 'brush' 
+                ? 'url("brushwhite.png")' 
+                : 'url("brushblack.png")';
+        }
+        
+        localStorage.setItem('oosuPortfolioCursorStyle', style);
+    }
+
+    /**
+     * 지정된 언어(en/ko)로 페이지의 텍스트를 변경합니다.
+     * @param {string} lang - 'en' 또는 'ko'
+     */
     function applyLanguage(lang) {
         currentLang = lang;
         langDataElements.forEach(el => {
-            const textKey = `lang-${lang}`;
-            if (el.dataset[textKey]) {
-                let content = el.dataset[textKey];
-                if (el.tagName === 'P' && el.innerHTML.includes("<a href=")) {
-                    el.innerHTML = content;
-                } else if (el.tagName === 'INPUT' && (el.type === 'text' || el.type === 'email' || el.tagName === 'TEXTAREA')) {
-                    if (el.placeholder !== undefined) {
-                        el.placeholder = content;
-                    }
-                } else if (el.tagName === 'INPUT' && (el.type === 'submit' || el.type === 'button')) {
-                    el.value = content;
+            const textKey = `data-lang-${lang}`;
+            if (el.hasAttribute(textKey)) {
+                // Preserve HTML structure (e.g., links in footer)
+                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                    el.placeholder = el.getAttribute(textKey) || '';
+                } else if (el.tagName === 'BUTTON' && el.type === 'submit') {
+                    el.textContent = el.getAttribute(textKey) || el.textContent;
                 } else {
-                    el.textContent = content;
+                    el.innerHTML = el.getAttribute(textKey) || el.innerHTML;
                 }
             }
         });
-
         langEnBtn.classList.toggle('active', lang === 'en');
         langKoBtn.classList.toggle('active', lang === 'ko');
         localStorage.setItem('oosuPortfolioLang', lang);
     }
 
-    function applyTheme(theme) {
-        currentTheme = theme;
-
-        westernElements.forEach(el => el.classList.toggle('hidden', theme === 'eastern'));
-        easternElements.forEach(el => el.classList.toggle('hidden', theme === 'western'));
-
-        // Adjusted paths to match HTML
-        if (theme === 'western' && westernFrontImg) {
-            westernFrontImg.src = 'western/ezgif-frame-001.jpg';
-        } else if (theme === 'eastern' && easternFrontImg) {
-            easternFrontImg.src = 'eastern/ezgif-frame-001.jpg';
-        }
-
-        // These will correctly target the new theme buttons in floating-menu1
-        if (penThemeBtn) penThemeBtn.classList.toggle('active', theme === 'western');
-        if (brushThemeBtn) brushThemeBtn.classList.toggle('active', theme === 'eastern');
-        localStorage.setItem('oosuPortfolioTheme', theme);
-    }
-
+    /**
+     * 페이지 전체의 폰트 크기를 조절합니다.
+     * @param {string} size - 'small', 'medium', 'large'
+     */
     function applyFontSize(size) {
         bodyElement.classList.remove('font-size-small', 'font-size-medium', 'font-size-large');
-        let newSizeClass = 'font-size-medium';
-        if (size === 'small') newSizeClass = 'font-size-small';
-        else if (size === 'large') newSizeClass = 'font-size-large';
-        bodyElement.classList.add(newSizeClass);
-
-        if (fontSizeSmallBtn) fontSizeSmallBtn.classList.toggle('active', size === 'small');
-        if (fontSizeMediumBtn) fontSizeMediumBtn.classList.toggle('active', size === 'medium' || !size);
-        if (fontSizeLargeBtn) fontSizeLargeBtn.classList.toggle('active', size === 'large');
+        bodyElement.classList.add(`font-size-${size}`);
+        fontSizeSmallBtn.classList.toggle('active', size === 'small');
+        fontSizeMediumBtn.classList.toggle('active', size === 'medium');
+        fontSizeLargeBtn.classList.toggle('active', size === 'large');
         localStorage.setItem('oosuPortfolioFontSize', size);
     }
 
-    if (penThemeBtn) penThemeBtn.addEventListener('click', () => applyTheme('western'));
-    if (brushThemeBtn) brushThemeBtn.addEventListener('click', () => applyTheme('eastern'));
+    // --- 4. 이벤트 리스너 연결 (Event Listeners) ---
+    westernThemeBtn.addEventListener('click', () => applyFrontTheme('western'));
+    easternThemeBtn.addEventListener('click', () => applyFrontTheme('eastern'));
+    penStyleBtn.addEventListener('click', () => applyCursorStyle('pen'));
+    brushStyleBtn.addEventListener('click', () => applyCursorStyle('brush'));
+    langEnBtn.addEventListener('click', () => applyLanguage('en'));
+    langKoBtn.addEventListener('click', () => applyLanguage('ko'));
+    fontSizeSmallBtn.addEventListener('click', () => applyFontSize('small'));
+    fontSizeMediumBtn.addEventListener('click', () => applyFontSize('medium'));
+    fontSizeLargeBtn.addEventListener('click', () => applyFontSize('large'));
 
-    if (langEnBtn) langEnBtn.addEventListener('click', () => applyLanguage('en'));
-    if (langKoBtn) langKoBtn.addEventListener('click', () => applyLanguage('ko'));
-
-    if (fontSizeSmallBtn) fontSizeSmallBtn.addEventListener('click', () => applyFontSize('small'));
-    if (fontSizeMediumBtn) fontSizeMediumBtn.addEventListener('click', () => applyFontSize('medium'));
-    if (fontSizeLargeBtn) fontSizeLargeBtn.addEventListener('click', () => applyFontSize('large'));
-
-    const savedTheme = localStorage.getItem('oosuPortfolioTheme') || 'western';
+    // --- 5. 페이지 로드 시 초기 설정 적용 (Initialization) ---
+    const savedFrontTheme = localStorage.getItem('oosuPortfolioFrontTheme') || 'western';
+    const savedCursorStyle = localStorage.getItem('oosuPortfolioCursorStyle') || 'pen';
     const savedLang = localStorage.getItem('oosuPortfolioLang') || 'en';
     const savedFontSize = localStorage.getItem('oosuPortfolioFontSize') || 'medium';
 
-    applyTheme(savedTheme);
+    applyFrontTheme(savedFrontTheme);
+    applyCursorStyle(savedCursorStyle);
     applyLanguage(savedLang);
     applyFontSize(savedFontSize);
 
-
+    // --- 폼 제출 및 애니메이션 관련 로직 ---
     function animatePostcardFrames(callback) {
-        const frontImageToAnimate = currentTheme === 'western' ? westernFrontImg : easternFrontImg;
+        const frontImageToAnimate = document.querySelector(`.postcard-front.${currentFrontTheme}-theme .postcard-cover-img`);
         if (!frontImageToAnimate) {
             if (callback) callback();
             return;
         }
-
-        const basePath = `${currentTheme}/`;
-        const frameCount = currentTheme === 'western' ? 43 : 49;
+        const basePath = `${currentFrontTheme}/`;
+        const frameCount = currentFrontTheme === 'western' ? 43 : 49;
         const framePrefix = 'ezgif-frame-';
         const frameSuffix = '.jpg';
         const animationSpeed = 60;
-
         let currentFrame = 1;
 
         function showNextFrame() {
@@ -132,90 +147,101 @@ document.addEventListener('DOMContentLoaded', () => {
         showNextFrame();
     }
 
+     // --- 폼 제출 및 애니메이션 관련 로직 ---
+     const form = document.getElementById('inquiry-form');
+     if (form) {
+         // 에러 메시지 정의
+         const errorMessages = {
+             en: {
+                 valueMissing: 'This field is required.',
+                 typeMismatch: 'Please enter a valid email address.',
+             },
+             ko: {
+                 valueMissing: '필수 입력 항목입니다.',
+                 typeMismatch: '올바른 이메일 주소를 입력해주세요.',
+             }
+         };
+ 
+         // 폼 필드 유효성 검사 함수
+         const validateField = (field) => {
+             const errorMessageElement = field.nextElementSibling;
+             let message = '';
+ 
+             if (field.validity.valueMissing) {
+                 message = errorMessages[currentLang].valueMissing;
+             } else if (field.validity.typeMismatch) {
+                 message = errorMessages[currentLang].typeMismatch;
+             }
+ 
+             if (message) {
+                 field.classList.add('invalid');
+                 errorMessageElement.textContent = message;
+                 errorMessageElement.classList.add('visible');
+                 return false;
+             } else {
+                 field.classList.remove('invalid');
+                 errorMessageElement.classList.remove('visible');
+                 return true;
+             }
+         };
+ 
+         // 실시간 유효성 검사 (사용자가 입력할 때마다)
+         form.querySelectorAll('input[required], textarea[required]').forEach(field => {
+             field.addEventListener('input', () => {
+                 // 사용자가 입력을 시작하면 유효성 상태를 다시 체크
+                 validateField(field);
+             });
+         });
+ 
+         form.addEventListener('submit', (e) => {
+             e.preventDefault(); // 폼 자동 제출 방지
+ 
+             let isFormValid = true;
+             form.querySelectorAll('input[required], textarea[required]').forEach(field => {
+                 if (!validateField(field)) {
+                     isFormValid = false;
+                 }
+             });
+ 
+             if (!isFormValid) {
+                 return; // 폼이 유효하지 않으면 여기서 중단
+             }
 
-    document.querySelectorAll('.send-button').forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            const form = button.closest('form');
-            let isValid = true;
-            form.querySelectorAll('input[required], textarea[required]').forEach(input => {
-                if (!input.value.trim()) {
-                    isValid = false;
-                    input.style.borderBottomColor = 'red';
-                } else {
-                    input.style.borderBottomColor = '';
-                }
-            });
-
-            if (!isValid) {
-                alert(currentLang === 'ko' ? '모든 필수 항목을 입력해주세요.' : 'Please fill in all required fields.');
-                return;
-            }
-
+             // 모든 것이 유효하면 엽서 떨어지는 애니메이션 실행
             animatePostcardFrames(() => {
-                const postcardBackToAnimate = currentTheme === 'western' ? westernPostcardBack : easternPostcardBack;
+                const postcardRect = postcardBack.getBoundingClientRect();
+                const postcardClone = postcardBack.cloneNode(true);
+                postcardClone.style.position = 'fixed';
+                postcardClone.style.left = `${postcardRect.left}px`;
+                postcardClone.style.top = `${postcardRect.top}px`;
+                postcardClone.style.width = `${postcardRect.width}px`;
+                postcardClone.style.height = `${postcardRect.height}px`;
+                postcardClone.style.margin = '0';
+                postcardClone. Destinations = '0';
+                postcardClone.style.zIndex = '1001';
+                document.body.appendChild(postcardClone);
 
-                if (postcardBackToAnimate && footerElement && footerTargetImg) {
-                    const postcardRect = postcardBackToAnimate.getBoundingClientRect();
+                postcardBack.style.visibility = 'hidden';
+                postcardClone.classList.add('postcard-falling-3d');
 
-                    const postcardClone = postcardBackToAnimate.cloneNode(true);
-                    postcardClone.style.position = 'fixed';
-                    postcardClone.style.left = `${postcardRect.left}px`;
-                    postcardClone.style.top = `${postcardRect.top}px`;
-                    postcardClone.style.width = `${postcardRect.width}px`;
-                    postcardClone.style.height = `${postcardRect.height}px`;
-                    postcardClone.style.margin = '0';
-                    postcardClone.style.zIndex = '1001';
-                    document.body.appendChild(postcardClone);
+                setTimeout(() => {
+                    footerElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 800);
 
-                    postcardBackToAnimate.style.visibility = 'hidden';
-                    postcardClone.classList.add('postcard-falling-3d');
-
-                    setTimeout(() => {
-                        footerElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 800);
-
-                    postcardClone.addEventListener('animationend', () => {
-                        postcardClone.remove();
-                        postcardBackToAnimate.style.visibility = 'visible';
-                        form.reset();
-                        form.querySelectorAll('input[required], textarea[required]').forEach(input => {
-                            input.style.borderBottomColor = '';
-                        });
-
-                        if (currentTheme === 'western' && westernFrontImg) {
-                            westernFrontImg.src = 'western/ezgif-frame-001.jpg';
-                        } else if (currentTheme === 'eastern' && easternFrontImg) {
-                            easternFrontImg.src = 'eastern/ezgif-frame-001.jpg';
-                        }
-                    });
-                } else {
+                postcardClone.addEventListener('animationend', () => {
+                    postcardClone.remove();
+                    postcardBack.style.visibility = 'visible';
                     form.reset();
-                    if (currentTheme === 'western' && westernFrontImg) {
-                        westernFrontImg.src = 'western/ezgif-frame-001.jpg';
-                    } else if (currentTheme === 'eastern' && easternFrontImg) {
-                        easternFrontImg.src = 'eastern/ezgif-frame-001.jpg';
+                    form.querySelectorAll('input[required], textarea[required]').forEach(input => {
+                        input.style.borderBottomColor = '';
+                    });
+
+                    const frontImageToReset = document.querySelector(`.postcard-front.${currentFrontTheme}-theme .postcard-cover-img`);
+                    if (frontImageToReset) {
+                        frontImageToReset.src = `${currentFrontTheme}/ezgif-frame-001.jpg`;
                     }
-                }
+                });
             });
         });
-    });
-
-    const navHeader = document.querySelector('.nav-header');
-    const topSentinel = document.getElementById('top-sentinel');
-
-    if (navHeader && topSentinel) {
-        const observerOptions = {
-            rootMargin: `-${navHeader.offsetHeight}px 0px 0px 0px`,
-        };
-
-        const navObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                const isSticky = !entry.isIntersecting;
-                navHeader.classList.toggle('sticky', isSticky);
-            });
-        }, observerOptions);
-        navObserver.observe(topSentinel);
     }
 });

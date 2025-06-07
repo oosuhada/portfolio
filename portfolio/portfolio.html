@@ -91,7 +91,7 @@
         <div class="project-title">Cross-platform App<br>Nomad Market</div><br>
         <div class="project-meta">
           <span class="project-date">Bootcamp | Oct 2024 - Feb 2025</span>
-          <span class="project-tools">Figma, Flutter, Notion, Firebase</span>
+          <span class="project-tools">Figma, Flutter, Notion, Github, Firebase</span>
         </div>
       </div>
       <a href="project1.html" class="project-image grayscale">
@@ -118,7 +118,7 @@
         <div class="project-title">Cross-platform App<br>Onjung</div><br>
         <div class="project-meta">
           <span class="project-date">Boot Camp | Oct 2024 - Feb 2025</span>
-          <span class="project-tools">Figma, Flutter, Notion, Firebase</span>
+          <span class="project-tools">Figma, Flutter, Notion, Github, Firebase</span>
         </div>
       </div>
       <a href="project2-link.html" class="project-image grayscale">
@@ -145,7 +145,7 @@
         <div class="project-title">Responsive Website<br>Oosu Salon</div><br>
         <div class="project-meta">
           <span class="project-date">Boot Camp | Oct 2024 - Feb 2025</span>
-          <span class="project-tools">Figma, HTML, CSS, JavaScript</span>
+          <span class="project-tools">Figma, HTML, CSS, JavaScript, Github</span>
         </div>
       </div>
       <a href="project3-link.html" class="project-image grayscale">
@@ -172,7 +172,7 @@
         <div class="project-title">Responsive Website<br>Sticks and Stones</div><br>
         <div class="project-meta">
           <span class="project-date">Boot Camp | Oct 2024 - Feb 2025</span>
-          <span class="project-tools">Figma, HTML, CSS, JavaScript</span>
+          <span class="project-tools">Figma, HTML, CSS, JavaScript, Github</span>
         </div>
       </div>
       <a href="project4-link.html" class="project-image grayscale">
@@ -222,17 +222,36 @@
     </div>
   </section>
     <div class="section-bottom-gap"></div>
-  <footer>
-    <div class="footer-row">
-      <div class="footer-content">
-        <p>You've hit the footer,<br>thanks for stopping by.<br>Still curious?<br>→ <a href="mailto:oosu.salon@gmail.com">oosu.salon@gmail.com</a></p>
-        <span class="footer-copyright">© Oosu Jang 2025</span>
+    <footer>
+      <div class="footer-row">
+          <div class="footer-content">
+              <p>You've hit the footer,<br>thanks for stopping by.<br>Still curious?<br>→ <a href="mailto:oosu.salon@gmail.com">oosu.salon@gmail.com</a></p>
+              <span class="footer-copyright">© Oosu Jang 2025</span>
+          </div>
+          <div id="lottie-container" style="width:200px; height:300px; position:relative; overflow:hidden;">
+              <div id="lottie-inner-section" style="
+                  position: absolute;
+                  left: 50%; top: 50%;
+                  width: 250px; height: 300px;
+                  transform: translate(-50%, -50%);
+                  pointer-events: none;">
+              </div>
+          </div>
       </div>
-      <img src="../footer.png" alt="Footer Image" class="footer-image" id="footer-img">
-    </div>
   </footer>
-    <script src="../common/common.js"></script>
+  <script src="../common/common.js"></script>
   <script src="portfolio.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+  <script>
+      lottie.loadAnimation({
+          container: document.getElementById('lottie-inner-section'),
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: 'https://gist.githubusercontent.com/oosuhada/d4f021b7e8e1c621b77f4a25bf1d6feb/raw/cc05c7736f914ed06bb642edec3a1d3634678472/portfolio.json',
+          rendererSettings: { preserveAspectRatio: 'none' }
+      });
+  </script>
 </div>
 </body>
 </html>
