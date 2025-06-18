@@ -1,5 +1,3 @@
-// script/greeting.js
-
 // 전역 타임라인 변수
 let tl;
 // 타임라인 레이블을 순서대로 저장하는 변수
@@ -97,7 +95,7 @@ const animateCirclesCanvas = (startScale, endScale, startGrayscale, endGrayscale
         .staggerFromTo(circles, duration,
             { radius: startScale, opacity: 1, grayscale: startGrayscale },
             {
-                radius: endScale, opacity: 0, grayscale: endGrayscale, ease: "power2.out",
+                radius: endScale, opacity: 0, grayscale: endGrayscale, ease: "power1.out",
                 onUpdate: drawCircles, // Redraw on each frame
                 onStart: () => gsap.set(canvas, { visibility: "visible" }),
                 onComplete: () => gsap.set(canvas, { visibility: "hidden" })
@@ -105,7 +103,6 @@ const animateCirclesCanvas = (startScale, endScale, startGrayscale, endGrayscale
             stagger, delay
         );
 };
-
 
 // JSON 데이터 가져오기 및 페이지에 삽입
 const fetchData = () => {
@@ -138,6 +135,9 @@ const showMainPortfolio = () => {
     const preloaderContainer = document.getElementById('preloaderContainer');
     const mainPortfolio = document.getElementById('mainPortfolio');
     const backgroundImage = document.querySelector('.background-image');
+    const navButtons = document.querySelectorAll('.nav-button');
+    const pageIndicator = document.querySelector('.page-indicator');
+    const controls = document.querySelector('.controls'); // Get the controls element
 
     if (mainPortfolio) {
         gsap.to(preloaderContainer, {
@@ -147,7 +147,22 @@ const showMainPortfolio = () => {
                 preloaderContainer.style.display = 'none';
                 mainPortfolio.style.display = 'block';
                 gsap.fromTo(mainPortfolio, { opacity: 0 }, { opacity: 1, duration: 1, ease: "power2.out" });
-                gsap.set(backgroundImage, { opacity: 0 }); // Hide background image
+                gsap.set(backgroundImage, { opacity: 0 });
+
+                // Animate controls, nav buttons, and page indicator
+                // Controls will already be fading out due to the timeline modification
+                gsap.fromTo(navButtons,
+                    { opacity: 0 },
+                    { opacity: 1, duration: 1, ease: "power2.out", delay: 0.2 }
+                );
+                gsap.fromTo(pageIndicator,
+                    { opacity: 0 },
+                    { opacity: 1, duration: 1, ease: "power2.out", delay: 0.3 }
+                );
+
+                if (window.initializeSlider) {
+                    window.initializeSlider();
+                }
                 if (window.initializeMainPortfolio) {
                     window.initializeMainPortfolio();
                 }
@@ -352,7 +367,6 @@ const animationTimeline = () => {
             "uxuiWishFlipAppear" // 이 트윈은 uxuiWishFlipAppear 라벨 위치에 배치하여 역재생 시점 조절
         )
 
-
         .from(".wish-message h5", 0.5, { opacity: 0, y: 10, skewX: "-15deg" }, "uxuiWishFlipTransition") // H5는 플립 애니메이션 완료 후 등장
         .addLabel("uxuiAndWishAppears")
 
@@ -361,50 +375,101 @@ const animationTimeline = () => {
         .addLabel("idea6Gone")
 
         // UXUI 섹션 및 위시 메시지 숨김
-        .to([".image-path", ".lightbulb", ".heading-main", ".wish-message h5"], 0.7, { opacity: 0, y: -50 }, "+=1.5")
+        .to([".image-path", ".lightbulb", ".heading-main", ".wish-message h5"], 0.7, { opacity: 0, y: -50 }, "idea6Gone+=0.1")
         .to(".uxui-design-section", 0.5, { zIndex: "-1" }, "<")
         .addLabel("uxuiDesignSectionGone")
-        // 최종 메시지 섹션 등장
-        .staggerFrom(".final-message-section p", 0.5, ideaTextTrans, 0.2, "uxuiDesignSectionGone+=0.5")
-        .to(".last-smile", 0.5, { rotation: 90 }, "+=0.5")
-        .addLabel("finalTextStart")
 
-        // 풍선 애니메이션 (이제 finalTextStart 직후 시작)
-        .staggerFromTo(".baloons-animate img", 2, {
+        // --- 최종 메시지 섹션의 P 태그들이 등장하는 부분 수정 ---
+        // 먼저 final-message-section 컨테이너의 visibility를 visible로 설정 (내부 P태그들이 보일 수 있도록)
+        .set(".final-message-section", { visibility: "visible", y: 0 }, "uxuiDesignSectionGone-=0.2") // Y 위치만 초기화
+
+        // 각 p 태그를 staggerFromTo를 사용하여 나타나게 합니다.
+        .staggerFromTo(".final-message-section p", 0.5,
+            { opacity: 0, y: -20, rotationX: 5, skewX: "15deg", visibility: "hidden" }, // 시작 시 숨김
+            { opacity: 1, y: 0, rotationX: 0, skewX: "0deg", visibility: "visible" },   // 나타나면서 보이게 함
+            0.2, "uxuiDesignSectionGone-=0.2" // uxuiDesignSectionGone 라벨 시작 0.2초 전에 시작
+        )
+        // .last-smile (p 태그 중 하나) 애니메이션은 여전히 개별적으로 줄 수 있습니다.
+        .to(".last-smile", 0.5, { rotation: 90 }, "<") // 위 staggerFromTo와 동시에 시작
+        .addLabel("finalTextStart")
+        // --- 최종 메시지 섹션 P 태그 등장 부분 수정 끝 ---
+
+
+        // 풍선 애니메이션
+        .staggerFromTo(".baloons-animate img", 1.6, {
             opacity: 0.9, y: 1400
         }, {
             opacity: 1, y: -1000
-        }, 0.1, "finalTextStart+=0.5") // 이전보다 빠르게 붙여줌
+        }, 0.1, "finalTextStart+=0.5")
         .addLabel("balloonsAnimate")
 
-        // 풍선과 함께 최종 메시지 & 컨트롤 제거
-        .to([".final-message-section", ".controls"], {
+        // #replay (Let's create together!)에 GSAP 두근거리는 효과
+        // 풍선 애니메이션이 시작하는 시점과 함께 시작
+        .to("#replay", {
+            scale: 1.2,
+            opacity: 0.9,
+            repeat: -1,
+            yoyo: true,
+            duration: 0.8,
+            ease: "power1.inOut"
+        }, "finalTextStart+=0.5") // Changed position to start with "balloonsAnimate"
+
+        // 최종 메시지 컨테이너 숨김 (Controls는 별도 처리)
+        .to(".final-message-section", {
             opacity: 0,
             y: -50,
-            duration: 0.5
-        }, "balloonsAnimate+=1.0") // 풍선 중간쯤에 사라지게
+            duration: 0.5,
+            onComplete: () => {
+                gsap.set(".final-message-section", { visibility: "hidden" });
+            }
+        }, "balloonsAnimate+=0.5")
         .addLabel("finalMessageGone")
 
-        // Blank interlude - 매우 짧게 보여짐
+
+        // Blank interlude
         .to(".blank-interlude", {
             opacity: 1,
-            visibility: "visible",
+            visibility: "hidden",
             zIndex: 5,
             duration: 0.08
-        }, "finalMessageGone+=0.5")
+        }, "finalMessageGone+=0.1")
         .to(".blank-interlude", {
             opacity: 0,
             duration: 0.05
-        }, "<+=0.08")
-        .set(".blank-interlude", { visibility: "hidden", zIndex: 4 })
+        }, "<+=0")
+        .set(".blank-interlude", { visibility: "hidden", zIndex: -1 }) // Ensure it is hidden after the fade out
         .addLabel("blankScreenInterlude")
 
-        // Circle animation (2회) - 이제 Canvas 함수 호출
-        .add(animateCirclesCanvas(0, 1000, 0, 0.6, 1.5, 0.3, "blankScreenInterlude+=0"), "circlesFirstPassStart")
-        .add(animateCirclesCanvas(0, 1000, 0.65, 0.95, 1.5, 0.4, "circlesFirstPassStart+=0"), "circlesSecondPassStart") // Overlap
+        // Circle animation (2회) - blank-interlude가 완전히 사라진 후 시작하도록 조정
+        .add(animateCirclesCanvas(0, 600, 0, 0.6, 1.5, 0.3, "blankScreenInterlude+=0.2"), "circlesFirstPassStart")
+        .add(animateCirclesCanvas(0, 700, 0.65, 0.95, 1.5, 0.4, "circlesFirstPassStart-=0.2"), "circlesSecondPassStart")
+
+        // **Controls three-stage fade out:**
+        // Stage 1: From 1 to 0.4 opacity in 1 second
+        .to(".controls", {
+            opacity: 0.4,
+            duration: 1,
+            ease: "linear" // Or ease: "power1.easeIn" if you want a slight initial acceleration
+        }, "circlesFirstPassStart") // Starts when "circlesFirstPassStart" begins
+
+        // Stage 2: From 0.4 to 0.1 opacity in the next 1 second
+        .to(".controls", {
+            opacity: 0.1,
+            duration: 1,
+            ease: "linear"
+        }, "<+=1") // Starts 1 second after the previous tween
+
+        // Stage 3: From 0.1 to 0 opacity in the final 1.5 seconds
+        .to(".controls", {
+            opacity: 0,
+            visibility: "hidden",
+            duration: 1.5,
+            ease: "linear"
+        }, "<+=1") // Starts 1 second after the previous tween (total 2 seconds from "circlesFirstPassStart")
+
 
         // Reveal portfolio before the second animation fully finishes
-        .call(showMainPortfolio, null, "circlesSecondPassStart+=1.6") // Adjust timing based on circle animation duration
+        .call(showMainPortfolio, null, "circlesSecondPassStart+=1.5")
         .to(".blank-interlude", 1, {
             opacity: 0,
             zIndex: 4
@@ -428,34 +493,40 @@ const animationTimeline = () => {
         const idxLetsTalk = labelsInOrder.indexOf("chatboxLetsTalk");
         const idxCurrent = labelsInOrder.indexOf(labelName);
 
-        // "chatboxLetsTalk" 라벨 지점 또는 그 이후에 있으면 "Let's Talk" 상태
         if (idxCurrent >= idxLetsTalk) {
             sendBtnLabel.innerText = customizeData.sendButtonLabelAlt;
             gsap.set(fakeBtn, { backgroundColor: "#333333" });
-        }
-        // "chatboxAskAI" 라벨 지점부터 "chatboxLetsTalk" 라벨 지점 직전까지면 "Ask AI" 상태
-        else if (idxCurrent >= idxAskAI && idxCurrent < idxLetsTalk) {
+        } else if (idxCurrent >= idxAskAI && idxCurrent < idxLetsTalk) {
+            sendBtnLabel.innerText = customizeData.sendButtonLabel;
+            gsap.set(fakeBtn, { backgroundColor: "rgb(136, 136, 136)" });
+        } else {
             sendBtnLabel.innerText = customizeData.sendButtonLabel;
             gsap.set(fakeBtn, { backgroundColor: "rgb(136, 136, 136)" });
         }
-        // 그 외 (예: "start" 등 완전히 초기 상태)
-        else {
-            sendBtnLabel.innerText = customizeData.sendButtonLabel; // Default to Ask AI
-            gsap.set(fakeBtn, { backgroundColor: "rgb(136, 136, 136)" });
-        }
     }
-
 
     // 재생 버튼
     const replayBtn = document.getElementById("replay");
     if (replayBtn) {
         replayBtn.addEventListener("click", () => {
             tl.restart();
-            syncChatboxButtonState("start"); // Restarting goes to 'start'
+            // #replay 요소의 GSAP 애니메이션을 강제로 중지하고 초기 상태로 재설정
+            gsap.killTweensOf("#replay");
+            gsap.set("#replay", { scale: 1, opacity: 1, rotation: 0 });
+
+            // final-message-section 컨테이너와 그 안의 p 태그들을 확실히 보이게 재설정
+            gsap.set(".final-message-section", { opacity: 1, y: 0, visibility: "visible" });
+            gsap.set(".final-message-section p", { opacity: 1, y: 0, rotationX: 0, skewX: "0deg", visibility: "visible" });
+
+            // Ensure controls are visible when replaying
+            gsap.to(".controls", { opacity: 1, visibility: "visible", duration: 0.3 });
+
+
+            syncChatboxButtonState("start");
         });
     }
 
-    // 재생 제어 버튼
+    // 재생 제어 버튼 (이하 동일)
     const playBtn = document.getElementById("playBtn");
     const pauseBtn = document.getElementById("pauseBtn");
     const rewindBtn = document.getElementById("rewindBtn");
@@ -483,7 +554,6 @@ const animationTimeline = () => {
             let currentLabel = tl.currentLabel();
 
             if (!currentLabel || tl.labels[currentLabel] > currentTime) {
-                // Determine actual current label based on time if it's between labels
                 for (let i = labelsInOrder.length - 1; i >= 0; i--) {
                     if (tl.labels[labelsInOrder[i]] <= currentTime) {
                         currentLabel = labelsInOrder[i];
@@ -491,16 +561,15 @@ const animationTimeline = () => {
                     }
                 }
                 if (!currentLabel) {
-                    currentLabel = "start"; // Fallback to start
+                    currentLabel = "start";
                 }
             }
 
             const currentLabelTime = tl.labels[currentLabel];
             if (!tl.paused() && (currentTime - currentLabelTime > 0.5)) {
-                // If currently playing and past the current segment's start, jump to current segment start
                 tl.play(currentLabel);
                 console.log("Rewinding to the beginning of the current segment:", currentLabel);
-                syncChatboxButtonState(currentLabel); // Sync state after jump
+                syncChatboxButtonState(currentLabel);
                 return;
             }
 
@@ -509,11 +578,11 @@ const animationTimeline = () => {
                 const prevLabel = labelsInOrder[currentIndex - 1];
                 tl.play(prevLabel);
                 console.log("Rewinding to previous segment:", prevLabel);
-                syncChatboxButtonState(prevLabel); // Sync state after jump
+                syncChatboxButtonState(prevLabel);
             } else {
                 tl.restart();
                 console.log("Rewinding to the very beginning.");
-                syncChatboxButtonState("start"); // Sync state for restart
+                syncChatboxButtonState("start");
             }
         });
     }
@@ -524,7 +593,6 @@ const animationTimeline = () => {
             let currentLabel = tl.currentLabel();
             const currentTime = tl.time();
 
-            // Determine actual current label based on time
             if (!currentLabel || tl.labels[currentLabel] > currentTime) {
                 for (let i = labelsInOrder.length - 1; i >= 0; i--) {
                     if (tl.labels[labelsInOrder[i]] <= currentTime) {
@@ -542,11 +610,11 @@ const animationTimeline = () => {
                 const nextLabel = labelsInOrder[currentIndex + 1];
                 tl.play(nextLabel);
                 console.log("Fast-forwarding to next segment:", nextLabel);
-                syncChatboxButtonState(nextLabel); // Sync state after jump
+                syncChatboxButtonState(nextLabel);
             } else {
                 tl.play("end");
                 console.log("Fast-forwarding to the end.");
-                syncChatboxButtonState("end"); // Sync state for end
+                syncChatboxButtonState("end");
             }
         });
     }
@@ -556,22 +624,32 @@ const animationTimeline = () => {
             tl.timeScale(1);
             tl.play("blankScreenInterlude");
             console.log("Skipping to blankScreenInterlude.");
-            syncChatboxButtonState("blankScreenInterlude"); // Sync state after jump
+            syncChatboxButtonState("blankScreenInterlude");
         });
     }
 
-    // 컨트롤 드래그 가능 설정
+    // Controls drag functionality
     const controls = document.querySelector(".controls");
     const handle = document.querySelector(".controls .handle");
 
     if (controls && handle) {
+        // Ensure initial positioning is handled by GSAP or CSS `top`/`left` is removed
+        gsap.set(controls, { x: 0, y: 0 }); // Initialize GSAP transform properties
+
         let isDragging = false;
         let initialMouseX, initialMouseY;
         let initialControlX, initialControlY;
+        let controlsWidth, controlsHeight; // Store these values once
 
-        const controlsRect = controls.getBoundingClientRect();
-        const initialClientX = controlsRect.left;
-        const initialClientY = controlsRect.top;
+        const updateControlBounds = () => {
+            controlsWidth = controls.offsetWidth;
+            controlsHeight = controls.offsetHeight;
+        };
+
+        // Update bounds on window resize
+        window.addEventListener('resize', updateControlBounds);
+        // Initial call to set bounds
+        updateControlBounds();
 
         handle.addEventListener("mousedown", (e) => {
             isDragging = true;
@@ -588,35 +666,27 @@ const animationTimeline = () => {
             const deltaX = e.clientX - initialMouseX;
             const deltaY = e.clientY - initialMouseY;
 
-            let targetTranslateX = initialControlX + deltaX;
-            let targetTranslateY = initialControlY + deltaY;
+            let newX = initialControlX + deltaX;
+            let newY = initialControlY + deltaY;
 
-            const controlsWidth = controls.offsetWidth;
-            const controlsHeight = controls.offsetHeight;
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
+            // Apply boundaries
+            newX = Math.max(0, Math.min(window.innerWidth - controlsWidth, newX));
+            newY = Math.max(0, Math.min(window.innerHeight - controlsHeight, newY));
 
-            const currentAbsX = initialClientX + targetTranslateX;
-            const currentAbsY = initialClientY + targetTranslateY;
-
-            if (currentAbsX < 0) targetTranslateX = -initialClientX;
-            if (currentAbsX + controlsWidth > viewportWidth) targetTranslateX = viewportWidth - initialClientX - controlsWidth;
-            if (currentAbsY < 0) targetTranslateY = -initialClientY;
-            if (currentAbsY + controlsHeight > viewportHeight) targetTranslateY = viewportHeight - initialClientY - controlsHeight;
-
-
-            gsap.to(controls, {
-                x: targetTranslateX,
-                y: targetTranslateY,
-                duration: 0
+            gsap.set(controls, {
+                x: newX,
+                y: newY
             });
         });
 
         document.addEventListener("mouseup", () => {
-            isDragging = false;
-            controls.style.cursor = "grab";
+            if (isDragging) {
+                isDragging = false;
+                controls.style.cursor = "grab";
+            }
         });
 
+        // Touch events for mobile
         handle.addEventListener("touchstart", (e) => {
             isDragging = true;
             const touch = e.touches[0];
@@ -634,34 +704,25 @@ const animationTimeline = () => {
             const deltaX = touch.clientX - initialMouseX;
             const deltaY = touch.clientY - initialMouseY;
 
-            let targetTranslateX = initialControlX + deltaX;
-            let targetTranslateY = initialControlY + deltaY;
+            let newX = initialControlX + deltaX;
+            let newY = initialControlY + deltaY;
 
-            const controlsWidth = controls.offsetWidth;
-            const controlsHeight = controls.offsetHeight;
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
+            // Apply boundaries
+            newX = Math.max(0, Math.min(window.innerWidth - controlsWidth, newX));
+            newY = Math.max(0, Math.min(window.innerHeight - controlsHeight, newY));
 
-            const currentAbsX = initialClientX + targetTranslateX;
-            const currentAbsY = initialClientY + targetTranslateY;
-
-            if (currentAbsX < 0) targetTranslateX = -initialClientX;
-            if (currentAbsX + controlsWidth > viewportWidth) targetTranslateX = viewportWidth - initialClientX - controlsWidth;
-            if (currentAbsY < 0) targetTranslateY = -initialClientY;
-            if (currentAbsY + controlsHeight > viewportHeight) targetTranslateY = viewportHeight - initialClientY - controlsHeight;
-
-
-            gsap.to(controls, {
-                x: targetTranslateX,
-                y: targetTranslateY,
-                duration: 0
+            gsap.set(controls, {
+                x: newX,
+                y: newY
             });
             e.preventDefault();
         }, { passive: false });
 
         document.addEventListener("touchend", () => {
-            isDragging = false;
-            controls.style.cursor = "grab";
+            if (isDragging) {
+                isDragging = false;
+                controls.style.cursor = "grab";
+            }
         });
     }
 };

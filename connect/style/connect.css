@@ -43,6 +43,10 @@
     --highlight-btn-hover-text: #333;
 }
 
+html, body {
+    margin: 0;
+}
+
 .connect-main {
     display: flex;
     flex-direction: column;

@@ -107,13 +107,6 @@
     </div>
 
     <div class="final-message-section">
-      <div class="controls">
-        <div class="handle">...</div> <button id="playBtn">▶</button>
-        <button id="pauseBtn">⏸</button>
-        <button id="rewindBtn">⏮</button>
-        <button id="fastForwardBtn">⏭</button>
-        <button id="skipBtn">×</button>
-      </div>
       <p data-node-name="outroText">Ready to explore?</p>
       <p id="replay" data-node-name="replayText">Click here to refresh the experience.</p>
       <p class="last-smile" data-node-name="outroSmiley">:)
@@ -149,14 +142,25 @@
     <canvas id="circlesCanvas" class="circles-canvas"></canvas> 
   </div>
 
-  <div class="slider-container" id="mainPortfolio" style="display:none;">
+  <div class="controls">
+    <div class="handle">...</div>
+    <button id="playBtn">▶</button>
+    <button id="pauseBtn">⏸</button>
+    <button id="rewindBtn">⏮</button>
+    <button id="fastForwardBtn">⏭</button>
+    <button id="skipBtn">×</button>
+  </div>
+
+  <div class="slider-container" id="mainPortfolio">
     <div id="preloader">
       <div class="loading-text" id="loadingText"></div>
     </div>
 
     <div class="slide" id="slide1">
       <div class="slide-content">
+        <div class="slide-padding1"></div>
         <h1 class="slide-title font-anton">OH. SO. GOOD</h1>
+        <div class="slide-padding2"></div>
         <a href="portfolioMain/portfolio.html?from=index" class="welcome-banner-link">
           <div class="welcome-banner"><span>Welcome to my playground</span></div>
         </a>
@@ -164,7 +168,9 @@
     </div>
     <div class="slide" id="slide2">
       <div class="slide-content">
+        <div class="slide-padding1"></div>
         <h1 class="slide-title font-anton">OOSU HADA</h1>
+        <div class="slide-padding2"></div>
         <a href="portfolioMain/portfolio.html?from=index" class="welcome-banner-link">
           <div class="welcome-banner"><span>Welcome to my playground</span></div>
         </a>
@@ -172,7 +178,9 @@
     </div>
     <div class="slide" id="slide3">
       <div class="slide-content">
+        <div class="slide-padding1"></div>
         <h1 class="slide-title font-dohyeon">우수하다</h1>
+        <div class="slide-padding2"></div>
         <a href="portfolioMain/portfolio.html?from=index" class="welcome-banner-link">
           <div class="welcome-banner"><span>Welcome to my playground</span></div>
         </a>
@@ -180,7 +188,9 @@
     </div>
     <div class="slide" id="slide4">
       <div class="slide-content">
+        <div class="slide-padding1"></div>
         <h1 class="slide-title font-hiragino">佑守</h1>
+        <div class="slide-padding2"></div>
         <a href="portfolioMain/portfolio.html?from=index" class="welcome-banner-link">
           <div class="welcome-banner"><span>Welcome to my playground</span></div>
         </a>
@@ -188,7 +198,9 @@
     </div>
     <div class="slide" id="slide5">
       <div class="slide-content">
+        <div class="slide-padding1"></div>
         <h1 class="slide-title font-hiragino">優秀</h1>
+        <div class="slide-padding2"></div>
         <a href="portfolioMain/portfolio.html?from=index" class="welcome-banner-link">
           <div class="welcome-banner"><span>Welcome to my playground</span></div>
         </a>
@@ -196,15 +208,19 @@
     </div>
     <div class="slide" id="slide6">
       <div class="slide-content">
+        <div class="slide-padding1"></div>
         <h1 class="slide-title font-hiragino">憂愁</h1>
+        <div class="slide-padding2"></div>
         <a href="portfolioMain/portfolio.html?from=index" class="welcome-banner-link">
           <div class="welcome-banner"><span>Welcome to my playground</span></div>
         </a>
-      </a>
+      </div>
     </div>
     <div class="slide" id="slide7">
       <div class="slide-content">
+        <div class="slide-padding1"></div>
         <h1 class="slide-title font-anton">OH. SO.</h1>
+        <div class="slide-padding2"></div>
         <a href="portfolioMain/portfolio.html?from=index" class="welcome-banner-link">
           <div class="welcome-banner"><span>Welcome to my playground</span></div>
         </a>
@@ -212,7 +228,9 @@
     </div>
     <div class="slide" id="slide8">
       <div class="slide-content">
+        <div class="slide-padding1"></div>
         <h1 class="slide-title font-anton">OOSU</h1>
+        <div class="slide-padding2"></div>
         <a href="portfolioMain/portfolio.html?from=index" class="welcome-banner-link">
           <div class="welcome-banner"><span>Welcome to my playground</span></div>
         </a>
@@ -220,7 +238,9 @@
     </div>
     <div class="slide" id="slide9">
       <div class="slide-content">
+        <div class="slide-padding1"></div>
         <h1 class="slide-title font-dohyeon">우수</h1>
+        <div class="slide-padding2"></div>
         <a href="portfolioMain/portfolio.html?from=index" class="welcome-banner-link">
           <div class="welcome-banner"><span>Welcome to my playground</span></div>
         </a>
@@ -228,7 +248,9 @@
     </div>
     <div class="slide" id="slide10">
       <div class="slide-content">
+        <div class="slide-padding1"></div>
         <h1 class="slide-title font-anton">YÒU SHǑU</h1>
+        <div class="slide-padding2"></div>
         <a href="portfolioMain/portfolio.html?from=index" class="welcome-banner-link">
           <div class="welcome-banner"><span>Welcome to my playground</span></div>
         </a>
@@ -244,7 +266,8 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script type="application/javascript" src="script/canvasCircles.js"></script> <script type="application/javascript" src="script/greeting.js"></script>
+  <script type="application/javascript" src="script/canvasCircles.js"></script> 
+  <script type="application/javascript" src="script/greeting.js"></script>
   <script type="application/javascript" src="script/slider.js"></script>
 </body>
 

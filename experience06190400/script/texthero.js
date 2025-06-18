@@ -1,9 +1,9 @@
-// texthero.js
 
+// texthero.js
 const listItemWrapper = document.getElementById("list-item-wrapper");
 const listItems = document.querySelectorAll(".list-item");
 // panel1Img is not used, can be removed if not needed.
-// const panel1Img = document.getElementById("panel1-img"); // This line can be removed if panel1Img is truly unused
+// const panel1Img = document.getElementById("panel1-img");
 const grapeImg = document.getElementById("grape-img");
 const skillsShowcaseSection = document.getElementById("skills-showcase-section");
 
@@ -12,15 +12,15 @@ let listStyleChangeEndY;
 let division;
 let currentIndex = -1;
 
-// Flag to control if texthero animations are active
+// NEW: Flag to control if texthero animations are active
 let isTextheroAnimationActive = true;
 let animationFrameId = null; // To store the requestAnimationFrame ID
 
-// Define keyframes for grape image animation: "Right position -> Slightly rotated center -> Right position"
+// 포도 이미지 애니메이션의 키프레임 정의: "오른쪽 위치 -> 중앙 약간 회전 -> 오른쪽 위치"
 const GRAPE_KEYFRAMES = {
-    // Initial right position (minimal rotation)
+    // 초기 오른쪽 위치 (회전 거의 없음)
     P0_DEFAULT_RIGHT: { x: 80, y: -13, r: 2 },
-    // Center position (slightly left rotation)
+    // 중앙 위치 (약간 왼쪽으로 회전)
     P1_VISIBLE_CENTER: { x: -24, y: 0, r: -5 }
 };
 
@@ -32,11 +32,10 @@ const updateListStyleVariables = () => {
     listStyleChangeStartY = Math.max(0, listStyleChangeStartY);
 
     const endActivationOffsetRatio = 0.2;
-    // FIX: Changed 'skillsShowbox' to 'skillsShowcaseSection'
     listStyleChangeEndY = skillsShowcaseSection.offsetTop + skillsShowcaseSection.offsetHeight - (window.innerHeight * endActivationOffsetRatio);
 
-    // Avoid division by zero: if listItems.length is 1, division would be by 0.
-    // If listItems.length <= 1, division should simply be the total scroll range.
+    // division by zero avoidance: if listItems.length is 1, division would be by 0.
+    // if (listItems.length <= 1), division should be simply the total scroll range.
     division = (listStyleChangeEndY - listStyleChangeStartY) / Math.max(1, listItems.length - 1);
     if (division <= 0) division = 1; // Fallback to 1 if division is still problematic
 
@@ -46,7 +45,7 @@ const updateListStyleVariables = () => {
 const easeInOut = (t) => t * t * (3 - 2 * t);
 
 const handleScrollAnimation = () => {
-    // Check if animation is active at the start of the handler
+    // NEW: Check if animation is active at the start of the handler
     if (!isTextheroAnimationActive) {
         // If deactivated, ensure grape image is reset to default right position
         if (grapeImg) grapeImg.style.transform = `translate(${GRAPE_KEYFRAMES.P0_DEFAULT_RIGHT.x}px, ${GRAPE_KEYFRAMES.P0_DEFAULT_RIGHT.y}px) rotate(${GRAPE_KEYFRAMES.P0_DEFAULT_RIGHT.r}deg)`;
@@ -63,8 +62,8 @@ const handleScrollAnimation = () => {
     const isSectionVisible = (sectionRect.bottom > 0 && sectionRect.top < viewportHeight);
 
     if (!isSectionVisible) {
-        // If the section is out of the viewport (above or below)
-        // The grape should be in its initial right position
+        // 섹션이 뷰포트 밖으로 벗어난 경우 (위 또는 아래)
+        // 포도는 초기 오른쪽 위치에 있어야 함
         if (grapeImg) grapeImg.style.transform = `translate(${GRAPE_KEYFRAMES.P0_DEFAULT_RIGHT.x}px, ${GRAPE_KEYFRAMES.P0_DEFAULT_RIGHT.y}px) rotate(${GRAPE_KEYFRAMES.P0_DEFAULT_RIGHT.r}deg)`;
         // Ensure no item is highlighted
         const currentOn = document.getElementById("on");
@@ -81,10 +80,10 @@ const handleScrollAnimation = () => {
         } else if (currentScrollY >= activationZoneBottom) {
             targetIndex = listItems.length - 1; // Highlight the last item when at or below the activation end
         } else {
-            // Within the activation zone: list item animation
+            // 활성화 영역 내: 리스트 아이템 애니메이션
             let progress = (currentScrollY - activationZoneTop) / (activationZoneBottom - activationZoneTop);
             progress = Math.max(0, Math.min(1, progress));
-            const easedProgress = easeInOut(progress); // Overall section progress (0 to 1)
+            const easedProgress = easeInOut(progress); // 전체 섹션의 진행률 (0에서 1까지)
 
             targetIndex = Math.round(easedProgress * (listItems.length - 1));
             targetIndex = Math.max(0, Math.min(listItems.length - 1, targetIndex));
@@ -102,25 +101,25 @@ const handleScrollAnimation = () => {
             console.log(`DEBUG texthero: Setting item ${currentIndex} to 'on'.`);
         }
 
-        // Adjust grape animation to progress from the start to the end of the section
-        // This part should only execute when the section is visible and within the activation zone.
+        // 포도 애니메이션을 섹션의 처음부터 끝까지 진행하도록 조정
+        // 이 부분은 섹션이 보이고 활성화 영역 내에 있을 때만 실행되어야 합니다.
         if (currentScrollY > activationZoneTop && currentScrollY < activationZoneBottom) {
             let grapeCurrentProgress = (currentScrollY - activationZoneTop) / (activationZoneBottom - activationZoneTop);
-            grapeCurrentProgress = Math.max(0, Math.min(1, grapeCurrentProgress)); // Clamp to between 0 and 1
+            grapeCurrentProgress = Math.max(0, Math.min(1, grapeCurrentProgress)); // 0과 1 사이로 클램프
             const easedGrapeProgress = easeInOut(grapeCurrentProgress); // Use eased progress for the grape
 
             let currentGrapeX, currentGrapeY, currentGrapeR;
 
-            // First half of adjusted grapeCurrentProgress (0 ~ 0.5): animate from right position to slightly rotated center
+            // 조정된 grapeCurrentProgress의 첫 절반 (0 ~ 0.5): 오른쪽 위치에서 중앙 약간 회전으로 애니메이션
             if (easedGrapeProgress < 0.5) {
-                const segmentProgress = easedGrapeProgress * 2; // Normalize progress for this segment from 0 to 1
+                const segmentProgress = easedGrapeProgress * 2; // 이 구간의 진행률을 0에서 1로 정규화
                 currentGrapeX = GRAPE_KEYFRAMES.P0_DEFAULT_RIGHT.x + (GRAPE_KEYFRAMES.P1_VISIBLE_CENTER.x - GRAPE_KEYFRAMES.P0_DEFAULT_RIGHT.x) * segmentProgress;
                 currentGrapeY = GRAPE_KEYFRAMES.P0_DEFAULT_RIGHT.y + (GRAPE_KEYFRAMES.P1_VISIBLE_CENTER.y - GRAPE_KEYFRAMES.P0_DEFAULT_RIGHT.y) * segmentProgress;
                 currentGrapeR = GRAPE_KEYFRAMES.P0_DEFAULT_RIGHT.r + (GRAPE_KEYFRAMES.P1_VISIBLE_CENTER.r - GRAPE_KEYFRAMES.P0_DEFAULT_RIGHT.r) * segmentProgress;
             }
-            // Second half of adjusted grapeCurrentProgress (0.5 ~ 1): animate from slightly rotated center back to right position
+            // 조정된 grapeCurrentProgress의 두 번째 절반 (0.5 ~ 1): 중앙 약간 회전에서 다시 오른쪽 위치로 애니메이션
             else {
-                const segmentProgress = (easedGrapeProgress - 0.5) * 2; // Normalize progress for this segment from 0 to 1
+                const segmentProgress = (easedGrapeProgress - 0.5) * 2; // 이 구간의 진행률을 0에서 1로 정규화
                 currentGrapeX = GRAPE_KEYFRAMES.P1_VISIBLE_CENTER.x + (GRAPE_KEYFRAMES.P0_DEFAULT_RIGHT.x - GRAPE_KEYFRAMES.P1_VISIBLE_CENTER.x) * segmentProgress;
                 currentGrapeY = GRAPE_KEYFRAMES.P1_VISIBLE_CENTER.y + (GRAPE_KEYFRAMES.P0_DEFAULT_RIGHT.y - GRAPE_KEYFRAMES.P1_VISIBLE_CENTER.y) * segmentProgress;
                 currentGrapeR = GRAPE_KEYFRAMES.P1_VISIBLE_CENTER.r + (GRAPE_KEYFRAMES.P0_DEFAULT_RIGHT.r - GRAPE_KEYFRAMES.P1_VISIBLE_CENTER.r) * segmentProgress;
@@ -137,7 +136,7 @@ const handleScrollAnimation = () => {
 };
 
 window.addEventListener("scroll", () => {
-    // Only run handleScrollAnimation if active
+    // NEW: Only run handleScrollAnimation if active
     if (isTextheroAnimationActive) {
         if (!animationFrameId) { // Prevent multiple requests for the same frame
             animationFrameId = requestAnimationFrame(handleScrollAnimation);
@@ -147,7 +146,7 @@ window.addEventListener("scroll", () => {
 
 window.addEventListener('load', () => {
     updateListStyleVariables();
-    // Only run handleScrollAnimation if active on load
+    // NEW: Only run handleScrollAnimation if active on load
     if (isTextheroAnimationActive) {
         if (!animationFrameId) {
             animationFrameId = requestAnimationFrame(handleScrollAnimation);
@@ -155,7 +154,7 @@ window.addEventListener('load', () => {
     }
 });
 
-// Expose control methods globally for other scripts (e.g., experience.js)
+// NEW: Expose control methods globally for other scripts (e.g., experience.js)
 window.textheroComponent = {
     deactivateScrollAnimation: () => {
         isTextheroAnimationActive = false;

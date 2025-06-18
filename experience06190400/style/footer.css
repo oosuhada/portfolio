@@ -74,27 +74,17 @@
 
 /* General footer background */
 footer {
-    /* 테마 변수를 사용하여 배경색 설정 */
-    background-color: var(--dark-bg); /* 기본은 다크 모드의 배경색 */
-    z-index: 10;
-    position: relative;
-    /* 푸터 텍스트 색상도 테마 변수에 연결 */
-    color: var(--dark-text); /* 기본은 다크 모드의 텍스트 색상 */
-    transition: background-color 0.3s ease, color 0.3s ease; /* 부드러운 전환 효과 추가 */
-}
-
-/* 라이트 모드일 때 푸터 배경색과 텍스트 색상 변경 */
-body[data-theme="light"] footer {
-    background-color: var(--light-bg);
-    color: var(--light-text);
+    background-color: #fff; /* Footer background to white */
+    z-index: 10; /* Ensure footer sits above the new full-screen section */
+    position: relative; /* Needed for z-index to work against static elements */
 }
 
 footer a {
-    /* 링크 색상도 테마 변수에 연결 */
-    color: var(--dark-text); /* 기본은 다크 모드의 텍스트 색상 */
+    color: #000; /* Link color on white background */
     text-decoration: underline;
-    transition: color 0.3s ease; /* 부드러운 전환 효과 추가 */
 }
+
+
 
 @media (max-width: 700px) {
     .grape-footer-quote-section { /* 클래스 이름 통일 */
@@ -113,14 +103,4 @@ footer a {
         /* 필요에 따라 max-width도 100%로 설정할 수 있습니다. */
         max-width: 100%;
     }
-}
-
-/* 다크 모드일 때 lottie-inner-section의 Lottie 색상 변경 */
-body[data-theme='dark'] #lottie-container #lottie-inner-section {
-  filter: invert(75%); /* 색상 반전 */
-}
-
-/* 라이트 모드일 때 lottie-inner-section의 Lottie 색상 초기화 (선택 사항) */
-body[data-theme='light'] #lottie-container #lottie-inner-section {
-  filter: none; /* 필터 제거 */
 }

@@ -52,8 +52,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, timeToWaitBeforeFadeOut);
     }
 
-    // MODIFIED: This ensures the preloader hides correctly,
-    // whether or not there's a hero video on the page.
     window.addEventListener('load', () => {
         const heroVideo = document.getElementById('heroVideo');
         if (heroVideo) {
@@ -74,7 +72,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }); // Also hide on error
             }
         } else {
-            // If no heroVideo element is present, hide the preloader immediately after the 'load' event.
             hidePreloader();
         }
     });
@@ -197,12 +194,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // --- 페이지 이동 시 transition 비활성화 ---
                 disableAllTransitions();
-                // 숏딜레이 후 원래 href로 이동 (브라우저가 transition 없이 바로 페이지 로드하도록)
                 setTimeout(() => {
                     window.location.href = link.href;
                 }, 10);
-                event.preventDefault(); // 기본 링크 동작 막기
-                // ------------------------------------
+                event.preventDefault();
             });
         });
         if (navMenuContainer) {
@@ -225,7 +220,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     let isInHeroArea = true;
-    const HEADER_HIDE_CLASS = 'hidden'; // 이 클래스를 활용!
+    const HEADER_HIDE_CLASS = 'hidden';
+
+    // Export a function to get the accordion menu's expanded state
+    window.getNavHeaderExpandedState = function() {
+        const accordionNavMenu = document.getElementById('accordionNavMenu');
+        return accordionNavMenu ? accordionNavMenu.classList.contains('expanded') : false;
+    };
 
     const headerScrollLogic = {
         lastScrollY: 0,
@@ -240,7 +241,6 @@ document.addEventListener('DOMContentLoaded', function() {
             this.lastScrollY = window.scrollY;
             this.handleScroll();
             window.addEventListener('scroll', () => this.requestTick());
-            // resize 이벤트는 initializeAccordionMenu에서 단일 관리
         },
         requestTick: function() {
             if (!this.ticking) {
@@ -253,20 +253,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.ticking = false;
                 return;
             }
+
+            // If the main navigation menu is expanded, this scroll logic is overridden
+            if (window.getNavHeaderExpandedState()) {
+                this.headerElement.classList.remove(HEADER_HIDE_CLASS);
+                this.ticking = false;
+                return;
+            }
+
             const currentScrollY = window.scrollY;
             const scrollThreshold = this.headerElement.querySelector('.nav-top-row').offsetHeight > 0 ? this.headerElement.querySelector('.nav-top-row').offsetHeight : 60;
 
-            // isInHeroArea일 때는 헤더가 항상 보임 (스크롤 숨김 로직 무시)
             if (isInHeroArea) {
                 this.headerElement.classList.remove(HEADER_HIDE_CLASS);
-                // 블러는 initializeAccordionMenu가 결정 (여기서 직접 건드리지 않음)
                 this.lastScrollY = currentScrollY;
                 this.ticking = false;
                 return;
             }
 
-            // 데스크톱일 때만 스크롤에 따른 헤더 숨김/보임 로직 적용
-            // 모바일일 때는 이 로직은 무시하고, 아코디언 메뉴가 헤더 가시성을 결정
             if (window.innerWidth >= 768) {
                 if (Math.abs(currentScrollY - this.lastScrollY) <= this.delta && currentScrollY > scrollThreshold) {
                     this.ticking = false;
@@ -283,6 +287,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             this.lastScrollY = currentScrollY <= 0 ? 0 : currentScrollY;
             this.ticking = false;
+
+            // Trigger the experience header orchestration when the main header's state changes
+            if (window.orchestrateHeaderVisibility) {
+                window.orchestrateHeaderVisibility();
+            }
         }
     };
 
@@ -291,9 +300,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const mainHeaderBar = document.querySelector('.nav-header');
         if (!sentinel || !mainHeaderBar) {
             isInHeroArea = false;
-            // Sentinel이 없으면 headerScrollLogic이 모든 스크롤 동작을 처리하도록
-            // 이때 header-blur-active는 initializeAccordionMenu에서 관리
-            if (headerScrollLogic.init) headerScrollLogic.handleScroll(); // 초기 스크롤 상태 반영
+            if (headerScrollLogic.init) headerScrollLogic.handleScroll();
             return;
         }
         const observer = new IntersectionObserver(
@@ -303,18 +310,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     isInHeroArea = entry.isIntersecting;
                     if (previousIsInHeroArea !== isInHeroArea) {
                         if (isInHeroArea) {
-                            // 히어로 영역 진입 시: 데스크톱이라면 헤더 보임, 모바일은 아코디언이 결정
-                            if (window.innerWidth >= 768) { // 데스크톱일 때만 hidden 제거
+                            if (window.innerWidth >= 768) {
                                 mainHeaderBar.classList.remove(HEADER_HIDE_CLASS);
                             }
-                            // 블러는 initializeAccordionMenu가 결정
                         } else {
-                            // 히어로 영역 이탈 시: 데스크톱 스크롤 숨김 로직 활성화, 모바일은 아코디언이 결정
-                            if (window.innerWidth >= 768) { // 데스크톱일 때만 스크롤 로직 적용
+                            if (window.innerWidth >= 768) {
                                 headerScrollLogic.lastScrollY = window.scrollY;
                                 headerScrollLogic.handleScroll();
                             }
                         }
+                    }
+                    if (window.orchestrateHeaderVisibility) {
+                        window.orchestrateHeaderVisibility(); // Call orchestration on sentinel change
                     }
                 });
             }, {
@@ -550,7 +557,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const tempAccordionNavMenu = document.querySelector('.nav-menu');
             if (tempAccordionNavMenu) {
                 accordionNavMenu = tempAccordionNavMenu;
-                console.warn("Element with ID 'accordionNavMenu' not found. Using '.nav-menu' instead.");
             } else {
                 console.error("Neither element with ID 'accordionNavMenu' nor class '.nav-menu' found.");
                 return;
@@ -559,46 +565,45 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const path = location.pathname;
 
-        // 헤더 및 메뉴의 상태를 설정하는 핵심 함수
         const setHeaderAndMenuState = () => {
             const isDesktop = window.innerWidth >= 768;
-            const isExperienceOrHobby = path.includes('experience') || path.includes('hobby');
+            const isExperiencePage = path.includes('experience');
 
             if (isDesktop) {
-                if (isExperienceOrHobby) {
-                    // 데스크톱 - experience/hobby: 축소 상태
+                if (isExperiencePage) {
+                    // On desktop, for experience page, the main nav header is initially collapsed.
                     accordionNavMenu.classList.remove('expanded');
                     navToggleBtn.classList.remove('active');
                     headerElement.classList.remove('expanded-desktop');
                     headerElement.classList.add('collapsed-desktop');
                     headerElement.classList.remove('expanded-mobile');
-                    headerElement.classList.remove(HEADER_HIDE_CLASS); // 데스크톱에서는 hidden 아님
-                    // 블러는 데스크톱 축소 시에도 없음
+                    headerElement.classList.remove(HEADER_HIDE_CLASS); // Not hidden on desktop
                 } else {
-                    // 데스크톱 - 일반 페이지: 확장 상태
+                    // On desktop, for other pages, the main nav header is expanded.
                     accordionNavMenu.classList.add('expanded');
                     navToggleBtn.classList.add('active');
                     headerElement.classList.add('expanded-desktop');
                     headerElement.classList.remove('collapsed-desktop');
                     headerElement.classList.remove('expanded-mobile');
-                    headerElement.classList.remove(HEADER_HIDE_CLASS); // 데스크톱에서는 hidden 아님
-                    // 블러 활성화 (header-blur-active)는 CSS에서 header:not(.hidden)에 따라 자동으로 활성화되므로, 굳이 여기서 header-blur-active를 추가할 필요 없음
+                    headerElement.classList.remove(HEADER_HIDE_CLASS); // Not hidden on desktop
                 }
             } else {
-                // 모바일 (초기 상태: 메뉴는 숨겨져 있고, 헤더 전체도 숨겨짐)
+                // On mobile, the main nav header is hidden by default.
                 accordionNavMenu.classList.remove('expanded');
                 navToggleBtn.classList.remove('active');
                 headerElement.classList.remove('expanded-desktop');
                 headerElement.classList.remove('collapsed-desktop');
                 headerElement.classList.remove('expanded-mobile');
-                headerElement.classList.add(HEADER_HIDE_CLASS); // 모바일에서 메뉴 닫혔을 때 헤더 숨기기
-                // 블러도 hidden 클래스에 의해 자동 비활성화됨
+                headerElement.classList.add(HEADER_HIDE_CLASS); // Hidden on mobile when menu is closed
             }
-            // 모든 경우에 공통으로 스타일 초기화 (width, height)
-            // CSS에서 처리되도록 맡김
+
+            // After setting menu state, re-orchestrate the headers if the function exists
+            if (window.orchestrateHeaderVisibility) {
+                window.orchestrateHeaderVisibility();
+            }
         };
 
-        // 초기 로드 시 상태 설정
+        // Initial state setup
         setHeaderAndMenuState();
 
         if (navToggleBtn && accordionNavMenu && headerElement) {
@@ -610,64 +615,71 @@ document.addEventListener('DOMContentLoaded', function() {
                 navToggleBtn.classList.toggle('active');
 
                 if (isDesktopView) {
-                    if (isCurrentlyExpanded) { // 데스크톱에서 현재 확장 -> 축소
+                    if (isCurrentlyExpanded) { // Desktop: currently expanded -> collapsed
                         headerElement.classList.remove('expanded-desktop');
                         headerElement.classList.add('collapsed-desktop');
-                        headerElement.classList.remove(HEADER_HIDE_CLASS); // 데스크톱 축소는 hidden 아님
-                    } else { // 데스크톱에서 현재 축소 -> 확장
+                        headerElement.classList.remove(HEADER_HIDE_CLASS);
+                    } else { // Desktop: currently collapsed -> expanded
                         headerElement.classList.remove('collapsed-desktop');
                         headerElement.classList.add('expanded-desktop');
-                        headerElement.classList.remove(HEADER_HIDE_CLASS); // 데스크톱 확장도 hidden 아님
+                        headerElement.classList.remove(HEADER_HIDE_CLASS);
                     }
-                    // CSS에서 width, height 관리
-                } else { // 모바일
-                    if (isCurrentlyExpanded) { // 모바일에서 현재 확장 -> 축소
-                        headerElement.classList.add(HEADER_HIDE_CLASS); // 헤더 숨기기
+                } else { // Mobile
+                    if (isCurrentlyExpanded) { // Mobile: currently expanded -> collapsed
+                        headerElement.classList.add(HEADER_HIDE_CLASS); // Hide header
                         headerElement.classList.remove('expanded-mobile');
-                    } else { // 모바일에서 현재 축소 -> 확장
-                        headerElement.classList.remove(HEADER_HIDE_CLASS); // 헤더 보이기
+                    } else { // Mobile: currently collapsed -> expanded
+                        headerElement.classList.remove(HEADER_HIDE_CLASS); // Show header
                         headerElement.classList.add('expanded-mobile');
                     }
-                    // CSS에서 height, width 관리
+                }
+                // Trigger orchestration after accordion state change
+                if (window.orchestrateHeaderVisibility) {
+                    window.orchestrateHeaderVisibility();
                 }
             });
 
             accordionNavMenu.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', (event) => {
                     const isDesktopView = window.innerWidth >= 768;
-                    if (!isDesktopView) { // 모바일에서 링크 클릭 시 메뉴 닫기
+                    if (!isDesktopView) { // On mobile, close menu after click
                         accordionNavMenu.classList.remove('expanded');
                         navToggleBtn.classList.remove('active');
-                        headerElement.classList.add(HEADER_HIDE_CLASS); // 헤더 숨기기
+                        headerElement.classList.add(HEADER_HIDE_CLASS);
                         headerElement.classList.remove('expanded-mobile');
                     }
-                    // --- 페이지 이동 시 transition 비활성화 ---
+                    // Trigger orchestration after link click
+                    if (window.orchestrateHeaderVisibility) {
+                        window.orchestrateHeaderVisibility();
+                    }
                     disableAllTransitions();
                     setTimeout(() => {
                         window.location.href = link.href;
                     }, 10);
                     event.preventDefault();
-                    // ------------------------------------
                 });
             });
 
             document.addEventListener('click', (e) => {
                 const isDesktopView = window.innerWidth >= 768;
-                // 모바일에서 확장된 상태이고, 헤더 외부를 클릭했을 때
                 if (!isDesktopView &&
                     accordionNavMenu.classList.contains('expanded') &&
                     !headerElement.contains(e.target) &&
                     !e.target.closest('#highlight-menu')) {
                     accordionNavMenu.classList.remove('expanded');
                     navToggleBtn.classList.remove('active');
-                    headerElement.classList.add(HEADER_HIDE_CLASS); // 헤더 숨기기
+                    headerElement.classList.add(HEADER_HIDE_CLASS);
                     headerElement.classList.remove('expanded-mobile');
+
+                    // Trigger orchestration after closing menu by outside click
+                    if (window.orchestrateHeaderVisibility) {
+                        window.orchestrateHeaderVisibility();
+                    }
                 }
             });
 
-            // 리사이즈 이벤트 리스너 수정
             window.addEventListener('resize', () => {
-                setHeaderAndMenuState(); // 리사이즈 시에도 상태를 다시 설정합니다.
+                setHeaderAndMenuState(); // Recalculate state on resize
             });
         }
     }
@@ -698,7 +710,7 @@ document.addEventListener('DOMContentLoaded', function() {
         footerImgShake();
     }
     initializeHighlighter();
-    initializeAccordionMenu(); // 가장 마지막에 호출되어 모든 헤더 상태를 최종적으로 결정하도록 함
+    initializeAccordionMenu();
 
     document.addEventListener('click', function(event) {
         if (isDragging || event.target.closest('a, button, input, .no-general-splash, #highlight-menu, .meaning-chunk, .timeline-chunk, .skill-chunk')) {

@@ -1,0 +1,231 @@
+/* experience.css */
+/* General/Utility Styles and Root Variables */
+
+:root {
+    /* Color variables */
+    --gray-main: #222;
+    --gray-sub: #444;
+    --gray-border: #e1e1e1;
+    --gray-bg: #fafafb;
+    --gray-card: #fff;
+    --gray-dot: #bbb;
+    --gray-tag: #f0f0f0;
+    --gray-tag-hover: #bbb;
+
+    /* Sizing variables */
+    --nav-header-height: 0px;
+    --diagonal-handle-thickness: 15px;
+    --glass-blur: 8px;
+    --glass-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    --glass-radius: 8px;
+
+    /* Highlight and accent colors */
+    --main-highlight-color: #000000;
+    --main-accent-color: #00000081;
+
+    /* Experience Header Theme Variables */
+    --primary-color: #ffffff;
+    --primary-content-color: #1a202c;
+    --primary-opacity-25: rgba(255, 255, 255, 0.25);
+    --transition-duration: 0.3s;
+}
+
+[data-theme="dark"] {
+    --primary-color: #1a202c;
+    --primary-content-color: #ffffff;
+    --primary-opacity-25: rgba(26, 32, 44, 0.25);
+}
+
+/* Ensure body has no margin/padding for full-screen elements */
+body {
+    margin: 0;
+    padding: 0;
+    /* This ensures header, hero, text hero backgrounds are black */
+    background-color: #000;
+    overflow-x: hidden; /* ← 가로 오버플로우 숨기기 */
+}
+
+#top-sentinel {
+    height: 1px;
+    width: 100%;
+    pointer-events: none;
+}
+
+.nav-header.experience-header-hidden-override {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    background-color: transparent;
+}
+
+.experience-content-wrapper {
+    position: relative;
+    z-index: 3;
+}
+
+.experience-main {
+    margin-bottom: 8rem;
+    max-width: 100%;
+    /* padding: 0 1vw; */
+}
+
+.section-top-gap {
+    height: 4.5rem;
+    background-color: black;
+}
+
+.section-bottom-gap {
+    height: 8rem;
+    /* Set background color for section-bottom-gap */
+    background-color: #ffffff; /* Keep this white if it's supposed to be part of the white section */
+}
+
+.section-bottom-gap2 {
+    height: 4rem;
+    /* Set background color for section-bottom-gap */
+    background-color: #ffffff; /* Keep this white if it's supposed to be part of the white section */
+}
+
+/* Utility for hover effects on text */
+.meaning-chunk {
+    cursor: pointer;
+    transition: text-decoration 0.15s;
+    display: inline;
+    white-space: normal;
+}
+
+.meaning-chunk:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.22em;
+    text-decoration-thickness: 2px;
+}
+
+/* New Experience Header Styles */
+.experience-header {
+    position: fixed;
+    top: 10px;
+    z-index: 50;
+    width: 100%;
+    /* Fix 1: Set a solid background color to prevent white background from showing through */
+    background-color: transparent;
+    /* Fix 2: Remove backdrop-filter to eliminate blur effect */
+    /* backdrop-filter: blur(5px); */
+    transition: transform var(--transition-duration) ease, opacity var(--transition-duration) ease, visibility var(--transition-duration) ease;
+}
+
+/* Removed .experience-header.normal and .experience-header.compact as they are not used for padding control after previous changes */
+
+/* Fix 4: Add explicit styles for visible state and refine hidden state for smooth transitions */
+.experience-header.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-100%); /* Slides up when hidden */
+    background-color: transparent;
+}
+
+.experience-header:not(.hidden) {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0); /* Slides down when visible */
+    background-color: transparent;
+}
+
+
+.header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-end; /* 버튼들을 오른쪽으로 정렬 */
+    align-items: center;
+    background-color: transparent;
+}
+
+.button-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    color: var(--primary-content-color);
+    background: transparent;
+    border: 1px solid var(--primary-content-color);
+    border-radius: 0.375rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color var(--transition-duration), color var(--transition-duration);
+}
+
+.button:hover {
+    background-color: var(--primary-content-color);
+    color: var(--primary-color);
+}
+
+.theme-toggle {
+    padding: 0.5rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    position: relative;
+    width: 2rem;
+    height: 2rem;
+}
+
+.theme-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    stroke: var(--primary-content-color);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform var(--transition-duration), opacity var(--transition-duration);
+}
+
+.theme-icon.hidden {
+    transform: translate(-50%, -50%) rotate(-90deg);
+    opacity: 0;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+#full-screen-bg-section {
+    width: 100vw;
+    height: 100vh;
+    background-color: #ffffff;
+    position: fixed; /* Changed to fixed for reliable full-screen background behavior */
+    top: 0;
+    left: 0;
+    z-index: 0; /* Stays at the very back */
+    pointer-events: none; /* Allows clicks/interactions to pass through to elements above it */
+    /* Only apply if you want it to start from a certain scroll point */
+    /* display: none; */ /* You might want to control its visibility with JavaScript/ScrollTrigger */
+}
+
+/* Ensure foreground content is positioned relative and has a higher z-index */
+#main-content-wrapper { /* Ensure this wraps all content that should be above the fixed background */
+    position: relative;
+    z-index: 1; /* Higher than #full-screen-bg-section */
+    background-color: transparent; /* Or specific color if part of it should be opaque */
+}
+
+/* Ensure the black background is maintained for the top sections */
+header, .hero-section-winery, #skills-showcase-section {
+    position: relative; /* Ensure these sections participate in z-index stacking */
+    z-index: 2; /* Higher than #main-content-wrapper's base z-index if needed */
+}

@@ -41,11 +41,11 @@ body {
   Specific sections like final-message-section, controls, blank-interlude
   will have their own explicit positioning.
 */
-.container > div:not(.final-message-section):not(.controls):not(.blank-interlude) {
+.container > div:not(.final-message-section):not(.controls):not(.blank-interlude):not(.uxui-design-section):not(.idea-6) {
   position: absolute;
   left: 0;
   right: 0;
-  top: 8rem;
+  top: 10rem;
 }
 
 /*
@@ -196,6 +196,12 @@ body {
 /* opacity: 0; */ /* Start hidden for staggered appearance */
 /* } */
 
+.idea-6 {
+  position: absolute;
+  margin-top: clamp(1rem, calc(4rem - 2vw), 8rem) !important;
+  left: 0;
+  right: 0;
+}
 
 .idea-6 span { /* Corresponds to "bigTextPart1", "bigTextPart2" */
   font-size: 24vw;
@@ -209,8 +215,25 @@ body {
 */
 .uxui-design-section {
   position: absolute;
-  z-index: 2; /* Increased z-index to overlap idea-6 */
-  top: 20%;
+  z-index: 2;
+  /* 화면이 커질수록 top이 줄어들고, 화면이 작아질수록 top이 늘어나게 설정 */
+  /*
+    예시 설명:
+    calc(15% - 2vw)는 기본적으로 top을 15%에서 시작하되,
+    뷰포트 너비가 1vw 증가할 때마다 top이 0.02%씩 줄어들게 합니다.
+
+    clamp(10%, calc(15% - 2vw), 30%)
+    - 최소 top: 10% (화면이 아주 클 때)
+    - 기본 계산: calc(15% - 2vw) (화면 크기에 따라 동적 조절)
+    - 최대 top: 30% (화면이 아주 작을 때)
+
+    이 값들은 필요에 따라 조정해 주세요.
+    (예: 10% 20% 30% -> 5% 15% 25% 등으로)
+  */
+  top: clamp(0%, calc(15% - 2vw), 40%);
+  margin-top: 0; /* 이전에 설정한 margin-top: 0은 유지 */
+  left: 0;
+  right: 0;
 }
 
 .uxui-design-section img {
@@ -240,7 +263,7 @@ body {
   margin: 0;
   font-weight: 300;
   text-transform: uppercase;
-  padding-top: 40px;
+  padding-top: 10px;
   color: #333;
   font-family: "Anton", sans-serif;
 }
@@ -253,7 +276,7 @@ body {
 .wish-message h5 { /* Corresponds to "wishText" */
   font-weight: lighter;
   font-size: 2rem;
-  margin: 10px 0 0;
+  /* margin: 10px 0 0; */
 }
 
 /*
@@ -272,6 +295,8 @@ body {
   font-size: 2rem;
   font-weight: lighter;
   margin: 10px 0;
+    opacity: 0;
+  visibility: hidden; /* 요소가 공간을 차지하지 않고 이벤트에 반응하지 않도록 */
 }
 
 #replay { /* Corresponds to "replayText" */
@@ -285,9 +310,9 @@ body {
   Playback Controls (Fixed Position)
 */
 .controls {
+  left: 0; /* 초기 왼쪽 정렬 */
+  top: 0; /* 초기 상단 정렬 */
   position: fixed;
-  top: 50%;
-  transform: translateY(-50%); /* Vertically center */
   z-index: 10; /* Ensure controls are on top */
   padding: 10px;
   display: flex;
@@ -334,6 +359,8 @@ body {
   align-items: center;
   margin-bottom: 10px;
   border-radius: 5px 5px 0 0;
+  color: rgba(0, 0, 0, 0.4);  /* Color for the handle dots */
+  font-size: 1.5rem; /* Make dots more visible */
 }
 
 #skipBtn {
@@ -438,11 +465,14 @@ body {
     font-size: 10rem;
   }
 
-  .uxui-design-section .lightbulb { /* Renamed from .hat */
+  .uxui-design-section .lightbulb {
     width: 50px;
     top: -20px;
   }
 
+  .uxui-design-section img {
+  max-width: 80%;
+}
   .heading-main {
     font-size: 2.2em;
   }
@@ -460,19 +490,6 @@ body {
     font-weight: lighter;
   }
 
-  .controls {
-    left: 10px;
-    padding: 8px;
-    z-index: 999;
-  }
-
-  .controls button {
-    width: 50px;
-    height: 50px;
-    font-size: 1.5rem;
-    margin-bottom: 8px;
-  }
-
   #skipBtn {
     width: 50px;
     height: 50px;
@@ -483,13 +500,7 @@ body {
   top: 12rem;
 }
 
-.idea-6 span { /* Corresponds to "bigTextPart1", "bigTextPart2" */
+.idea-6 span { /* Corresponds to "bigTextPart1", "bigText2" */
   font-size: 20vw;
-}
-}
-
-@media screen and (min-width: 860px) {
-  .container > div:not(.final-message-section):not(.controls):not(.blank-interlude) {
-  top: 3rem;
 }
 }

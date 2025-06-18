@@ -1,24 +1,28 @@
 /* texthero.css */
 
 #first-gap {
-  border-top: 1px solid rgba(251, 251, 251, 0.9);
+  border-top: 1px solid rgba(251, 251, 251, 0.9); /* This remains white for contrast on black */
 }
 
 #skills-showcase-section {
-  background-color: #000000; /* Set to black */
-  padding: 50px 0px 0px 0px; /* Add some padding to give space around the content inside */
+  background-color: var(--dark-bg); /* Default to dark theme */
+  padding: 50px 0px 0px 0px;
+}
+body[data-theme="light"] #skills-showcase-section {
+    background-color: var(--light-bg); /* Apply light theme */
 }
 
+
 .work-experience-intro.center {
-    color: #ffffff;
+    color: var(--dark-text); /* Default to dark theme */
     font-size: 2.25rem;
     font-weight: 800;
     padding: 28px 20px 24px 28px;
     border-radius: 18px;
     text-align: center;
     margin-top: 5rem;
-    margin-left: auto; /* Added for centering */
-    margin-right: auto; /* Added for centering */
+    margin-left: auto;
+    margin-right: auto;
     max-width: 800px;
     position: relative;
     z-index: 12;
@@ -27,22 +31,29 @@
     width: auto;
     box-sizing: border-box;
 }
+body[data-theme="light"] .work-experience-intro.center {
+    color: var(--light-text); /* Apply light theme */
+}
 
 .work-experience-intro .meaning-chunk {
     font-family: 'Noto Serif TC', serif;
-    color: #ffffff;
+    color: var(--dark-text); /* Default to dark theme */
     margin: 0 6px;
     font-weight: 700;
-    text-shadow: 0 1px 3px rgba(255, 255, 255, 0.7);
+    text-shadow: 0 1px 3px rgba(255, 255, 255, 0.7); /* Adjusted for dark theme */
 }
+body[data-theme="light"] .work-experience-intro .meaning-chunk {
+    color: var(--light-text); /* Apply light theme */
+}
+
 
 /* --- List Wrapper Styles --- */
 #list-item-wrapper {
-  list-style: none; /* 기본 리스트 스타일 마커 제거 */
-  margin: 0px auto 0px auto; /* 중앙 정렬 */
+  list-style: none;
+  margin: 0px auto 0px auto;
   padding: 0rem 0rem;
   width: 383px;
-  text-align: center; /* 아이템들을 중앙 정렬 */
+  text-align: center;
 }
 
 @media (min-width: 768px) {
@@ -54,36 +65,45 @@
 /* --- Individual List Item Styles --- */
 .list-item {
   font-family: 'Noto Serif TC', serif;
-  display: inline-block; /* 너비/높이, 패딩 적용이 용이하도록 inline-block으로 변경 */
+  display: inline-block;
   font-size: 36px;
   font-weight: 600;
-  color:  #333333; /* 기본 텍스트 색상 */
-  transition: color 0.3s ease; /* 텍스트 색상 변경 시 부드러운 전환 효과 추가 */
-  white-space: nowrap; /* 텍스트가 한 줄에 유지되도록 */
-  position: relative; /* ::before 가상 요소를 absolute로 위치시키기 위한 기준점 */
-  padding-left: 50px; /* 아이콘이 들어갈 왼쪽 공간 확보 (아이콘 크기 + 약간의 여백) */
-  margin-right: 25px; /* 각 리스트 아이템 사이의 가로 간격 */
-  margin-bottom: 12px; /* 줄 바꿈 시 위아래 간격 */
-  line-height: 1.2; /* 텍스트와 아이콘의 수직 정렬을 돕기 위해 */
-  cursor: pointer; /* 마우스 오버 시 커서 모양 변경 */
+  color: var(--dark-list-item-inactive-text); /* Default to dark theme */
+  transition: color 0.3s ease;
+  white-space: nowrap;
+  position: relative;
+  padding-left: 50px;
+  margin-right: 25px;
+  margin-bottom: 12px;
+  line-height: 1.2;
+  cursor: pointer;
+}
+body[data-theme="light"] .list-item {
+    color: var(--light-list-item-inactive-text); /* Apply light theme */
 }
 
 /* 텍스트 호버 효과: 마우스 오버 시 텍스트 색상 변경 */
 .list-item:hover {
-    color: #fffffff0; /* 마우스 오버 시 텍스트 색상을 흰색으로 변경 */
+    color: var(--dark-text); /* Default to dark theme */
+}
+body[data-theme="light"] .list-item:hover {
+    color: var(--light-text); /* Apply light theme */
 }
 
 /* 스크롤 시 'on' 클래스가 적용될 때 텍스트 색상 변경 */
 .list-item#on {
-  color: #fffffff0; /* 스크롤 활성화 시 텍스트 색상 */
+  color: var(--dark-text); /* Default to dark theme */
+}
+body[data-theme="light"] .list-item#on {
+    color: var(--light-text); /* Apply light theme */
 }
 
 /* --- Common Icon Styling for ::before Pseudo-element --- */
 .list-item::before {
     content: " ";
     display: inline-block;
-    width: 40px; /* 아이콘의 너비 */
-    height: 40px; /* 아이콘의 높이 */
+    width: 40px;
+    height: 40px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center right;
@@ -91,20 +111,24 @@
     left: 0;
     top: 50%;
     transform: translateY(-50%);
-    filter: grayscale(100%) brightness(50%);
-    transition: filter 0.3s ease; /* 필터에만 transition 적용 */
+    filter: grayscale(100%) brightness(50%); /* This is your default dark theme filter */
+    transition: filter 0.3s ease;
+}
+
+/* Light mode inactive icon filter: Apply a white tint to make it look faded */
+body[data-theme="light"] .list-item::before {
+    filter: brightness(200%) saturate(0%) opacity(0.5); /* Adjust values for desired 'white transparent' effect */
 }
 
 /* 마우스 오버 시 아이콘 색상 복원 (부모인 .list-item에 호버 시 적용) */
 .list-item:hover::before {
-    filter: none; /* 필터 제거하여 원래 색상으로 되돌립니다. */
+    filter: none;
 }
 
 /* .list-item#on 상태일 때도 아이콘 색상 복원 */
 .list-item#on::before {
     filter: none;
 }
-
 
 #panel1-img {
   overflow: hidden;
@@ -117,8 +141,6 @@
   right: 0px;
   height: 250px;
   transform: translate(80px, -13px) rotate(23deg);
-  /* 이 트랜지션은 JS에서 제어할 것이므로 제거 */
-  /* transition: transform 0.1s linear; */
 }
 
 @media (max-width: 700px) {
@@ -130,114 +152,488 @@
 }
 
 /* --- Specific Icon Paths for Each List Item (변동 없음) --- */
-.ux-ui-design-icon::before {
-    background-image: url('../icons/1.png');
+.ux-ui-design-icon::before { background-image: url('../icons/1.png'); }
+.user-experience-icon::before { background-image: url('../icons/2.png'); }
+.user-interface-icon::before { background-image: url('../icons/3.png'); }
+.business-strategy-icon::before { background-image: url('../icons/4.png'); }
+.data-analysis-icon::before { background-image: url('../icons/5.png'); }
+.market-research-icon::before { background-image: url('../icons/6.png'); }
+.consumer-insights-icon::before { background-image: url('../icons/7.png'); }
+.customer-journey-icon::before { background-image: url('../icons/8.png'); }
+.branding-icon::before { background-image: url('../icons/9.png'); }
+.marketing-strategy-icon::before { background-image: url('../icons/10.png'); }
+.digital-transformation-icon::before { background-image: url('../icons/11.png'); }
+.app-development-icon::before { background-image: url('../icons/12.png'); }
+.flutter-icon::before { background-image: url('../icons/13.png'); }
+.frontend-development-icon::before { background-image: url('../icons/14.png'); }
+.project-management-icon::before { background-image: url('../icons/15.png'); }
+.leadership-icon::before { background-image: url('../icons/16.png'); }
+.entrepreneurship-icon::before { background-image: url('../icons/17.png'); }
+.client-management-icon::before { background-image: url('../icons/18.png'); }
+.problem-solving-icon::before { background-image: url('../icons/19.png'); }
+.user-centered-icon::before { background-image: url('../icons/20.png'); }
+.omnichannel-icon::before { background-image: url('../icons/21.png'); }
+.design-thinking-icon::before { background-image: url('../icons/22.png'); }
+.prototyping-icon::before { background-image: url('../icons/23.png'); }
+.user-testing-icon::before { background-image: url('../icons/24.png'); }
+.communication-icon::before { background-image: url('../icons/25.png'); }
+.hospitality-icon::before { background-image: url('../icons/26.png'); }
+.retail-icon::before { background-image: url('../icons/27.png'); }
+.startup-icon::before { background-image: url('../icons/28.png'); }
+
+/* Layout for sections (Desktop horizontal, Mobile vertical) */
+.section-row {
+    display: flex;
+    width: 100vw;
+    height: auto;
+    min-height: calc(100vh - var(--header-height, 0px));
+    overflow: hidden;
 }
 
-.user-experience-icon::before {
-    background-image: url('../icons/2.png');
+/* Section Title styling */
+.section-title {
+    flex: 0 0 8.3333%;
+    max-width: 8.3333vw;
+    min-width: 80px;
+    background: var(--dark-section-title-inactive-bg); /* Default to dark theme */
+    font-weight: bold;
+    font-size: 1.4em;
+    letter-spacing: 0rem;
+    cursor: pointer;
+    position: sticky;
+    bottom: 0;
+    user-select: none;
+    transition: background 0.2s, color 0.2s;
+    z-index: 1;
+    box-sizing: border-box;
+    height: auto;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    padding-bottom: 0x;
+    padding-top: 0px;
+    position: relative;
+}
+body[data-theme="light"] .section-title {
+    background: var(--light-section-title-inactive-bg); /* Apply light theme */
 }
 
-.user-interface-icon::before {
-    background-image: url('../icons/3.png');
+.section-title.active {
+    background: var(--dark-section-title-active-bg); /* Default to dark theme */
+    color: var(--dark-section-title-active-text); /* Default to dark theme */
+    cursor: default;
+    z-index: 2;
+    box-shadow: 2px 0 16px 0 rgba(0,0,0,0.10);
+}
+body[data-theme="light"] .section-title.active {
+    background: var(--light-section-title-active-bg); /* Apply light theme */
+    color: var(--light-section-title-active-text); /* Apply light theme */
 }
 
-.business-strategy-icon::before {
-    background-image: url('../icons/4.png');
+.section-title .section-title-text {
+    font-size: 3.5em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.05em;
+    white-space: nowrap;
+    writing-mode: vertical-rl;
+    text-align: left;
+    position: absolute;
+    left: 10px;
+    bottom: -500px;
+    margin: 0;
+    padding: 0;
+    pointer-events: none;
+    transform: none;
+    color: var(--dark-section-title-inactive-text); /* Default to dark theme */
+    background: inherit;
+    z-index: 2;
+    word-spacing: 0.3em;
+}
+body[data-theme="light"] .section-title .section-title-text {
+    color: var(--light-section-title-inactive-text); /* Apply light theme */
 }
 
-.data-analysis-icon::before {
-    background-image: url('../icons/5.png');
+
+/* Section Content Area styling (the scrollable right panel) */
+.section-content-area {
+    flex: 1 1 75%;
+    min-width: 0;
+    background: var(--dark-timeline-content-bg); /* Default to dark theme */
+    color: var(--dark-timeline-content-text); /* Default to dark theme */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-top: 40px;
+    padding-bottom: 48px;
+    padding-left: clamp(16px, 2vw, 48px);
+    padding-right: clamp(16px, 2vw, 48px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: opacity 0.5s, flex-basis 0.5s;
+    opacity: 1;
+    z-index: 1;
+    box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: #888 var(--dark-timeline-content-bg); /* Default to dark theme for track */
+    min-height: calc(100vh - var(--header-height, 0px));
+}
+body[data-theme="light"] .section-content-area {
+    background: var(--light-timeline-content-bg); /* Apply light theme */
+    color: var(--light-timeline-content-text); /* Apply light theme */
+    scrollbar-color: #888 var(--light-timeline-content-bg); /* Apply light theme for track */
 }
 
-.market-research-icon::before {
-    background-image: url('../icons/6.png');
+.section-content-area::-webkit-scrollbar {
+    width: 8px;
+}
+.section-content-area::-webkit-scrollbar-track {
+    background: var(--dark-timeline-content-bg); /* Default to dark theme */
+}
+body[data-theme="light"] .section-content-area::-webkit-scrollbar-track {
+    background: var(--light-timeline-content-bg); /* Apply light theme */
 }
 
-.consumer-insights-icon::before {
-    background-image: url('../icons/7.png');
+.section-content-area::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+.section-content-area::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
 }
 
-.customer-journey-icon::before {
-    background-image: url('../icons/8.png');
+/* General content container inside the area */
+.section-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    min-width: 0;
+    width: 100%;
+    gap: 22px;
+    box-sizing: border-box;
 }
 
-.branding-icon::before {
-    background-image: url('../icons/9.png');
+/* Utility class for GSAP phrase animation */
+.ease-cubic {
+    transition-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
 }
 
-.marketing-strategy-icon::before {
-    background-image: url('../icons/10.png');
+.phrase span {
+    display: inline-flex;
+    overflow: hidden;
+    margin-right: 5px;
 }
 
-.digital-transformation-icon::before {
-    background-image: url('../icons/11.png');
+.phrase span span {
+    display: inline-block;
+    transform: translateY(100%);
 }
 
-.app-development-icon::before {
-    background-image: url('../icons/12.png');
+/* New CSS classes for section content */
+.flex-col-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.flutter-icon::before {
-    background-image: url('../icons/13.png');
+/* Main section header (Work, Education, Awards header) */
+.main-section-header {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+    width: 100%;
+    max-width: 1200px;
+    text-align: left;
 }
 
-.frontend-development-icon::before {
-    background-image: url('../icons/14.png');
+.main-title {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 0.5rem;
+    transition: none !important;
 }
 
-.project-management-icon::before {
-    background-image: url('../icons/15.png');
+.sub-description {
+    font-size: 1.125rem;
+    font-weight: 300;
+    width: 100%;
+    line-height: 1.6;
+    transition: none !important;
 }
 
-.leadership-icon::before {
-    background-image: url('../icons/16.png');
+/* Container for the list of items (activities, awards) */
+.items-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+    max-width: 1200px;
 }
 
-.entrepreneurship-icon::before {
-    background-image: url('../icons/17.png');
+/* Individual item row (Work, Education, Award item) */
+.item-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    padding: 3rem 2rem;
+    gap: 0.5rem;
+    border-top: 1px solid var(--dark-item-border); /* Default to dark theme */
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    border-radius: 0.5rem;
+}
+body[data-theme="light"] .item-container {
+    border-top: 1px solid var(--light-item-border); /* Apply light theme */
 }
 
-.client-management-icon::before {
-    background-image: url('../icons/18.png');
+.item-column-left {
+    width: 100%;
 }
 
-.problem-solving-icon::before {
-    background-image: url('../icons/19.png');
+.item-column-right {
+    width: 100%;
+    margin-top: 1rem;
 }
 
-.user-centered-icon::before {
-    background-image: url('../icons/20.png');
+.item-heading {
+    font-size: 1.875rem;
+    font-weight: 600;
+    margin: 0;
 }
 
-.omnichannel-icon::before {
-    background-image: url('../icons/21.png');
+.item-subtitle {
+    color: var(--dark-item-subtitle-text); /* Default to dark theme */
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    line-height: 1.5;
+}
+body[data-theme="light"] .item-subtitle {
+    color: var(--light-item-subtitle-text); /* Apply light theme */
 }
 
-.design-thinking-icon::before {
-    background-image: url('../icons/22.png');
+.item-description-text {
+    font-size: 1rem;
+    font-weight: 300;
+    margin-top: 0;
+    margin-right: 2rem;
+    line-height: 1.7;
 }
 
-.prototyping-icon::before {
-    background-image: url('../icons/23.png');
+.item-period-text {
+    color: var(--dark-item-period-text); /* Default to dark theme */
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    line-height: 1.5;
+}
+body[data-theme="light"] .item-period-text {
+    color: var(--light-item-period-text); /* Apply light theme */
 }
 
-.user-testing-icon::before {
-    background-image: url('../icons/24.png');
+/* Hover animations (Desktop) */
+.item-container:hover .item-heading {
+    transform: translateX(-10px);
+    transition: transform 400ms ease;
+}
+.item-container:hover .item-column-left .item-subtitle {
+    transform: translateX(-10px);
+    transition: transform 400ms ease;
+}
+.item-container:hover .item-column-right .item-description-text,
+.item-container:hover .item-column-right .item-period-text {
+    transform: translateX(10px);
+    transition: transform 400ms ease;
+}
+.item-container:hover {
+    background: var(--dark-item-hover-bg); /* Default to dark theme */
+}
+body[data-theme="light"] .item-container:hover {
+    background: var(--light-item-hover-bg); /* Apply light theme */
 }
 
-.communication-icon::before {
-    background-image: url('../icons/25.png');
+/* Specific styling for mainDescription and subDescription layout */
+.section-content .main-section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+    width: 100%;
+    max-width: 1200px;
 }
 
-.hospitality-icon::before {
-    background-image: url('../icons/26.png');
+/* Adjust subDescription width on wider screens (>= 1101px) */
+@media (min-width: 1101px) {
+    .section-content .main-section-header .sub-description {
+        width: 80%;
+        max-width: 900px;
+    }
 }
 
-.retail-icon::before {
-    background-image: url('../icons/27.png');
+/* --- Mobile Styles (Breakpoint: max-width: 768px) --- */
+@media (max-width: 768px) {
+    .section-row {
+        flex-direction: column;
+        height: auto;
+        overflow-y: auto;
+        overflow-x: hidden;
+        min-height: auto;
+    }
+    .section-title {
+        flex: none;
+        max-width: none;
+        min-width: unset;
+        width: 100%;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        box-shadow: none;
+        position: static;
+        padding-bottom: 0;
+        padding-right: 0;
+        cursor: pointer;
+        overflow-y: hidden;
+        background: var(--dark-section-title-inactive-bg); /* Default to dark theme */
+    }
+    body[data-theme="light"] .section-title {
+        background: var(--light-section-title-inactive-bg); /* Apply light theme */
+    }
+
+    .section-title .section-title-text {
+        writing-mode: horizontal-tb;
+        font-size: 2.5em;
+        letter-spacing: -0.02em;
+        padding: 0;
+        margin: 0;
+        position: static;
+        bottom: auto;
+        left: auto;
+        right: auto;
+        color: var(--dark-section-title-inactive-text); /* Default to dark theme */
+        top: auto;
+        transform: translateX(-20px);
+    }
+    body[data-theme="light"] .section-title .section-title-text {
+        color: var(--light-section-title-inactive-text); /* Apply light theme */
+    }
+
+    .section-title.active {
+        box-shadow: none;
+        position: sticky;
+        top: 0;
+        background: var(--dark-timeline-content-bg); /* Default to dark theme */
+        color: var(--dark-timeline-content-text); /* Default to dark theme */
+        z-index: 10;
+    }
+    body[data-theme="light"] .section-title.active {
+        background: var(--light-timeline-content-bg); /* Apply light theme */
+        color: var(--light-timeline-content-text); /* Apply light theme */
+    }
+
+    .section-content-area {
+        flex: none;
+        min-width: unset;
+        width: 100%;
+        height: auto;
+        min-height: 50vh;
+        padding-top: 24px;
+        padding-bottom: 24px;
+        padding-left: 16px;
+        padding-right: 16px;
+        overflow-y: visible;
+        opacity: 1;
+        transition: none;
+        min-height: auto;
+    }
+    .section-content {
+        gap: 16px;
+    }
+
+    /* item-container internal items vertical array Breakpoint (<= 768px now) */
+    .item-container {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 24px 16px;
+    }
+    .item-column-left, .item-column-right {
+        width: 100%;
+    }
+    .item-heading {
+        font-size: 2.2em;
+    }
+    .item-subtitle, .item-description-text, .item-period-text {
+        font-size: 0.9em;
+    }
+    .item-column-right {
+        margin-top: 0rem;
+    }
+
+    /* Hover animations (Mobile - Vertical) - consider removing if not desired on touch */
+    .item-container:hover .item-heading {
+        transform: translateY(-10px);
+        transition: transform 400ms ease;
+    }
+    .item-container:hover .item-column-left .item-subtitle {
+        transform: translateY(-10px);
+        transition: transform 400ms ease;
+    }
+    .item-container:hover .item-column-right .item-description-text,
+    .item-container:hover .item-column-right .item-period-text {
+        transform: translateY(10px);
+        transition: transform 400ms ease;
+    }
+
+    .section-content .main-section-header .sub-description {
+        width: 70%;
+        max-width: none;
+    }
 }
 
-.startup-icon::before {
-    background-image: url('../icons/28.png');
+/* Tablet/Intermediate Desktop Styles (769px to 1100px) */
+@media (min-width: 769px) and (max-width: 1100px) {
+    .item-container {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 24px 16px;
+    }
+    .item-column-left, .item-column-right {
+        width: 100%;
+    }
+
+    .item-heading {
+        font-size: 2.2em;
+    }
+    .item-subtitle, .item-description-text, .item-period-text {
+        font-size: 0.9em;
+        margin-right: 1rem;
+    }
+    .item-column-right {
+        margin-top: 1rem;
+    }
+}
+
+/* Desktop Styles (min-width: 769px) - for flex direction of items and widths */
+@media (min-width: 769px) {
+    .item-container {
+        flex-direction: row;
+    }
+    .item-column-left {
+        width: 40%;
+    }
+    .item-column-right {
+        width: 60%;
+        margin-top: 0;
+    }
+    .item-heading {
+        font-size: 2.25rem;
+    }
+    .main-title {
+        font-size: 3.75rem;
+    }
+    .sub-description {
+        width: 70%;
+    }
 }

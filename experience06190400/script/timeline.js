@@ -1,21 +1,21 @@
+
 // timeline.js
 
-// Declare DOM elements for global access
+// DOM 요소들을 전역에서 접근할 수 있도록 선언
 let timelineTitles = [];
 let timelineContents = [];
 let sectionRow;
 
-// Array to store all dynamically created ScrollTrigger instances.
-// This is crucial for correctly killing existing ScrollTriggers during re-rendering
-// to prevent duplicates and malfunctions.
+// 모든 동적으로 생성되는 ScrollTrigger 인스턴스를 저장하기 위한 배열.
+// 이는 재렌더링 시 기존 ScrollTrigger들을 올바르게 "kill"하여 중복 및 오작동을 방지하는 데 필수적입니다.
 let allDynamicScrollTriggers = [];
 
 /**
- * Renders the active timeline section and reorders DOM elements.
- * @param {number} activeIdx - The index of the section to activate.
+ * 활성화된 타임라인 섹션을 렌더링하고 DOM 요소를 재정렬합니다.
+ * @param {number} activeIdx - 활성화할 섹션의 인덱스.
  */
 function renderTimelineSection(activeIdx) {
-    // If sectionRow is not yet initialized, find and initialize it from the DOM.
+    // sectionRow가 아직 초기화되지 않았다면, DOM에서 찾아서 초기화합니다.
     if (!sectionRow) {
         sectionRow = document.getElementById('sectionRow');
         if (!sectionRow) {
@@ -24,9 +24,8 @@ function renderTimelineSection(activeIdx) {
         }
     }
 
-    // If titles and contents arrays are empty, initialize them from HTML.
-    // This initialization should ideally happen once on DOMContentLoaded, but
-    // a check is included here for safety at the start of the function.
+    // titles와 contents 배열이 비어있다면, HTML에서 초기화합니다.
+    // 이 초기화는 DOMContentLoaded 시점에 한 번만 일어나야 하지만, 안전을 위해 함수 시작 시에도 확인합니다.
     if (timelineTitles.length === 0 || timelineContents.length === 0) {
         document.querySelectorAll('.section-title').forEach(titleElement => {
             timelineTitles.push(titleElement);
@@ -37,19 +36,19 @@ function renderTimelineSection(activeIdx) {
         console.log("DEBUG: Initialized timelineTitles and timelineContents arrays within renderTimelineSection (secondary init check).");
     }
 
-    // "Kill" all existing ScrollTrigger instances to prevent duplication.
-    // This is very important during section transitions or window resizing.
+    // 기존의 모든 ScrollTrigger 인스턴스들을 "kill"하여 중복을 방지합니다.
+    // 이는 섹션 전환 또는 창 크기 조정 시 매우 중요합니다.
     allDynamicScrollTriggers.forEach(st => st.kill());
     allDynamicScrollTriggers = [];
     console.log("DEBUG: Killed all previous dynamic ScrollTriggers.");
 
-    // Remove all child DOM elements from sectionRow to prepare for reordering.
+    // sectionRow의 모든 자식 DOM 요소들을 제거하여 재정렬을 준비합니다.
     while (sectionRow.firstChild) {
         sectionRow.removeChild(sectionRow.firstChild);
     }
     console.log("DEBUG: Cleared sectionRow DOM children.");
 
-    // Remove the 'active' class from all section titles.
+    // 모든 섹션 타이틀에서 'active' 클래스를 제거합니다.
     timelineTitles.forEach(t => t.classList.remove('active'));
     console.log("DEBUG: Removed 'active' class from all titles.");
 
@@ -57,12 +56,12 @@ function renderTimelineSection(activeIdx) {
 
     if (isMobile) {
         console.log("DEBUG: Applying mobile layout logic.");
-        // Mobile layout: Add all titles in order, then add the active content after the active title.
+        // 모바일 레이아웃: 모든 타이틀을 순서대로 추가하고, 활성화된 타이틀 뒤에 활성화된 콘텐츠를 추가합니다.
         for (let i = 0; i < timelineTitles.length; i++) {
             sectionRow.appendChild(timelineTitles[i]);
             const titleText = timelineTitles[i].querySelector('.section-title-text');
             if (titleText) {
-                // For mobile, reset GSAP control to let CSS take over.
+                // 모바일에서는 GSAP 제어를 리셋하고 CSS가 제어하도록 합니다.
                 gsap.set(titleText, { left: 'auto', top: 'auto', bottom: 'auto', position: 'static', margin: 0, x: 0, y: 0, translateY: 0, scale: 1 });
                 console.log(`DEBUG: Mobile - Resetting position for titleText ${i} to static.`);
             }
@@ -81,37 +80,37 @@ function renderTimelineSection(activeIdx) {
         }
     } else {
         console.log("DEBUG: Applying desktop layout logic.");
-        // Desktop layout: Dynamically order content and titles.
-        // Order: [Titles before active section] -> [Active Content] -> [Active Title] -> [Titles after active section]
+        // 데스크톱 레이아웃: 콘텐츠와 타이틀을 동적으로 순서를 정하여 배치합니다.
+        // 순서: [활성화 섹션 이전의 타이틀들] -> [활성화된 콘텐츠] -> [활성화된 타이틀] -> [활성화 섹션 이후의 타이틀들]
 
-        // Add titles before the active section.
+        // 활성화 섹션 이전에 있는 타이틀들을 추가합니다.
         for (let i = 0; i < activeIdx; i++) {
             sectionRow.appendChild(timelineTitles[i]);
-            timelineContents[i].style.opacity = '0'; // Hide corresponding content.
+            timelineContents[i].style.opacity = '0'; // 해당 콘텐츠는 숨깁니다.
             timelineContents[i].style.display = 'none';
             console.log(`DEBUG: Desktop - Appended title ${i} (before active).`);
         }
 
-        // Add the active content area.
+        // 활성화된 콘텐츠 영역을 추가합니다.
         timelineContents[activeIdx].style.opacity = '1';
         timelineContents[activeIdx].style.display = 'flex';
         sectionRow.appendChild(timelineContents[activeIdx]);
         console.log(`DEBUG: Desktop - Appended active content for section ${activeIdx}.`);
 
-        // Add the active title element and apply the 'active' class.
+        // 활성화된 타이틀 요소를 추가하고 'active' 클래스를 적용합니다.
         timelineTitles[activeIdx].classList.add('active');
         sectionRow.appendChild(timelineTitles[activeIdx]);
         console.log(`DEBUG: Desktop - Appended active title ${activeIdx} and marked active.`);
 
-        // Add titles after the active section.
+        // 활성화 섹션 이후에 있는 타이틀들을 추가합니다.
         for (let i = activeIdx + 1; i < timelineTitles.length; i++) {
             sectionRow.appendChild(timelineTitles[i]);
-            timelineContents[i].style.opacity = '0'; // Hide corresponding content.
+            timelineContents[i].style.opacity = '0'; // 해당 콘텐츠는 숨깁니다.
             timelineContents[i].style.display = 'none';
             console.log(`DEBUG: Desktop - Appended title ${i} (after active).`);
         }
 
-        // --- Desktop only: ScrollTrigger setup for all section title texts ---
+        // --- 데스크톱 전용: 모든 섹션 타이틀 텍스트에 대한 ScrollTrigger 설정 ---
         if (window.gsap && window.ScrollTrigger) {
             console.log("DEBUG: Setting up ScrollTriggers for ALL section title texts on desktop.");
 
@@ -214,15 +213,15 @@ function renderTimelineSection(activeIdx) {
         }
     }
 
-    // --- Content animations for the active section (main title phrase, description, cards) ---
+    // --- 활성화된 섹션에 대한 콘텐츠 애니메이션 (메인 타이틀 문구, 설명, 카드) ---
     const currentActiveContentArea = timelineContents[activeIdx];
     const mainTitleElement = currentActiveContentArea.querySelector('.main-title');
     const phraseSpans = mainTitleElement ? mainTitleElement.querySelectorAll('.phrase span span') : [];
     const descriptionP = currentActiveContentArea.querySelector('.main-section-header .sub-description');
     const timelineCards = currentActiveContentArea.querySelectorAll(".item-container.timeline-card");
 
-    // **Important: Explicitly set the initial state of animations before playing them.**
-    // This ensures that animations always start from a consistent point.
+    // **중요: 애니메이션을 재생하기 전에 애니메이션의 초기 상태를 명시적으로 설정합니다.**
+    // 이렇게 해야 애니메이션이 항상 일관된 시작점에서 시작합니다.
     console.log("DEBUG: Setting initial states for active section content animations.");
     gsap.set(phraseSpans, { y: '100%', opacity: 0 });
     if (descriptionP) {
@@ -231,7 +230,7 @@ function renderTimelineSection(activeIdx) {
     gsap.set(timelineCards, { opacity: 0, y: 50 });
 
 
-    // Main title phrase animation
+    // 메인 타이틀 문구 애니메이션
     console.log("DEBUG: Playing phrase animation for active section.");
     gsap.to(phraseSpans, {
         y: 0,
@@ -242,7 +241,7 @@ function renderTimelineSection(activeIdx) {
         onComplete: () => console.log("DEBUG: Phrase animation complete for active section.")
     });
 
-    // Description paragraph animation - This animation must be explicitly played.
+    // 설명 문단 애니메이션 - 이 애니메이션은 명시적으로 재생되어야 합니다.
     if (descriptionP) {
         console.log("DEBUG: Playing description animation for active section.");
         gsap.to(descriptionP, {
@@ -250,19 +249,19 @@ function renderTimelineSection(activeIdx) {
             y: 0,
             duration: 0.5,
             ease: 'power2.out',
-            delay: 0.5, // Give a slight delay after the phrase animation starts.
+            delay: 0.5, // 문구 애니메이션 시작 후 약간의 지연을 줍니다.
             onComplete: () => console.log("DEBUG: Description animation complete for active section.")
         });
     } else {
         console.warn("DEBUG: sub-description element not found for animation in active section.");
     }
 
-    // ScrollTrigger animation for timeline cards within the active content area
+    // 활성화된 콘텐츠 영역 내의 타임라인 카드 ScrollTrigger 애니메이션
     timelineCards.forEach((card, index) => {
         const cardST = ScrollTrigger.create({
             trigger: card,
-            start: "top 90%", // Starts when the card is 90% into the viewport.
-            toggleActions: "play none none reverse", // Play on scroll down, reverse on scroll back up.
+            start: "top 90%", // 카드가 뷰포트에 90% 들어왔을 때 시작합니다.
+            toggleActions: "play none none reverse", // 스크롤 시 재생, 뒤로 스크롤 시 되감기.
             scroller: window,
             animation: gsap.to(card, { opacity: 1, y: 0, duration: 0.6, ease: "power1.out" }),
             onEnter: () => console.log(`DEBUG: Card ${index} entered view for active section.`),

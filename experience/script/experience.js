@@ -31,6 +31,7 @@ let heroBg;      // 히어로 배경 요소
 let scrollDownBtn; // 아래로 스크롤 버튼 요소
 let heroVideo;   // 히어로 비디오 요소
 let navHeader;   // 네비게이션 헤더 요소
+let newExperienceHeader; // experience-header 요소
 let textHeroSection; // 텍스트 히어로 섹션 요소
 let timelineSectionContainer; // 타임라인 섹션 컨테이너 요소
 let grapeFooterQuoteSection; // 포도 푸터 인용구 섹션 요소
@@ -124,6 +125,7 @@ function initialHeroSetup() {
             heroBg.style.transform = `scale(1)`;
             heroBg.style.transition = 'none';
 
+            // Ensure navHeader exists before trying to modify its classes
             if (navHeader) navHeader.classList.remove('experience-header-hidden-override');
             showScrollDownButton();
 
@@ -211,7 +213,6 @@ function animateFooterLoop() {
     function nextFooterStep() {
         if (!footerImgEl || !footerTextEl || !globalState.footerZoomedIn) {
             clearTimeout(footerAnimationTimeoutId);
-            // console.log("DEBUG: Stopping footer animation due to missing elements or footer not zoomed in.");
             return;
         }
         footerImgEl.src = `images/footer${Math.min(currentFooterImageFrame, totalFooterImageFrames)}.png`;
@@ -223,7 +224,6 @@ function animateFooterLoop() {
             }
         }
         footerTextEl.innerHTML = currentText;
-        // console.log(`DEBUG: Footer animation frame: ${currentFooterImageFrame}, Text: "${currentText.substring(0, 30)}..."`);
         currentFooterImageFrame++;
         if (currentFooterImageFrame <= totalFooterImageFrames) {
             footerAnimationTimeoutId = setTimeout(nextFooterStep, showTimePerStep);
@@ -231,7 +231,6 @@ function animateFooterLoop() {
             if (footerSteps.length > 0) footerTextEl.innerHTML = footerSteps[footerSteps.length - 1].text;
             footerImgEl.src = `images/footer${totalFooterImageFrames}.png`;
             footerAnimationTimeoutId = setTimeout(animateFooterLoop, pauseTimeAtEnd);
-            // console.log("DEBUG: Footer animation cycle complete, restarting loop after pause.");
         }
     }
     nextFooterStep();
@@ -289,6 +288,52 @@ function handleGrapeFooterToTimelineTransition() {
 }
 
 
+// --- Header Orchestration Logic ---
+function orchestrateHeaderVisibility() {
+    if (!newExperienceHeader || !navHeader) {
+        console.warn("DEBUG: Header elements (newExperienceHeader or navHeader) not found for orchestration.");
+        return;
+    }
+
+    const isNavHeaderExpanded = window.getNavHeaderExpandedState ? window.getNavHeaderExpandedState() : false;
+    const isTextheroSectionActiveForHeader = textHeroSection && globalState.isTextHeroAreaVisible;
+    const isGrapeFooterVisible = globalState.isGrapeFooterAreaVisible;
+
+    // --- NEW LOGIC FOR newExperienceHeader (Always Visible) ---
+    newExperienceHeader.classList.add('visible');
+    newExperienceHeader.classList.remove('hidden');
+    setGlobalState({ isExperienceHeaderVisible: true });
+    console.log("DEBUG: Experience header is always visible.");
+    // --- END NEW LOGIC FOR newExperienceHeader ---
+
+
+    // --- NEW LOGIC FOR navHeader (Always Visible) ---
+    // Remove the previous conditional hiding logic for navHeader.
+    // It will now remain visible.
+    navHeader.classList.remove('hidden'); // Ensure it's not hidden by this script
+    console.log("DEBUG: Nav-header is always visible.");
+    // --- END NEW LOGIC FOR navHeader ---
+
+
+    // Update texthero animations (this logic remains as it's separate from header visibility)
+    if (window.textheroComponent) {
+        if (isTextheroSectionActiveForHeader && !isGrapeFooterVisible) {
+            if (!globalState.textheroAnimationsActive) {
+                window.textheroComponent.activateScrollAnimation();
+                setGlobalState({ textheroAnimationsActive: true });
+                console.log("DEBUG: texthero animations activated.");
+            }
+        } else {
+            if (globalState.textheroAnimationsActive) {
+                window.textheroComponent.deactivateScrollAnimation();
+                setGlobalState({ textheroAnimationsActive: false });
+                console.log("DEBUG: texthero animations deactivated.");
+            }
+        }
+    }
+}
+
+
 // --- 메인 DOMContentLoaded 리스너 ---
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DEBUG: DOMContentLoaded event fired.");
@@ -307,6 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
     scrollDownBtn = document.querySelector('.scroll-down-btn');
     heroVideo = document.getElementById('heroVideo');
     navHeader = document.querySelector('.nav-header');
+    newExperienceHeader = document.querySelector('.experience-header');
     textHeroSection = document.getElementById('skills-showcase-section');
     timelineSectionContainer = document.querySelector('.timeline-section-container');
     grapeFooterQuoteSection = document.getElementById('grape-footer-section');
@@ -316,10 +362,8 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("DEBUG: All main DOM elements retrieved.");
 
     // timeline.js가 로드된 후 renderTimelineSection 함수를 호출
-    // Note: timeline.js 스크립트가 experience.js보다 먼저 로드되어야 합니다.
     if (window.timelineComponent && window.timelineComponent.renderSection) {
-        // 초기 로드 시 첫 번째 콘텐츠 영역만 보이도록 설정
-        window.timelineComponent.renderSection(0);
+        window.timelineComponent.renderSection(globalState.currentActiveTimelineSection);
         console.log("DEBUG: Initial timeline section rendered via timelineComponent.renderSection(0).");
     } else {
         console.warn("DEBUG: timelineComponent.renderSection not found. Ensure timeline.js is loaded and exposes its functions.");
@@ -335,6 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (entry.isIntersecting) {
                     forceHeroSectionSync();
                 }
+                orchestrateHeaderVisibility(); // Call orchestration here
             });
         }, { threshold: [0, 0.5, 1.0] });
         heroObserver.observe(heroSection);
@@ -347,10 +392,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (textHeroSection) {
         const textHeroAreaObserver = new IntersectionObserver(entries => {
             entries.forEach(entry => {
-                setGlobalState({ isTextHeroAreaVisible: entry.isIntersecting });
-                console.log(`DEBUG: Text Hero Section visibility: ${entry.isIntersecting}, IntersectionRatio: ${entry.intersectionRatio.toFixed(2)}`);
+                // Determine visibility based on intersection and a minimum ratio
+                const isVisible = entry.isIntersecting && entry.intersectionRatio > 0.3; // Use 0.3 as suggested
+                setGlobalState({ isTextHeroAreaVisible: isVisible });
+                console.log(`DEBUG: Text Hero Section visibility: ${entry.isIntersecting}, Ratio: ${entry.intersectionRatio.toFixed(2)}, isTextHeroAreaVisible: ${isVisible}`);
+                orchestrateHeaderVisibility(); // Call orchestration here
             });
-        }, { threshold: 0.01, rootMargin: "0px 0px -5% 0px" });
+        }, { threshold: [0, 0.3, 0.6, 0.9], rootMargin: "0px 0px -5% 0px" }); // Use multiple thresholds as suggested
+
         textHeroAreaObserver.observe(textHeroSection);
         console.log("DEBUG: Text Hero section observer set up.");
     } else {
@@ -367,24 +416,23 @@ document.addEventListener('DOMContentLoaded', () => {
             // markers: true, // Uncomment for debugging
             onEnter: () => {
                 console.log("DEBUG: Timeline Section entered view (onEnter). Triggering timeline animations.");
-                // Activate timeline animations (main title, description, cards)
-                // This re-renders the current active section, triggering its animations.
-                // We ensure globalState.currentActiveTimelineSection is correct.
                 window.timelineComponent.renderSection(globalState.currentActiveTimelineSection);
 
-                // Deactivate texthero animations
+                // Deactivate texthero animations when timeline is entered
                 if (window.textheroComponent && globalState.textheroAnimationsActive) {
                     window.textheroComponent.deactivateScrollAnimation();
                     setGlobalState({ textheroAnimationsActive: false });
                 }
+                orchestrateHeaderVisibility(); // Call orchestration here
             },
             onLeaveBack: () => { // When scrolling UP and leaving the timeline section
                 console.log("DEBUG: Timeline Section left view (onLeaveBack). Re-activating texthero animations.");
-                // Re-activate texthero animations
+                // Re-activate texthero animations when leaving timeline back to texthero area
                 if (window.textheroComponent && !globalState.textheroAnimationsActive) {
                     window.textheroComponent.activateScrollAnimation();
                     setGlobalState({ textheroAnimationsActive: true });
                 }
+                orchestrateHeaderVisibility(); // Call orchestration here
             },
             onEnterBack: () => { // When scrolling DOWN and entering timeline section again (after scrolling past it)
                 console.log("DEBUG: Timeline Section re-entered view (onEnterBack). Triggering timeline animations.");
@@ -394,15 +442,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.textheroComponent.deactivateScrollAnimation();
                     setGlobalState({ textheroAnimationsActive: false });
                 }
+                orchestrateHeaderVisibility(); // Call orchestration here
             },
             onLeave: () => { // When scrolling DOWN and leaving timeline section completely
                 console.log("DEBUG: Timeline Section left view (onLeave).");
-                // If you want texthero animations to resume if you scroll way past timeline
-                // and then back up into texthero, onLeaveBack already handles the primary "going back up" case.
+                orchestrateHeaderVisibility(); // Call orchestration here
             }
         });
-        // You might want to store this ScrollTrigger if you need to kill it later for a full page reset
-        // allDynamicScrollTriggers.push(timelineSectionScrollTrigger); // Assuming allDynamicScrollTriggers is in common.js or needs to be managed for top-level STs
         console.log("DEBUG: Timeline Section ScrollTrigger set up.");
     } else {
         console.warn("DEBUG: timelineSectionContainer or timelineComponent not found. Timeline section ScrollTrigger not set up.");
@@ -433,6 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (footerImgEl) footerImgEl.classList.remove('zoomed-in');
                     console.log("DEBUG: Grape footer zoomed out and animation stopped.");
                 }
+                orchestrateHeaderVisibility(); // Call orchestration here
             });
         }, { threshold: [0, 0.5, 1.0] });
         footerObserver.observe(grapeFooterQuoteSection);
@@ -441,24 +488,27 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn("DEBUG: grapeFooterQuoteSection not found. Footer observer not set up.");
     }
 
-    // 스크롤 다운 버튼 바인딩
+    // 스크롤 다운 버튼 바인딩 (더 이상 자동 스크롤 기능이 없지만, 클릭 리스너 유지)
     if (scrollDownBtn) {
         scrollDownBtn.addEventListener('click', (e) => {
             e.preventDefault();
             console.log("DEBUG: Scroll down button clicked. No auto-scroll triggered.");
+            // Optional: If you want it to scroll to textHeroSection on click
+            handleHeroToTextHeroTransition();
         });
         console.log("DEBUG: Scroll down button event listener attached (no auto-scroll on click).");
     } else {
         console.warn("DEBUG: scrollDownBtn not found. Click listener not attached.");
     }
 
-    // 초기 히어로 설정
+    // 초기 히어로 설정 (애니메이션이 한 번만 재생되도록)
     initialHeroSetup();
 
     let lastScrollTop = window.scrollY;
 
     window.addEventListener('scroll', () => {
         const currentScrollY = window.scrollY;
+        // Check for user interaction during smooth scroll, then reset scroll behavior
         if (document.documentElement.style.scrollBehavior === 'smooth' && Math.abs(currentScrollY - lastScrollTop) > 5) {
             setGlobalState({ userInteractedDuringAnimation: true });
             document.documentElement.style.scrollBehavior = 'auto';
@@ -470,7 +520,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     console.log("DEBUG: Global scroll listener for user interaction attached.");
 
-    // Re-render on window resize to adjust layout for mobile/desktop
+    // 창 크기 조정 시 레이아웃 조정 (모바일/데스크톱)
     window.addEventListener('resize', () => {
         if (window.timelineComponent && window.timelineComponent.renderSection) {
             let currentActiveIdx = 0;
@@ -484,4 +534,57 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     console.log("DEBUG: Resize event listener attached.");
+
+    // Theme Toggle Logic
+    const experienceThemeToggle = document.querySelector('.experience-header .theme-toggle');
+    const experienceSunIcon = document.getElementById('sun-icon');
+    const experienceMoonIcon = document.getElementById('moon-icon');
+
+    function toggleExperienceHeaderTheme() {
+        const currentTheme = document.body.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark'; // Toggle from dark to light or light to dark
+
+        document.body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme); // Save the new theme
+
+        // Update icons
+        if (newTheme === 'light') {
+            experienceSunIcon.classList.remove('hidden');
+            experienceMoonIcon.classList.add('hidden');
+        } else {
+            experienceSunIcon.classList.add('hidden');
+            experienceMoonIcon.classList.remove('hidden');
+        }
+
+        const themeChangeEvent = new CustomEvent('themeToggled', { detail: { theme: newTheme } });
+        document.dispatchEvent(themeChangeEvent);
+    }
+
+    // Initial theme setup on page load
+    let savedTheme = localStorage.getItem('theme');
+
+    // If no theme is saved OR if the saved theme is 'light',
+    // force it to 'dark' for the initial load.
+    if (!savedTheme || savedTheme === 'light') {
+        savedTheme = 'dark';
+        localStorage.setItem('theme', savedTheme); // Also save 'dark' to local storage
+    }
+
+    document.body.setAttribute('data-theme', savedTheme); // Apply the determined initial theme
+
+    // Set icon visibility based on the *applied* initial theme
+    if (savedTheme === 'light') {
+        if (experienceSunIcon) experienceSunIcon.classList.remove('hidden');
+        if (experienceMoonIcon) experienceMoonIcon.classList.add('hidden');
+    } else { // savedTheme is 'dark'
+        if (experienceSunIcon) experienceSunIcon.classList.add('hidden');
+        if (experienceMoonIcon) experienceMoonIcon.classList.remove('hidden');
+    }
+
+    if (experienceThemeToggle) {
+        experienceThemeToggle.addEventListener('click', toggleExperienceHeaderTheme);
+    }
+
+    // Initial orchestration call after all elements are retrieved and theme is set
+    orchestrateHeaderVisibility();
 });

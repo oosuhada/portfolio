@@ -1,4 +1,3 @@
-
 #preloader {
   position: fixed;
   top: 0;
@@ -20,8 +19,12 @@
 }
 
 @keyframes fade {
-  0% { opacity: 0.2; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 /* Original .background-image styles (body-level) - Unchanged */
@@ -41,8 +44,8 @@
 .balloon {
   position: fixed;
   bottom: -140px; /* Initial position for GSAP animation */
-  width: 30px;   /* Base width, JS can vary */
-  height: 42px;  /* Base height, JS can vary */
+  width: 30px; /* Base width, JS can vary */
+  height: 42px; /* Base height, JS can vary */
   border-radius: 18px 18px 26px 26px / 15px 15px 34px 34px; /* Original shape */
   box-shadow: 0 8px 20px 0 #0002;
   z-index: 9;
@@ -84,7 +87,7 @@
   width: 100%;
   height: 100%;
   border-radius: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--before-bg, #1a1a1a); /* Use CSS variable, with a fallback */
   transform: scale(1.08);
   filter: url(#classicWetInk);
   z-index: -1;
@@ -92,16 +95,27 @@
 }
 
 .balloon.pop {
-  animation: balloon-pop 0.6s cubic-bezier(.7,-0.5,.7,2.2);
+  animation: balloon-pop 0.6s cubic-bezier(.7, -0.5, .7, 2.2);
   opacity: 0 !important;
   z-index: 99;
 }
 
 @keyframes balloon-pop {
-  0% { transform: scale(1); opacity: 1;}
-  60% { transform: scale(1.18); opacity: 0.8;}
-  80% { transform: scale(0.97);}
-  100% { transform: scale(1.33); opacity: 0;}
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  60% {
+    transform: scale(1.18);
+    opacity: 0.8;
+  }
+  80% {
+    transform: scale(0.97);
+  }
+  100% {
+    transform: scale(1.33);
+    opacity: 0;
+  }
 }
 
 /* === Internal Ink Splash Effect (for inside balloons) === */
@@ -111,7 +125,7 @@
   transform: scale(0);
   opacity: 0.7;
   pointer-events: none;
-  animation: splash-effect 0.6s cubic-bezier(.4,0,.2,1);
+  animation: splash-effect 0.6s cubic-bezier(.4, 0, .2, 1);
   z-index: 1;
   filter: blur(0.5px);
 }
@@ -135,19 +149,19 @@
 
 @keyframes ink-splash-fade-blur {
   0% {
-      opacity: 0.85;
-      transform: scale(1);
-      filter: blur(0.5px);
+    opacity: 0.85;
+    transform: scale(1);
+    filter: blur(0.5px);
   }
   40% {
-      opacity: 0.28;
-      transform: scale(2.2);
-      filter: blur(2.5px);
+    opacity: 0.28;
+    transform: scale(2.2);
+    filter: blur(2.5px);
   }
   100% {
-      opacity: 0;
-      transform: scale(2.7);
-      filter: blur(8px);
+    opacity: 0;
+    transform: scale(2.7);
+    filter: blur(8px);
   }
 }
 
@@ -161,7 +175,11 @@
 }
 
 /* Reset & Base Styles */
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 /* Font Declarations */
 @font-face {
@@ -169,22 +187,32 @@
   src: local('Hiragino Kaku Gothic Std');
   unicode-range: U+3000-9FFF, U+ff??;
 }
-.font-anton { font-family: 'Anton', sans-serif; text-transform: uppercase; letter-spacing: 4px; }
-.font-dohyeon { font-family: 'Do Hyeon', sans-serif; }
-.font-hiragino { font-family: 'Hiragino Kaku Gothic Std', 'MS Gothic', 'Yu Gothic', sans-serif; }
+.font-anton {
+  font-family: 'Anton', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+}
+.font-dohyeon {
+  font-family: 'Do Hyeon', sans-serif;
+}
+.font-hiragino {
+  font-family: 'Hiragino Kaku Gothic Std', 'MS Gothic', 'Yu Gothic', sans-serif;
+}
 
 /* ================== 슬라이드 Y축 고정, 중앙정렬 ================== */
 .slider-container::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 1;
   pointer-events: none;
-  background:
-    url('https://grainy-gradients.vercel.app/noise.svg'),
+  background: url('https://grainy-gradients.vercel.app/noise.svg'),
     url('https://grainy-gradients.vercel.app/noise.svg');
   opacity: 0.99;
-  mix-blend-mode:overlay;
+  mix-blend-mode: overlay;
 }
 .slider-container {
   position: relative;
@@ -201,7 +229,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  transition: transform 0.6s cubic-bezier(0.63, 0, 0.7, 1), opacity 0.6s cubic-bezier(0.63, 0, 0.7, 1);
+  transition: transform 0.6s cubic-bezier(0.63, 0, 0.7, 1),
+    opacity 0.6s cubic-bezier(0.63, 0, 0.7, 1);
   opacity: 0;
   visibility: hidden;
 }
@@ -213,7 +242,7 @@
 .slide-content {
   position: relative;
   width: 100%;
-  height: 340px;
+  height: 380px;
 }
 
 /* slide-title 최소 높이로 baseline 정렬 (폰트차이에도 Y축 고정) */
@@ -237,32 +266,60 @@
   font-size: 7.2rem;
   min-height: 130px;
   align-items: flex-end;
-  margin-bottom: 0.1em;
+  /* margin-bottom: 0.1em; */ /* Removed this to rely on padding for precise control */
+  padding-bottom: 12px; /* Adjusted padding for better vertical alignment with Korean text */
 }
 .welcome-banner-link {
-  position: relative;
-  bottom: 0;
+  position: absolute; /* fixed 대신 slide 내부 하단 기준 배치 */
+  bottom: 60px; /* 하단에서 적절한 간격 */
   left: 50%;
   transform: translateX(-50%);
   width: auto;
   display: flex;
-  padding-top: 50px;
   justify-content: center;
   text-decoration: none;
   z-index: 3;
 }
 
+.slide-padding1{
+  height: 1.5rem;
+}
+.slide-padding2{
+  height: 3rem;
+}
+
 /* ================== 슬라이드 배경 ================== */
-#slide1 { background: linear-gradient(135deg, #ADB0B0, #E1E1E1); }
-#slide2 { background: linear-gradient(135deg, #ADB0B0, #FFDEC2); }
-#slide3 { background: linear-gradient(135deg, #D279EE, #F8C390); }
-#slide4 { background: linear-gradient(135deg, #F78FAD, #FDEB82); }
-#slide5 { background: linear-gradient(135deg, #6DE195, #C4E759); }
-#slide6 { background: linear-gradient(135deg, #41C7AF, #54E38E); }
-#slide7 { background: linear-gradient(135deg, #5583EE, #41D8DD); }
-#slide8 { background: linear-gradient(135deg, #6CACFF, #8DEBFF); }
-#slide9 { background: linear-gradient(135deg, #A16BFE, #DEB0DF); }
-#slide10 { background: linear-gradient(135deg, #BC3D2F, #A16BFE); }
+/* Changed 'background' to 'background-image' to allow JS to animate 'background' shorthand */
+#slide1 {
+  background-image: linear-gradient(135deg, #adb0b0, #e1e1e1);
+}
+#slide2 {
+  background-image: linear-gradient(135deg, #adb0b0, #ffdec2);
+}
+#slide3 {
+  background-image: linear-gradient(135deg, #d279ee, #f8c390);
+}
+#slide4 {
+  background-image: linear-gradient(135deg, #f78fad, #fdeb82);
+}
+#slide5 {
+  background-image: linear-gradient(135deg, #6de195, #c4e759);
+}
+#slide6 {
+  background-image: linear-gradient(135deg, #41c7af, #54e38e);
+}
+#slide7 {
+  background-image: linear-gradient(135deg, #5583ee, #41d8dd);
+}
+#slide8 {
+  background-image: linear-gradient(135deg, #6cacff, #8debff);
+}
+#slide9 {
+  background-image: linear-gradient(135deg, #a16bfe, #deb0df);
+}
+#slide10 {
+  background-image: linear-gradient(135deg, #bc3d2f, #a16bfe);
+}
 
 /* slide-title existing hover styles */
 #slide1 .slide-title:hover {
@@ -274,8 +331,17 @@
   opacity: 0.55;
   filter: url(#lightTextInk) blur(6px);
 }
-#slide2 .slide-title:hover { letter-spacing: 8px; color: #FF8C42; transform: translateY(-5px);}
-#slide3 .slide-title:hover { transform: perspective(500px) rotateX(10deg); color: #F8C390; text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);}
+#slide2 .slide-title:hover {
+  letter-spacing: 8px;
+  color: #ff8c42;
+  transform: translateY(-5px);
+}
+/* Re-added missing #slide3 hover style */
+#slide3 .slide-title:hover {
+  transform: perspective(500px) rotateX(50deg);
+  color: #fff;
+  text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
 #slide4 .slide-title:hover {
   transform: scale(1.1);
   -webkit-background-clip: text;
@@ -288,22 +354,63 @@
     #f63e72 100%
   );
   color: transparent;
-  text-shadow:
-    0 1px 10px #fff,
-    0 2px 4px #c21d54cc,
-    0 0px 2px #db056799;
+  text-shadow: 0 1px 10px #fff, 0 2px 4px #c21d54cc, 0 0px 2px #db056799;
   font-weight: 900;
 }
-#slide5 .slide-title:hover { transform: skewX(-10deg); color: #2C5E1A; text-shadow: 2px 2px 0 #C4E759, 4px 4px 0 rgba(0, 0, 0, 0.1);}
-#slide6 .slide-title:hover { letter-spacing: -2px; color: #155D47; transform: scale(0.95); font-weight: 900;}
-#slide7 .slide-title:hover { transform: translateY(-10px); text-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); color: #41D8DD;}
-#slide8 .slide-title:hover { transform: scale(1.05);}
-#slide8 .slide-title:hover::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 5px; background: white; transform: scaleX(1); transition: transform 0.3s ease;}
-#slide9 .slide-title:hover { text-shadow: 3px 3px 0 #A16BFE, 6px 6px 0 rgba(0, 0, 0, 0.2); transform: translate(-3px, -3px); color: white;}
-#slide10 .slide-title:hover { transform: scale(1.1); animation: glowing 1.5s infinite alternate;}
-@keyframes glowing { 0% { text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #BC3D2F, 0 0 20px #BC3D2F;} 100% { text-shadow: 0 0 10px #fff, 0 0 15px #A16BFE, 0 0 20px #A16BFE, 0 0 25px #A16BFE;} }
-
+#slide5 .slide-title:hover {
+  transform: skewX(-10deg);
+  color: #2c5e1a;
+  text-shadow: 2px 2px 0 #c4e759, 4px 4px 0 rgba(0, 0, 0, 0.1);
+}
+#slide6 .slide-title:hover {
+  letter-spacing: -2px;
+  color: #155d47;
+  transform: scale(0.95);
+  font-weight: 900;
+}
+#slide7 .slide-title:hover {
+  transform: translateY(-10px);
+  text-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  color: #41d8dd;
+}
+#slide8 .slide-title:hover {
+  transform: scale(1.05);
+}
 #slide8 .slide-title:hover::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: white;
+  transform: scaleX(1);
+  transition: transform 0.3s ease;
+}
+#slide9 .slide-title:hover {
+  text-shadow: 3px 3px 0 #a16bfe, 6px 6px 0 rgba(0, 0, 0, 0.2);
+  transform: translate(-3px, -3px);
+  color: white;
+}
+#slide10 .slide-title:hover {
+  transform: scale(1.1);
+  animation: glowing 1.5s infinite alternate;
+}
+@keyframes glowing {
+  0% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #bc3d2f,
+      0 0 20px #bc3d2f;
+  }
+  100% {
+    text-shadow: 0 0 10px #fff, 0 0 15px #a16bfe, 0 0 20px #a16bfe,
+      0 0 25px #a16bfe;
+  }
+}
+
+/* Corrected #slide8::after rule for proper targeting - if it was meant to be for hover */
+/* If this was intended to be part of the hover for slide8 title, it should be nested under it. */
+/* Assuming the original intent was to be a standalone rule that applies on hover. */
+#slide8 .slide-title:hover::after { /* This rule was duplicated and slightly different in original input */
   content: '';
   position: absolute;
   bottom: 0;
@@ -315,6 +422,7 @@
   transition: transform 0.3s ease;
 }
 
+
 /* ================== Welcome Banner ================== */
 .welcome-banner-link {
   display: flex;
@@ -324,7 +432,7 @@
 .welcome-banner {
   font-family: 'Anton', 'Do Hyeon', sans-serif;
   font-size: 1.2rem;
-  color: #fff;
+  color: #fff; /* Default to white for most cases */
   padding: 0.6em 2em;
   border-radius: 2em;
   text-align: center;
@@ -335,12 +443,8 @@
   position: relative;
   z-index: 2;
   overflow: hidden;
-  transition:
-    background 0.5s,
-    color 0.5s,
-    box-shadow 0.5s,
-    text-shadow 0.5s,
-    transform 0.3s cubic-bezier(.5,1.7,.6,.85);
+  transition: background 0.5s, color 0.5s, box-shadow 0.5s, text-shadow 0.5s,
+    transform 0.3s cubic-bezier(0.5, 1.7, 0.6, 0.85);
   min-width: 280px;
   cursor: pointer;
 }
@@ -351,7 +455,10 @@
   font-weight: 700;
   letter-spacing: 0.04em;
   position: absolute;
-  left: 0; right: 0; top: 0; bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -361,7 +468,7 @@
   pointer-events: none;
 }
 .welcome-banner[data-hovered="true"] {
-  transform: scale(1.0);
+  transform: scale(1);
   box-shadow: 0 0 38px 10px #fff7, 0 0 24px 8px var(--banner-hover-fg, #fff);
 }
 .welcome-banner[data-hovered="true"] span {
@@ -369,27 +476,65 @@
   transition: opacity 0.15s;
 }
 @keyframes fadeinBanner {
-  from { opacity: 0; transform: translateY(10px);}
-  to { opacity: 1; transform: none;}
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* 슬라이드별 배경 및 텍스트/hover 컬러 변수 */
-#slide1 .welcome-banner { --welcome-bg: #ADB0B0; --banner-fg: #212121; --banner-hover-fg: #4b4b4b;}
-#slide2 .welcome-banner { --welcome-bg: #FFDEC2; --banner-fg: #444; --banner-hover-fg: #FF8C42;}
-#slide3 .welcome-banner { --welcome-bg: #D279EE; --banner-fg: #fff; --banner-hover-fg: #D279EE;}
+#slide1 .welcome-banner {
+  --welcome-bg: #adb0b0;
+  --banner-fg: #212121;
+  --banner-hover-fg: #4b4b4b;
+}
+#slide2 .welcome-banner {
+  --welcome-bg: #ffdec2;
+  --banner-fg: #444;
+  --banner-hover-fg: #ff8c42;
+}
+#slide3 .welcome-banner {
+  --welcome-bg: #d279ee;
+  --banner-fg: #fff;
+  --banner-hover-fg: #d279ee;
+}
 #slide4 .welcome-banner {
-  --welcome-bg: linear-gradient(45deg, #F78FAD, #FDD090);
-  color: #5a2835;
-  --banner-hover-fg: #F78FAD;
+  --welcome-bg: linear-gradient(45deg, #f78fad, #fdd090);
+  color: #fff; /* Changed to white */
+  --banner-hover-fg: #f78fad;
 
   --neon-box: 0 0 28px 9px rgba(252, 174, 140, 0.6), 0 0 8px #fde68c;
-  --neon-text: 0 0 12px #F78FAD, 0 0 16px #FDD090;
+  --neon-text: 0 0 12px #f78fad, 0 0 16px #fdd090;
 }
-#slide5 .welcome-banner { --welcome-bg: #6DE195; --banner-fg: #193c2e; --banner-hover-fg: #6DE195;}
-#slide6 .welcome-banner { --welcome-bg: #41C7AF; --banner-fg: #fff; --banner-hover-fg: #41C7AF;}
-#slide7 .welcome-banner { --welcome-bg: #5583EE; --banner-fg: #fff; --banner-hover-fg: #5583EE;}
-#slide8 .welcome-banner { --welcome-bg: #6CACFF; --banner-fg: #222; --banner-hover-fg: #6CACFF;}
-#slide9 .welcome-banner { --welcome-bg: #A16BFE; --banner-fg: #fff; --banner-hover-fg: #A16BFE;}
+#slide5 .welcome-banner {
+  --welcome-bg: #6de195;
+  --banner-fg: #193c2e;
+  --banner-hover-fg: #6de195;
+}
+#slide6 .welcome-banner {
+  --welcome-bg: #41c7af;
+  --banner-fg: #fff;
+  --banner-hover-fg: #41c7af;
+}
+#slide7 .welcome-banner {
+  --welcome-bg: #5583ee;
+  --banner-fg: #fff;
+  --banner-hover-fg: #5583ee;
+}
+#slide8 .welcome-banner {
+  --welcome-bg: #6cacff;
+  --banner-fg: #222;
+  --banner-hover-fg: #6cacff;
+}
+#slide9 .welcome-banner {
+  --welcome-bg: #a16bfe;
+  --banner-fg: #fff;
+  --banner-hover-fg: #a16bfe;
+}
 #slide10 .welcome-banner {
   --welcome-bg: linear-gradient(90deg, #a16bfeb4, #bc3d2feb);
   --neon-box: 0 0 34px 10px #bc3d2faa, 0 0 18px 7px #a16bfeb4, 0 0 24px 0 #fff2;
@@ -414,7 +559,9 @@
   cursor: pointer;
   z-index: 10;
   transition: all 0.3s cubic-bezier(0.63, 0, 0.7, 1);
+  transition: opacity 0.5s ease;
   outline: none;
+  opacity: 0;
 }
 .nav-button:hover {
   background-color: rgba(255, 255, 255, 0.2);
@@ -438,6 +585,7 @@
   background-color: rgba(0, 0, 0, 0.2);
   padding: 10px 14px;
   border-radius: 12px;
+  opacity: 0;
 }
 
 @media (max-width: 600px) {
