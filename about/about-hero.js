@@ -100,7 +100,23 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // =======================
-  // [4] 이하 기존 divider/drag/폰트/opacity 등 효과
+  // [4] Profile Image Cycling and Hover Effect
+  // =======================
+  const profileImage = document.getElementById('profileImage');
+  const profilePhotoContainer = document.getElementById('profilePhoto');
+  const totalImages = 8;
+  let currentImageIndex = 1; // Start with profile1.png
+
+  if (profilePhotoContainer && profileImage) {
+    profilePhotoContainer.addEventListener('click', function() {
+      currentImageIndex = (currentImageIndex % totalImages) + 1;
+      profileImage.src = `profile${currentImageIndex}.png`;
+      profileImage.alt = `Profile Photo of Oosu - Version ${currentImageIndex}`;
+    });
+  }
+
+  // =======================
+  // [5] 이하 기존 divider/drag/폰트/opacity 등 효과
   // =======================
   const purpose = document.querySelector('.about-purpose');
   const divider = document.querySelector('.about-divider');

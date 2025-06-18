@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oosu Portfolio</title>
+    <link rel="icon" type="image/png" href="../apple-touch-icon.png" />
+    <link rel="apple-touch-touch-icon" href="../apple-touch-icon.png" />
+    <link rel="stylesheet" href="../common/common.css" />
+    <link rel="stylesheet" href="modal.css" />
+    <link rel="stylesheet" href="portfolio.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="preloader">
+        <div class="loading-text" id="loadingText">Oosu</div>
+    </div>
+<header class="nav-header" aria-label="Site">
+    <div class="nav-top-row">
+        <button class="nav-toggle-btn" aria-label="Toggle navigation menu">
+            <i class="fas fa-bars"></i> </button>
+        </div>
+    <nav class="nav-menu nav-center" id="accordionNavMenu">
+        <a href="../portfolioMain/portfolio.html" data-nav="portfolio">✧ portfolio</a>
+        <a href="../about/about.html" data-nav="about">? about</a>
+        <a href="../experience/experience.html" data-nav="experience">⌗ experience</a>
+        <a href="../hobby/hobby.html" data-nav="hobby">: hobby</a>
+        <a href="../connect/connect.html" data-nav="connect">⌲ connect</a>
+    </nav>
+</header>
+    <div id="top-sentinel"></div>
+    <div id="guide-overlay" style="display:none;">
+        <div class="guide-bg"></div>
+        <div class="guide-tooltip" id="guide-tooltip"></div>
+        <button class="guide-close" style="display:none;">close</button>
+    </div>
+
+    <div class="main-content" style="display:none;">
+        <!-- <div class="logo-fixed" id="mainLogo">
+            <svg width="85" viewBox="0 0 191 69" class="logo-svg" preserveAspectRatio="xMidYMax" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M32 26.5C32 40.8594 24.8366 52.5 16 52.5C7.16344 52.5 0 40.8594 0 26.5C0 12.1406 7.16344 0.5 16 0.5C24.8366 0.5 32 12.1406 32 26.5Z"></path>
+                <path d="M71 26.5C71 35.8888 63.3888 43.5 54 43.5C44.6112 43.5 37 35.8888 37 26.5C37 17.1112 44.6112 9.5 54 9.5C63.3888 9.5 71 17.1112 71 26.5Z"></path>
+                <path d="M115 26.5C115 35.8888 106.27 43.5 95.5 43.5C84.7304 43.5 76 35.8888 76 26.5C76 17.1112 84.7304 9.5 95.5 9.5C106.27 9.5 115 17.1112 115 26.5Z"></path>
+                <path d="M152 26.5C152 40.8594 144.837 52.5 136 52.5C127.163 52.5 120 40.8594 120 26.5C120 12.1406 127.163 0.5 136 0.5C144.837 0.5 152 12.1406 152 26.5Z"></path>
+                <path d="M191 26.5C191 35.8888 183.389 43.5 174 43.5C164.611 43.5 157 35.8888 157 26.5C157 17.1112 164.611 9.5 174 9.5C183.389 9.5 191 17.1112 191 26.5Z"></path>
+            </svg>
+        </div> -->
+
+        <section class="hero hero-bg-default" id="hero">
+            <div class="hero-grid">
+                <div class="hero-text-area">
+                    <h1 class="hero-text">
+                        I'm <span class="hover-name guide-onboard" id="onboard-name">Oosu,</span>
+                        <span class="sparkle" id="sparkle-name"></span><br>
+                        a UX/UI designer<br>
+                        <div class="hero-slider-wrapper">
+                            <div class="hero-slider">
+                                <div class="slider-text active">
+                                    who believes that design exists<br>
+                                    to solve problems and support people in meaningful ways.<br>
+                                </div>
+                                <div class="slider-text">
+                                    I create <b>brands</b>,
+                                    design <b>websites</b>, and
+                                    shape <b>digital products</b>
+                                    passionately and thoughtfully.
+                                </div>
+                                <div class="slider-text">
+                                    I craft intuitive, scalable design systems that are as beautiful as they are functional.
+                                </div>
+                            </div>
+                        </div>
+                    </h1>
+                </div>
+                <div class="hero-img-area">
+                    <div class="img-sparkle-wrap">
+                        <img src="profile/1.png" class="hover-img" alt="Oosu Photo" />
+                        <span class="sparkle" id="sparkle-img"></span>
+                    </div>
+                </div>
+                <div class="hero-slider-dots-area">
+                    <div class="hero-slider-dots">
+                        <span class="slider-dot guide-onboard" data-index="0" id="onboard-dot-0">
+                            <span class="sparkle" id="sparkle-dot"></span>
+                        </span>
+                        <span class="slider-dot" data-index="1"></span>
+                        <span class="slider-dot" data-index="2"></span>
+                    </div>
+                </div>
+                <div class="hero-gauge-area">
+                    <div class="horizontal-gauge">
+                        <div class="gauge-bar"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-indicator">
+                <span class="scroll-icon">
+                    <i class="fa-regular fa-hand-point-down"></i>
+                </span>
+            </div>
+        </section>
+        <section class="projects" id="portfolio">
+            <div class="project" id="project1" data-project-color="#1abc9c" data-project-id="1">
+                <div class="project-info">
+                    <div class="project-number">1</div>
+                    <div class="project-title">Cross-platform App<br>Nomad Market</div><br>
+                    <div class="project-meta">
+                        <span class="project-date">Bootcamp | Oct 2024 - Feb 2025</span>
+                        <span class="project-tools">Figma, Flutter, Notion, Github, Firebase</span>
+                    </div>
+                </div>
+                <a href="#" class="project-image grayscale" data-project-id="1">
+                    <img src="projects/project1-cover.png" alt="Nomad Market App" />
+                    <div class="view-project-overlay">View Project</div>
+                </a>
+                <div class="project-social-fixed">
+                    <a href="https://linkedin.com/" target="_blank" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="https://instagram.com/oosu.hada" target="_blank" aria-label="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="1em" height="1em" style="vertical-align: middle;">
+                            <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6 42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/>
+                        </svg>
+                    </a>
+                    <a href="../connect/connect.html" aria-label="Connect">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="project" id="project2" data-project-color="#3498db" data-project-id="2">
+                <div class="project-info">
+                    <div class="project-number">2</div>
+                    <div class="project-title">Cross-platform App<br>Onjung</div><br>
+                    <div class="project-meta">
+                        <span class="project-date">Boot Camp | Oct 2024 - Feb 2025</span>
+                        <span class="project-tools">Figma, Flutter, Notion, Github, Firebase</span>
+                    </div>
+                </div>
+                <a href="#" class="project-image grayscale" data-project-id="2">
+                    <img src="projects/project2-cover.png" alt="Onjung App" />
+                    <div class="view-project-overlay">View Project</div>
+                </a>
+                <div class="project-social-fixed">
+                    <a href="https://linkedin.com/" target="_blank" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="https://instagram.com/oosu.hada" target="_blank" aria-label="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="1em" height="1em" style="vertical-align: middle;">
+                            <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6 42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/>
+                        </svg>
+                    </a>
+                    <a href="../connect/connect.html" aria-label="Connect">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="project" id="project3" data-project-color="#9b59b6" data-project-id="3">
+                <div class="project-info">
+                    <div class="project-number">3</div>
+                    <div class="project-title">Responsive Website<br>Oosu Salon</div><br>
+                    <div class="project-meta">
+                        <span class="project-date">Boot Camp | Oct 2024 - Feb 2025</span>
+                        <span class="project-tools">Figma, HTML, CSS, JavaScript, Github</span>
+                    </div>
+                </div>
+                <a href="#" class="project-image grayscale" data-project-id="3">
+                    <img src="projects/project3-cover.png" alt="Oosu Salon Website" />
+                    <div class="view-project-overlay">View Project</div>
+                </a>
+                <div class="project-social-fixed">
+                    <a href="https://linkedin.com/" target="_blank" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="https://instagram.com/oosu.hada" target="_blank" aria-label="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="1em" height="1em" style="vertical-align: middle;">
+                            <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6 42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/>
+                        </svg>
+                    </a>
+                    <a href="../connect/connect.html" aria-label="Connect">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="project" id="project4" data-project-color="#e67e22" data-project-id="4">
+                <div class="project-info">
+                    <div class="project-number">4</div>
+                    <div class="project-title">Responsive Website<br>Sticks and Stones</div><br>
+                    <div class="project-meta">
+                        <span class="project-date">Boot Camp | Oct 2024 - Feb 2025</span>
+                        <span class="project-tools">Figma, HTML, CSS, JavaScript, Github</span>
+                    </div>
+                </div>
+                <a href="#" class="project-image grayscale" data-project-id="4">
+                    <img src="projects/project4-cover.png" alt="Sticks and Stones Website" />
+                    <div class="view-project-overlay">View Project</div>
+                </a>
+                <div class="project-social-fixed">
+                    <a href="https://linkedin.com/" target="_blank" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="https://instagram.com/oosu.hada" target="_blank" aria-label="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="1em" height="1em" style="vertical-align: middle;">
+                            <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6 42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/>
+                        </svg>
+                    </a>
+                    <a href="../connect/connect.html" aria-label="Connect">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="project" id="project5" data-project-color="#e91e63" data-project-id="5">
+                <div class="project-info">
+                    <div class="project-number">5</div>
+                    <div class="project-title">App Redesign<br>Skyscanner</div><br>
+                    <div class="project-meta">
+                        <span class="project-date">Boot Camp | Oct 2024 - Feb 2025</span>
+                        <span class="project-tools">Figma</span>
+                    </div>
+                </div>
+                <a href="#" class="project-image grayscale" data-project-id="5">
+                    <img src="projects/project5-cover.png" alt="Skyscanner Redesign" />
+                    <div class="view-project-overlay">View Project</div>
+                </a>
+                <div class="project-social-fixed">
+                    <a href="https://linkedin.com/" target="_blank" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="https://instagram.com/oosu.hada" target="_blank" aria-label="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="1em" height="1em" style="vertical-align: middle;">
+                            <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6 42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/>
+                        </svg>
+                    </a>
+                    <a href="../connect/connect.html" aria-label="Connect">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-bottom-gap"></div>
+
+        <div class="marquee-container" aria-hidden="true">
+            <div class="marquee-inner">
+                <div class="marquee-item-wrapper" id="product-interaction-design-1">
+                    <p class="marquee-item marquee-primary-color">User Experience (UX) Design</p>
+                    <p class="marquee-item marquee-primary-color">User Interface (UI) Design</p>
+                    <p class="marquee-item marquee-primary-color">User-Centered Design (UCD)</p>
+                    <p class="marquee-item marquee-primary-color">Design Thinking</p>
+                    <p class="marquee-item marquee-primary-color">Interaction Design</p>
+                    <p class="marquee-item marquee-primary-color">Visual Design</p>
+                    <p class="marquee-item marquee-primary-color">Prototyping</p>
+                    <p class="marquee-item marquee-primary-color">Design Systems</p>
+                    <p class="marquee-item marquee-primary-color">Responsive Design</p>
+                    <p class="marquee-item marquee-primary-color">Information Architecture</p>
+                    <p class="marquee-item marquee-primary-color">User Story Mapping</p>
+                    <p class="marquee-item marquee-primary-color">Usability Testing</p>
+                    <p class="marquee-item marquee-primary-color">A/B Testing</p>
+                    <p class="marquee-item marquee-primary-color">Accessibility</p>
+                    <p class="marquee-item marquee-primary-color">Service Design</p>
+                    <p class="marquee-item marquee-primary-color">Gamification</p>
+                </div>
+                <div class="marquee-item-wrapper" id="product-interaction-design-duplicate-1">
+                    <p class="marquee-item marquee-primary-color">User Experience (UX) Design</p>
+                    <p class="marquee-item marquee-primary-color">User Interface (UI) Design</p>
+                    <p class="marquee-item marquee-primary-color">User-Centered Design (UCD)</p>
+                    <p class="marquee-item marquee-primary-color">Design Thinking</p>
+                    <p class="marquee-item marquee-primary-color">Interaction Design</p>
+                    <p class="marquee-item marquee-primary-color">Visual Design</p>
+                    <p class="marquee-item marquee-primary-color">Prototyping</p>
+                    <p class="marquee-item marquee-primary-color">Design Systems</p>
+                    <p class="marquee-item marquee-primary-color">Responsive Design</p>
+                    <p class="marquee-item marquee-primary-color">Information Architecture</p>
+                    <p class="marquee-item marquee-primary-color">User Story Mapping</p>
+                    <p class="marquee-item marquee-primary-color">Usability Testing</p>
+                    <p class="marquee-item marquee-primary-color">A/B Testing</p>
+                    <p class="marquee-item marquee-primary-color">Accessibility</p>
+                    <p class="marquee-item marquee-primary-color">Service Design</p>
+                    <p class="marquee-item marquee-primary-color">Gamification</p>
+                </div>
+            </div>
+            <div class="fade-overlay fade-left"></div>
+            <div class="fade-overlay fade-right"></div>
+        </div>
+
+        <div class="marquee-container" aria-hidden="true">
+            <div class="marquee-inner right-to-left">
+                <div class="marquee-item-wrapper" id="technical-strategic-foundations-1">
+                    <p class="marquee-item marquee-primary-color">Front-end Development</p>
+                    <p class="marquee-item marquee-primary-color">HTML/CSS/JS</p>
+                    <p class="marquee-item marquee-primary-color">React</p>
+                    <p class="marquee-item marquee-primary-color">Flutter (Mobile App Development)</p>
+                    <p class="marquee-item marquee-primary-color">API Integration</p>
+                    <p class="marquee-item marquee-primary-color">Creative Coding</p>
+                    <p class="marquee-item marquee-primary-color">Physical Computing</p>
+                    <p class="marquee-item marquee-primary-color">Emerging Technologies</p>
+                    <p class="marquee-item marquee-primary-color">Virtual Reality</p>
+                    <p class="marquee-item marquee-primary-color">Figma</p>
+                    <p class="marquee-item marquee-primary-color">Adobe Photoshop</p>
+                    <p class="marquee-item marquee-primary-color">Adobe Illustrator</p>
+                    <p class="marquee-item marquee-primary-color">Adobe After Effects (Animation, Motion Design)</p>
+                    <p class="marquee-item marquee-primary-color">Webflow</p>
+                    <p class="marquee-item marquee-primary-color">Lottie</p>
+                    <p class="marquee-item marquee-primary-color">VS Code</p>
+                    <p class="marquee-item marquee-primary-color">Cursor</p>
+                    <p class="marquee-item marquee-primary-color">UX Research</p>
+                    <p class="marquee-item marquee-primary-color">Consumer Insights</p>
+                    <p class="marquee-item marquee-primary-color">Market Research</p>
+                    <p class="marquee-item marquee-primary-color">Consumer Analysis</p>
+                    <p class="marquee-item marquee-primary-color">Customer Journey Mapping</p>
+                    <p class="marquee-item marquee-primary-color">Business Strategy</p>
+                    <p class="marquee-item marquee-primary-color">Marketing Strategy</p>
+                    <p class="marquee-item marquee-primary-color">Consulting</p>
+                    <p class="marquee-item marquee-primary-color">Agile Development</p>
+                </div>
+                <div class="marquee-item-wrapper" id="technical-strategic-foundations-duplicate-1">
+                    <p class="marquee-item marquee-primary-color">Front-end Development</p>
+                    <p class="marquee-item marquee-primary-color">HTML/CSS/JS</p>
+                    <p class="marquee-item marquee-primary-color">React</p>
+                    <p class="marquee-item marquee-primary-color">Flutter (Mobile App Development)</p>
+                    <p class="marquee-item marquee-primary-color">API Integration</p>
+                    <p class="marquee-item marquee-primary-color">Creative Coding</p>
+                    <p class="marquee-item marquee-primary-color">Physical Computing</p>
+                    <p class="marquee-item marquee-primary-color">Emerging Technologies</p>
+                    <p class="marquee-item marquee-primary-color">Virtual Reality</p>
+                    <p class="marquee-item marquee-primary-color">Figma</p>
+                    <p class="marquee-item marquee-primary-color">Adobe Photoshop</p>
+                    <p class="marquee-item marquee-primary-color">Adobe Illustrator</p>
+                    <p class="marquee-item marquee-primary-color">Adobe After Effects (Animation, Motion Design)</p>
+                    <p class="marquee-item marquee-primary-color">Webflow</p>
+                    <p class="marquee-item marquee-primary-color">Lottie</p>
+                    <p class="marquee-item marquee-primary-color">VS Code</p>
+                    <p class="marquee-item marquee-primary-color">Cursor</p>
+                    <p class="marquee-item marquee-primary-color">UX Research</p>
+                    <p class="marquee-item marquee-primary-color">Consumer Insights</p>
+                    <p class="marquee-item marquee-primary-color">Market Research</p>
+                    <p class="marquee-item marquee-primary-color">Consumer Analysis</p>
+                    <p class="marquee-item marquee-primary-color">Customer Journey Mapping</p>
+                    <p class="marquee-item marquee-primary-color">Business Strategy</p>
+                    <p class="marquee-item marquee-primary-color">Marketing Strategy</p>
+                    <p class="marquee-item marquee-primary-color">Consulting</p>
+                    <p class="marquee-item marquee-primary-color">Agile Development</p>
+                </div>
+            </div>
+            <div class="fade-overlay fade-left"></div>
+            <div class="fade-overlay fade-right"></div>
+        </div>
+
+        <div class="marquee-container" aria-hidden="true">
+            <div class="marquee-inner">
+                <div class="marquee-item-wrapper" id="creative-arts-communication-1">
+                    <p class="marquee-item marquee-primary-color">Digital Art</p>
+                    <p class="marquee-item marquee-primary-color">Illustration</p>
+                    <p class="marquee-item marquee-primary-color">Photography</p>
+                    <p class="marquee-item marquee-primary-color">Concept Art</p>
+                    <p class="marquee-item marquee-primary-color">Typography</p>
+                    <p class="marquee-item marquee-primary-color">Storytelling</p>
+                    <p class="marquee-item marquee-primary-color">Film & Animation</p>
+                    <p class="marquee-item marquee-primary-color">Branding</p>
+                    <p class="marquee-item marquee-primary-color">Motion Design</p>
+                    <p class="marquee-item marquee-primary-color">Generative Art</p>
+                    <p class="marquee-item marquee-primary-color">Data Visualization</p>
+                </div>
+                <div class="marquee-item-wrapper" id="creative-arts-communication-duplicate-1">
+                    <p class="marquee-item marquee-primary-color">Digital Art</p>
+                    <p class="marquee-item marquee-primary-color">Illustration</p>
+                    <p class="marquee-item marquee-primary-color">Photography</p>
+                    <p class="marquee-item marquee-primary-color">Concept Art</p>
+                    <p class="marquee-item marquee-primary-color">Typography</p>
+                    <p class="marquee-item marquee-primary-color">Storytelling</p>
+                    <p class="marquee-item marquee-primary-color">Film & Animation</p>
+                    <p class="marquee-item marquee-primary-color">Branding</p>
+                    <p class="marquee-item marquee-primary-color">Motion Design</p>
+                    <p class="marquee-item marquee-primary-color">Generative Art</p>
+                    <p class="marquee-item marquee-primary-color">Data Visualization</p>
+                </div>
+            </div>
+            <div class="fade-overlay fade-left"></div>
+            <div class="fade-overlay fade-right"></div>
+        </div>
+
+        <div class="marquee-container" aria-hidden="true">
+            <div class="marquee-inner right-to-left">
+                <div class="marquee-item-wrapper" id="core-cross-disciplinary-1">
+                    <p class="marquee-item marquee-primary-color">Problem-solving</p>
+                    <p class="marquee-item marquee-primary-color">Fast Learning</p>
+                    <p class="marquee-item marquee-primary-color">Creative Intuition</p>
+                    <p class="marquee-item marquee-primary-color">Cross-functional Communication</p>
+                    <p class="marquee-item marquee-primary-color">Empathy</p>
+                    <p class="marquee-item marquee-primary-color">Conviction</p>
+                    <p class="marquee-item marquee-primary-color">Continuous Growth</p>
+                    <p class="marquee-item marquee-primary-color">Curiosity-Driven</p>
+                    <p class="marquee-item marquee-primary-color">Creativity</p>
+                    <p class="marquee-item marquee-primary-color">Human-Computer Interaction</p>
+                    <p class="marquee-item marquee-primary-color">Cognitive Science</p>
+                    <p class="marquee-item marquee-primary-color">Speculative Design</p>
+                    <p class="marquee-item marquee-primary-color">Sustainability</p>
+                    <p class="marquee-item marquee-primary-color">Craftsmanship</p>
+                    <p class="marquee-item marquee-primary-color">Big-Picture Thinking</p>
+                    <p class="marquee-item marquee-primary-color">Research Insights</p>
+                    <p class="marquee-item marquee-primary-color">Startup</p>
+                    <p class="marquee-item marquee-primary-color">Entrepreneurship</p>
+                    <p class="marquee-item marquee-primary-color">CX Design</p>
+                    <p class="marquee-item marquee-primary-color">Client Management</p>
+                    <p class="marquee-item marquee-primary-color">Global Accounts</p>
+                    <p class="marquee-item marquee-primary-color">Retail</p>
+                    <p class="marquee-item marquee-primary-color">Omni-channel</p>
+                    <p class="marquee-item marquee-primary-color">Business Administration</p>
+                </div>
+                <div class="marquee-item-wrapper" id="core-cross-disciplinary-duplicate-1">
+                    <p class="marquee-item marquee-primary-color">Problem-solving</p>
+                    <p class="marquee-item marquee-primary-color">Fast Learning</p>
+                    <p class="marquee-item marquee-primary-color">Creative Intuition</p>
+                    <p class="marquee-item marquee-primary-color">Cross-functional Communication</p>
+                    <p class="marquee-item marquee-primary-color">Empathy</p>
+                    <p class="marquee-item marquee-primary-color">Conviction</p>
+                    <p class="marquee-item marquee-primary-color">Continuous Growth</p>
+                    <p class="marquee-item marquee-primary-color">Curiosity-Driven</p>
+                    <p class="marquee-item marquee-primary-color">Creativity</p>
+                    <p class="marquee-item marquee-primary-color">Human-Computer Interaction</p>
+                    <p class="marquee-item marquee-primary-color">Cognitive Science</p>
+                    <p class="marquee-item marquee-primary-color">Speculative Design</p>
+                    <p class="marquee-item marquee-primary-color">Sustainability</p>
+                    <p class="marquee-item marquee-primary-color">Craftsmanship</p>
+                    <p class="marquee-item marquee-primary-color">Big-Picture Thinking</p>
+                    <p class="marquee-item marquee-primary-color">Research Insights</p>
+                    <p class="marquee-item marquee-primary-color">Startup</p>
+                    <p class="marquee-item marquee-primary-color">Entrepreneurship</p>
+                    <p class="marquee-item marquee-primary-color">CX Design</p>
+                    <p class="marquee-item marquee-primary-color">Client Management</p>
+                    <p class="marquee-item marquee-primary-color">Global Accounts</p>
+                    <p class="marquee-item marquee-primary-color">Retail</p>
+                    <p class="marquee-item marquee-primary-color">Omni-channel</p>
+                    <p class="marquee-item marquee-primary-color">Business Administration</p>
+                </div>
+            </div>
+            <div class="fade-overlay fade-left"></div>
+            <div class="fade-overlay fade-right"></div>
+        </div>
+        <div class="section-bottom-gap"></div>
+        <div class="section-bottom-gap"></div>
+        <footer>
+            <div class="footer-row">
+                <div class="footer-content">
+                    <p>You've hit the footer,<br>thanks for stopping by.<br>Still curious?<br>→ <a href="mailto:oosu.salon@gmail.com">oosu.salon@gmail.com</a></p>
+                    <span class="footer-copyright">© Oosu Jang 2025</span>
+                </div>
+                <div id="lottie-container" style="width:200px; height:300px; position:relative; overflow:hidden;">
+                    <div id="lottie-inner-section" style="
+                        position: absolute;
+                        left: 50%; top: 50%;
+                        width: 250px; height: 300px;
+                        transform: translate(-50%, -50%);
+                        pointer-events: none;">
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <div id="projectModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <div id="modal-content-body"></div>
+            </div>
+        </div>
+
+        <script src="../common/common.js"></script>
+        <script type="module" src="portfolio.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+        <script>
+            lottie.loadAnimation({
+                container: document.getElementById('lottie-inner-section'),
+                renderer: 'svg',
+                loop: true,
+                autoplay: true,
+                path: 'https://gist.githubusercontent.com/oosuhada/d4f021b7e8e1c621b77f4a25bf1d6feb/raw/4b8e0dcb030a46e6b34c738912c9e3c8b1e7ac1c/footer_portfolio.json',
+                rendererSettings: { preserveAspectRatio: 'none' }
+            });
+        </script>
+    </div>
+</body>
+</html>

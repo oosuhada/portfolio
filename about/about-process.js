@@ -1,306 +1,460 @@
-// ==== "먹물" Confetti 효과 함수 (이전에 제공된 수정된 버전) ====
-function triggerInkConfetti(originX, originY) {
-  const particleCount = 7; 
-  
-  const C_BLACK = getComputedStyle(document.documentElement).getPropertyValue('--black').trim() || '#000';
-  const C_GRAY_DARK = getComputedStyle(document.documentElement).getPropertyValue('--gray-dark').trim() || '#222';
-  const C_GRAY = getComputedStyle(document.documentElement).getPropertyValue('--gray').trim() || '#555';
-  
-  const inkColors = [C_BLACK, C_GRAY_DARK, C_GRAY, '#1A1A1A', '#2C2C2C', '#0A0A0A'];
+document.addEventListener('DOMContentLoaded', () => {
+  // ==== "Ink" Confetti Effect Function ====
+  function triggerInkConfetti(originX, originY) {
+      const particleCount = 7;
+      const inkColors = ['#FFFFFF', '#F0F0F0', '#E0E0E0', '#D0D0D0', '#C0C0C0', '#B0B0B0'];
 
-  for (let i = 0; i < particleCount; i++) {
-    const particle = document.createElement('div');
-    particle.classList.add('confetti-particle');
-    particle.style.backgroundColor = inkColors[Math.floor(Math.random() * inkColors.length)];
-    particle.style.filter = 'blur(0.5px)';
+      for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement('div');
+          particle.classList.add('confetti-particle');
+          particle.style.backgroundColor = inkColors[Math.floor(Math.random() * inkColors.length)];
+          particle.style.filter = 'blur(0.5px)';
 
-    const type = Math.random();
-    let size;
+          const type = Math.random();
+          let size;
 
-    if (type < 0.4) { 
-      size = Math.random() * 10 + 6; 
-      particle.style.width = `${size}px`;
-      particle.style.height = `${size}px`;
-      particle.style.borderRadius = '50%';
-    } else if (type < 0.75) { 
-      const width = Math.random() * 18 + 7; 
-      const height = Math.random() * 10 + 4; 
-      particle.style.width = `${width}px`;
-      particle.style.height = `${height}px`;
-      particle.style.borderRadius = `${Math.random() * 40 + 30}%`;
-       if (Math.random() > 0.5) { 
-          particle.style.width = `${height}px`;
-          particle.style.height = `${width}px`;
+          if (type < 0.4) {
+              size = Math.random() * 10 + 6;
+              particle.style.width = `${size}px`;
+              particle.style.height = `${size}px`;
+              particle.style.borderRadius = '50%';
+          } else if (type < 0.75) {
+              const width = Math.random() * 18 + 7;
+              const height = Math.random() * 10 + 4;
+              particle.style.width = `${width}px`;
+              particle.style.height = `${height}px`;
+              particle.style.borderRadius = `${Math.random() * 40 + 30}%`;
+              if (Math.random() > 0.5) {
+                  particle.style.width = `${height}px`;
+                  particle.style.height = `${width}px`;
+              }
+          } else {
+              size = Math.random() * 4 + 2;
+              particle.style.width = `${size}px`;
+              particle.style.height = `${size}px`;
+              particle.style.borderRadius = '50%';
+              particle.style.opacity = Math.random() * 0.3 + 0.6;
+          }
+
+          document.body.appendChild(particle);
+
+          const angle = Math.random() * Math.PI * 2;
+          const distance = Math.random() * 70 + 50;
+          const duration = Math.random() * 1.0 + 1.5;
+          const initialRotation = Math.random() * 360;
+          const finalRotation = initialRotation + (Math.random() * 180 - 90);
+
+          particle.style.left = `${originX}px`;
+          particle.style.top = `${originY}px`;
+          particle.style.transform = 'translate(-50%, -50%) scale(1) rotate(0deg)';
+
+          particle.animate([
+              { transform: `translate(-50%, -50%) scale(1) rotate(${initialRotation}deg)`, opacity: parseFloat(particle.style.opacity || 1) },
+              {
+                  transform: `translate(-50%, -50%) translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px) scale(0.05) rotate(${finalRotation}deg)`,
+                  opacity: 0
+              }
+          ], {
+              duration: duration * 1000,
+              easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+              fill: 'forwards'
+          });
+
+          setTimeout(() => {
+              particle.remove();
+          }, duration * 1000);
       }
-    } else { 
-      size = Math.random() * 4 + 2; 
-      particle.style.width = `${size}px`;
-      particle.style.height = `${size}px`;
-      particle.style.borderRadius = '50%';
-      particle.style.opacity = Math.random() * 0.3 + 0.6;
-    }
-
-    document.body.appendChild(particle);
-
-    const angle = Math.random() * Math.PI * 2;
-    const distance = Math.random() * 70 + 50; 
-    const duration = Math.random() * 1.0 + 1.5; 
-    const initialRotation = Math.random() * 360;
-    const finalRotation = initialRotation + (Math.random() * 180 - 90);
-
-    particle.style.left = `${originX}px`;
-    particle.style.top = `${originY}px`;
-    particle.style.transform = 'translate(-50%, -50%) scale(1) rotate(0deg)';
-
-    particle.animate([
-      { transform: `translate(-50%, -50%) scale(1) rotate(${initialRotation}deg)`, opacity: parseFloat(particle.style.opacity || 1) },
-      { 
-        transform: `translate(-50%, -50%) translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px) scale(0.05) rotate(${finalRotation}deg)`, 
-        opacity: 0 
-      }
-    ], {
-      duration: duration * 1000,
-      easing: 'cubic-bezier(0.22, 1, 0.36, 1)', 
-      fill: 'forwards'
-    });
-
-    setTimeout(() => {
-      particle.remove();
-    }, duration * 1000);
   }
+
+  // --- 1. Generate Stars ---
+  function generateStars() {
+      const starField = document.getElementById('starField');
+      if (!starField) return;
+      for (let i = 0; i < 100; i++) {
+          const star = document.createElement('div');
+          star.className = 'star';
+          star.style.left = Math.random() * 100 + '%';
+          star.style.top = Math.random() * 100 + '%';
+          star.style.width = Math.random() * 3 + 1 + 'px';
+          star.style.height = star.style.width;
+          star.style.animationDelay = Math.random() * 3 + 's';
+          starField.appendChild(star);
+      }
+  }
+
+  // --- 2. Element Selection ---
+  const galaxyContent = document.getElementById('processGalaxy');
+  const galaxyContainer = document.querySelector('.process-galaxy-container');
+  const orbitSVG = document.getElementById('processOrbitSVG');
+  const orbitPath = document.getElementById('orbitPath');
+  const planets = document.querySelectorAll('.process-planet');
+  const cards = document.querySelectorAll('.process-card');
+  const processSteps = planets;
+  const cardsContainer = document.querySelector('.about-process-cols'); // Add this for flexible height
+
+  if (!galaxyContent || !galaxyContainer || !orbitSVG || !orbitPath || planets.length === 0 || cards.length === 0 || !cardsContainer) {
+      console.error("Process galaxy elements not found, stopping script. Check IDs, classes, or HTML structure.");
+      return;
+  }
+
+  // --- 3. Constants and Initial Setup ---
+  const totalSteps = planets.length;
+  let activeIndex = 0;
+  let isLocked = false;
+
+  let ORBIT_WIDTH_PX;
+  let ORBIT_HEIGHT_PX;
+  let ORBIT_TILT_DEG_GLOBAL = -45; // Global tilt for planet animation
+
+  const PLANET_ORBIT_OFFSET = 0;
+
+  let animationFrameId;
+  let startTime;
+  const animationDuration = 40000;
+
+  // --- Function to draw the SVG ellipse path ---
+  function drawOrbitPath(pathElement) {
+      // Get the current dimensions of the container after CSS is applied
+      const containerRect = galaxyContainer.getBoundingClientRect();
+      let containerWidth = containerRect.width;
+      let containerHeight = containerRect.height; // This will correctly reflect the CSS height
+
+      let currentOrbitTiltDeg;
+
+      const currentWindowWidth = window.innerWidth;
+
+      // --- Logic for screens wider than 820px ---
+      if (currentWindowWidth > 820) {
+          // Set galaxy container height flexible based on process-cards height
+          const cardsHeight = cardsContainer.offsetHeight;
+          // Add some padding or buffer to the height
+          galaxyContainer.style.height = `${cardsHeight + 40}px`; // Set height directly here
+          // Update containerHeight for calculations based on the newly set style
+          containerHeight = galaxyContainer.offsetHeight;
+
+          // Also adjust the visual and content layers to match the new container height
+          galaxyContent.style.height = `calc(100% - 10%)`; // 90% of updated container height
+          document.querySelector('.process-galaxy-visual').style.height = `calc(100% - 10%)`; // 90% of updated container height
+
+          // Default orbit aspect ratio for larger screens
+          const ORBIT_DEFAULT_ASPECT_RATIO = 2.0;
+          const ORBIT_MAX_HEIGHT_RATIO = 0.8;
+          const ORBIT_MAX_WIDTH_RATIO = 0.9;
+
+          // Calculate orbit dimensions based on container and aspect ratio
+          calculatedOrbitHeight = containerHeight * ORBIT_MAX_HEIGHT_RATIO;
+          calculatedOrbitWidth = calculatedOrbitHeight * ORBIT_DEFAULT_ASPECT_RATIO;
+
+          // Ensure width doesn't exceed container bounds
+          if (calculatedOrbitWidth > containerWidth * ORBIT_MAX_WIDTH_RATIO) {
+              calculatedOrbitWidth = containerWidth * ORBIT_MAX_WIDTH_RATIO;
+              calculatedOrbitHeight = calculatedOrbitWidth / ORBIT_DEFAULT_ASPECT_RATIO;
+          }
+          currentOrbitTiltDeg = -45; // Restore default tilt for wide screens
+
+      // --- Logic for screens 820px or narrower ---
+      } else {
+          // Height is fixed by CSS for small screens, so no need to set galaxyContainer.style.height here
+          // It's already 400px from CSS.
+          containerHeight = galaxyContainer.offsetHeight; // Get height from CSS
+
+          galaxyContent.style.height = `calc(100% - 10%)`;
+          document.querySelector('.process-galaxy-visual').style.height = `calc(100% - 10%)`;
+
+          // Adjust tilt for narrower screens to make orbit appear wider
+          currentOrbitTiltDeg = -60; // More horizontal tilt
+
+          const ORBIT_MIN_WIDTH_RATIO = 0.8; // Use more of the available width
+          const ORBIT_MAX_HEIGHT_RATIO_SMALL = 0.6; // Don't take up too much vertical space
+
+          calculatedOrbitWidth = containerWidth * ORBIT_MIN_WIDTH_RATIO;
+          calculatedOrbitHeight = containerHeight * ORBIT_MAX_HEIGHT_RATIO_SMALL;
+
+          // Ensure aspect ratio is not too narrow or wide (e.g., 2:1 to 3:1)
+          const desiredAspectRatio = 2.5; // Aim for a slightly wider aspect ratio on mobile
+          if (calculatedOrbitWidth / calculatedOrbitHeight < desiredAspectRatio) {
+              calculatedOrbitWidth = calculatedOrbitHeight * desiredAspectRatio;
+              // Re-check width against container
+              if (calculatedOrbitWidth > containerWidth * ORBIT_MIN_WIDTH_RATIO) {
+                  calculatedOrbitWidth = containerWidth * ORBIT_MIN_WIDTH_RATIO;
+                  calculatedOrbitHeight = calculatedOrbitWidth / desiredAspectRatio;
+              }
+          }
+          // Ensure orbit does not exceed its container
+          calculatedOrbitWidth = Math.min(calculatedOrbitWidth, containerWidth * 0.95);
+          calculatedOrbitHeight = Math.min(calculatedOrbitHeight, containerHeight * 0.95);
+      }
+
+      // Assign final orbit dimensions
+      ORBIT_WIDTH_PX = calculatedOrbitWidth;
+      ORBIT_HEIGHT_PX = calculatedOrbitHeight;
+      ORBIT_TILT_DEG_GLOBAL = currentOrbitTiltDeg; // Update global tilt for planet animation
+
+      // Update SVG attributes
+      orbitSVG.setAttribute('viewBox', `0 0 ${ORBIT_WIDTH_PX} ${ORBIT_HEIGHT_PX}`);
+      orbitSVG.style.width = `${ORBIT_WIDTH_PX}px`;
+      orbitSVG.style.height = `${ORBIT_HEIGHT_PX}px`;
+
+      // Update the transform for the SVG element directly
+      orbitSVG.style.transform = `translate(-50%, -50%) rotate(${currentOrbitTiltDeg}deg)`;
+
+
+      const cx = ORBIT_WIDTH_PX / 2;
+      const cy = ORBIT_HEIGHT_PX / 2;
+      const rx = ORBIT_WIDTH_PX / 2;
+      const ry = ORBIT_HEIGHT_PX / 2;
+
+      const pathData = `M ${cx - rx},${cy} ` +
+                       `A ${rx},${ry} 0 1,0 ${cx + rx},${cy} ` +
+                       `A ${rx},${ry} 0 1,0 ${cx - rx},${cy} Z`;
+
+      pathElement.setAttribute('d', pathData);
+      pathElement.dataset.lastDrawnWidth = String(ORBIT_WIDTH_PX);
+      pathElement.dataset.lastDrawnHeight = String(ORBIT_HEIGHT_PX);
+
+      // Update planet rotation based on the current orbit tilt
+      planets.forEach(planet => {
+          const uprightRotation = `rotate(${-currentOrbitTiltDeg}deg)`;
+          planet.style.setProperty('--planet-rotate', uprightRotation);
+          planet.querySelector('.planet-content').style.transform = `rotate(${-(-ORBIT_TILT_DEG_GLOBAL)}deg)`;
+      });
+  }
+
+  // --- Function for planet animation and position calculation ---
+  function animatePlanets(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = (elapsed % animationDuration) / animationDuration;
+
+      const ORBIT_TILT_RAD_ANIMATION = ORBIT_TILT_DEG_GLOBAL * (Math.PI / 180); // Use the global tilt
+
+      planets.forEach((planet, i) => {
+          const initialPhase = i / totalSteps;
+          const currentPhase = (progress + initialPhase) % 1;
+          const angle = currentPhase * 2 * Math.PI;
+
+          const effectiveWidth = ORBIT_WIDTH_PX + (PLANET_ORBIT_OFFSET * 2);
+          const effectiveHeight = ORBIT_HEIGHT_PX + (PLANET_ORBIT_OFFSET * 2);
+
+          const rawX = (effectiveWidth / 2) * Math.cos(angle);
+          const rawY = (effectiveHeight / 2) * Math.sin(angle);
+
+          const tiltedX = rawX * Math.cos(ORBIT_TILT_RAD_ANIMATION) - rawY * Math.sin(ORBIT_TILT_RAD_ANIMATION);
+          const tiltedY = rawX * Math.sin(ORBIT_TILT_RAD_ANIMATION) + rawY * Math.cos(ORBIT_TILT_RAD_ANIMATION);
+
+          // Ensure planets stay within galaxyContent bounds
+          const contentRect = galaxyContent.getBoundingClientRect();
+          const maxX = contentRect.width * 0.45; // 90% of half-width of content
+          const maxY = contentRect.height * 0.45; // 90% of half-height of content
+
+          // Calculate pixel positions relative to galaxyContent center
+          // The orbit path already handles fitting to the SVG size
+          // The planets need to be positioned relative to the galaxyContent for correct display
+          planet.style.left = `calc(50% + ${Math.max(-maxX, Math.min(maxX, tiltedX))}px)`;
+          planet.style.top = `calc(50% + ${Math.max(-maxY, Math.min(maxY, tiltedY))}px)`;
+
+          const uprightRotation = `rotate(${-ORBIT_TILT_DEG_GLOBAL}deg)`; // Use global tilt for upright rotation
+          planet.style.setProperty('--planet-rotate', uprightRotation);
+
+          let transformValue = `translate(-50%, -50%) ${uprightRotation}`;
+
+          if (i === activeIndex) {
+              transformValue += ' scale(1.2)';
+          }
+
+          if (planet.dataset.parallaxX && planet.dataset.parallaxY && !isLocked) {
+              transformValue += ` translate(${planet.dataset.parallaxX}px, ${planet.dataset.parallaxY}px)`;
+          }
+
+          planet.style.transform = transformValue;
+      });
+
+      animationFrameId = requestAnimationFrame(animatePlanets);
+  }
+
+  // --- 4. Core Functionality ---
+  function toggleProcess(idx, eventSourceElement) {
+    const card = cards[idx];
+    const planet = planets[idx];
+
+    if (!card || !planet) return;
+
+    const isActive = card.classList.contains('is-active');
+
+    // 우선 전체 해제
+    cards.forEach(c => c.classList.remove('is-active', 'is-locked'));
+    planets.forEach(p => p.classList.remove('is-active'));
+    isLocked = false;
+
+    if (!isActive) {
+        // ACTIVATE
+        if (eventSourceElement && typeof triggerInkConfetti === 'function') {
+            const rect = eventSourceElement.getBoundingClientRect();
+            const originX = rect.left + rect.width / 2;
+            const originY = rect.top + rect.height / 2;
+            triggerInkConfetti(originX, originY);
+        }
+        card.classList.add('is-active', 'is-locked');
+        planet.classList.add('is-active');
+        isLocked = true;
+        activeIndex = idx;
+    } else {
+        // DEACTIVATE (스타일만 원복, 공전 위치/애니메이션은 건드리지 않음)
+        // is-active, is-locked만 remove
+        // 필요하다면 activeIndex를 null 등으로 관리(활성화 항목 없음 표시)
+        // activeIndex = null;
+    }
+    activeIndex = idx; // Update active index
 }
 
-
-document.addEventListener('DOMContentLoaded', () => {
-  const processCards = document.querySelectorAll('.process-card');
-  const stepCircles = document.querySelectorAll('#process-svg .step-circle');
-  const paths = document.querySelectorAll('#process-svg path');
-  const svgEl = document.querySelector('#process-svg');
-
-  // (1) 드래그 정렬
-  if (window.Sortable) {
-    const grid = document.querySelector('.about-process-cols');
-    if (grid) {
-      Sortable.create(grid, {
-        animation: 300,
-        ghostClass: 'drag-ghost',
-        chosenClass: 'drag-chosen',
-        dragClass: 'drag-dragging',
-        direction: 'vertical', 
-        forceFallback: true,
-        draggable: '.process-card',
-        onEnd: () => {
-          // Callback after drag
-        }
-      });
-    }
-  }
-
-  // (2) Intersection Observer로 카드 등장 애니메이션 (기존 setTimeout 방식 대신)
+  // --- 5. Card Animation on View ---
   const cardObserver = new IntersectionObserver((entries, observerInstance) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const card = entry.target;
-        // const idx = Array.from(processCards).indexOf(card); // Not needed for simple class add
-        setTimeout(() => { // Apply a slight staggered delay based on observation if desired
-             card.classList.add('in-view');
-        }, Array.from(processCards).indexOf(card) * 100); // Stagger based on index
-        observerInstance.unobserve(card); // Stop observing once animated
-      }
-    });
-  }, {
-    threshold: 0.1, // Trigger when 10% of the card is visible
-    // rootMargin: '50px' // Optional: Adjust trigger area
+      entries.forEach(entry => {
+          if (entry.isIntersecting) {
+              const card = entry.target;
+              setTimeout(() => { card.classList.add('in-view'); }, Array.from(cards).indexOf(card) * 100);
+              observerInstance.unobserve(card);
+          }
+      });
+  }, { threshold: 0.1 });
+  cards.forEach(card => cardObserver.observe(card));
+
+  // --- 6. Event Listeners ---
+  cards.forEach((card, index) => {
+      card.addEventListener('mouseenter', () => {
+          if (!isLocked) {
+              cards.forEach(c => c.classList.remove('is-active'));
+              planets.forEach(p => p.classList.remove('is-active'));
+              card.classList.add('is-active');
+              planets[index].classList.add('is-active');
+          }
+      });
+
+      card.addEventListener('mouseleave', () => {
+          if (!isLocked) {
+              cards.forEach(c => c.classList.remove('is-active'));
+              planets.forEach(p => p.classList.remove('is-active'));
+              cards[activeIndex].classList.add('is-active');
+              planets[activeIndex].classList.add('is-active');
+          }
+      });
+
+      card.addEventListener('click', (event) => {
+          if (event.target.closest('.meaning-chunk')) {
+              return;
+          }
+          toggleProcess(index, event.currentTarget);
+      });
+
+      card.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              this.click();
+          }
+      });
   });
 
-  processCards.forEach(card => cardObserver.observe(card));
+  planets.forEach((planet, index) => {
+      planet.addEventListener('click', () => {
+          toggleProcess(index, planet);
+      });
 
+      planet.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              planet.click();
+          }
+      });
 
-  // (3) 카드-원 완전 연동 클릭 이벤트 & Confetti 통합
-  function toggleProcess(idx, eventSourceElement) {
-    const card = processCards[idx];
-    const circle = stepCircles[idx];
-    if (!card || !circle) return;
-    
-    const isActive = card.classList.contains('highlight'); // Use .highlight as the primary active state marker
+      planet.addEventListener('mouseenter', () => {
+          if (!isLocked) {
+              cards.forEach(c => c.classList.remove('is-active'));
+              planets.forEach(p => p.classList.remove('is-active'));
+              cards[index].classList.add('is-active');
+              planet.classList.add('is-active');
+          }
+      });
 
-    if (!isActive) { // If it's about to become active
-      if (eventSourceElement && typeof triggerInkConfetti === 'function') {
-        const rect = eventSourceElement.getBoundingClientRect();
-        const originX = rect.left + rect.width / 2;
-        const originY = rect.top + rect.height / 2;
-        triggerInkConfetti(originX, originY); // ✨ Confetti!
+      planet.addEventListener('mouseleave', () => {
+          if (!isLocked) {
+              cards.forEach(c => c.classList.remove('is-active'));
+              planets.forEach(p => p.classList.remove('is-active'));
+              cards[activeIndex].classList.add('is-active');
+              planets[activeIndex].classList.add('is-active');
+          }
+      });
+  });
+
+  // 마우스 움직임에 따른 패럴랙스 효과 (잠금 상태가 아닐 때만)
+  galaxyContainer.addEventListener('mousemove', (e) => {
+      if (isLocked) return;
+
+      const rect = galaxyContainer.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      const mouseX = e.clientX - centerX;
+      const mouseY = e.clientY - centerY;
+
+      planets.forEach((planet, index) => {
+          const contentRect = galaxyContent.getBoundingClientRect();
+          const relativeMouseX = e.clientX - contentRect.left - (contentRect.width / 2);
+          const relativeMouseY = e.clientY - contentRect.top - (contentRect.height / 2);
+
+          if (index !== activeIndex) {
+              const parallaxX = relativeMouseX * 0.05;
+              const parallaxY = relativeMouseY * 0.05;
+              planet.dataset.parallaxX = parallaxX;
+              planet.dataset.parallaxY = parallaxY;
+          }
+      });
+  });
+
+  // 마우스가 갤럭시 영역을 벗어났을 때 패럴랙스 초기화 (잠금 상태가 아닐 때만)
+  galaxyContainer.addEventListener('mouseleave', () => {
+      if (!isLocked) {
+          planets.forEach(planet => {
+              delete planet.dataset.parallaxX;
+              delete planet.dataset.parallaxY;
+          });
       }
-      card.classList.add('highlight', 'tilt-effect'); // Add both for combined effect
-      circle.classList.add('active');
-      card.setAttribute('aria-pressed', 'true');
-    } else { // If it's about to become inactive
-      card.classList.remove('highlight', 'tilt-effect');
-      circle.classList.remove('active');
+  });
+
+  // --- 7. Accessibility ---
+  cards.forEach((card, idx) => {
+      card.setAttribute('role', 'button');
       card.setAttribute('aria-pressed', 'false');
-    }
-  }
-
-  processCards.forEach((card, idx) => {
-    card.addEventListener('click', function () {
-      toggleProcess(idx, this); // 'this' is the card
-    });
-    card.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        toggleProcess(idx, this); // 'this' is the card
-      }
-    });
-  });
-
-  stepCircles.forEach((circle, idx) => {
-    circle.addEventListener('click', function() {
-      toggleProcess(idx, this); // 'this' is the circle
-    });
-    // Keydown for circles is handled in section (8), ensure it also calls toggleProcess with 'this' or 'circle'
-  });
-
-  // (4) 카드 hover/포커스시 해당 SVG 원에 hover-active 효과
-  processCards.forEach((card, idx) => {
-    const circle = stepCircles[idx];
-    if (!circle) return;
-
-    card.addEventListener('mouseenter', () => {
-      if (!circle.classList.contains('active')) {
-        circle.classList.add('hover-active');
-      }
-    });
-    card.addEventListener('mouseleave', () => {
-      circle.classList.remove('hover-active');
-    });
-    card.addEventListener('focus', () => { // For keyboard accessibility
-      if (!circle.classList.contains('active')) {
-        circle.classList.add('hover-active');
-      }
-    });
-    card.addEventListener('blur', () => {
-      circle.classList.remove('hover-active');
-    });
-  });
-
-  // (5) SVG 애니메이션 시퀀스
-  const svgAnimationDelay = 200; // Initial delay for the first path
-  const pathAnimationDuration = 1500; // Duration for each path to draw
-  const pathStagger = 400; // Stagger between path animations
-  const circleDelayAfterPath = 200; // Delay for circle after its path segment might be considered drawn
-
-  paths.forEach((path, idx) => {
-    // Animate stroke-dashoffset
-    path.style.animation = `drawPath ${pathAnimationDuration / 1000}s ease-out forwards`;
-    path.style.animationDelay = `${(svgAnimationDelay + idx * pathStagger) / 1000}s`;
-    
-    // Simulate textureInk properties via JS or rely on initial CSS + drawPath
-    // For simplicity, drawPath is the main animation here. Opacity is set in CSS.
-    // If 'textureInk' keyframes are complex, they might need separate handling or simplified CSS.
-  });
-  
-  circles.forEach((circle, idx) => {
-    setTimeout(() => {
-      circle.style.opacity = '0.9'; // Match CSS target
-      circle.style.transform = 'scale(1)';
-    }, svgAnimationDelay + (paths.length -1) * pathStagger + pathAnimationDuration / 2 + idx * 100 + circleDelayAfterPath); // Appear after paths are mostly done
-  });
-
-
-  // (6) 먹 번짐 효과 - 원 주변에 확산 효과 추가
-  const inkSpreads = [];
-  if (svgEl && svgEl.parentElement) { // Ensure SVG and its parent exist
-      stepCircles.forEach((circle) => {
-        const spread = document.createElement('div');
-        spread.className = 'ink-spread-effect';
-        // Initial positioning will be done by JS in createOrUpdateInkSpread
-        svgEl.parentElement.appendChild(spread); // Append to SVG's parent for correct positioning context
-        inkSpreads.push(spread);
+      card.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              this.click();
+          }
       });
-  }
-  
-  function createOrUpdateInkSpread(circle, spreadElement) {
-    if (!circle || !spreadElement || !svgEl || !svgEl.parentElement) return;
-
-    const circleRect = circle.getBoundingClientRect();
-    const svgParentRect = svgEl.parentElement.getBoundingClientRect(); // Position relative to SVG's parent
-
-    // Calculate top/left relative to the SVG's offset parent
-    const spreadSize = 80; // from CSS
-    spreadElement.style.left = `${circleRect.left - svgParentRect.left + (circleRect.width / 2) - (spreadSize / 2)}px`;
-    spreadElement.style.top = `${circleRect.top - svgParentRect.top + (circleRect.height / 2) - (spreadSize / 2)}px`;
-  }
-
-
-  stepCircles.forEach((circle, idx) => {
-    const spread = inkSpreads[idx];
-    if (!spread) return;
-
-    createOrUpdateInkSpread(circle, spread); // Initial position
-
-    const showSpread = () => {
-      spread.style.opacity = '1';
-      spread.style.transform = 'scale(1.5)';
-    };
-    
-    const hideSpread = () => {
-      if (!circle.classList.contains('active')) {
-        spread.style.opacity = '0';
-        spread.style.transform = 'scale(1)';
-      }
-    };
-    
-    circle.addEventListener('mouseenter', showSpread);
-    circle.addEventListener('mouseleave', hideSpread);
-    
-    const card = processCards[idx];
-    if (card) {
-        card.addEventListener('mouseenter', showSpread);
-        card.addEventListener('mouseleave', hideSpread);
-        // Also trigger on focus for keyboard users
-        card.addEventListener('focus', showSpread);
-        card.addEventListener('blur', hideSpread);
-        circle.addEventListener('focus', showSpread);
-        circle.addEventListener('blur', hideSpread);
-
-    }
   });
 
-  // (7) 반응형 처리 - 화면 크기 변경 시 번짐 효과 위치 재조정
-  let resizeTimeout;
+  planets.forEach((planet, idx) => {
+      planet.setAttribute('role', 'button');
+      planet.setAttribute('aria-label', `Activate process step ${idx + 1}`);
+      planet.setAttribute('tabindex', '0');
+      planet.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              planet.click();
+          }
+      });
+  });
+
+  // --- 8. Initial State ---
+  generateStars();
+  drawOrbitPath(orbitPath); // Initial call to set up
+  toggleProcess(0, cards[0]);
+  cards[0].classList.add('in-view');
+
+  startTime = performance.now();
+  animationFrameId = requestAnimationFrame(animatePlanets);
+
+  // 윈도우 리사이즈 시 궤도 다시 그리기
   window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-      stepCircles.forEach((circle, idx) => {
-        createOrUpdateInkSpread(circle, inkSpreads[idx]);
-      });
-    }, 250);
+      drawOrbitPath(orbitPath);
   });
-
-  // (8) 접근성 개선 - 키보드 네비게이션 (Integrate Confetti trigger)
-  processCards.forEach((card, idx) => {
-    card.setAttribute('role', 'button');
-    card.setAttribute('aria-pressed', 'false'); // Initial state
-    // card.setAttribute('aria-describedby', `process-description-${idx + 1}`); // Assuming p has this id
-    const pDesc = card.querySelector('.process-body');
-    if (pDesc) {
-        pDesc.id = `process-description-${idx + 1}`;
-        card.setAttribute('aria-describedby', pDesc.id);
-    }
-  });
-
-  stepCircles.forEach((circle, idx) => {
-    circle.setAttribute('role', 'button');
-    circle.setAttribute('aria-label', `프로세스 단계 ${idx + 1} 활성화/비활성화`); // More descriptive
-    circle.setAttribute('tabindex', '0'); // Make it focusable
-    
-    circle.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        toggleProcess(idx, e.currentTarget); // Pass the circle element
-      }
-    });
-  });
-
-  // (9) 성능 최적화 (Intersection Observer) is now (2)
 });

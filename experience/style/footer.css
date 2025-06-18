@@ -1,0 +1,106 @@
+/* footer.css */
+
+/* .grape-footer-quote는 #full-screen-bg-section 위로 오버랩되어야 합니다. */
+.grape-footer-quote-section { /* 클래스 이름을 grape-footer-quote-section으로 가정합니다. HTML과 일치시켜야 합니다. */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.8rem;
+    max-width: 700px;
+    margin: 1.4rem auto 1.6rem auto;
+    position: relative; /* z-index를 적용하려면 position이 static이 아니어야 합니다. */
+    display: flex;
+    min-height: 440px;
+    /* Changed to white background */
+    background-color: #fff;
+    z-index: 10; /* #full-screen-bg-section (z-index: 0)보다 높은 값으로 설정하여 위에 겹치도록 합니다. */
+    /* top: -100px; */ /* 필요에 따라 오버랩 정도를 조정합니다. */
+    /* margin-top: -20vh; */ /* 이 값을 조절하여 위로 얼마나 겹칠지 정합니다. 예를 들어 뷰포트 높이의 20%만큼 위로 올립니다. */
+}
+
+.footer-image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.grape-footer-img {
+    display: block;
+    /* width: 600px; */
+    max-width: 100%;
+    min-width: 200px;
+    height: auto;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    transform: scale(1.2);
+}
+
+.footer-overlay-image {
+    position: absolute;
+    right: 100%;
+    bottom: 100%;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    width: 40px;
+    height: auto;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.grape-footer-img.zoomed-in {
+    transform: scale(1.5);
+}
+
+.grape-footer-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 105%;
+    transform: translate(-1%, -50%);
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+    font-size: 1.2rem;
+    line-height: 1.2;
+    color: #fff;
+    background: rgba(32, 32, 32, 0.5);
+    border-radius: 6px;
+    padding: 0.8rem 1rem;
+    box-shadow: 0 6px 32px rgba(0, 0, 0, 0.15);
+    z-index: 2;
+    pointer-events: none;
+    font-weight: 500;
+    white-space: normal;
+}
+
+/* General footer background */
+footer {
+    background-color: #fff; /* Footer background to white */
+    z-index: 10; /* Ensure footer sits above the new full-screen section */
+    position: relative; /* Needed for z-index to work against static elements */
+}
+
+footer a {
+    color: #000; /* Link color on white background */
+    text-decoration: underline;
+}
+
+
+
+@media (max-width: 700px) {
+    .grape-footer-quote-section { /* 클래스 이름 통일 */
+        padding: 2.0rem 0.6rem 4rem 0.6rem;
+        max-width: 96vw;
+    }
+
+    .grape-footer-text {
+        font-size: 1.05rem;
+    }
+
+    /* 추가된 미디어 쿼리: 모바일 환경에서 zoomed-in 이미지 크기 조정 */
+    .grape-footer-img.zoomed-in {
+        width: 100%; /* 화면 좌우를 가득 채우도록 설정 */
+        transform: scale(1); /* 줌인 효과를 제거하거나 다른 값으로 조정 */
+        /* 필요에 따라 max-width도 100%로 설정할 수 있습니다. */
+        max-width: 100%;
+    }
+}

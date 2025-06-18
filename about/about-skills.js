@@ -6,8 +6,17 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.registerPlugin(ScrollTrigger);
 
     const skillsContainer = document.getElementById('skills-sortable');
+    let sortableInstance = null; // [추가] Sortable 인스턴스를 저장할 변수
+
+    // [추가] 꾹 누르기 관련 상태 변수들
+    const PRESS_DURATION = 1200; // 1.2초. 이 값을 조절하여 꾹 누르는 시간 변경
+    let pressTimer = null;
+    let isJiggleModeActive = false;
+    let longPressOccurred = false;
+
     if (skillsContainer) {
-        Sortable.create(skillsContainer, {
+        // [수정] Sortable을 비활성화된 상태로 초기화
+        sortableInstance = Sortable.create(skillsContainer, {
             animation: 250,
             ghostClass: 'drag-ghost',
             chosenClass: 'drag-chosen',
@@ -15,38 +24,45 @@ document.addEventListener('DOMContentLoaded', () => {
             direction: 'horizontal',
             forceFallback: true,
             handle: '.skill-ink-blot',
+            disabled: true, // 기본적으로 비활성화
+        });
+    }
+
+    // [추가] 재정렬 모드를 활성화하는 함수
+    function enableJiggleMode() {
+        if (isJiggleModeActive) return;
+        isJiggleModeActive = true;
+        longPressOccurred = true; // 꾹 누르기 액션이 발생했음을 기록
+        sortableInstance.option('disabled', false); // 드래그 기능 활성화
+        document.querySelectorAll('.skill-card').forEach(card => {
+            card.classList.add('is-jiggling');
+        });
+    }
+
+    // [추가] 재정렬 모드를 비활성화하는 함수
+    function disableJiggleMode() {
+        if (!isJiggleModeActive) return;
+        isJiggleModeActive = false;
+        sortableInstance.option('disabled', true); // 드래그 기능 비활성화
+        document.querySelectorAll('.skill-card').forEach(card => {
+            card.classList.remove('is-jiggling');
         });
     }
 
     const skillCards = document.querySelectorAll('.skill-card');
 
-    const cardSpecificClosedShapes = [
-        'strengths-closed-shape',
-        'uxui-closed-shape',
-        'frontend-closed-shape',
-        'tools-closed-shape'
-    ];
-    const cardSpecificOpenedShapes = [
-        'strengths-opened-shape',
-        'uxui-opened-shape',
-        'frontend-opened-shape',
-        'tools-opened-shape'
-    ];
-
+    const cardSpecificClosedShapes = ['strengths-closed-shape', 'uxui-closed-shape', 'frontend-closed-shape', 'tools-closed-shape'];
+    const cardSpecificOpenedShapes = ['strengths-opened-shape', 'uxui-opened-shape', 'frontend-opened-shape', 'tools-opened-shape'];
     const fixedOpacityClass = 'ink-opacity-high';
     const fixedFilterID = 'classicWetInk';
-
-    // 각 카드의 원래 인덱스에 따른 확장 스타일 정의
     const expandedCardStyles = [
-        { inkBlotHeight: '480px', contentLeft: '-0.5rem', contentTop: '2rem' }, // 원래 첫 번째 카드
-        { inkBlotHeight: '480px', contentLeft: '-1.2rem', contentTop: '0px' },    // 원래 두 번째 카드
-        { inkBlotHeight: '340px', contentLeft: '-1.7rem', contentTop: '0px' },    // 원래 세 번째 카드
-        { inkBlotHeight: '340px', contentLeft: '-2.3rem', contentTop: '0px' }     // 원래 네 번째 카드
-        // 카드 개수가 더 많다면 여기에 추가
+        { inkBlotHeight: '460px', contentLeft: '-1.2rem', contentTop: '-10px' },
+        { inkBlotHeight: '460px', contentLeft: '-1.7rem', contentTop: '0px' },
+        { inkBlotHeight: '460px', contentLeft: '-1.7rem', contentTop: '20px' },
+        { inkBlotHeight: '460px', contentLeft: '-1.2rem', contentTop: '10px' }
     ];
 
     skillCards.forEach((card, index) => {
-        // 각 카드에 원래 인덱스를 저장
         card.dataset.originalIndex = index;
 
         const inkBlot = card.querySelector('.skill-ink-blot');
@@ -55,28 +71,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const expandedContent = card.querySelector('.skill-expanded-content');
 
         if (inkShape) {
-            [
-                ...cardSpecificClosedShapes, ...cardSpecificOpenedShapes,
-                'closed-blot-shape-1', 'closed-blot-shape-2', 'closed-blot-shape-3', 'closed-blot-shape-4',
-                'opened-blot-shape-1', 'opened-blot-shape-2', 'opened-blot-shape-3', 'opened-blot-shape-4'
-            ].forEach(cls => inkShape.classList.remove(cls));
-
-            // closed/opened shape 클래스는 인덱스에 따라 할당
-            const closedShapeClass = cardSpecificClosedShapes[index % cardSpecificClosedShapes.length]; // 순환 참조
-            const openedShapeClass = cardSpecificOpenedShapes[index % cardSpecificOpenedShapes.length]; // 순환 참조
-
-            if (closedShapeClass) {
-                inkShape.classList.add(closedShapeClass);
-                card.dataset.closedShape = closedShapeClass;
-            }
-            if (openedShapeClass) {
-                card.dataset.openedShape = openedShapeClass;
-            }
-
-            ['ink-opacity-low', 'ink-opacity-medium', 'ink-opacity-high'].forEach(cls => inkShape.classList.remove(cls));
-            inkShape.classList.add(fixedOpacityClass);
-            inkShape.style.filter = `url(#${fixedFilterID})`;
-            inkShape.style.removeProperty('--hover-rotate');
+            [...cardSpecificClosedShapes,...cardSpecificOpenedShapes,'closed-blot-shape-1','closed-blot-shape-2','closed-blot-shape-3','closed-blot-shape-4','opened-blot-shape-1','opened-blot-shape-2','opened-blot-shape-3','opened-blot-shape-4'].forEach(cls=>inkShape.classList.remove(cls));
+            const closedShapeClass=cardSpecificClosedShapes[index%cardSpecificClosedShapes.length];const openedShapeClass=cardSpecificOpenedShapes[index%cardSpecificOpenedShapes.length];
+            if(closedShapeClass){inkShape.classList.add(closedShapeClass);card.dataset.closedShape=closedShapeClass;}
+            if(openedShapeClass){card.dataset.openedShape=openedShapeClass;}
+            ['ink-opacity-low','ink-opacity-medium','ink-opacity-high'].forEach(cls=>inkShape.classList.remove(cls));
+            inkShape.classList.add(fixedOpacityClass);inkShape.style.filter=`url(#${fixedFilterID})`;inkShape.style.removeProperty('--hover-rotate');
         }
 
         if (expandedContent) {
@@ -84,12 +84,65 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (inkBlot) {
+            // [수정] 'click' 대신 'mousedown', 'mouseup', 'mouseleave' 이벤트로 꾹 누르기 구현
+            inkBlot.addEventListener('mousedown', (e) => {
+                if (isJiggleModeActive || card.classList.contains('expanded')) return;
+                longPressOccurred = false; // 마우스 누를 때 초기화
+                pressTimer = setTimeout(enableJiggleMode, PRESS_DURATION);
+            });
+
+            inkBlot.addEventListener('mouseup', () => {
+                clearTimeout(pressTimer);
+            });
+            
+            inkBlot.addEventListener('mouseleave', () => {
+                clearTimeout(pressTimer);
+            });
+
             inkBlot.addEventListener('click', (e) => {
+                // [수정] 꾹 누르기가 방금 발생했다면, 카드 확장 로직을 실행하지 않음
+                if (longPressOccurred) {
+                    longPressOccurred = false; // 플래그 초기화 후 종료
+                    return;
+                }
+                
+                // 재정렬 모드일 때는 카드 확장/축소 기능 비활성화
+                if (isJiggleModeActive) return;
+
+                if (card.classList.contains('expanded') && e.target.closest('.skill-details-list')) {
+                    return;
+                }
                 if (e.target.closest('.sortable-ghost') || e.target.closest('.sortable-chosen') || card.classList.contains('drag-dragging')) return;
-                createInkSplash(inkBlot);
+                
+                if (!card.classList.contains('expanded')) {
+                    createInkSplash(inkBlot);
+                }
                 handleSkillCardInteraction(card);
             });
         }
+    });
+
+    // [수정] document 클릭 리스너 로직 변경
+    document.addEventListener('click', function(e) {
+        // 재정렬 모드일 때 외부를 클릭하면 재정렬 모드 해제
+        if (isJiggleModeActive && !e.target.closest('#skills-sortable')) {
+            disableJiggleMode();
+            return; // 모드 해제 후 다른 동작 방지
+        }
+
+        const expandedCards = document.querySelectorAll('.skill-card.expanded');
+        if (expandedCards.length === 0) return;
+
+        const clickInsideAnExpandedCard = Array.from(expandedCards).some(card => card.contains(e.target));
+        const clickOnHighlightMenu = e.target.closest('#highlight-menu');
+
+        if (clickInsideAnExpandedCard || clickOnHighlightMenu) {
+            return;
+        }
+
+        expandedCards.forEach(card => {
+            collapseCard(card);
+        });
     });
 
     function createInkSplash(inkBlotElement) {
@@ -140,9 +193,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const mainTitle = card.querySelector('.skill-main-title');
         const clickDragHint = card.querySelector('.click-drag-hint');
 
-        // 원래 인덱스 가져오기
         const originalIndex = parseInt(card.dataset.originalIndex);
-        const stylesForThisCard = expandedCardStyles[originalIndex % expandedCardStyles.length]; // 순환 참조 또는 인덱스 범위 확인 필요
+        const stylesForThisCard = expandedCardStyles[originalIndex % expandedCardStyles.length];
 
         if (inkShape && card.dataset.closedShape && card.dataset.openedShape) {
             inkShape.classList.remove(card.dataset.closedShape);
@@ -152,7 +204,6 @@ document.addEventListener('DOMContentLoaded', () => {
         card.classList.add('expanded');
         if (inkBlot) {
              inkBlot.classList.add('expanded');
-             // inkBlot 높이 설정
              if (stylesForThisCard && stylesForThisCard.inkBlotHeight) {
                 gsap.to(inkBlot, { height: stylesForThisCard.inkBlotHeight, duration: 0.7, ease: 'cubic-bezier(.23,1.12,.67,1.08)' });
              }
@@ -160,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
         card.style.zIndex = '10';
 
         const tl = gsap.timeline({
-            defaults: { duration: 0.5, ease: "power2.out" },
+            defaults: { duration: 0.3, ease: "power2.out" },
             onComplete: () => {
                 if (expandedContent) expandedContent.style.pointerEvents = 'auto';
                 ScrollTrigger.refresh();
@@ -168,22 +219,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         tl.to(initialContent, { opacity: 0, y: -24, scale: 0.8, duration: 0.3 }, 0)
-          .to([mainTitle, clickDragHint], {
+          .to(mainTitle, {
               opacity: 1,
               marginTop: mainTitle ? '2.2rem' : '',
-              duration: 0.3,
-          }, 0.1);
+              duration: 0.2,
+          }, 0.05)
+          .to(clickDragHint, {
+              opacity: 0,
+              duration: 0.2
+          }, 0.05);
 
         if (expandedContent) {
-            // expandedContent 위치 설정
             if (stylesForThisCard) {
                 gsap.set(expandedContent, {
-                    left: stylesForThisCard.contentLeft || '0px', // 기본값
-                    top: stylesForThisCard.contentTop || '0px'    // 기본값
+                    left: stylesForThisCard.contentLeft || '0px',
+                    top: stylesForThisCard.contentTop || '0px'
                 });
             }
             tl.set(expandedContent, { display: 'flex' });
-            tl.to(expandedContent, { opacity: 1, duration: 0.4 }, 0.3);
+            tl.to(expandedContent, { opacity: 1, duration: 0.3 }, 0.1);
         }
     }
 
@@ -203,15 +257,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.classList.remove('expanded');
                 if (inkBlot) {
                     inkBlot.classList.remove('expanded');
-                    // inkBlot 높이 원래대로 (180px은 CSS 기본값으로 가정)
-                    gsap.to(inkBlot, { height: '180px', duration: 0.7, ease: 'cubic-bezier(.23,1.12,.67,1.08)' });
+                    gsap.to(inkBlot, { height: '180px', duration: 0.4, ease: 'cubic-bezier(.23,1.12,.67,1.08)' });
                 }
                 if (inkShape && card.dataset.closedShape && card.dataset.openedShape) {
                     inkShape.classList.remove(card.dataset.openedShape);
                     inkShape.classList.add(card.dataset.closedShape);
                 }
                 if (expandedContent) {
-                    gsap.set(expandedContent, { display: 'none' /*, left: '', top: '' */ }); // left, top 초기화는 선택적
+                    gsap.set(expandedContent, { display: 'none' });
                 }
                 card.style.zIndex = '1';
                 if (initialContent) initialContent.style.pointerEvents = 'auto';
@@ -220,14 +273,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (expandedContent) {
-            tl.to(expandedContent, { opacity: 0, duration: 0.3 }, 0);
+            tl.to(expandedContent, { opacity: 0, duration: 0.2 }, 0);
         }
-        tl.to(initialContent, { opacity: 1, y: 0, scale: 1, duration: 0.4 }, 0.2);
+        tl.to(initialContent, { opacity: 1, y: 0, scale: 1, duration: 0.3 }, 0.1);
         if (mainTitle) {
-            tl.to(mainTitle, { opacity: 1, marginTop: '1.4rem', duration: 0.4 }, 0.25);
+            tl.to(mainTitle, { opacity: 1, marginTop: '1.4rem', duration: 0.3 }, 0.1);
         }
         if (clickDragHint) {
-            tl.to(clickDragHint, { opacity: 0.6, marginTop: '0.4rem', duration: 0.4 }, 0.25);
+            tl.to(clickDragHint, { opacity: 0.6, marginTop: '0.4rem', duration: 0.3 }, 0.1);
         }
     }
 
@@ -238,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 opacity: 1, y: 0,
                 duration: 0.7,
                 ease: 'power3.out',
-                delay: i * 0.12, // 이 delay는 초기 등장 애니메이션이므로 DOM 순서대로 해도 괜찮습니다.
+                delay: i * 0.12,
                 scrollTrigger: {
                     trigger: card,
                     start: 'top 90%',
@@ -251,7 +304,6 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     });
 
-    // Overlay 관련 코드는 그대로 유지
     const overlay = document.getElementById('skill-overlay');
     const overlayContent = overlay?.querySelector('.skill-overlay-content');
     const closeBtn = overlay?.querySelector('.skill-overlay-close');
@@ -261,8 +313,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (detailsList) {
             detailsList.addEventListener('click', function (e) {
                 if (!card.classList.contains('expanded') || !overlay || !overlayContent) return;
+    
+                if (e.target.closest('[data-highlight-id]')) {
+                    return;
+                }
+    
                 const clickedLi = e.target.closest('li');
                 if (!clickedLi) return;
+                
                 const title = card.querySelector('.skill-expanded-title')?.innerText || card.querySelector('.skill-main-title').innerText;
                 const iconHTML = card.querySelector('.skill-icon.expanded-icon')?.outerHTML || card.querySelector('.skill-initial-content .skill-icon')?.outerHTML || '';
                 const expandedDetailsList = card.querySelector('.skill-details-list');
@@ -281,7 +339,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     opacity: 1, display: 'flex', duration: 0.3,
                     onComplete: () => { if (overlay) document.body.style.overflow = 'hidden'; }
                 });
-                e.stopPropagation();
             });
         }
     });

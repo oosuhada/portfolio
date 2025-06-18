@@ -1,7 +1,7 @@
 /* ======================= about-main.css ======================= */
 /* ======================= 공통 카드 그리드 레이아웃: 모든 섹션에서 사용 ======================= */
 body {
-  font-family: 'Pretendard', 'Do Hyeon', sans-serif;
+  font-family: 'Pretendard', sans-serif;
   color: var(--gray-dark);
   line-height: 1.6;
 }
@@ -147,7 +147,7 @@ body {
 }
 
 /* about 페이지만 슬라이드 효과 따로 */
-body.about-page .nav-header {
+/* body.about-page .nav-header {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
@@ -156,4 +156,4 @@ body.about-page .nav-header {
 }
 body.about-page .nav-header.hidden {
   transform: translateY(-100%) !important;
-}
+} */

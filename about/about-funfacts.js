@@ -1,423 +1,349 @@
-// about-funfacts.js
 document.addEventListener('DOMContentLoaded', () => {
-  if (typeof gsap === 'undefined') {
-    console.error('GSAP is not loaded. Animations will be simplified or may not work as expected.');
-  }
-
-  const cardDisplayArea = document.querySelector('.funfacts-card-display-area');
-  const cardsContainer = document.querySelector('.about-funfacts-cols');
-  const mountainContainer = document.querySelector('.mountain-interactive-container');
-  const allFunFactCards = cardsContainer ? Array.from(cardsContainer.querySelectorAll('.funfact-card')) : [];
-
-  let currentVisibleCardId = null;
-  let cardAreaAnimation = null; // To store GSAP animation instance for cardDisplayArea
-
-  const cardFactIds = [
-    "name-path", "sensory-player", "piano-precision",
-    "holistic-experience", "curiosity-journey", "resilient-creative"
-  ];
-
-  function getCardElementById(id) {
-    return allFunFactCards.find(card => card.dataset.factId === id);
-  }
-
-  function showCard(targetCardId) {
-    if (!cardDisplayArea || !cardsContainer || !gsap) return;
-
-    const targetCardElement = getCardElementById(targetCardId);
-    if (!targetCardElement) {
-      console.warn(`Card with ID ${targetCardId} not found.`);
-      return;
+    // GSAP 라이브러리가 로드되었는지 확인합니다.
+    if (typeof gsap === 'undefined') {
+        console.error('GSAP is not loaded. Fun facts animations will not work.');
+        return;
     }
-
-    let oldCardHidingAnimation;
-    const animationsTimeline = gsap.timeline();
-
-    // 1. Hide currently active card if different
-    if (currentVisibleCardId && currentVisibleCardId !== targetCardId) {
-      const currentCardElement = getCardElementById(currentVisibleCardId);
-      if (currentCardElement) {
-        oldCardHidingAnimation = gsap.to(currentCardElement, {
-          opacity: 0,
-          y: 20, // Move down
-          duration: 0.3,
-          ease: 'power1.in',
-          onComplete: () => {
-            currentCardElement.classList.remove('is-active-fact'); // Hide it via CSS (display:none)
-            currentCardElement.classList.remove('is-revealed', 'active-ink-state');
-            const textContent = currentCardElement.querySelector('.fact-text-content');
-            const clickMsg = currentCardElement.querySelector('.click-me-msg');
-            if (textContent) textContent.classList.add('hidden');
-            if (clickMsg) clickMsg.classList.remove('hidden');
-          }
-        });
-        animationsTimeline.add(oldCardHidingAnimation);
-      }
+    // Lottie 라이브러리가 로드되었는지 확인합니다.
+    if (typeof lottie === 'undefined') {
+        console.error('Lottie is not loaded. Fun facts animations will not work.');
+        return;
     }
-    
-    // Ensure only target card will be active
-    allFunFactCards.forEach(card => {
-      if(card.dataset.factId !== targetCardId) card.classList.remove('is-active-fact');
-    });
-    
-    // 2. Calculate target height for cardDisplayArea
-    // Temporarily make card visible to measure its height correctly
-    targetCardElement.classList.add('is-active-fact'); // display:flex
-    targetCardElement.style.visibility = 'hidden'; // Keep it invisible during measurement
-    targetCardElement.style.opacity = '0'; // Keep it invisible
-    
-    const targetCardHeight = targetCardElement.offsetHeight;
-    const cardsContainerPaddingTop = parseFloat(getComputedStyle(cardsContainer).paddingTop) || 0;
-    const cardsContainerPaddingBottom = parseFloat(getComputedStyle(cardsContainer).paddingBottom) || 0;
-    const finalAreaHeight = targetCardHeight + cardsContainerPaddingTop + cardsContainerPaddingBottom;
-
-    targetCardElement.style.visibility = ''; // Restore visibility
-    // .is-active-fact is already added, opacity will be animated by GSAP
-
-    // 3. Animate cardDisplayArea height and show the new card
-    if (cardAreaAnimation) cardAreaAnimation.kill(); // Kill previous height animation
-
-    animationsTimeline.to(cardDisplayArea, {
-        height: finalAreaHeight,
-        duration: 0.6,
-        ease: 'elastic.out(1, 0.65)' // Elastic expansion
-      }, oldCardHidingAnimation ? "-=0.1" : 0) // Overlap slightly if old card was hiding
-      .to(cardsContainer, {
-        opacity: 1,
-        visibility: 'visible',
-        duration: 0.3,
-        ease: 'power1.out'
-      }, "<0.1") // Start shortly after or with height animation
-      .fromTo(targetCardElement,
-        { opacity: 0, y: 20 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.5,
-          ease: 'power1.out',
-        },
-        "-=0.2" // Overlap with cardsContainer fade in
-      );
-    
-    cardAreaAnimation = animationsTimeline;
-    currentVisibleCardId = targetCardId;
-  }
-
-  function hideCardArea() {
-    if (!cardDisplayArea || !cardsContainer || !currentVisibleCardId || !gsap) return;
-
-    const currentCardElement = getCardElementById(currentVisibleCardId);
-    if (cardAreaAnimation) cardAreaAnimation.kill();
-
-    const tl = gsap.timeline();
-    if (currentCardElement) {
-      tl.to(currentCardElement, {
-        opacity: 0,
-        y: 20,
-        duration: 0.3,
-        ease: 'power1.in',
-        onComplete: () => {
-          currentCardElement.classList.remove('is-active-fact');
-          currentCardElement.classList.remove('is-revealed', 'active-ink-state');
-            const textContent = currentCardElement.querySelector('.fact-text-content');
-            const clickMsg = currentCardElement.querySelector('.click-me-msg');
-            if (textContent) textContent.classList.add('hidden');
-            if (clickMsg) clickMsg.classList.remove('hidden');
-        }
-      });
-    }
-    tl.to(cardsContainer, {
-        opacity: 0,
-        visibility: 'hidden',
-        duration: 0.2,
-        ease: 'power1.in'
-      }, currentCardElement ? "-=0.1" : "0")
-      .to(cardDisplayArea, {
-        height: 0,
-        duration: 0.5,
-        ease: 'power2.inOut' // Smooth collapse
-      });
-    
-    cardAreaAnimation = tl;
-    currentVisibleCardId = null;
-  }
-
-  if (mountainContainer && allFunFactCards.length > 0) {
-    const sparkleDotPositions = [
-        { top: '25%', left: '11%', targetCardId: cardFactIds[0] }, 
-        { top: '7%', left: '24%', targetCardId: cardFactIds[1] }, 
-        { top: '26%', left: '45%', targetCardId: cardFactIds[2] }, 
-        { top: '20%', left: '62%', targetCardId: cardFactIds[3] }, 
-        { top: '30%', left: '76%', targetCardId: cardFactIds[4] },
-        { top: '44%', left: '88%', targetCardId: cardFactIds[5] },
+  
+    // --- 초기 설정 ---
+    const funfactsSection = document.querySelector('.about-funfacts');
+    const mountainContainer = document.querySelector('.mountain-interactive-container');
+    const allFunFactCards = funfactsSection ? Array.from(funfactsSection.querySelectorAll('.funfact-card')) : [];
+    const sparkleDots = new Map();
+    const spacer = document.querySelector('.funfact-spacer');
+  
+    // --- 상태 관리 변수 ---
+    let zIndexCounter = 10;
+    const activeCards = new Set();
+  
+    // --- 상수 정의 ---
+    const CARD_BASE_WIDTH = 300;
+    const LAST_CARD_OFFSET = 250;
+  
+    // [수정 3] 카드 높이와 활성화 시 공간 높이 재설정
+    const CARD_BASE_HEIGHT = 220; // 카드의 min-height와 맞춤
+    const initialSpacerHeight = CARD_BASE_HEIGHT * 0.7; // 초기 공간 높이
+    const activeSpacerHeight = CARD_BASE_HEIGHT * 1.8; // 활성화 시 필요한 공간 높이 (값을 줄여 여백 감소)
+  
+    // 각 카드의 세로 위치 오프셋
+    const cardYOffsets = [
+        -20, // 1번째 카드
+        -90, // 2번째 카드
+        -30, // 3번째 카드
+        -20, // 4번째 카드
+        -70, // 5번째 카드
+        20   // 6번째 카드
     ];
-
+  
+    if (!funfactsSection || !mountainContainer || allFunFactCards.length === 0 || !spacer) {
+        console.warn('Fun facts 섹션 필수 요소를 찾을 수 없습니다. 인터랙션이 비활성화됩니다.');
+        return;
+    }
+  
+    gsap.set(spacer, { height: initialSpacerHeight });
+  
+    // --- DOT (점) 초기화 ---
+    const sparkleDotPositions = [
+        { top: '25%', left: '11%', targetCardId: 'name-path' }, { top: '7%', left: '24%', targetCardId: 'sensory-player' },
+        { top: '26%', left: '45%', targetCardId: 'piano-precision' }, { top: '20%', left: '62%', targetCardId: 'holistic-experience' },
+        { top: '30%', left: '76%', targetCardId: 'curiosity-journey' }, { top: '44%', left: '88%', targetCardId: 'resilient-creative' },
+    ];
+  
     sparkleDotPositions.forEach((pos, index) => {
-      const dot = document.createElement('div');
-      dot.classList.add('sparkle-dot');
-      dot.style.top = pos.top;
-      dot.style.left = pos.left;
-      dot.style.animationDelay = `${index * 0.18}s`;
-      dot.dataset.targetCardId = pos.targetCardId;
-
-      dot.addEventListener('click', () => {
-        const targetId = dot.dataset.targetCardId;
-        if (currentVisibleCardId === targetId) {
-          hideCardArea();
+        const dot = document.createElement('div');
+        dot.className = 'sparkle-dot';
+        dot.style.top = pos.top;
+        dot.style.left = pos.left;
+        dot.style.animationDelay = `${index * 0.18}s`;
+        dot.dataset.targetCardId = pos.targetCardId;
+        dot.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleCard(pos.targetCardId, index);
+        });
+        mountainContainer.appendChild(dot);
+        sparkleDots.set(pos.targetCardId, dot);
+    });
+  
+    // --- 카드 초기화 ---
+    allFunFactCards.forEach(card => {
+        makeDraggable(card);
+        card.addEventListener('click', handleCardClick);
+    });
+  
+    // --- 핵심 로직 ---
+    function toggleCard(cardId, index) {
+        if (activeCards.has(cardId)) {
+            hideCard(cardId);
         } else {
-          showCard(targetId);
+            showCard(cardId, index);
         }
-      });
-      mountainContainer.appendChild(dot);
-    });
-  } else {
-    console.warn('Mountain container or fun fact cards not found. Fun facts section might not work as expected.');
-  }
-
-  allFunFactCards.forEach(card => {
-    const p = card.querySelector('p');
-    let textContentWrapper = card.querySelector('.fact-text-content');
-    if (p && !textContentWrapper) {
-        textContentWrapper = document.createElement('div');
-        textContentWrapper.className = 'fact-text-content';
-        p.parentNode.insertBefore(textContentWrapper, p);
-        textContentWrapper.appendChild(p);
     }
-    if (textContentWrapper) textContentWrapper.classList.add('hidden');
-
-    if (!card.querySelector('.click-me-msg')) {
-        const h3Title = card.querySelector('h3');
-        const msg = document.createElement('div');
-        msg.className = 'click-me-msg';
-        msg.innerText = 'Click to reveal.';
-        if (h3Title) h3Title.insertAdjacentElement('afterend', msg);
-        else card.appendChild(msg);
-    }
-
-    card.addEventListener('click', function(e) {
-      if (e.target.closest('.click-me-msg')) return;
-      if (!this.classList.contains('is-active-fact')) return;
-
-      const clickMsg = this.querySelector('.click-me-msg');
-      const textContent = this.querySelector('.fact-text-content');
-      const isRevealed = this.classList.contains('is-revealed');
-
-      if (!isRevealed) {
-        this.classList.add('is-revealed');
-        if (clickMsg) clickMsg.classList.add('hidden');
-        if (textContent) {
-          textContent.classList.remove('hidden');
-          if (typeof animateCardContent === 'function') animateCardContent(this, 'reveal');
+  
+    function showCard(cardId, index) {
+        if (activeCards.size === 0) {
+            gsap.to(spacer, { height: activeSpacerHeight, duration: 0.6, ease: 'power3.out' });
         }
-        if (typeof createInkBlotSplash === 'function') createInkBlotSplash(this);
-        if (typeof triggerInkConfetti === 'function') {
-            const cardRect = this.getBoundingClientRect();
-            triggerInkConfetti(cardRect.left + cardRect.width / 2, cardRect.top + cardRect.height / 2);
-        }
-        this.classList.add('active-ink-state');
-      } else {
-        this.classList.remove('is-revealed');
-        if (clickMsg) clickMsg.classList.remove('hidden');
-        if (textContent) {
-          if (typeof animateCardContent === 'function') animateCardContent(this, 'hide');
-        }
-        this.classList.remove('active-ink-state');
-      }
-    });
-
-    const clickMsgElement = card.querySelector('.click-me-msg');
-    if (clickMsgElement) {
-      clickMsgElement.addEventListener('click', function(e) {
-        e.stopPropagation();
-        const parentCard = this.closest('.funfact-card');
-        if (parentCard && parentCard.classList.contains('is-active-fact') && !parentCard.classList.contains('is-revealed')) {
-            parentCard.classList.add('is-revealed');
-            this.classList.add('hidden');
-            const textContent = parentCard.querySelector('.fact-text-content');
-            if (textContent) {
-                textContent.classList.remove('hidden');
-                if (typeof animateCardContent === 'function') animateCardContent(parentCard, 'reveal');
-            }
-            if (typeof createInkBlotSplash === 'function') createInkBlotSplash(parentCard);
-            if (typeof triggerInkConfetti === 'function') {
-                const cardRect = parentCard.getBoundingClientRect();
-                triggerInkConfetti(cardRect.left + cardRect.width / 2, cardRect.top + cardRect.height / 2);
-            }
-            parentCard.classList.add('active-ink-state');
-        }
-      });
-    }
-    
-    // Card hover effects (only if GSAP is available and card is active)
-    if (gsap) {
-        card.addEventListener('mouseenter', function() {
-          if (this.classList.contains('is-active-fact') && !this.classList.contains('active-ink-state')) {
-            // CSS :hover rule for transform: translateY(-3px) will apply.
-            // GSAP for boxShadow:
-            gsap.to(this, {
-              boxShadow: '0 8px 25px rgba(0,0,0,0.12), 0 3px 12px rgba(0,0,0,0.08)',
-              duration: 0.3,
+  
+        const card = allFunFactCards.find(c => c.dataset.factId === cardId);
+        const dot = sparkleDots.get(cardId);
+  
+        const lottieContainer = card.querySelector('.lottie-animation');
+        if (lottieContainer && !lottieContainer.dataset.lottieInitialized) {
+          const path = lottieContainer.dataset.lottiePath;
+          if(path) {
+            lottie.loadAnimation({
+              container: lottieContainer,
+              renderer: 'svg',
+              loop: true,
+              autoplay: true,
+              path: path
             });
+            lottieContainer.dataset.lottieInitialized = 'true';
           }
+        }
+  
+        activeCards.add(cardId);
+        dot.classList.add('is-active');
+        card.classList.add('is-active-fact', 'is-floating', 'blob-enter'); // Add blob-enter class
+        card.style.animationDelay = `-${Math.random() * 18}s`;
+  
+        bringToFront(card);
+  
+        const totalCards = sparkleDotPositions.length;
+  
+        const firstDot = sparkleDots.get(sparkleDotPositions[0].targetCardId);
+        const lastDot = sparkleDots.get(sparkleDotPositions[totalCards - 1].targetCardId);
+  
+        let targetX;
+  
+        if (firstDot && lastDot) {
+            const startXAnchor = firstDot.offsetLeft;
+            const endXAnchor = lastDot.offsetLeft - CARD_BASE_WIDTH + LAST_CARD_OFFSET;
+            const travelWidth = endXAnchor - startXAnchor;
+  
+            if (totalCards > 1) {
+                targetX = startXAnchor + (travelWidth / (totalCards - 1)) * index;
+            } else {
+                targetX = startXAnchor;
+            }
+        } else {
+            console.warn("Dot elements not found, falling back to viewport-based positioning.");
+            const sectionRect = funfactsSection.getBoundingClientRect();
+            const fallbackTravelWidth = sectionRect.width - (20 * 2) - CARD_BASE_WIDTH;
+            targetX = 20 + (fallbackTravelWidth / (totalCards - 1)) * index;
+        }
+  
+        const verticalCenter = spacer.offsetTop + (activeSpacerHeight / 2);
+        let baseTargetY = verticalCenter - (CARD_BASE_HEIGHT / 2);
+        const yOffset = cardYOffsets[index] || 0;
+        let targetY = baseTargetY + yOffset;
+        targetY = Math.max(spacer.offsetTop, targetY);
+  
+        const randomRot = Math.random() * 10 - 5;
+  
+        // GSAP에서 scale과 위치, 회전을 제어합니다. opacity는 CSS 애니메이션에서 제어됩니다.
+        gsap.fromTo(card,
+          {
+            scale: 0.5, // blob-enter 애니메이션 시작 시점에 맞춰 초기 scale 설정
+            left: `${targetX}px`,
+            top: `${targetY}px`,
+            rotation: randomRot
+          },
+          {
+            scale: 1, // 최종 scale
+            duration: 0.7,
+            ease: 'elastic.out(1, 0.7)',
+            onComplete: () => {
+                card.classList.remove('blob-enter'); // 애니메이션 완료 후 클래스 제거
+            }
         });
-        card.addEventListener('mouseleave', function() {
-          if (this.classList.contains('is-active-fact') && !this.classList.contains('active-ink-state')) {
-            gsap.to(this, {
-              boxShadow: '0 5px 20px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.05)', 
-              duration: 0.4,
-            });
-          }
+  
+        createInkBlotSplash(card);
+        animateCardContent(card, 'reveal');
+        const currentCardRect = card.getBoundingClientRect();
+        triggerInkConfetti(currentCardRect.left + currentCardRect.width / 2, currentCardRect.top + currentCardRect.height / 2);
+    }
+  
+    function hideCard(cardId) {
+        const card = allFunFactCards.find(c => c.dataset.factId === cardId);
+        if (!card) return;
+  
+        const wasLastCard = activeCards.size === 1;
+        activeCards.delete(cardId);
+  
+        if (wasLastCard) {
+            gsap.to(spacer, { height: initialSpacerHeight, duration: 0.6, ease: 'power3.inOut' });
+        }
+  
+        const dot = sparkleDots.get(cardId);
+        if (dot) dot.classList.remove('is-active');
+        card.classList.remove('is-floating');
+  
+        // Add blob-exit class for animation
+        card.classList.add('blob-exit');
+  
+        // GSAP에서 scale만 제어하고, opacity와 border-radius 애니메이션은 CSS에 맡깁니다.
+        gsap.to(card, {
+            scale: 0.5, // 퇴장 시 작아지도록 변경
+            duration: 0.7, // 입장과 동일한 duration으로 맞춤
+            ease: 'power2.in',
+            onComplete: () => {
+                card.classList.remove('is-active-fact', 'blob-exit'); // Remove both classes after animation
+            }
         });
+    }
+  
+    function bringToFront(card) {
+        if (!card) return;
+        card.style.zIndex = ++zIndexCounter;
+    }
+  
+    function handleCardClick(event) {
+        const card = event.currentTarget;
+  
+        if (event.target.closest('.meaning-chunk[data-highlight-id]')) {
+            bringToFront(card);
+            return;
+        }
+  
+        if (event.currentTarget.classList.contains('is-dragging-for-click-check')) {
+            return;
+        }
+  
+        let maxZ = 0;
+        document.querySelectorAll('.funfact-card.is-active-fact').forEach(c => {
+            const z = parseInt(c.style.zIndex) || 0;
+            if (z > maxZ) maxZ = z;
+        });
+  
+        const isTopmost = (parseInt(card.style.zIndex) || 0) === maxZ;
+  
+        if (isTopmost) {
+            hideCard(card.dataset.factId);
+        } else {
+            bringToFront(card);
+        }
+    }
+  
+    function makeDraggable(element) {
+        let isDragging = false, hasMoved = false;
+        let startX, startY;
+  
+        function onMouseDown(e) {
+            if (e.target.closest('.meaning-chunk[data-highlight-id]')) {
+                return;
+            }
+            e.preventDefault();
+            hasMoved = false;
+            element.classList.remove('is-dragging-for-click-check');
+            startX = e.clientX;
+            startY = e.clientY;
+            isDragging = true;
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        }
+  
+        function onMouseMove(e) {
+            if (!isDragging) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            if (!hasMoved && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
+                hasMoved = true;
+                element.classList.add('is-dragging', 'is-dragging-for-click-check');
+                bringToFront(element);
+            }
+            if (hasMoved) {
+                const parentRect = funfactsSection.getBoundingClientRect();
+                const elementRect = element.getBoundingClientRect();
+                let newX = element.offsetLeft + dx;
+                let newY = element.offsetTop + dy;
+                newX = Math.max(0, Math.min(newX, parentRect.width - elementRect.width));
+                newY = Math.max(0, Math.min(newY, parentRect.height - elementRect.height));
+                element.style.left = `${newX}px`;
+                element.style.top = `${newY}px`;
+                startX = e.clientX;
+                startY = e.clientY;
+            }
+        }
+  
+        function onMouseUp() {
+            if (isDragging) {
+                element.classList.remove('is-dragging');
+                setTimeout(() => {
+                    element.classList.remove('is-dragging-for-click-check');
+                }, 0);
+            }
+            isDragging = false;
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+        }
+  
+        element.addEventListener('mousedown', onMouseDown);
+    }
+  
+    function animateCardContent(card, action = 'reveal') {
+        const title = card.querySelector('h3');
+        const textChunks = card.querySelectorAll('.fact-text-content .meaning-chunk');
+  
+        if (action === 'reveal') {
+            gsap.fromTo([title, ...textChunks],
+                { opacity: 0, y: 10 },
+                {
+                    opacity: 1, y: 0, duration: 0.6, stagger: 0.05,
+                    ease: 'power2.out', delay: 0.3
+                }
+            );
+        }
+    }
+  
+    function createInkBlotSplash(card) {
+        const container = card.querySelector('.ink-splash-container');
+        if (!container) return;
+  
+        const numDrops = 3;
+        for (let i = 0; i < numDrops; i++) {
+            const drop = document.createElement('div');
+            drop.className = 'ink-blot-drop';
+  
+            const size = Math.random() * 150 + 80;
+            drop.style.width = `${size}px`;
+            drop.style.height = `${size}px`;
+            drop.style.left = `${Math.random() * 100}%`;
+            drop.style.top = `${Math.random() * 100}%`;
+            drop.style.animationDelay = `${i * 0.15}s`;
+  
+            container.appendChild(drop);
+  
+            setTimeout(() => drop.remove(), 1200);
+        }
+    }
+  
+    function triggerInkConfetti(originX, originY) {
+        const numParticles = 25;
+        for (let i = 0; i < numParticles; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'confetti-particle';
+            document.body.appendChild(particle);
+  
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = Math.random() * 80 + 40;
+            const endX = originX + Math.cos(angle) * velocity;
+            const endY = originY + Math.sin(angle) * velocity;
+  
+            gsap.fromTo(particle,
+                { x: originX, y: originY, opacity: 1, scale: Math.random() * 0.8 + 0.4 },
+                {
+                    x: endX, y: endY, opacity: 0, scale: 0.1,
+                    duration: Math.random() * 0.6 + 0.4,
+                    ease: 'power1.out',
+                    onComplete: () => particle.remove()
+                }
+            );
+        }
     }
   });
-
-  // --- Helper Function Definitions ---
-
-  function animateCardContent(card, action = 'reveal') {
-    if (!gsap) return; 
-
-    const icon = card.querySelector('.fact-icon');
-    const h3 = card.querySelector('h3');
-    const textContent = card.querySelector('.fact-text-content');
-    const tl = gsap.timeline();
-
-    if (action === 'reveal') {
-      if (icon) tl.fromTo(icon, { y: -10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power1.out" }, 0);
-      if (h3) tl.fromTo(h3, { x: -15, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power1.out" }, (icon ? "-=0.3" : "0"));
-      
-      const childElements = textContent && textContent.children.length > 0 ? Array.from(textContent.children) : (textContent ? [textContent] : []);
-      if (childElements.length > 0) {
-        tl.fromTo(childElements, 
-            { opacity: 0, y: 10 }, 
-            { opacity: 1, y: 0, duration: 0.5, stagger: childElements.length > 1 ? 0.04 : 0, ease: "power1.out" }, 
-            (h3 ? "-=0.3" : (icon ? "-=0.3" : "0"))
-        );
-      }
-    } else if (action === 'hide') {
-      const elementsToHide = [icon, h3, textContent].filter(el => el);
-      tl.to(elementsToHide, { 
-          opacity: 0, 
-          y: (el) => (el === textContent ? 10 : -5), // text content moves down, icon/h3 up
-          duration: 0.3, 
-          ease: "power1.in",
-          stagger: 0.05,
-          onComplete: () => {
-            if (textContent) textContent.classList.add('hidden');
-            // Reset transforms for next reveal
-            elementsToHide.forEach(el => gsap.set(el, {clearProps: "transform,opacity"}));
-          }
-      });
-    }
-  }
-  
-  function createInkBlotSplash(card) {
-    let splashContainer = card.querySelector('.ink-splash-container');
-    if (!splashContainer) {
-      splashContainer = document.createElement('div');
-      splashContainer.className = 'ink-splash-container';
-      // Insert before the first content element (like icon) if possible, to be visually behind.
-      // CSS z-index should primarily handle layering.
-      const firstContentChild = card.querySelector('.fact-icon') || card.firstChild;
-      if (firstContentChild) {
-        card.insertBefore(splashContainer, firstContentChild);
-      } else {
-        card.appendChild(splashContainer);
-      }
-    }
-    splashContainer.innerHTML = ''; 
-
-    const numberOfDrops = Math.floor(Math.random() * 3) + 3; 
-    for (let i = 0; i < numberOfDrops; i++) {
-      const drop = document.createElement('div');
-      drop.className = 'ink-blot-drop';
-      const cardWidth = card.offsetWidth;
-      const cardHeight = card.offsetHeight;
-      const dropBaseSize = Math.random() * Math.min(cardWidth, cardHeight) * 0.15 + Math.min(cardWidth, cardHeight) * 0.1;
-      const dropHeightFactor = Math.random() * 0.4 + 0.8; // Skewed ellipse
-      drop.style.width = `${dropBaseSize}px`;
-      drop.style.height = `${dropBaseSize * dropHeightFactor}px`;
-      // Position within the card
-      drop.style.left = `${Math.random() * (cardWidth - dropBaseSize)}px`;
-      drop.style.top = `${Math.random() * (cardHeight - (dropBaseSize * dropHeightFactor))}px`;
-      drop.style.transform = `rotate(${Math.random() * 360}deg) scale(0.1)`; 
-      drop.style.animationDelay = `${Math.random() * 0.2}s`; 
-      drop.style.backgroundColor = `rgba(${Math.floor(Math.random() * 25 + 10)}, ${Math.floor(Math.random() * 25 + 10)}, ${Math.floor(Math.random() * 25 + 10)}, ${Math.random() * 0.25 + 0.5})`; 
-      splashContainer.appendChild(drop);
-      drop.addEventListener('animationend', () => { drop.remove(); });
-    }
-  }
-
-  function triggerInkConfetti(originX, originY) {
-    const particleCount = 7;
-    const C_BLACK = getComputedStyle(document.documentElement).getPropertyValue('--black').trim() || '#000000';
-    const C_GRAY_DARK = getComputedStyle(document.documentElement).getPropertyValue('--gray-dark').trim() || '#222222';
-    const C_GRAY = getComputedStyle(document.documentElement).getPropertyValue('--gray').trim() || '#555555';
-    const inkColors = [C_BLACK, C_GRAY_DARK, C_GRAY, '#1A1A1A', '#2C2C2C', '#0A0A0A'];
-
-    for (let i = 0; i < particleCount; i++) {
-      const particle = document.createElement('div');
-      particle.classList.add('confetti-particle');
-      particle.style.backgroundColor = inkColors[Math.floor(Math.random() * inkColors.length)];
-      particle.style.filter = 'blur(0.3px)';
-      const type = Math.random();
-      let size, width, height;
-
-      if (type < 0.4) { 
-        size = Math.random() * 8 + 5; 
-        particle.style.width = `${size}px`; particle.style.height = `${size}px`; particle.style.borderRadius = '50%';
-      } else if (type < 0.75) { 
-        width = Math.random() * 15 + 6; height = Math.random() * 8 + 4; 
-        particle.style.width = `${width}px`; particle.style.height = `${height}px`; 
-        particle.style.borderRadius = `${Math.random() * 35 + 25}% / ${Math.random() * 35 + 25}%`; // more irregular shape
-        if (Math.random() > 0.5) { particle.style.width = `${height}px`; particle.style.height = `${width}px`;}
-      } else { 
-        size = Math.random() * 3 + 2; 
-        particle.style.width = `${size}px`; particle.style.height = `${size}px`; particle.style.borderRadius = '50%'; 
-        particle.style.opacity = (Math.random() * 0.3 + 0.6).toString();
-      }
-      document.body.appendChild(particle);
-
-      const angle = Math.random() * Math.PI * 2;
-      const distance = Math.random() * 60 + 40; 
-      const duration = Math.random() * 0.8 + 1.2; 
-      const initialRotation = Math.random() * 360;
-      const finalRotation = initialRotation + (Math.random() * 180 - 90);
-      const initialOpacity = parseFloat(particle.style.opacity || 1);
-
-      if (gsap) {
-        gsap.fromTo(particle, 
-          { x: originX, y: originY, scale: 1, rotation: initialRotation, opacity: initialOpacity, transformOrigin: "center center" },
-          { 
-            x: originX + Math.cos(angle) * distance, 
-            y: originY + Math.sin(angle) * distance, 
-            scale: 0.1, 
-            rotation: finalRotation, 
-            opacity: 0, 
-            duration: duration, 
-            ease: 'cubic-bezier(0.12, 0.88, 0.32, 1)', // Custom ease out
-            onComplete: () => particle.remove() 
-          }
-        );
-      } else { // Fallback if GSAP is not available
-        particle.style.left = `${originX}px`; particle.style.top = `${originY}px`; // Set initial for non-GSAP
-        setTimeout(() => particle.remove(), duration * 1000);
-      }
-    }
-  }
-  
-  // SortableJS - 현재 단일 카드 표시 방식에서는 직접적인 시각적 효과는 없으나,
-  // 사용자가 나중에 여러 카드를 동시에 표시하는 레이아웃으로 변경할 경우를 대비해 유지할 수 있습니다.
-  // 또는, 현재 사용되지 않으므로 제거해도 무방합니다.
-  if (typeof Sortable !== 'undefined') {
-    const grid = document.querySelector('.about-funfacts-cols');
-    if (grid && allFunFactCards.length > 1) { // 카드가 여러 개 있을 때만 의미가 있음
-      new Sortable(grid, {
-        animation: 250,
-        ghostClass: 'drag-ghost', 
-        chosenClass: 'drag-chosen', 
-        draggable: '.funfact-card.is-active-fact', // 현재 보이는 카드만 드래그 가능하도록 (단일표시에는 의미X)
-                                                // 또는 '.funfact-card'로 하고 JS로 드래그 가능 여부 제어
-      });
-    }
-  }
-});

@@ -19,7 +19,7 @@
   <link href="https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&family=LXGW+WenKai+Mono+TC&family=Noto+Serif+TC:wght@200..900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet" />
   <span style="position:absolute; left:-9999px; font-family:'Noto Serif TC',serif;">測試志才愛求導</span>
-<span style="position:absolute; left:-9999px; font-family:'East Sea Dokdo',cursive;">가나다라마바사</span>
+  <span style="position:absolute; left:-9999px; font-family:'East Sea Dokdo',cursive;">가나다라마바사</span>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
 
@@ -28,6 +28,11 @@
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 </head>
 <body class="about-page">
+  
+  <div id="preloader">
+    <div class="loading-text" id="loadingText">Oosu</div>
+  </div>
+
   <svg style="position:absolute; width:0; height:0; overflow:hidden;" aria-hidden="true">
     <defs>
       <filter id="classicWetInk">
@@ -45,18 +50,24 @@
         <feDisplacementMap in="SourceGraphic" in2="stormNoise" scale="60" xChannelSelector="R" yChannelSelector="G" result="stormy"/>
         <feGaussianBlur in="stormy" stdDeviation="3" result="stormBlur"/>
       </filter>
+      <filter id="ink-bleed-blur">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+      </filter>
     </defs>
   </svg>
-
-  <header class="nav-header" aria-label="Site">
-    <nav class="nav-menu nav-center">
-      <a href="../portfolio/portfolio.html" data-nav="portfolio">✧ portfolio</a>
-      <a href="../about/about.html" data-nav="about">? about</a>
-      <a href="../experience/experience.html" data-nav="experience">⌗ experience</a>
-      <a href="../hobby/hobby.html" data-nav="hobby">: hobby</a>
-      <a href="../connect/connect.html" data-nav="connect">⌲ connect</a>
+<header class="nav-header" aria-label="Site">
+    <div class="nav-top-row">
+        <button class="nav-toggle-btn" aria-label="Toggle navigation menu">
+            <i class="fas fa-bars"></i> </button>
+        </div>
+    <nav class="nav-menu nav-center" id="accordionNavMenu">
+        <a href="../portfolioMain/portfolio.html" data-nav="portfolio">✧ portfolio</a>
+        <a href="../about/about.html" data-nav="about">? about</a>
+        <a href="../experience/experience.html" data-nav="experience">⌗ experience</a>
+        <a href="../hobby/hobby.html" data-nav="hobby">: hobby</a>
+        <a href="../connect/connect.html" data-nav="connect">⌲ connect</a>
     </nav>
-  </header>
+</header>
   <div id="top-sentinel"></div>
   <main class="about-main">
     <section class="about-hero">
@@ -87,8 +98,8 @@
       </div>
     
       <div class="about-profile">
-        <div class="about-profile-photo">
-          <img src="profile.png" alt="Profile Photo of Oosu" />
+        <div class="about-profile-photo" id="profilePhoto">
+          <img src="profile1.png" alt="Profile Photo of Oosu" id="profileImage" />
         </div>
         <div class="about-profile-desc">
           <p>
@@ -96,19 +107,19 @@
           </p>
           <p>
             In Korean, my name "Oosu" carries multiple meanings:<br>
-            <span class="meaning-chunk"><b>to help and to guard</b> (佑守),</span>
-            <span class="meaning-chunk"><b>to be excellent</b> (優秀),</span>
-            <span class="meaning-chunk"><b>and to feel deeply</b> (憂愁).</span>
+            <span class="meaning-chunk" data-highlight-id="about-me-meaning1"><b>to help and to guard</b> (佑守),</span>
+            <span class="meaning-chunk" data-highlight-id="about-me-meaning2"><b>to be excellent</b> (優秀),</span>
+            <span class="meaning-chunk" data-highlight-id="about-me-meaning3"><b>and to feel deeply</b> (憂愁).</span>
           </p>
           <p>
-            <span class="meaning-chunk">These meanings reflect how I approach design —</span>
-            <span class="meaning-chunk"><b>with purpose, excellency, and empathy.</b></span>
+            <span class="meaning-chunk" data-highlight-id="about-me-approach1">These meanings reflect how I approach design —</span>
+            <span class="meaning-chunk" data-highlight-id="about-me-approach2"><b>with purpose, excellency, and empathy.</b></span>
           </p>
           <p>
-            <span class="meaning-chunk">With a background in data analysis, frontend development, and entrepreneurship,</span>
-            <span class="meaning-chunk">I create elegant, human-centered digital experiences </span>
-            <span class="meaning-chunk">that balance aesthetics with usability,</span>
-            <span class="meaning-chunk">while always keeping the bigger picture in sight.</span>
+            <span class="meaning-chunk" data-highlight-id="about-me-background">With a background in data analysis, frontend development, and entrepreneurship,</span>
+            <span class="meaning-chunk" data-highlight-id="about-me-creation">I create elegant, human-centered digital experiences </span>
+            <span class="meaning-chunk" data-highlight-id="about-me-balance">that balance aesthetics with usability,</span>
+            <span class="meaning-chunk" data-highlight-id="about-me-vision">while always keeping the bigger picture in sight.</span>
           </p>
         </div>
       </div>          
@@ -119,6 +130,7 @@
       <h2 class="section-title">MY SKILLSET FOR OUR COLLABORATION</h2>
       <div class="about-skills-carousel horizontal-layout" id="about-skills-carousel">
         <div class="about-skills-cols" id="skills-sortable">
+          
           <div class="skill-card" data-skill-category="Strengths" tabindex="0" aria-labelledby="strengths-title">
             <div class="skill-ink-blot" tabindex="0">
               <div class="skill-ink-shape"></div>
@@ -133,27 +145,23 @@
                 <i class="fas fa-lightbulb skill-icon expanded-icon" aria-hidden="true"></i>
                 <h3 class="skill-expanded-title">STRENGTHS</h3>
                 <ul class="skill-details-list">
-                  <li tabindex="0" aria-label="Creative intuition">
-                    <span class="skill-chunk">Creative intuition</span>
+                  <li tabindex="0" aria-label="Problem-solving">
+                    <span class="skill-chunk" data-highlight-id="about-skill-strength1">Problem-solving skills</span>
                   </li>
                   <li tabindex="0" aria-label="Fast learning">
-                    <span class="skill-chunk">Fast learning</span>
+                    <span class="skill-chunk" data-highlight-id="about-skill-strength2">Fast learning</span>
+                  </li>
+                  <li tabindex="0" aria-label="Creative intuition">
+                    <span class="skill-chunk" data-highlight-id="about-skill-strength3">Creative intuition</span>
                   </li>
                   <li tabindex="0" aria-label="Cross-functional communication">
-                    <span class="skill-chunk">Cross-functional communication</span>
-                  </li>
-                  <li tabindex="0" aria-label="Designing within constraints">
-                    <span class="skill-chunk">Designing within constraints</span>
-                  </li>
-                  <li tabindex="0" aria-label="Collaboration with engineers, PMs, and users">
-                    <span class="skill-chunk">Collaboration with engineers, PMs,</span>
-                    <span class="skill-chunk">and users</span>
+                    <span class="skill-chunk" data-highlight-id="about-skill-strength4">Cross-functional communication</span>
                   </li>
                 </ul>
               </div>
             </div>
             <h3 class="skill-main-title" id="strengths-title-main">STRENGTHS</h3>
-            <p class="click-drag-hint">Click blot to expand, or drag to reorder.</p>
+            <p class="click-drag-hint">Click blot to expand, or long-press to reorder.</p>
           </div>
     
           <div class="skill-card" data-skill-category="UXUI" tabindex="0" aria-labelledby="uxui-title">
@@ -171,22 +179,22 @@
                 <h3 class="skill-expanded-title">UX/UI & PRODUCT DESIGN</h3>
                 <ul class="skill-details-list">
                   <li tabindex="0" aria-label="Wireframing, user flow, and prototyping">
-                    <span class="skill-chunk">Wireframing,</span>
-                    <span class="skill-chunk">User Flow,</span>
-                    <span class="skill-chunk">and Prototyping</span>
+                    <span class="skill-chunk" data-highlight-id="about-skill-ux1">Wireframing,</span>
+                    <span class="skill-chunk" data-highlight-id="about-skill-ux2">User Flow,</span>
+                    <span class="skill-chunk" data-highlight-id="about-skill-ux3">Prototyping</span>
                   </li>
                   <li tabindex="0" aria-label="Responsive Web and Mobile App Design">
-                    <span class="skill-chunk">Responsive Web,</span>
-                    <span class="skill-chunk">Mobile App Design</span>
+                    <span class="skill-chunk" data-highlight-id="about-skill-ux4">Responsive Web &</span>
+                    <span class="skill-chunk" data-highlight-id="about-skill-ux5">Mobile App Design</span>
                   </li>
                   <li tabindex="0" aria-label="Design Systems">
-                    <span class="skill-chunk">Design Systems</span>
+                    <span class="skill-chunk" data-highlight-id="about-skill-ux6">Design Systems</span>
                   </li>
                 </ul>
               </div>
             </div>
             <h3 class="skill-main-title" id="uxui-title-main">UX/UI & PRODUCT DESIGN</h3>
-            <p class="click-drag-hint">Click blot to expand, or drag to reorder.</p>
+            <p class="click-drag-hint">Click blot to expand, or long-press to reorder.</p>
           </div>
     
           <div class="skill-card" data-skill-category="Frontend" tabindex="0" aria-labelledby="frontend-title">
@@ -203,27 +211,31 @@
                 <i class="fas fa-code skill-icon expanded-icon" aria-hidden="true"></i>
                 <h3 class="skill-expanded-title">FRONTEND DEVELOPMENT</h3>
                 <ul class="skill-details-list">
-                  <li tabindex="0" aria-label="Flutter">
-                    <span class="skill-chunk">Flutter</span>
-                  </li>
                   <li tabindex="0" aria-label="HTML, CSS, and JavaScript">
-                    <span class="skill-chunk">HTML,</span>
-                    <span class="skill-chunk">CSS,</span>
-                    <span class="skill-chunk">JavaScript</span>
+                    <b>Web:</b><br>
+                    <span class="skill-chunk" data-highlight-id="about-skill-frontend-html">HTML,</span>
+                    <span class="skill-chunk" data-highlight-id="about-skill-frontend-css">CSS,</span>
+                    <span class="skill-chunk" data-highlight-id="about-skill-frontend-js">JavaScript</span>
                   </li>
-                   <li tabindex="0" aria-label="jQuery, React, and Vue">
-                    <span class="skill-chunk">jQuery,</span>
-                    <span class="skill-chunk">React,</span>
-                    <span class="skill-chunk">Vue</span>
+                  <li tabindex="0" aria-label="jQuery, React, and Vue">
+                    <b>JS Frameworks:</b>
+                    <span class="skill-chunk" data-highlight-id="about-skill-frontend-jquery">jQuery,</span>
+                    <span class="skill-chunk" data-highlight-id="about-skill-frontend-react">React,</span>
+                    <span class="skill-chunk" data-highlight-id="about-skill-frontend-vue">Vue</span>
+                  </li>
+                  <li tabindex="0" aria-label="Flutter">
+                    <b>App Dev:</b>
+                    <span class="skill-chunk" data-highlight-id="about-skill-frontend-flutter">Flutter</span>
                   </li>
                   <li tabindex="0" aria-label="Firebase">
-                    <span class="skill-chunk">Firebase</span>
+                    <b>Integration:</b>
+                    <span class="skill-chunk" data-highlight-id="about-skill-frontend-firebase">Firebase</span>
                   </li>
                 </ul>
               </div>
             </div>
             <h3 class="skill-main-title" id="frontend-title-main">FRONTEND DEVELOPMENT</h3>
-            <p class="click-drag-hint">Click blot to expand, or drag to reorder.</p>
+            <p class="click-drag-hint">Click blot to expand, or long-press to reorder.</p>
           </div>
     
           <div class="skill-card" data-skill-category="Tools" tabindex="0" aria-labelledby="tools-title">
@@ -240,266 +252,324 @@
                 <i class="fas fa-tools skill-icon expanded-icon" aria-hidden="true"></i>
                 <h3 class="skill-expanded-title">TOOLS & SYSTEMS</h3>
                 <ul class="skill-details-list">
-                  <li tabindex="0" aria-label="Figma, Adobe CC, Python, and Notion">
-                    <span class="skill-chunk">Figma,</span>
-                    <span class="skill-chunk">Adobe CC,</span>
-                    <span class="skill-chunk">Python,</span>
-                    <span class="skill-chunk">Notion</span>
+                  <li tabindex="0" aria-label="Figma, Photoshop, Illustrator, After Effects">
+                    <b>Design:</b>
+                    <span class="skill-chunk" data-highlight-id="about-skill-tool-figma">Figma,</span>
+                    <span class="skill-chunk" data-highlight-id="about-skill-tool-ps">Photoshop,</span>
+                    <span class="skill-chunk" data-highlight-id="about-skill-tool-ai">Illustrator,</span>
+                    <span class="skill-chunk" data-highlight-id="about-skill-tool-ae">After Effects</span>
                   </li>
-                  <li tabindex="0" aria-label="GitHub, Slack, VS Code, and Cursor">
-                    <span class="skill-chunk">GitHub,</span>
-                    <span class="skill-chunk">Slack,</span>
-                    <span class="skill-chunk">VS Code,</span>
-                    <span class="skill-chunk">Cursor</span>
+                  <li tabindex="0" aria-label="Notion, GitHub, Slack">
+                    <b>Collaboration:</b>
+                    <span class="skill-chunk" data-highlight-id="about-skill-tool-notion">Notion,</span>
+                    <span class="skill-chunk" data-highlight-id="about-skill-tool-github">GitHub,</span>
+                    <span class="skill-chunk" data-highlight-id="about-skill-tool-slack">Slack</span>
+                  </li>
+                  <li tabindex="0" aria-label="VS Code, Cursor">
+                    <b>Development:</b>
+                    <span class="skill-chunk" data-highlight-id="about-skill-tool-vscode">VS Code,</span>
+                    <span class="skill-chunk" data-highlight-id="about-skill-tool-cursor">Cursor</span>
                   </li>
                 </ul>
               </div>
             </div>
             <h3 class="skill-main-title" id="tools-title-main">TOOLS & SYSTEMS</h3>
-            <p class="click-drag-hint">Click blot to expand, or drag to reorder.</p>
+            <p class="click-drag-hint">Click blot to expand, or long-press to reorder.</p>
           </div>
+
         </div>
       </div>
     </section>
     
-<div class="about-section-gap2"></div>
-<section class="about-values section-background-active">
-  <h2 class="section-title">MY VALUES</h2>
-  <div class="about-values-cols">
+    <div class="about-section-gap2"></div>
+    <section class="about-values section-background-active">
+      <h2 class="section-title">MY VALUES</h2>
+      <div class="about-values-cols">
 
-    <div class="value-card" data-value-id="empathy">
-      <div class="value-ink-blot">
-        <div class="value-ink-shape"></div>
-        
-        <div class="value-blot-content-wrapper">
-          <span class="value-hanja">共感</span>
-          <div class="value-icon"><i class="fas fa-heart" aria-label="Empathy"></i></div>
+        <div class="value-card" data-value-id="empathy">
+          <div class="value-ink-blot">
+            <div class="value-ink-shape"></div>
+            <div class="value-blot-content-wrapper">
+              <span class="value-hanja">共感</span>
+              <div class="value-icon"><i class="fas fa-heart" aria-label="Empathy"></i></div>
+              <div class="value-reading">
+                <span class="value-hangul">공감</span>
+                <span class="value-roma">gong-gam</span>
+              </div>
+            </div>
+            <div class="ink-splash-container"></div>
+          </div>
+          <h3 class="value-title">EMPATHY OVER AESTHETICS</h3>
+          <p class="value-description">
+            <span class="meaning-chunk" data-highlight-id="about-value-empathy1">Design is not just about how things look –</span>
+            <span class="meaning-chunk" data-highlight-id="about-value-empathy2">it's about how they work and how they feel.</span>
+          </p>
         </div>
-        
-        <div class="ink-splash-container"></div>
-      </div>
 
-      <h3 class="value-title">EMPATHY OVER AESTHETICS</h3>
-      <p class="value-description">
-        <span class="meaning-chunk">Design is not just about how things look –</span>
-        <span class="meaning-chunk">it's about how they work and how they feel.</span>
-      </p>
-    </div>
-
-    <div class="value-card" data-value-id="bigPicture">
-      <div class="value-ink-blot">
-        <div class="value-ink-shape"></div>
-        <div class="value-blot-content-wrapper">
-          <span class="value-hanja">巨視</span>
-          <div class="value-icon"><i class="fas fa-globe" aria-label="Big-picture"></i></div>
+        <div class="value-card" data-value-id="bigPicture">
+          <div class="value-ink-blot">
+            <div class="value-ink-shape"></div>
+            <div class="value-blot-content-wrapper">
+              <span class="value-hanja">巨視</span>
+              <div class="value-icon"><i class="fas fa-globe" aria-label="Big-picture"></i></div>
+              <div class="value-reading">
+                <span class="value-hangul">거시</span>
+                <span class="value-roma">geo-si</span>
+              </div>
+            </div>
+            <div class="ink-splash-container"></div>
+          </div>
+          <h3 class="value-title">BIG-PICTURE THINKING</h3>
+          <p class="value-description">
+            <span class="meaning-chunk" data-highlight-id="about-value-bigpicture1">From system logic to final pixels,</span>
+            <span class="meaning-chunk" data-highlight-id="about-value-bigpicture2">I strive to understand the full design ecosystem.</span>
+          </p>
         </div>
-        <div class="ink-splash-container"></div>
-      </div>
 
-      <h3 class="value-title">BIG-PICTURE THINKING</h3>
-      <p class="value-description">
-        <span class="meaning-chunk">From system logic to final pixels,</span>
-        <span class="meaning-chunk">I strive to understand the full design ecosystem.</span>
-      </p>
-    </div>
-
-    <div class="value-card" data-value-id="growth">
-      <div class="value-ink-blot">
-        <div class="value-ink-shape"></div>
-        <div class="value-blot-content-wrapper">
-          <span class="value-hanja">成長</span>
-          <div class="value-icon"><i class="fas fa-rocket" aria-label="Growth"></i></div>
+        <div class="value-card" data-value-id="growth">
+          <div class="value-ink-blot">
+            <div class="value-ink-shape"></div>
+            <div class="value-blot-content-wrapper">
+              <span class="value-hanja">成長</span>
+              <div class="value-icon"><i class="fas fa-rocket" aria-label="Growth"></i></div>
+              <div class="value-reading">
+                <span class="value-hangul">성장</span>
+                <span class="value-roma">seong-jang</span>
+              </div>
+            </div>
+            <div class="ink-splash-container"></div>
+          </div>
+          <h3 class="value-title">CONTINUOUS GROWTH</h3>
+          <p class="value-description">
+            <span class="meaning-chunk" data-highlight-id="about-value-growth1">I learn fast, try often,</span>
+            <span class="meaning-chunk" data-highlight-id="about-value-growth2">and embrace feedback as fuel for growth.</span>
+          </p>
         </div>
-        <div class="ink-splash-container"></div>
-      </div>
 
-      <h3 class="value-title">CONTINUOUS GROWTH</h3>
-      <p class="value-description">
-        <span class="meaning-chunk">I learn fast, try often,</span>
-        <span class="meaning-chunk">and embrace feedback as fuel for growth.</span>
-      </p>
-    </div>
-
-    <div class="value-card" data-value-id="conviction">
-      <div class="value-ink-blot">
-        <div class="value-ink-shape"></div>
-        <div class="value-blot-content-wrapper">
-          <span class="value-hanja">信念</span>
-          <div class="value-icon"><i class="fas fa-check" aria-label="Conviction"></i></div>
+        <div class="value-card" data-value-id="conviction">
+          <div class="value-ink-blot">
+            <div class="value-ink-shape"></div>
+            <div class="value-blot-content-wrapper">
+              <span class="value-hanja">信念</span>
+              <div class="value-icon"><i class="fas fa-check" aria-label="Conviction"></i></div>
+              <div class="value-reading">
+                <span class="value-hangul">신념</span>
+                <span class="value-roma">sin-nyeom</span>
+              </div>
+            </div>
+            <div class="ink-splash-container"></div>
+          </div>
+          <h3 class="value-title">DESIGN WITH CONVICTION</h3>
+          <p class="value-description">
+            <span class="meaning-chunk" data-highlight-id="about-value-conviction1">I put users first and solve actual problems,</span>
+            <span class="meaning-chunk" data-highlight-id="about-value-conviction2">not just make things pretty.</span>
+          </p>
         </div>
-        <div class="ink-splash-container"></div>
+
       </div>
+    </section>
 
-      <h3 class="value-title">DESIGN WITH CONVICTION</h3>
-      <p class="value-description">
-        <span class="meaning-chunk">I put users first and solve actual problems,</span>
-        <span class="meaning-chunk">not just make things pretty.</span>
-      </p>
-    </div>
-
-  </div>
-</section>
-
-<div class="about-section-gap2"></div>
-<section class="about-process section-background-active">
-  <h2 class="section-title">
-    MY ADAPTABLE PROCESS
-  </h2>
-  <div class="process-visual">
-    <svg id="process-svg" width="1000" height="390" viewBox="0 0 980 390">
-      <defs>
-        <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" style="stop-color:#888;stop-opacity:1" />
-          <stop offset="100%" style="stop-color:#ff8e8e;stop-opacity:1" />
-        </linearGradient>
-        <marker id="arrowhead" markerWidth="7" markerHeight="4" refX="3" refY="2" orient="auto" markerUnits="strokeWidth">
-          <polygon points="0,0 0,4 5,2" fill="#888"/>
-        </marker>
-      </defs>
-      <path d="M541 62C643.535 62 730.202 81.3333 801 120"
-            stroke="url(#processGradient)" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
-      <path d="M820 206C820 253.952 730 289.286 550 312"
-            stroke="url(#processGradient)" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
-      <path d="M440 320C338.182 320 258.182 300 200 260"
-            stroke="url(#processGradient)" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
-      <path d="M179 172C179 125.44 262.333 90.7737 429 68"
-            stroke="url(#processGradient)" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
-      <circle class="step-circle" cx="490" cy="68" r="35"/>
-      <circle class="step-circle" cx="845" cy="147" r="35"/>
-      <circle class="step-circle" cx="490" cy="312" r="35"/>
-      <circle class="step-circle" cx="160" cy="230" r="35"/>
-      <text x="490" y="75" text-anchor="middle" font-size="1.5rem" font-weight="bold" fill="#333">1</text>
-      <text x="845" y="154" text-anchor="middle" font-size="1.5rem" font-weight="bold" fill="#333">2</text>
-      <text x="490" y="319" text-anchor="middle" font-size="1.5rem" font-weight="bold" fill="#333">3</text>
-      <text x="160" y="237" text-anchor="middle" font-size="1.5rem" font-weight="bold" fill="#333">4</text>
-      <text x="490" y="21" text-anchor="middle" font-size="1.2rem" font-weight="700" fill="#333">DISCOVER</text>
-      <text x="892" y="152" text-anchor="start" font-size="1.2rem" font-weight="700" fill="#333">DEFINE</text>
-      <text x="490" y="375" text-anchor="middle" font-size="1.2rem" font-weight="700" fill="#333">TEST & DESIGN</text>
-      <text x="102" y="235" text-anchor="end" font-size="1.2rem" font-weight="700" fill="#333">IMPLEMENT</text>
-    </svg>
-  </div>
+    <div class="about-section-gap2"></div>
+    <section class="about-process section">
+      <h2 class="section-title">MY ADAPTABLE PROCESS</h2>
+    
+      <div class="process-container">
+          <div class="process-galaxy-container">
+              <div class="process-galaxy-visual">
+                  </div>
+    
+              <svg width="0" height="0" style="position: absolute; top: 0; left: 0;">
+                  <filter id="inkEdgeFilter">
+                      <feTurbulence type="fractalNoise" baseFrequency="0.02 0.15" numOctaves="1" result="noise" />
+                      <feDisplacementMap in="SourceGraphic" in2="noise" scale="15" />
+                      <feGaussianBlur stdDeviation="0.5" />
+                  </filter>
+              </svg>
+    
+              <div class="process-galaxy-content" id="processGalaxy">
+                  <div class="star-field" id="starField"></div> 
   
-  <div class="about-process-cols">
-    <div class="process-card" tabindex="0" aria-label="Discover: Define the problem, map user needs, research context.">
-      <h3>DISCOVER – Research Insights</h3>
-      <div class="card-divider"></div>
-      <div class="process-body">
-        <span class="meaning-chunk">Define the problem, map user needs, research context.</span>
-      </div>
-    </div>
-    <div class="process-card" tabindex="0" aria-label="Define: Structure the solution with flows, wireframes, and clear goals.">
-      <h3>DEFINE – Solution Framing</h3>
-      <div class="card-divider"></div>
-      <div class="process-body">
-        <span class="meaning-chunk">Structure the solution with flows, wireframes,</span>
-        <span class="meaning-chunk">and clear goals.</span>
-      </div>
-    </div>
-    <div class="process-card" tabindex="0" aria-label="Design: Craft intuitive, elegant interfaces grounded in human behavior.">
-      <h3>DESIGN – Interface Creation</h3>
-      <div class="card-divider"></div>
-      <div class="process-body">
-        <span class="meaning-chunk">Craft intuitive, elegant interfaces</span>
-        <span class="meaning-chunk">grounded in human behavior.</span>
-      </div>
-    </div>
-    <div class="process-card" tabindex="0" aria-label="Deliver: Build, prototype, and refine through feedback and iteration.">
-      <h3>DELIVER – Launch & Iterate</h3>
-      <div class="card-divider"></div>
-      <div class="process-body">
-        <span class="meaning-chunk">Build, prototype,</span>
-        <span class="meaning-chunk">and refine through feedback and iteration.</span>
-      </div>
-    </div>
-  </div>      
-</section>
-
-<div class="about-section-gap2"></div>
-<section class="about-funfacts section-background-active">
-  <h2 class="section-title">AND NOW SOME FUN FACTS ABOUT MYSELF</h2>
-
-  <div class="funfacts-card-display-area">
-    <div class="about-funfacts-cols">
-      <div class="funfact-card" data-fact-id="name-path" tabindex="0" aria-label="Name-Guided Path: ...">
-        <i class="fas fa-seedling fact-icon" aria-label="Name-Guided Path"></i>
-        <h3>Name-Guided Path</h3>
-        <div class="fact-text-content hidden"><p></p></div>
-        <div class="click-me-msg">Click to reveal.</div>
-      </div>
-      <div class="funfact-card" data-fact-id="sensory-player" tabindex="0" aria-label="Certified Sensory Player: ...">
-        <i class="fas fa-certificate fact-icon" aria-label="Certified Sensory Player"></i>
-        <h3>Certified Sensory Player</h3>
-        <div class="fact-text-content hidden"><p></p></div>
-        <div class="click-me-msg">Click to reveal.</div>
-      </div>
-      <div class="funfact-card" data-fact-id="piano-precision" tabindex="0" aria-label="Piano Precision Mindset: ...">
-        <i class="fas fa-music fact-icon" aria-label="Piano Precision Mindset"></i>
-        <h3>Piano Precision Mindset</h3>
-        <div class="fact-text-content hidden"><p></p></div>
-        <div class="click-me-msg">Click to reveal.</div>
-      </div>
-      <div class="funfact-card" data-fact-id="holistic-experience" tabindex="0" aria-label="Holistic Experience Design: ...">
-        <i class="fas fa-wine-glass fact-icon" aria-label="Holistic Experience Design"></i>
-        <h3>Holistic Experience Design</h3>
-        <div class="fact-text-content hidden"><p></p></div>
-        <div class="click-me-msg">Click to reveal.</div>
-      </div>
-      <div class="funfact-card" data-fact-id="curiosity-journey" tabindex="0" aria-label="Curiosity-Driven Journey: ...">
-        <i class="fas fa-compass fact-icon" aria-label="Curiosity-Driven Journey"></i>
-        <h3>Curiosity-Driven Journey</h3>
-        <div class="fact-text-content hidden"><p></p></div>
-        <div class="click-me-msg">Click to reveal.</div>
-      </div>
-      <div class="funfact-card" data-fact-id="resilient-creative" tabindex="0" aria-label="Resilient Creative Journey: ...">
-        <i class="fas fa-trophy fact-icon" aria-label="Resilient Creative Journey"></i>
-        <h3>Resilient Creative Journey</h3>
-        <div class="fact-text-content hidden"><p></p></div>
-        <div class="click-me-msg">Click to reveal.</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="mountain-interactive-container">
-    <img src="funfacts.png" alt="Mountain Peaks Illustration" class="mountain-background-image">
-    </div>
-</section>
-
-</main>
-
-<footer class="footer-fixed">
-  <div class="footer-row">
-      <div class="footer-content">
-          <p>You've hit the footer,<br>thanks for stopping by.<br>Still curious?<br>→ <a href="mailto:oosu.salon@gmail.com">oosu.salon@gmail.com</a></p>
-          <span class="footer-copyright">© Oosu Jang 2025</span>
-      </div>
-      <div id="lottie-container" style="width:250px; height:300px; position:relative; overflow:hidden;">
-          <div id="lottie-inner-section" style="
-              position: absolute;
-              left: 55%; top: 55%;
-              width: 250px; height: 300px;
-              transform: translate(-50%, -50%);
-              pointer-events: none;">
+                  <svg class="process-orbit-svg" id="processOrbitSVG" viewBox="0 0 450 225" preserveAspectRatio="xMidYMid meet">
+                      <path id="orbitPath"></path>
+                  </svg>
+    
+                  <div class="process-planet discover" data-step-id="1" title="DISCOVER">
+                      <div class="planet-content">
+                          <span class="planet-icon"><i class="fas fa-lightbulb"></i></span>
+                          <span class="planet-label">1. DISCOVER</span>
+                      </div>
+                  </div>
+                  <div class="process-planet define" data-step-id="2" title="DEFINE">
+                      <div class="planet-content">
+                          <span class="planet-icon"><i class="fas fa-drafting-compass"></i></span>
+                          <span class="planet-label">2. DEFINE</span>
+                      </div>
+                  </div>
+                  <div class="process-planet design" data-step-id="3" title="TEST & DESIGN">
+                      <div class="planet-content">
+                          <span class="planet-icon"><i class="fas fa-palette"></i></span>
+                          <span class="planet-label">3. DESIGN</span>
+                      </div>
+                  </div>
+                  <div class="process-planet deliver" data-step-id="4" title="IMPLEMENT">
+                      <div class="planet-content">
+                          <span class="planet-icon"><i class="fas fa-rocket"></i></span>
+                          <span class="planet-label">4. DELIVER</span>
+                      </div>
+                  </div>
+              </div> 
+          </div> 
+          <div class="about-process-cols">
+              <div class="process-card" data-step-id="1" tabindex="0" aria-label="Discover: Define the problem, map user needs, research context.">
+                  <h3>DISCOVER –<br>Research Insights</h3>
+                  <div class="card-divider"></div>
+                  <div class="process-body">
+                      <span class="meaning-chunk" data-highlight-id="about-process-discover">Define the problem, map user needs, research context.</span>
+                  </div>
+              </div>
+              <div class="process-card" data-step-id="2" tabindex="0" aria-label="Define: Structure the solution with flows, wireframes, and clear goals.">
+                  <h3>DEFINE –<br>Solution Framing</h3>
+                  <div class="card-divider"></div>
+                  <div class="process-body">
+                      <span class="meaning-chunk" data-highlight-id="about-process-define1">Structure the solution with flows, wireframes,</span>
+                      <span class="meaning-chunk" data-highlight-id="about-process-define2">and clear goals.</span>
+                  </div>
+              </div>
+              <div class="process-card" data-step-id="3" tabindex="0" aria-label="Design: Craft intuitive, elegant interfaces grounded in human behavior.">
+                  <h3>DESIGN –<br>Interface Creation</h3>
+                  <div class="card-divider"></div>
+                  <div class="process-body">
+                      <span class="meaning-chunk" data-highlight-id="about-process-design1">Craft intuitive, elegant interfaces</span>
+                      <span class="meaning-chunk" data-highlight-id="about-process-design2">grounded in human behavior.</span>
+                  </div>
+              </div>
+              <div class="process-card" data-step-id="4" tabindex="0" aria-label="Deliver: Build, prototype, and refine through feedback and iteration.">
+                  <h3>DELIVER –<br>Launch & Iterate</h3>
+                  <div class="card-divider"></div>
+                  <div class="process-body">
+                      <span class="meaning-chunk" data-highlight-id="about-process-deliver1">Build, prototype,</span>
+                      <span class="meaning-chunk" data-highlight-id="about-process-deliver2">and refine through feedback and iteration.</span>
+                  </div>
+              </div>
           </div>
       </div>
-  </div>
-</footer>
-<script src="../common/common.js"></script>
-<script src="about-hero.js"></script>
-<script src="about-main.js"></script>
-<script src="about-skills.js"></script>
-<script src="about-values.js"></script>
-<script src="about-process.js"></script>
-<script src="about-funfacts.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
-<script>
-    lottie.loadAnimation({
-        container: document.getElementById('lottie-inner-section'),
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        path: 'https://gist.githubusercontent.com/oosuhada/91bb0cf038d0c3e4e673bc40f0df4e77/raw/95da7d49e86dafbac645d76d65f5c2965080f953/about.json',
-        rendererSettings: { preserveAspectRatio: 'none' }
-    });
-</script>
+  </section>
+
+    <div class="about-section-gap2"></div>
+    <section class="about-funfacts section-background-active">
+      <h2 class="section-title">AND NOW SOME FUN FACTS ABOUT MYSELF</h2>
+      <div class="funfact-spacer">
+        <p class="funfact-instruction">Click on each dot to reveal a fun fact.</p>
+      </div>
+      <div class="mountain-interactive-container">
+        <img src="funfacts.png" alt="Mountain Peaks Illustration" class="mountain-background-image">
+      </div>
+
+      <div class="funfact-card" data-fact-id="name-path" tabindex="0">
+        <div class="lottie-icon-container">
+          <div class="lottie-animation" data-lottie-path="https://gist.githubusercontent.com/oosuhada/d363d56d1719f249a666461c40f3a049/raw/7b2ce7b96cbb877972eeb2c4add5f1dce0170c67/funfacts_name_guided_path.json" aria-label="Name-Guided Path"></div>
+        </div>
+        <h3>Name-Guided Path</h3>
+        <div class="fact-text-content"><p>
+          <span class="meaning-chunk" data-highlight-id="fact-name-1">I'm a believer in old wisdoms, </span>
+          <span class="meaning-chunk" data-highlight-id="fact-name-2">especially the idea that we grow into our names. </span>
+          <span class="meaning-chunk" data-highlight-id="fact-name-3">Mine certainly guided me to where I am today.</span>
+        </p></div>
+      </div>
+      <div class="funfact-card" data-fact-id="sensory-player" tabindex="0">
+        <div class="lottie-icon-container">
+          <div class="lottie-animation" data-lottie-path="https://gist.githubusercontent.com/oosuhada/fe819cd036c1325e6a97be7fc92eb8b0/raw/6dce15f5277df46fff79a7271770f224fa821ac6/funfacts_certified_sensory_player.json" aria-label="Certified Sensory Player"></div>
+        </div>
+        <h3>Certified Sensory Player</h3>
+        <div class="fact-text-content"><p>
+          <span class="meaning-chunk" data-highlight-id="fact-sensory-1">I'm certified in candle-making, perfumery, and as a wine sommelier— </span>
+          <span class="meaning-chunk" data-highlight-id="fact-sensory-2">all disciplines focused on crafting sensory experiences. </span>
+          <span class="meaning-chunk" data-highlight-id="fact-sensory-3">I bring this same multi-sensory approach to designing digital products.</span>
+        </p></div>
+      </div>
+      <div class="funfact-card" data-fact-id="piano-precision" tabindex="0">
+        <div class="lottie-icon-container">
+          <div class="lottie-animation" data-lottie-path="https://gist.githubusercontent.com/oosuhada/8b02b52249ba99e060dd32afa251d590/raw/d2abfb3f732935df80288058e0354857c0f6b0d4/funfacts_piano_precision_mindset.json" aria-label="Piano Precision Mindset"></div>
+        </div>
+        <h3>Piano Precision Mindset</h3>
+        <div class="fact-text-content"><p>
+          <span class="meaning-chunk" data-highlight-id="fact-piano-1">My parents once got rid of my piano so I wouldn't become a pianist. </span>
+          <span class="meaning-chunk" data-highlight-id="fact-piano-2">Despite their efforts, that early training in precision </span>
+          <span class="meaning-chunk" data-highlight-id="fact-piano-3">and obsession with detail now fundamentally shapes my design process.</span>
+        </p></div>
+      </div>
+      <div class="funfact-card" data-fact-id="holistic-experience" tabindex="0">
+        <div class="lottie-icon-container">
+          <div class="lottie-animation" data-lottie-path="https://gist.githubusercontent.com/oosuhada/4042898c25a15cb02e08d310aa3ca435/raw/20d5efce2da7d726ed013116c72a7d13322fdbe8/funfacts_holistic_experience_design.json" aria-label="Holistic Experience Design"></div>
+        </div>
+        <h3>Holistic Experience Design</h3>
+        <div class="fact-text-content"><p>
+          <span class="meaning-chunk" data-highlight-id="fact-wine-1">I used to run a wine bar where I designed everything: </span>
+          <span class="meaning-chunk" data-highlight-id="fact-wine-2">the branding, the service flow, and the sensory atmosphere. </span>
+          <span class="meaning-chunk" data-highlight-id="fact-wine-3">It taught me that great design isn't just visual—it's a holistic, immersive experience.</span>
+        </p></div>
+      </div>
+      <div class="funfact-card" data-fact-id="curiosity-journey" tabindex="0">
+        <div class="lottie-icon-container">
+          <div class="lottie-animation" data-lottie-path="https://gist.githubusercontent.com/oosuhada/1126ec17cf9bccc8fc866e692b6a9aac/raw/3094cdb477d1f0fed9f0d29c3ad0932d4ad304eb/funfacts_curiosity_driven_journey.json" aria-label="Curiosity-Driven Journey"></div>
+        </div>
+        <h3>Curiosity-Driven Journey</h3>
+        <div class="fact-text-content"><p>
+          <span class="meaning-chunk" data-highlight-id="fact-journey-1">My career has moved across fashion, data, wine, and now design, </span>
+          <span class="meaning-chunk" data-highlight-id="fact-journey-2">a journey driven purely by curiosity. </span>
+          <span class="meaning-chunk" data-highlight-id="fact-journey-3">The common thread has always been understanding people and crafting better experiences for them.</span>
+        </p></div>
+      </div>
+      <div class="funfact-card" data-fact-id="resilient-creative" tabindex="0">
+        <div class="lottie-icon-container">
+          <div class="lottie-animation" data-lottie-path="https://gist.githubusercontent.com/oosuhada/39e49f3b1ee32804ea7c534ddab01117/raw/46c28ded512fb9e2bce5f5ed90900dc93ff8a382/funfacts_resilient_creative_journey.json" aria-label="Resilient Creative Journey"></div>
+        </div>
+        <h3>Resilient Creative Journey</h3>
+        <div class="fact-text-content"><p>
+          <span class="meaning-chunk" data-highlight-id="fact-resilient-1">I was once bullied after ranking #1 in art class. </span>
+          <span class="meaning-chunk" data-highlight-id="fact-resilient-2">That pushed me away from a creative path for a while. </span>
+          <span class="meaning-chunk" data-highlight-id="fact-resilient-3">But the detour gave me broader life experience, making me a more resilient designer today. </span>
+          <span class="meaning-chunk" data-highlight-id="fact-resilient-4">So, no hard feelings.</span>
+        </p></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer-fixed">
+    <div class="footer-row">
+        <div class="footer-content">
+            <p>You've hit the footer,<br>thanks for stopping by.<br>Still curious?<br>→ <a href="mailto:oosu.salon@gmail.com">oosu.salon@gmail.com</a></p>
+            <span class="footer-copyright">© Oosu Jang 2025</span>
+        </div>
+        <div id="lottie-container" style="width:250px; height:300px; position:relative; overflow:hidden;">
+            <div id="lottie-inner-section" style="
+                position: absolute;
+                left: 55%; top: 55%;
+                width: 250px; height: 300px;
+                transform: translate(-50%, -50%);
+                pointer-events: none;">
+            </div>
+        </div>
+    </div>
+  </footer>
+  <script src="../common/common.js"></script>
+  <script src="about-hero.js"></script>
+  <script src="about-main.js"></script>
+  <script src="about-skills.js"></script>
+  <script src="about-values.js"></script>
+  <script src="about-process.js"></script>
+  <script src="about-funfacts.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+  <script>
+      lottie.loadAnimation({
+          container: document.getElementById('lottie-inner-section'),
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: 'https://gist.githubusercontent.com/oosuhada/91bb0cf038d0c3e4e673bc40f0df4e77/raw/6bb373878d20eb58da23bbef467c45cd2641cbc7/footer_about.json',
+          rendererSettings: { preserveAspectRatio: 'none' }
+      });
+  </script>
 </body>
 </html>

@@ -1,0 +1,130 @@
+/* experience.css */
+/* General/Utility Styles and Root Variables */
+
+:root {
+    /* Color variables */
+    --gray-main: #222;
+    --gray-sub: #444;
+    --gray-border: #e1e1e1;
+    --gray-bg: #fafafb;
+    --gray-card: #fff;
+    --gray-dot: #bbb;
+    --gray-tag: #f0f0f0;
+    --gray-tag-hover: #bbb;
+
+    /* Sizing variables */
+    --nav-header-height: 60px;
+    --diagonal-handle-thickness: 15px;
+    --glass-blur: 8px;
+    --glass-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    --glass-radius: 8px;
+
+    /* Highlight and accent colors */
+    --main-highlight-color: #000000;
+    --main-accent-color: #00000081;
+}
+
+/* Ensure body has no margin/padding for full-screen elements */
+body {
+    margin: 0;
+    padding: 0;
+    /* This ensures header, hero, text hero backgrounds are black */
+    background-color: #000;
+    overflow-x: hidden;   /* ← 가로 오버플로우 숨기기 */
+}
+
+#top-sentinel {
+    height: 1px;
+    width: 100%;
+    pointer-events: none;
+}
+
+.nav-header.experience-header-hidden-override {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.experience-content-wrapper {
+    position: relative;
+    z-index: 3;
+}
+
+.experience-main {
+    margin-bottom: 8rem;
+    max-width: 100%;
+    /* padding: 0 1vw; */
+}
+
+.section-top-gap {
+    height: 4.5rem;
+    background-color: black;
+}
+
+.section-bottom-gap {
+    height: 8rem;
+    /* Set background color for section-bottom-gap */
+    background-color: #ffffff; /* Keep this white if it's supposed to be part of the white section */
+}
+
+.section-bottom-gap2 {
+    height: 2rem;
+    /* Set background color for section-bottom-gap */
+    background-color: #ffffff; /* Keep this white if it's supposed to be part of the white section */
+}
+
+/* Utility for hover effects on text */
+.meaning-chunk {
+    cursor: pointer;
+    transition: text-decoration 0.15s;
+    display: inline;
+    white-space: normal;
+}
+
+.meaning-chunk:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.22em;
+    text-decoration-thickness: 2px;
+}
+
+/*
+Revised #full-screen-bg-section for better overlap control.
+Using 'absolute' position relative to a containing element (like body or main-content-wrapper's parent)
+or adjusting 'sticky' properties and ensuring enough scroll space.
+Let's try 'sticky' again but ensure it has a proper scroll container and context.
+If 'sticky' is still problematic, 'fixed' or 'absolute' might be better depending on the exact desired scroll behavior.
+For overlap, 'sticky' can be tricky if the element it should overlap is not in the same stacking context or flow.
+A common pattern for a full-screen background is to make it 'fixed' or 'absolute' within the body, and ensure other content sits above it.
+Let's re-evaluate the HTML structure with this in mind.
+*/
+#full-screen-bg-section {
+    width: 100vw;
+    height: 100vh;
+    background-color: #ffffff;
+    position: fixed; /* Changed to fixed for reliable full-screen background behavior */
+    top: 0;
+    left: 0;
+    z-index: 0; /* Stays at the very back */
+    pointer-events: none; /* Allows clicks/interactions to pass through to elements above it */
+    /* Only apply if you want it to start from a certain scroll point */
+    /* display: none; */ /* You might want to control its visibility with JavaScript/ScrollTrigger */
+}
+
+/* Ensure foreground content is positioned relative and has a higher z-index */
+#main-content-wrapper { /* Ensure this wraps all content that should be above the fixed background */
+    position: relative;
+    z-index: 1; /* Higher than #full-screen-bg-section */
+    background-color: transparent; /* Or specific color if part of it should be opaque */
+}
+
+/* Ensure the black background is maintained for the top sections */
+header, .hero-section-winery, #skills-showcase-section {
+    position: relative; /* Ensure these sections participate in z-index stacking */
+    z-index: 2; /* Higher than #main-content-wrapper's base z-index if needed */
+}
+
+/* If you want skills-showcase-section to show the white background, remove its explicit black background */
+/* #skills-showcase-section {
+    background-color: transparent;
+} */

@@ -1,0 +1,513 @@
+<!-- experience.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Experience | Oosu Portfolio</title>
+    <link rel="icon" type="image/png" href="../apple-touch-icon.png" />
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+    <link rel="stylesheet" href="../common/common.css" />
+    <link rel="stylesheet" href="experience.css" />
+    <link rel="stylesheet" href="hero.css" />
+    <link rel="stylesheet" href="timeline.css" />
+    <link rel="stylesheet" href="modal.css" />
+    <link rel="stylesheet" href="card.css" />
+    <link rel="stylesheet" href="footer.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+</head>
+<body>
+    <div id="preloader">
+        <div class="loading-text" id="loadingText">Oosu</div>
+    </div>
+<header class="nav-header" aria-label="Site">
+    <div class="nav-top-row">
+        <button class="nav-toggle-btn" aria-label="Toggle navigation menu">
+            <i class="fas fa-bars"></i> </button>
+        <div class="nav-title">Oosu Portfolio</div> </div>
+    <nav class="nav-menu nav-center" id="accordionNavMenu">
+        <a href="../portfolioMain/portfolio.html" data-nav="portfolio">✧ portfolio</a>
+        <a href="../about/about.html" data-nav="about">? about</a>
+        <a href="../experience/experience.html" data-nav="experience">⌗ experience</a>
+        <a href="../hobby/hobby.html" data-nav="hobby">: hobby</a>
+        <a href="../connect/connect.html" data-nav="connect">⌲ connect</a>
+    </nav>
+</header>
+
+    <div id="top-sentinel"></div>
+
+    <div id="fixed-vine-gauge-container">
+        <div class="vine-gauge-and-text-wrapper">
+            <div class="fade-in-list" id="vineStageList">
+                <div>
+                    <span></span>
+                </div>
+                <div class="gauge-section-header">
+                    <div class="gauge-block"></div>
+                    <span>- Work -</span>
+                </div>
+                <div>
+                    <div class="embedded-gauge-block"></div>
+                    <span>Ripening</span>
+                </div>
+                <div>
+                    <div class="embedded-gauge-block"></div>
+                    <span>Fruit Set</span>
+                </div>
+                <div>
+                    <div class="embedded-gauge-block"></div>
+                    <span>Vine Flowering</span>
+                </div>
+                   <div class="gauge-section-header">
+                    <div class="gauge-block"></div>
+                    <span>- Education -</span>
+                </div>
+                <div>
+                    <div class="embedded-gauge-block"></div>
+                    <span>Keep Growing</span>
+                </div>
+                <div>
+                    <div class="embedded-gauge-block"></div>
+                    <span>Bud break</span>
+                </div>
+                <div>
+                    <div class="embedded-gauge-block"></div>
+                    <span>Plant rootstock</span>
+                </div>
+            </div>
+        </div>
+        <div class="gauge-toggle-container">
+            <button id="gauge-toggle-btn" aria-label="Collapse Menu" title="Toggle Menu">-</button>
+        </div>
+    </div>
+
+    <div class="fixed-image-container visible show-resize-guides" id="fixedGrapeImageContainer">
+        <div class="resize-handle top-left" data-direction="top-left"></div>
+        <div class="resize-handle top" data-direction="top"></div>
+        <div class="resize-handle top-right" data-direction="top-right"></div>
+        <div class="resize-handle right" data-direction="right"></div>
+        <div class="resize-handle bottom-right" data-direction="bottom-right"></div>
+        <div class="resize-handle bottom" data-direction="bottom"></div>
+        <div class="resize-handle bottom-left" data-direction="bottom-left"></div>
+        <div class="resize-handle left" data-direction="left"></div>
+        <div class="resize-handle-45" data-direction="diag-45"></div>
+        <div class="resize-handle-135" data-direction="diag-135"></div>
+        <div class="resize-handle-225" data-direction="diag-225"></div>
+        <div class="resize-handle-315" data-direction="diag-315"></div>
+        <img id="central-timeline-image" src="images/1.png" alt="Grape vine stage" draggable="false" />
+        <div id="drag-instruction" class="drag-instruction">Drag to move</div>
+    </div>    
+
+    <main class="experience-main">
+        <section class="hero-section-winery">
+            <div class="hero-winery-bg">
+                <video autoplay loop muted playsinline id="heroVideo" poster="experience.jpg">
+                    <source src="experience.mp4" type="video/mp4">
+                    <source src="experience.webm" type="video/webm">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="hero-content">
+                <h2 class="hero-text-overlay">From Vine to Wine, <br>Concept to Creation</h2>
+                <a href="#" class="scroll-down-btn" aria-label="Scroll down">
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+            </div>
+        </section>
+        <div class="section-top-gap"></div>
+
+        <div class="experience-content-wrapper">
+            <div class="section-top-gap"></div>
+
+            <div class="work-experience-intro center" style="margin-bottom: 20px;">
+                <strong>
+                    <span class="meaning-chunk" data-highlight-id="exp-intro1">Multidisciplinary UX/UI designer</span><br>
+                    <span class="meaning-chunk" data-highlight-id="exp-intro2">with end-to-end experience</span><br>
+                    <span class="meaning-chunk" data-highlight-id="exp-intro3">from planning to technical execution.</span><br>
+                    <div class="section-top-gap"></div>
+                </strong>
+            </div>
+
+            <div class="resizable-timeline-area">
+                <div class="dragger-handle" id="timeline-dragger-left">
+                    <div class="scroll-paper"></div>
+                </div>
+                <div class="timeline-outer-refactored" id="timeline-left-pane">
+                    <div class="timeline-items-column">
+                        <section class="timeline-section" id="work-experience-section-refactored">
+                            <div class="timeline-entry timeline-entry-header-section">
+                                <div class="timeline-dot-new"></div>
+                                <div class="timeline-section-spanning-header" id="work-exp-header-refactored">
+                                    <h2 class="exp-title center main-highlight-text">Work Experience</h2>
+                                    <div class="exp-history-desc center" id="exp-history-desc-refactored">
+                                        <span class="meaning-chunk" data-highlight-id="exp-work-desc1">
+                                            With a <span class="main-highlight-text">holistic business perspective</span>
+                                        </span>
+                                        <span class="meaning-chunk" data-highlight-id="exp-work-desc2">
+                                            and data analytics skills developed in global organizations,
+                                        </span>
+                                        <span class="meaning-chunk" data-highlight-id="exp-work-desc3">
+                                            and <span class="main-highlight-text">luxury brand</span>-driven customer-centric thinking,
+                                        </span>
+                                        <span class="meaning-chunk" data-highlight-id="exp-work-desc4">
+                                            I provide design solutions that satisfy both users and businesses.
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="work-experience-cards-container">
+                                <div class="masonry-card" data-item-id="sample-card">
+                                    <div class="image-and-handle-wrapper">
+                                        <div class="card-image-container">
+                                            </div>
+                                        <div class="card-resize-handle"></div>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="card-content-group">
+                                            <h3 class="card-title">Sample Project Title</h3>
+                                            <p class="card-company">Sample Company</p>
+                                        </div>
+                                        <div class="card-description-summary"></div> <p class="card-date">Jan 2024 - Dec 2024</p>
+                                        <div class="card-tags">
+                                            <span class="timeline-chunk" data-highlight-id="tag-ux-design-card">UX Design</span>
+                                            <span class="timeline-chunk" data-highlight-id="tag-ui-development-card">UI Development</span>
+                                            <span class="timeline-chunk" data-highlight-id="tag-user-research-card">User Research</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="timeline-section" id="education-section-refactored">
+                            <div class="timeline-entry timeline-entry-header-section">
+                                <div class="timeline-dot-new"></div>
+                                <div class="timeline-section-spanning-header" id="edu-header-refactored">
+                                    <h2 class="exp-title center main-highlight-text">Education</h2>
+                                    <div class="exp-edu-desc center" id="exp-edu-desc-refactored">
+                                        <strong>
+                                            <span class="meaning-chunk" data-highlight-id="exp-edu1-1">Through hands-on UX research and UI design training,</span>
+                                            <span class="meaning-chunk" data-highlight-id="exp-edu1-2">Flutter-based app development experience,</span>
+                                            <span class="meaning-chunk" data-highlight-id="exp-edu1-3">and studies in business and communication theory,</span>
+                                        </strong>
+                                        <span class="meaning-chunk" data-highlight-id="exp-edu4">I have developed problem-solving skills</span>
+                                        <span class="meaning-chunk" data-highlight-id="exp-edu5">and user-centered thinking.</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="education-cards-container"></div>
+                        </section>
+                    </div>
+                </div>
+                <div class="dragger-handle" id="timeline-dragger">
+                    <div class="scroll-paper"></div>
+                </div>
+                <div class="timeline-right-pane" id="timeline-right-pane"></div>
+            </div>
+            <div class="section-bottom-gap"></div> </div>
+        <div class="grape-footer-quote">
+            <div class="footer-image-container">
+                <img id="grapeFooterImg" src="images/footer1.png" alt="grape to wine" class="grape-footer-img"/>
+                <div class="grape-footer-text" id="grapeFooterText">Now,</div>
+            </div>
+        </div>
+    </main>
+
+    <div id="original-timeline-data" style="display:none;">
+        <div id="original-work-exp-items">
+            <div class="timeline-row" data-item-id="work-0">
+                <div class="timeline-dot"></div>
+                <div class="timeline-grid">
+                    <div class="image-and-handle-wrapper">
+                        <div class="card-image-container">
+                            </div>
+                        <div class="card-resize-handle"></div>
+                    </div>
+                    <div class="timeline-content-group">
+                        <div class="timeline-title">Founder & CEO</div>
+                        <div class="company">OOSU SALON YEONNAM</div>
+                        <div class="timeline-date">Feb 2020 - Jan 2025</div>
+                        <div class="card-description-summary"></div> 
+                        <div class="timeline-field">Customer Experience Design</div>
+                        <div class="timeline-desc">
+                            <span class="timeline-chunk" data-highlight-id="exp-work1-1">Led the overall business planning, spatial design, branding,</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-work1-2">and customer experience design for a casual wine bar in Seoul,</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-work1-3">leading it to operational success.</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-work1-4">Developed a customer-centric service system,</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-work1-5">and streamlined operations for a sustainable business model,</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-work1-6">continuously improving customer satisfaction and retention</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-work1-7">through ongoing feedback collection and improvement.</span>
+                        </div>
+                        <div class="timeline-tags">
+                            <span class="timeline-tag-chunk1" data-highlight-id="tag-hospitality-work0">Hospitality</span>
+                            <span class="timeline-tag-chunk1" data-highlight-id="tag-fb-work0">F&B</span>
+                            <span class="timeline-tag-chunk1" data-highlight-id="tag-business-work0">Business</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-cx-design-work0">CX Design</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-branding-work0">Branding</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-startup-work0">Startup</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-entrepreneurship-work0">Entrepreneurship</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="timeline-row" data-item-id="work-1">
+                <div class="timeline-dot"></div>
+                <div class="timeline-grid">
+                    <div class="image-and-handle-wrapper">
+                        <div class="card-image-container">
+                            </div>
+                        <div class="card-resize-handle"></div>
+                    </div>
+                    <div class="timeline-content-group">
+                        <div class="timeline-title">Global Key Account Manager</div>
+                        <div class="company">GfK Retail and Technology Korea</div>
+                        <div class="timeline-date">Apr 2018 - Mar 2019</div>
+                        <div class="card-description-summary"></div> 
+                        <div class="timeline-field">Consumer Data Analytics & Consulting</div>
+                        <div class="timeline-desc">
+                            <span class="timeline-chunk" data-highlight-id="exp-work2-1">Handled global Samsung accounts,</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-work2-2">delivering business insights and strategy consulting</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-work2-3">through analysis of POS tracking and consumer behavior data.</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-work2-4">Identified consumer trends and insights through market analysis,</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-work2-5">empowering clients’ data-driven decision making</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-work2-6">and helping them reach their marketing objectives.</span>
+                        </div>
+                        <div class="timeline-tags">
+                            <span class="timeline-tag-chunk1" data-highlight-id="tag-market-research-work1">MarketResearch</span>
+                            <span class="timeline-tag-chunk1" data-highlight-id="tag-data-analytics-work1">DataAnalytics</span>
+                            <span class="timeline-tag-chunk1" data-highlight-id="tag-consumer-insights-work1">ConsumerInsights</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-consulting-work1">Consulting</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-business-strategy-work1">BusinessStrategy</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-client-management-work1">ClientManagement</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-global-accounts-work1">GlobalAccounts</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="timeline-row" data-item-id="work-2">
+                <div class="timeline-dot"></div>
+                <div class="timeline-grid">
+                    <div class="image-and-handle-wrapper">
+                        <div class="card-image-container">
+                            </div>
+                        <div class="card-resize-handle"></div>
+                    </div>
+                    <div class="timeline-content-group">
+                        <div class="timeline-title">Marketing - MD Intern</div>
+                        <div class="company">Ermenegildo Zegna Korea</div>
+                        <div class="timeline-date">Dec 2017 - Feb 2018</div>
+                        <div class="card-description-summary"></div> 
+                        <div class="timeline-field">Enhancing Consumer Experience</div>
+                        <div class="timeline-desc">
+                            <span class="timeline-chunk" data-highlight-id="exp-work3-1">Analyzed customer journeys for a luxury fashion brand,</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-work3-2">focusing on in-store and online omnichannel touchpoints.</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-work3-3">Proposed targeted marketing communication strategies</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-work3-4">by analyzing high-value customer preferences and purchasing behaviors.</span>
+                        </div>
+                        <div class="timeline-tags">
+                            <span class="timeline-tag-chunk1" data-highlight-id="tag-luxury-fashion-work2">LuxuryFashion</span>
+                            <span class="timeline-tag-chunk1" data-highlight-id="tag-consumer-analysis-work2">ConsumerAnalysis</span>
+                            <span class="timeline-tag-chunk1" data-highlight-id="tag-brand-experience-work2">BrandExperience</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-omnichannel-work2">Omnichannel</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-customer-journey-work2">CustomerJourney</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-retail-work2">Retail</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-marketing-strategy-work2">MarketingStrategy</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="original-edu-exp-items">
+            <div class="edu-row" data-item-id="edu-0">
+                <div class="timeline-dot"></div>
+                <div class="timeline-grid">
+                    <div class="image-and-handle-wrapper">
+                        <div class="card-image-container">
+                            </div>
+                        <div class="card-resize-handle"></div>
+                    </div>
+                    <div class="timeline-content-group">
+                        <div class="timeline-title edu-title">UX/UI Design Course</div>
+                        <div class="company edu-org">Seoul City Digital Training Program</div>
+                        <div class="timeline-date edu-date">Apr 2025 - Jul 2025</div>
+                        <div class="card-description-summary"></div> 
+                        <div class="timeline-field edu-role">Trainee</div>
+                        <div class="timeline-desc edu-desc">
+                            <span class="timeline-chunk" data-highlight-id="exp-edu1-1">Systematically learned the entire process of user experience design,</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-edu1-2">acquiring practical UX/UI skills such as UX research, user testing,</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-edu1-3">and design prototyping through the Seoul City Digital Training Program.</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-edu1-4">Repeatedly practiced the full design process</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-edu1-5">by designing and verifying diverse user journeys through various projects.</span>
+                        </div>
+                        <div class="timeline-tags edu-tags">
+                            <span class="timeline-tag-chunk1" data-highlight-id="tag-ux-design-edu0">UXDesign</span>
+                            <span class="timeline-tag-chunk1" data-highlight-id="tag-user-research-edu0">UserResearch</span>
+                            <span class="timeline-tag-chunk1" data-highlight-id="tag-prototyping-edu0">Prototyping</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-ui-design-edu0">UIDesign</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-wireframing-edu0">Wireframing</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-design-thinking-edu0">DesignThinking</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-information-architecture-edu0">InformationArchitecture</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="edu-row" data-item-id="edu-1">
+                <div class="timeline-dot"></div>
+                <div class="timeline-grid">
+                    <div class="image-and-handle-wrapper">
+                        <div class="card-image-container">
+                            </div>
+                        <div class="card-resize-handle"></div>
+                    </div>
+                    <div class="timeline-content-group">
+                        <div class="timeline-title edu-title">Programming Course</div>
+                        <div class="company edu-org">Korea Digital Training Bootcamp by Team Sparta</div>
+                        <div class="timeline-date edu-date">Oct 2024 - Feb 2025</div>
+                        <div class="card-description-summary"></div> 
+                        <div class="timeline-field edu-role">Trainee</div>
+                        <div class="timeline-desc edu-desc">
+                            <span class="timeline-chunk" data-highlight-id="exp-edu2-1">Strengthened my hands-on ability to bridge design and development</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-edu2-2">by completing the Korea Digital Training Bootcamp from Team Sparta,</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-edu2-3">focusing on Flutter app development.</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-edu2-4">Enhanced my understanding of the technical implementation of UX/UI design</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-edu2-5">and improved collaboration skills through real project work.</span>
+                        </div>
+                        <div class="timeline-tags edu-tags">
+                            <span class="timeline-tag-chunk1" data-highlight-id="tag-frontend-edu1">Frontend</span>
+                            <span class="timeline-tag-chunk1" data-highlight-id="tag-programming-edu1">Programming</span>
+                            <span class="timeline-tag-chunk1" data-highlight-id="tag-flutter-edu1">Flutter</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-ux-ui-dev-edu1">UXUIDesign</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-mobile-development-edu1">Mobile App</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-api-integration-edu1">API Integration</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-agile-development-edu1">Agile Development</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="edu-row" data-item-id="edu-2">
+                <div class="timeline-dot"></div>
+                <div class="timeline-grid">
+                    <div class="image-and-handle-wrapper">
+                        <div class="card-image-container">
+                            </div>
+                        <div class="card-resize-handle"></div>
+                    </div>
+                    <div class="timeline-content-group">
+                        <div class="timeline-title edu-title">Business Administration/<br>Media Communication Major</div>
+                        <div class="company edu-org">Hankuk University Of Foreign Studies</div>
+                        <div class="timeline-date edu-date">Mar 2012 - Dec 2017</div>
+                        <div class="card-description-summary"></div> 
+                        <div class="timeline-field edu-role">Student</div>
+                        <div class="timeline-desc edu-desc">
+                            <span class="timeline-chunk" data-highlight-id="exp-edu3-1">Built a solid theoretical foundation in business strategy and communications</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-edu3-2">by double-majoring in Business Administration and Media Communication.</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-edu3-3">Gained expertise in marketing, branding, and consumer behavior,</span>
+                            <span class="timeline-chunk" data-highlight-id="exp-edu3-4">building a solid foundation for user-centered design.</span>
+                        </div>
+                        <div class="timeline-tags edu-tags">
+                            <span class="timeline-tag-chunk1" data-highlight-id="tag-business-strategy-edu2">BusinessStrategy</span>
+                            <span class="timeline-tag-chunk1" data-highlight-id="tag-consumer-behavior-edu2">ConsumerBehavior</span>
+                            <span class="timeline-tag-chunk1" data-highlight-id="tag-brand-management-edu2">Branding</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-integrated-marketing-edu2">Marketing</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-media-planning-edu2">MediaPlanning</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-communication-theory-edu2">Communication</span>
+                            <span class="timeline-tag-chunk2" data-highlight-id="tag-marketing-analytics-edu2">Analytics</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="experience-modal-overlay" id="experience-modal-container">
+        <div class="experience-modal-content">
+            <button class="experience-modal-close-btn" id="modal-close-button" aria-label="Close modal">×</button>
+            <div class="experience-modal-card-nav" id="modal-card-nav"></div>
+            <div class="experience-modal-image-pane">
+                <img src="" alt="Experience Image" id="modal-image-element" class="experience-modal-image">
+                <div class="experience-modal-nav">
+                    <button class="experience-modal-nav-btn" id="modal-prev-button" aria-label="Previous image"><</button>
+                    <button class="experience-modal-nav-btn" id="modal-next-button" aria-label="Next image">></button>
+                </div>
+                <div id="modal-image-index" class="experience-modal-image-index"></div>
+            </div>
+            <div class="experience-modal-details-pane">
+                <!-- HEADER SECTION -->
+                <div class="header">
+                    <h3 id="modal-title" class="experience-modal-title"></h3>
+                    <p id="modal-company" class="experience-modal-company"></p>
+                </div>
+
+                <!-- CONTENT WRAPPER (SIDEBAR + MAIN CONTENT) -->
+                <div class="content-wrapper">
+                    <div class="sidebar">
+                        <div class="sidebar-section">
+                            <span class="sidebar-label" id="modal-duration-label">Duration</span>
+                            <div class="sidebar-value">
+                                <span class="number-highlight" id="modal-duration-display"></span><br>
+                                <small id="modal-duration-period" style="color: #999;"></small>
+                            </div>
+                        </div>
+                        <div class="sidebar-section">
+                            <span class="sidebar-label" id="modal-field-label">Field</span>
+                            <div class="sidebar-value" id="modal-field"></div>
+                        </div>
+                        <div class="sidebar-section">
+                            <span class="sidebar-label">Location</span>
+                            <div class="sidebar-value" id="modal-location"></div>
+                        </div>
+                    </div>
+                    <div class="main-content">
+                        <div id="modal-description" class="experience-modal-description"></div>
+                    </div>
+                </div>
+
+                <!-- FOOTER SECTION (EXPERTISE + TAGS) -->
+                <div class="footer-grid">
+                    <div class="expertise-label">Expertise</div>
+                    <div id="modal-tags" class="experience-modal-tags"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-row">
+            <div class="footer-content">
+                <p>
+                    You've hit the footer,<br>
+                    thanks for stopping by.<br>
+                    Still curious?<br>
+                    → <a href="mailto:oosu.salon@gmail.com">oosu.salon@gmail.com</a>
+                </p>
+                <span class="footer-copyright">© Oosu Jang 2025</span>
+            </div>
+            <div id="lottie-container" style="width:200px; height:300px; position:relative; overflow:hidden;">
+                <div id="lottie-inner-section" style="
+                    position: absolute;
+                    left: 50%; top: 50%;
+                    width: 200px; height: 300px;
+                    transform: translate(-50%, -50%);
+                    pointer-events: none; /* 클릭 방지(옵션) */
+                "></div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../common/common.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <!-- Your main experience.js file will import all other modules -->
+    <script type="module" src="experience.js"></script>
+    <script>
+        lottie.loadAnimation({
+          container: document.getElementById('lottie-inner-section'),
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: 'https://gist.githubusercontent.com/oosuhada/edf622d12dd2d57d22d625455daeef60/raw/a7b8e50648e223720ee86dffc57300d7e49ad7cd/footer_experience.json',
+          rendererSettings: {preserveAspectRatio: 'none'},
+        });
+      </script> 
+</body>
+</html>

@@ -1,0 +1,495 @@
+/*
+  Global Styles & Basic Setup
+*/
+html {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Work Sans", sans-serif;
+  overflow: hidden; /* Added to prevent scroll during preloader */
+  background-color: #f8f8f8;
+}
+
+/*
+  Container for Preloader Content
+*/
+.container {
+  height: 100vh;
+  width: 100vw;
+  margin: 0 auto;
+  text-align: center;
+  visibility: hidden;
+  position: relative;
+  overflow: hidden;
+  /* background-color will be overridden by .texture-background */
+}
+
+/* NEW: Texture Background for preloaderContainer */
+.texture-background {
+  background-image: url('../img/introbackground.png'); /* Use the desired texture image */
+  background-size: cover;
+  background-position: center;
+  opacity: 1; /* Initially visible */
+  transition: opacity 0.5s ease;
+}
+
+
+/*
+  General positioning for most content sections within the container.
+  Specific sections like final-message-section, controls, blank-interlude
+  will have their own explicit positioning.
+*/
+.container > div:not(.final-message-section):not(.controls):not(.blank-interlude) {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 8rem;
+}
+
+/*
+  Intro Section
+  Corresponds to: "greeting", "name", "greetingText"
+*/
+.intro-section {
+  margin-top: 12vw;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.intro-greeting { /* Corresponds to "greeting" */
+  font-size: 3rem;
+  font-weight: 600;
+  margin-left: 10vw;
+  margin-right: 10vw;
+}
+
+.intro-section > img { /* If there's an image directly in intro-section */
+  vertical-align: middle;
+  margin-bottom: 10px;
+  max-width: 100%;
+  height: auto;
+}
+
+.intro-text-wrapper {
+  display: inline-block; /* Change to inline-block */
+  font-size: 1.4rem;
+  font-weight: lighter;
+  margin-top: 4vw; /* This will now be respected */
+  margin-left: 10vw;
+  margin-right: 10vw;
+}
+
+.intro-text { /* Corresponds to "greetingText" */
+  display: inline; /* Keep the spans inline */
+}
+
+/*
+  Product Statement Section
+  Corresponds to: "text1"
+*/
+.product-statement {
+  margin-top: 12vw;
+  font-size: 3rem;
+  margin-left: 20vw;
+  margin-right: 20vw;
+}
+
+/*
+  Idea Statements Section (Part 1 & 2)
+  Corresponds to: "text2", "text3"
+*/
+.idea-statements p {
+  margin-top: 12vw;
+  font-size: 2rem; /* Increased font size */
+  position: absolute;
+  margin-left: 10vw;
+  margin-right: 10vw;
+  left: 0;
+  right: 0;
+}
+
+/*
+  Chatbox Section
+  Corresponds to: "textInChatBox", "sendButtonLabel"
+*/
+.chatbox-section {
+  position: absolute; /* Specific positioning for chatbox */
+  left: 0;
+  right: 0;
+  top: 20vh; /* Will be animated by JS */
+  z-index: 1;
+  margin-top: 12vw; /* Ensure it aligns with general flow */
+}
+
+.chatbox-section .text-box {
+  width: 600px;
+  margin: 0 auto;
+  border: 3px solid #aaa;
+  border-radius: 5px;
+  padding: 10px;
+  position: relative;
+}
+
+.text-box p {
+  margin: 0;
+  text-align: left;
+}
+
+.text-box span {
+  visibility: hidden;
+}
+
+.text-box .fake-btn {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  color: #fff;
+  background-color:rgb(136, 136, 136);
+  padding: 5px 8px;
+  border-radius: 3px;
+}
+
+/*
+  Idea Statements Section (Continued)
+  Corresponds to: "text4", "text4Adjective", "text5Entry", "text5Content", "smiley", "bigTextPart1", "bigTextPart2"
+*/
+.idea-statements-continued p {
+    margin-top: 12vw;
+  /* font-size: 2rem; */ /* This was commented out, keep as is or uncomment if needed */
+  position: absolute;
+  margin-left: 10vw;
+  margin-right: 10vw;
+  left: 0;
+  right: 0;
+}
+
+.idea-3, .idea-4 { /* Corresponds to "text4", "text4Adjective", "text5Entry" */
+  font-size: 2rem;
+}
+
+.idea-3 strong { /* Corresponds to "text4Adjective" */
+  padding: 3px 5px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.idea-5 { /* Corresponds to "text5Content", "smiley" */
+  font-size: 3rem;
+  /* Ensure these are visible by default, GSAP will animate from opacity: 0 */
+  opacity: 1; /* Make sure the parent is visible */
+}
+
+.idea-5 span,
+.idea-6 span,
+.heading-main span {
+  display: inline-block;
+}
+
+
+/* This targets the 'story' text content part 2 and the smiley specifically for initial visibility */
+/* REMOVED: Initial opacity: 0 from here. Let GSAP handle the 'from' animation. */
+/* .idea-5 [data-node-name='text5ContentPart1'], */
+/* .idea-5 [data-node-name='text5ContentPart2'], */
+/* .idea-5 .smiley { */
+/* opacity: 0; */ /* Start hidden for staggered appearance */
+/* } */
+
+
+.idea-6 span { /* Corresponds to "bigTextPart1", "bigTextPart2" */
+  font-size: 24vw;
+  /* NEW: Apply Anton font here */
+  font-family: "Anton", sans-serif;
+}
+
+/*
+  UXUI Design Section (formerly Image with Wish Section)
+  Corresponds to: "imagePath", "wishHeadingPart1", "wishHeadingPart2", "wishText"
+*/
+.uxui-design-section {
+  position: absolute;
+  z-index: 2; /* Increased z-index to overlap idea-6 */
+  top: 20%;
+}
+
+.uxui-design-section img {
+  display: inline-block;
+  max-width: 45%;
+  height: auto;
+}
+
+.image-path{
+ margin-top: 4rem;
+}
+
+.lightbulb {
+    display:none;
+}
+
+.wish-message {
+  /* Positioning for the wish text relative to the image section */
+}
+
+.heading-gap {
+  /* Placeholder for spacing */
+}
+
+.heading-main { /* Corresponds to "wishHeadingPart1", "wishHeadingPart2" */
+  font-size: 4em;
+  margin: 0;
+  font-weight: 300;
+  text-transform: uppercase;
+  padding-top: 40px;
+  color: #333;
+  font-family: "Anton", sans-serif;
+}
+
+.heading-main .heading-part1,
+.heading-main .heading-part2 {
+  color: inherit; /* Inherit color from parent, then JS will change specific colors */
+}
+
+.wish-message h5 { /* Corresponds to "wishText" */
+  font-weight: lighter;
+  font-size: 2rem;
+  margin: 10px 0 0;
+}
+
+/*
+  Final Message Section
+  Corresponds to: "outroText", "replayText", "outroSmiley"
+*/
+.final-message-section {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50vh; /* Adjust this value as needed to position it correctly */
+  z-index: 2;
+}
+
+.final-message-section p {
+  font-size: 2rem;
+  font-weight: lighter;
+  margin: 10px 0;
+}
+
+#replay { /* Corresponds to "replayText" */
+  z-index: 3;
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 20px;
+}
+
+/*
+  Playback Controls (Fixed Position)
+*/
+.controls {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%); /* Vertically center */
+  z-index: 10; /* Ensure controls are on top */
+  padding: 10px;
+  display: flex;
+  flex-direction: column; /* Arrange buttons vertically */
+  align-items: center; /* Center items horizontally within the column */
+}
+
+.controls button {
+  background-color: #5555556d;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.controls button:last-child {
+  margin-bottom: 0;
+}
+
+.controls button:hover {
+  background-color: #777;
+  transform: scale(1.05);
+}
+
+.controls button:active {
+  transform: scale(0.95);
+}
+
+.controls .handle {
+  width: 100%;
+  height: 20px;
+  cursor: grab;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  border-radius: 5px 5px 0 0;
+}
+
+#skipBtn {
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#skipBtn:hover {
+  background-color: #c9302c;
+  transform: scale(1.05);
+}
+
+#skipBtn:active {
+  transform: scale(0.95);
+}
+
+/*
+  Animated Background Elements
+*/
+.baloons-animate {
+  width: 100vw;
+  height: 100vh;
+  position: fixed; /* Fixed position so they fill the viewport */
+  top: 0;
+  left: 0;
+  pointer-events: none; /* Crucial: Allow clicks through to the underlying content */
+  z-index: 0; /* Default z-index, will be managed by JS during animation */
+}
+
+.baloons img {
+  display: inline-block;
+  position: absolute;
+  /* Removed initial transforms, let GSAP handle positioning */
+}
+
+.baloons img:nth-child(even) {
+  left: -10%; 
+}
+
+.baloons img:nth-child(odd) {
+  right: -10%;
+}
+
+.baloons img:nth-child(3n + 0) {
+  left: 30%;
+}
+
+/* NEW: Canvas styles */
+.circles-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0; /* Behind other content, will be adjusted by JS */
+  pointer-events: none; /* Ensure it doesn't block interaction */
+  display: block; /* Ensures no extra spacing */
+}
+
+/*
+  Blank Interlude Screen
+*/
+.blank-interlude {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #f8f8f8; /* Match container background */
+  opacity: 0; /* Initially hidden */
+  visibility: hidden; /* Ensure it's not visible initially */
+  z-index: 4; /* Higher than final-message-section, lower than controls */
+}
+
+/*
+  Responsive Adjustments for Smaller Screens
+*/
+@media screen and (max-width: 500px) {
+  .container {
+    width: 90%;
+  }
+
+  .chatbox-section .text-box {
+    width: 90%;
+  }
+
+  .text-box .fake-btn {
+    right: 5px;
+    bottom: -38px;
+  }
+
+  .idea-5 span {
+    display: block;
+  }
+
+  .idea-6 span {
+    font-size: 10rem;
+  }
+
+  .uxui-design-section .lightbulb { /* Renamed from .hat */
+    width: 50px;
+    top: -20px;
+  }
+
+  .heading-main {
+    font-size: 2.2em;
+  }
+
+  .wish-message h5 {
+    font-size: 1.4rem;
+  }
+
+  .heading-gap {
+    height: 20px;
+  }
+
+  .final-message-section p {
+    font-size: 1.5rem;
+    font-weight: lighter;
+  }
+
+  .controls {
+    left: 10px;
+    padding: 8px;
+    z-index: 999;
+  }
+
+  .controls button {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+  }
+
+  #skipBtn {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+
+  .container > div:not(.final-message-section):not(.controls):not(.blank-interlude) {
+  top: 12rem;
+}
+
+.idea-6 span { /* Corresponds to "bigTextPart1", "bigTextPart2" */
+  font-size: 20vw;
+}
+}
+
+@media screen and (min-width: 860px) {
+  .container > div:not(.final-message-section):not(.controls):not(.blank-interlude) {
+  top: 3rem;
+}
+}

@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Enhanced hover effects for the entire card
   valueCards.forEach((card) => {
-    const icon = card.querySelector('.value-icon');
+    const icon = card.querySelector('.value-icon i');
     const title = card.querySelector('.value-title');
 
     if (icon && gsap) {
