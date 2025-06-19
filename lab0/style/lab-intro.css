@@ -1,3 +1,4 @@
+/* lab-intro.css */
 /* === 기본 세팅 === */
 html, body {
     height: 100%;
@@ -64,7 +65,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    color: #fff;
+    color: var(--intro-text-color);
     font-family: 'Pretendard', sans-serif; /* Using Pretendard as it's already linked */
     font-size: 2.5rem;
     font-weight: 600;
@@ -77,6 +78,7 @@ body {
 .typing-text {
     overflow: hidden; /* Essential for typing effect */
     white-space: nowrap;
+    color: var(--intro-text-color);
 }
 
 .typing-text-line1 {
@@ -105,7 +107,7 @@ body {
     right: 5vw; /* Adjusted for bottom-right position */
     font-family: 'night', sans-serif; /* Custom font for countdown */
     font-size: 8vw; /* Responsive font size */
-    color: #fff;
+    color: var(--intro-text-color); /* Theme-aware intro text color */
     text-align: right;
     pointer-events: none; /* Do not block interaction with other elements */
 }
@@ -131,7 +133,7 @@ body {
     left: 50%;
     transform: translateX(-50%);
     font-size: 3rem;
-    color: #fff;
+    color: var(--intro-text-color); /* Theme-aware intro text color */
     cursor: pointer;
     opacity: 0.9; /* Increased opacity for better visibility */
     transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
@@ -141,7 +143,7 @@ body {
 
 #scroll-down-arrow:hover {
     transform: translateX(-50%) translateY(-10px); /* Subtle hover effect */
-    color: #fff; /* Keep white on hover, remove yellow (#ffd166) */
+    color: var(--intro-text-color); /* Keep theme-aware color on hover */
 }
 
 /* Responsive adjustments for intro screen elements */
@@ -186,4 +188,105 @@ body {
         font-size: 2rem;
         bottom: 1vh;
     }
+}
+
+/* New Lab Header Styles (Similar to experience-header) */
+.lab-header {
+    position: fixed;
+    top: 10px;
+    z-index: 9999; /* Higher z-index to ensure visibility above intro-screen */
+    width: 100%;
+    background-color: transparent; /* Always transparent as it's a fixed overlay */
+    transition: transform var(--transition-duration) ease, opacity var(--transition-duration) ease, visibility var(--transition-duration) ease;
+}
+
+.lab-header.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-100%);
+    background-color: transparent;
+}
+
+.lab-header:not(.hidden) {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    background-color: transparent;
+}
+
+.lab-header .header-inner {
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: transparent;
+}
+
+.lab-header .button-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-right: 1rem; /* Adjust as needed */
+    /* Add initial transform for animation */
+    transform: translateY(-20px);
+    opacity: 0;
+    pointer-events: none; /* Disable interaction until visible */
+
+    /* This will be set by JS on initial load based on theme (light/dark)
+       During intro, --button-current-color will be transparent, --button-current-text-color will be white (light) or black (dark).
+       After intro, JS will remove these and the buttons will revert to --button-bg-color/--button-text-color.
+    */
+    --button-current-color: var(--button-intro-color);
+    --button-current-text-color: var(--button-intro-text-color);
+}
+
+.lab-header .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    color: var(--button-current-text-color); /* Intro: white/black; After intro: theme text color */
+    background: transparent; /* Intro: transparent; After intro: theme bg color */
+    border: 1px solid var(--button-current-text-color); /* Border matches text color */
+    border-radius: 0.375rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color var(--transition-duration), color var(--transition-duration), border-color var(--transition-duration);
+}
+
+.lab-header .button:hover {
+    /* Hover logic: fill with current text color, text becomes primary background color */
+    background-color: var(--button-current-text-color);
+    color: var(--primary-color);
+    border-color: var(--button-current-text-color);
+}
+
+
+/* Specific styling for the theme toggle button */
+.lab-header .theme-toggle {
+    padding: 0.5rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    position: relative;
+    width: 2rem;
+    height: 2rem;
+    /* Theme toggle icons use primary-content-color, which is already themed */
+}
+
+.lab-header .theme-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    stroke: var(--primary-content-color); /* Remains consistent with general header content */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform var(--transition-duration), opacity var(--transition-duration);
+}
+
+.lab-header .theme-icon.hidden {
+    transform: translate(-50%, -50%) rotate(-90deg);
+    opacity: 0;
 }

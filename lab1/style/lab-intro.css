@@ -1,189 +1,419 @@
-/* === 기본 세팅 === */
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    background: transparent;
-    font-family: 'Pretendard', sans-serif;
-    overflow-x: hidden;
+/* lab-intro.css */
+
+/* General/Utility Styles and Root Variables */
+
+:root {
+/* Light Theme Colors (Default for Lab Page) */
+--light-bg: #ffffff;
+--light-text: #000000;
+--light-accent: #ffd166; /* Match category jump active */
+--light-secondary: #cccccc;
+--light-primary-color: #f8f8f8; /* Light background for header */
+--light-ctx-primary-fg-primary: #000000;
+--light-ctx-primary-fg-secondary: #404040;
+--light-section-title-inactive-bg: #ffffff;
+--light-section-title-inactive-text: #212121;
+--light-section-title-active-bg: #e0e0e0;
+--light-section-title-active-text: #000000;
+--light-timeline-content-bg: #f8f8f8;
+--light-timeline-content-text: #222;
+--light-item-subtitle-text: #666666;
+--light-item-period-text: #777777;
+--light-item-border: #2e2e2e;
+--light-item-hover-bg: rgba(220, 220, 220, 0.68);
+--light-marquee-item-hover-bg: #aaa;
+--light-marquee-item-hover-color: #333;
+--light-marquee-fade-bg: #ffffff;
+--light-list-item-inactive-text: #cccccc;
+
+
+/* Dark Theme Colors (Inverted from light theme) */
+--dark-bg: #000000;
+--dark-text: #ffffff;
+--dark-accent: #007bff; /* Example accent color (can be adjusted) */
+--dark-secondary: #333;
+--dark-primary-color: #1a202c; /* Dark background for header */
+--dark-ctx-primary-fg-primary: #ffffff;
+--dark-ctx-primary-fg-secondary: #c0c0c0;
+--dark-section-title-inactive-bg: #1a202c;
+--dark-section-title-inactive-text: #c0c0c0;
+--dark-section-title-active-bg: #000000;
+--dark-section-title-active-text: #ffffff;
+--dark-timeline-content-bg: #111;
+--dark-timeline-content-text: #fff;
+--dark-item-subtitle-text: #9ca3af;
+--dark-item-period-text: #6b7280;
+--dark-item-border: #d1d5db;
+--dark-item-hover-bg: rgba(30, 30, 30, 0.68);
+--dark-marquee-item-hover-bg: #555;
+--dark-marquee-item-hover-color: #eee;
+--dark-marquee-fade-bg: #000000;
+--dark-list-item-inactive-text: #333333;
+
+/* Sizing variables */
+--nav-header-height: 0px;
+--diagonal-handle-thickness: 15px;
+--glass-blur: 8px;
+--glass-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+--glass-radius: 8px;
+
+/* Highlight and accent colors (these might remain consistent or be themed) */
+--main-highlight-color: #000000;
+--main-accent-color: #00000081;
+
+/* Lab Header Theme Variables (now based on global theme) */
+--primary-color: var(--light-primary-color); /* Default to light theme's primary color */
+--primary-content-color: var(--light-text); /* Default to light theme's content color */
+--primary-opacity-25: rgba(255, 255, 255, 0.25); /* Default to light theme's opacity */
+--transition-duration: 0.3s;
 }
 
+/* Apply Light Theme by default using data-theme="light" */
+body[data-theme='light'] {
+/* These variables are already defined in :root as light-*, so this block
+   primarily serves to explicitly set them if there were overrides */
+--primary-color: var(--light-primary-color);
+--primary-content-color: var(--light-text);
+--primary-opacity-25: rgba(255, 255, 255, 0.25);
+
+background-color: var(--light-bg);
+color: var(--light-text);
+}
+
+/* Override with Dark Theme when data-theme="dark" */
+body[data-theme='dark'] {
+--primary-color: var(--dark-primary-color);
+--primary-content-color: var(--dark-text);
+--primary-opacity-25: rgba(26, 32, 44, 0.25); /* Adjusted for dark theme */
+
+background-color: var(--dark-bg);
+color: var(--dark-text);
+}
+
+
+/* Ensure body has no margin/padding for full-screen elements */
 body {
-    min-height: 100vh;
-    position: relative;
-    opacity: 0; /* body 초기 투명하게 설정 */
-    transition: opacity 0.3s ease-out; /* body 페이드 인 효과 */
+margin: 0;
+padding: 0;
+overflow-x: hidden;
+transition: background-color 0.3s ease, color 0.3s ease; /* Smooth theme transition */
 }
 
-/* --- New Intro Screen Styles --- */
 #intro-screen {
-    position: fixed; /* Fixed to cover the entire viewport */
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1000; /* Ensure it's above other content initially */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #000; /* Fallback for video or initial black screen */
-    opacity: 0; /* Will be faded in by JS */
-    visibility: hidden; /* Hidden until activated by JS */
-    overflow: hidden; /* Prevent scrollbars within intro screen */
+position: fixed;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vh;
+overflow: hidden;
+z-index: 1000;
+background-color: #000;
+color: white;
 }
 
 #background-video {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-    z-index: -1; /* Place behind other intro content */
-    transform: translate(-50%, -50%);
-    background-size: cover;
-    filter: brightness(0.7); /* Darken video for better text contrast */
+position: absolute;
+top: 50%;
+left: 50%;
+min-width: 100%;
+min-height: 100%;
+width: auto;
+height: auto;
+z-index: -1;
+transform: translateX(-50%) translateY(-50%);
+background-size: cover;
 }
 
 .intro-overlay {
-    position: relative; /* Container for positioning typing, countdown, and arrow */
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* To push typing to top-left and countdown to bottom-right */
-    padding: 5vh 5vw; /* Padding from edges */
-    box-sizing: border-box;
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8));
+color: white;
+text-align: center;
+padding: 20px;
+box-sizing: border-box;
 }
 
 .typing-container {
-    position: absolute;
-    top: 10vh; /* Adjusted for top-left position */
-    left: 7vw; /* Adjusted for top-left position */
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    color: #fff;
-    font-family: 'Pretendard', sans-serif; /* Using Pretendard as it's already linked */
-    font-size: 2.5rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.4;
-    opacity: 0; /* Hidden initially, will fade in */
-    transform: translateY(20px); /* For entrance animation */
+margin-top: -15vh; /* Adjust as needed */
+display: flex;
+flex-direction: column;
+align-items: center;
+font-family: 'Do Hyeon', sans-serif;
+font-size: 2.5rem;
+color: white;
+white-space: nowrap;
+overflow: hidden;
+padding: 0 10px; /* Add some padding to prevent text from touching edges */
 }
 
 .typing-text {
-    overflow: hidden; /* Essential for typing effect */
-    white-space: nowrap;
+display: block;
+overflow: hidden;
+white-space: nowrap;
+border-right: .15em solid orange; /* The typing cursor */
+animation:
+typing 3.5s steps(40, end),
+blink-caret .75s step-end infinite;
 }
 
 .typing-text-line1 {
-    border-right: none; /* No cursor for first line */
+animation: typing 3.5s steps(40, end) forwards;
 }
 
 .typing-text-line2 {
-    border-right: 2px solid transparent; /* Initial transparent cursor for second line */
+animation: typing 3.5s steps(40, end) 3.5s forwards; /* Starts after line 1 */
+opacity: 0; /* Initially hidden */
 }
 
-.typing-cursor {
-    display: inline-block;
-    animation: blink-cursor 0.8s steps(1) infinite; /* Blinking animation for cursor */
-    margin-left: 2px;
+.typing-text-line2 .typing-cursor {
+animation: blink-caret .75s step-end infinite;
 }
 
-@keyframes blink-cursor {
-    50% {
-        opacity: 0;
-    }
+/* Typing animation */
+@keyframes typing {
+from { width: 0 }
+to { width: 100% }
 }
+
+/* Blinking cursor animation */
+@keyframes blink-caret {
+from, to { border-color: transparent }
+50% { border-color: orange; }
+}
+
 
 #countdown-container {
-    position: absolute;
-    bottom: 5vh; /* Adjusted for bottom-right position */
-    right: 5vw; /* Adjusted for bottom-right position */
-    font-family: 'night', sans-serif; /* Custom font for countdown */
-    font-size: 8vw; /* Responsive font size */
-    color: #fff;
-    text-align: right;
-    pointer-events: none; /* Do not block interaction with other elements */
+position: absolute;
+bottom: 10vh; /* Position above the scroll arrow */
+font-family: 'Do Hyeon', sans-serif;
+color: #ffd166;
+font-size: 4rem;
+font-weight: bold;
+overflow: hidden; /* Hide numbers that are not active */
 }
 
 .countdown-number {
-    opacity: 0; /* Hidden initially, will animate in */
-    line-height: 1; /* Tighter line height */
-    margin: 0;
-    padding: 0;
-    transform: translateY(20px); /* For entrance animation */
+position: absolute;
+bottom: 0;
+left: 50%;
+transform: translateX(-50%);
+opacity: 0;
+transition: all 0.5s ease-in-out;
 }
 
-/* Font for countdown, ensure this path is correct */
-@font-face {
-    font-family: "night";
-    src: url("fonts/TheNightWatch.woff2") format("woff2"); /* New path for font */
-    font-display: swap; /* Optimizes font loading */
+.countdown-number.active {
+opacity: 1;
 }
 
 #scroll-down-arrow {
-    position: absolute;
-    bottom: 3vh;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 3rem;
-    color: #fff;
-    cursor: pointer;
-    opacity: 0.9; /* Increased opacity for better visibility */
-    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-    z-index: 10; /* Ensure it's above other elements */
-    pointer-events: none; /* Disable until activated by JS */
+position: absolute;
+bottom: 3vh;
+left: 50%;
+transform: translateX(-50%);
+font-size: 2.5rem;
+color: white;
+opacity: 0; /* Initially hidden */
+animation: bounce 1.5s infinite;
+cursor: pointer;
 }
 
-#scroll-down-arrow:hover {
-    transform: translateX(-50%) translateY(-10px); /* Subtle hover effect */
-    color: #fff; /* Keep white on hover, remove yellow (#ffd166) */
+@keyframes bounce {
+0%, 20%, 50%, 80%, 100% {
+transform: translateX(-50%) translateY(0);
+}
+40% {
+transform: translateX(-50%) translateY(-10px);
+}
+60% {
+transform: translateX(-50%) translateY(-5px);
+}
 }
 
-/* Responsive adjustments for intro screen elements */
-@media screen and (max-width: 1024px) {
-    .typing-container {
-        font-size: 2rem;
-    }
-    #countdown-container {
-        font-size: 10vw;
-    }
+
+/* New Lab Header Styles - Similar to Experience Header */
+.lab-header {
+position: fixed;
+top: 10px;
+z-index: 999; /* Higher z-index to be on top of carousel-hero */
+width: 100%;
+background-color: transparent;
+transition: transform var(--transition-duration) ease, opacity var(--transition-duration) ease, visibility var(--transition-duration) ease;
 }
 
-@media screen and (max-width: 768px) {
-    .typing-container {
-        font-size: 1.5rem;
-        top: 8vh;
-        left: 8vw;
-    }
-    #countdown-container {
-        font-size: 15vw;
-        bottom: 3vh;
-        right: 3vw;
-    }
-    #scroll-down-arrow {
-        font-size: 2.5rem;
-        bottom: 2vh;
-    }
+.lab-header.hidden {
+opacity: 0;
+visibility: hidden;
+transform: translateY(-100%);
+background-color: transparent;
 }
 
-@media screen and (max-width: 480px) {
-    .typing-container {
-        font-size: 1.2rem;
-        top: 8vh;
-        left: 6vw;
-    }
-    #countdown-container {
-        font-size: 20vw;
-        bottom: 2vh;
-        right: 2vw;
-    }
-    #scroll-down-arrow {
-        font-size: 2rem;
-        bottom: 1vh;
-    }
+.lab-header:not(.hidden) {
+opacity: 1;
+visibility: visible;
+transform: translateY(0);
+background-color: transparent;
+}
+
+.header-inner {
+margin: 0 auto;
+display: flex;
+justify-content: flex-end;
+align-items: center;
+background-color: transparent;
+}
+
+.button-group {
+display: flex;
+align-items: center;
+gap: 1rem;
+margin-right: 1rem;
+}
+
+.button {
+display: inline-flex;
+align-items: center;
+gap: 0.5rem;
+padding: 0.5rem 1rem;
+font-size: 0.875rem;
+color: var(--primary-content-color);
+background: transparent;
+border: 1px solid var(--primary-content-color);
+border-radius: 0.375rem;
+text-decoration: none;
+cursor: pointer;
+transition: background-color var(--transition-duration), color var(--transition-duration);
+}
+
+.button:hover {
+background-color: var(--primary-content-color);
+color: var(--primary-color);
+}
+
+.theme-toggle {
+padding: 0.5rem;
+border: none;
+background: none;
+cursor: pointer;
+position: relative;
+width: 2rem;
+height: 2rem;
+}
+
+.theme-icon {
+width: 1.25rem;
+height: 1.25rem;
+stroke: var(--primary-content-color);
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+transition: transform var(--transition-duration), opacity var(--transition-duration);
+}
+
+.theme-icon.hidden {
+transform: translate(-50%, -50%) rotate(-90deg);
+opacity: 0;
+}
+
+.sr-only {
+position: absolute;
+width: 1px;
+height: 1px;
+padding: 0;
+margin: -1px;
+overflow: hidden;
+clip: rect(0, 0, 0, 0);
+border: 0;
+}
+
+/* === Nav Header adjustments for Lab Page === */
+.nav-header {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+z-index: 100; /* Standard nav-header z-index */
+background-color: transparent; /* Initially transparent for intro screen */
+transition: transform 0.3s ease-out, opacity 0.3s ease-out, background-color 0.3s ease-out;
+pointer-events: none; /* Initially non-interactive */
+}
+.nav-header.show {
+pointer-events: auto;
+}
+.nav-header.hide {
+transform: translateY(-100%);
+}
+
+.nav-top-row {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 10px 20px;
+background-color: transparent;
+}
+
+.nav-toggle-btn {
+background: none;
+border: none;
+color: white;
+font-size: 1.5rem;
+cursor: pointer;
+}
+
+.nav-title {
+color: white;
+font-size: 1.2rem;
+font-weight: bold;
+}
+
+.nav-menu {
+display: none; /* Hidden by default, shown by JS */
+flex-direction: column;
+background-color: rgba(0, 0, 0, 0.8);
+padding: 10px 0;
+}
+
+.nav-menu.active {
+display: flex;
+}
+
+.nav-menu a {
+color: white;
+text-decoration: none;
+padding: 10px 20px;
+}
+
+/* Ensure foreground content is positioned relative and has a higher z-index */
+#main-content-wrapper {
+position: relative;
+z-index: 1;
+background-color: transparent;
+}
+
+/* Ensure the black background is maintained for the top sections */
+header, .hero-section-winery, #skills-showcase-section {
+position: relative;
+z-index: 2;
+}
+
+#full-screen-bg-section {
+width: 100vw;
+height: 100vh;
+background-color: var(--light-bg); /* Default to light theme */
+position: fixed;
+top: 0;
+left: 0;
+z-index: 0;
+pointer-events: none;
+}
+body[data-theme="dark"] #full-screen-bg-section {
+background-color: var(--dark-bg); /* Apply dark theme */
 }

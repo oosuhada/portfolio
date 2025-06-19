@@ -14,11 +14,12 @@
         document.getElementById('count-100')
       ];
       this.scrollDownArrow = document.getElementById('scroll-down-arrow');
+      this.labHeaderButtonGroup = document.querySelector('.lab-header .button-group'); // New: Reference to button group
       this.isAnimating = false;
       this._scrollDownHandler = this.handleScrollDownClick.bind(this);
     }
 
-    start() {
+   start() {
       if (this.isAnimating) return;
       this.isAnimating = true;
 
@@ -27,6 +28,20 @@
       gsap.set(this.typingContainer, { opacity: 0, y: 20 });
       this.countdownNumbers.forEach(num => gsap.set(num, { opacity: 0, y: 20 }));
       gsap.set(this.scrollDownArrow, { opacity: 0, pointerEvents: 'none' });
+
+      // New: Set initial state for button group
+      if (this.labHeaderButtonGroup) {
+          gsap.set(this.labHeaderButtonGroup, { opacity: 0, y: -20, pointerEvents: 'none' });
+          // Ensure initial color is applied based on current theme for intro
+          const currentTheme = document.body.getAttribute('data-theme');
+          if (currentTheme === 'light') {
+            this.labHeaderButtonGroup.style.setProperty('--button-intro-color', 'white');
+            this.labHeaderButtonGroup.style.setProperty('--button-intro-text-color', 'black');
+          } else {
+            this.labHeaderButtonGroup.style.setProperty('--button-intro-color', 'black');
+            this.labHeaderButtonGroup.style.setProperty('--button-intro-text-color', 'white');
+          }
+      }
 
       // Play video
       if (this.backgroundVideo) {
@@ -100,19 +115,34 @@
         }
       }, "startCountdown+=4.2");
 
-      // Continue scroll-down arrow to opacity 1
+      // Scroll-down arrow animation
       masterTimeline.to(this.scrollDownArrow, {
-        opacity: 1,
-        duration: 2.0,
-        ease: "power2.out",
-        pointerEvents: 'auto',
-        repeat: -1,
-        yoyo: true,
-        onStart: () => {
-          console.log("[IntroSequence] Adding click event listener to scroll-down arrow");
-          this.scrollDownArrow.addEventListener('click', this._scrollDownHandler);
-        }
-      }, "startCountdown+=4.2");
+          opacity: 0.5,
+          duration: 0.7,
+          pointerEvents: 'auto'
+      }, "startCountdown+=2.4");
+
+      masterTimeline.to(this.scrollDownArrow, {
+          opacity: 1,
+          duration: 0.8,
+          repeat: -1,
+          yoyo: true,
+          onStart:  () => {
+              console.log("[IntroSequence] Adding click event listener to scroll-down arrow");
+              this.scrollDownArrow.addEventListener('click', this._scrollDownHandler);
+          }
+      }, "startCountdown+=3.8");
+
+      // Modified: Lab Header Button Group Animation
+      if (this.labHeaderButtonGroup) {
+          masterTimeline.to(this.labHeaderButtonGroup, {
+              opacity: 1,
+              y: 0, // Keep y: 0 as it starts slightly off-screen initially
+              duration: 4, // 4 seconds duration
+              ease: "power2.out", // Smooth ease
+              pointerEvents: 'auto'
+          }, "startCountdown+=1"); // Start 1 second after "startCountdown" label
+      }
     }
 
     fadeOutCountdown() {
@@ -138,7 +168,8 @@
         this.typingLine1,
         this.typingLine2,
         this.countdownNumbers,
-        this.scrollDownArrow
+        this.scrollDownArrow,
+        this.labHeaderButtonGroup // New: Kill tweens for button group
       ]);
       console.log("[IntroSequence] Killed ongoing animations");
 
@@ -160,6 +191,15 @@
         onComplete: () => {
           this.introScreen.style.display = 'none';
           console.log("[IntroSequence] Intro screen hidden");
+
+          // New: Ensure labHeaderButtonGroup is fully visible and correctly styled after intro
+          if (this.labHeaderButtonGroup) {
+            gsap.set(this.labHeaderButtonGroup, { opacity: 1, y: 0, pointerEvents: 'auto' });
+            // Remove intro-specific styling if any, so it uses theme-aware CSS
+            this.labHeaderButtonGroup.style.removeProperty('--button-intro-color');
+            this.labHeaderButtonGroup.style.removeProperty('--button-intro-text-color');
+          }
+
 
           // Scroll to main content
           const mainElement = document.querySelector('main');

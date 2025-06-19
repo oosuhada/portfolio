@@ -1,0 +1,125 @@
+/* lab-core.css */
+
+/* General/Utility Styles and Root Variables */
+
+:root {
+    /* Light Theme Colors (Default for Lab page) */
+    --light-bg: #ffffff;
+    --light-text: #000000;
+    --light-accent: #007bff;
+    --light-primary-color: #e5dfd3; /* Background for the new lab header */
+    --light-primary-content-color: #000000; /* Text/icon color for new lab header */
+    --light-primary-opacity-25: rgba(255, 255, 255, 0.25); /* Background blur/shadow */
+    --light-poster-text: #1a1a1a; /* Default text color for posters */
+    --light-book-binding-color: rgba(0, 0, 0, 0.7); /* Book binding color for light theme */
+    --light-poster-shadow: 8px 8px 12px rgba(0, 0, 0, 0.15), -6px -6px 10px rgba(0, 0, 0, 0.1);
+    --light-poster-hover-shadow: 12px 12px 18px rgba(34, 34, 34, 0.25), -8px -8px 14px rgba(0, 0, 0, 0.15);
+    --light-bg-slideshow-color: #ffffff; /* Background for the slideshow container */
+    --light-bg-slideshow-opacity: 0.5; /* Opacity for slideshow images in light theme */
+
+    /* NEW: Intro screen specific colors for Light Mode */
+    --light-intro-text-color: white; /* Typing text, Countdown, Scroll-down arrow in Light Intro */
+    --light-intro-button-color: transparent; /* Button background during Light Intro (transparent) */
+    --light-intro-button-text-color: white; /* Button text/border during Light Intro (white) */
+
+    /* Dark Theme Colors (Inverted for Lab page) */
+    --dark-bg: #000000;
+    --dark-text: #ffffff;
+    --dark-accent: #007bff;
+    --dark-primary-color: #1a202c; /* Background for the new lab header in dark mode */
+    --dark-primary-content-color: #ffffff; /* Text/icon color for new lab header in dark mode */
+    --dark-primary-opacity-25: rgba(26, 32, 44, 0.25);
+    --dark-poster-text: #e0e0e0; /* Lighter text color for posters in dark theme */
+    --dark-book-binding-color: rgba(255, 255, 255, 0.7); /* Book binding color for dark theme */
+    --dark-poster-shadow: 8px 8px 12px rgba(255, 255, 255, 0.15), -6px -6px 10px rgba(255, 255, 255, 0.1);
+    --dark-poster-hover-shadow: 12px 12px 18px rgba(200, 200, 200, 0.25), -8px -8px 14px rgba(255, 255, 255, 0.15);
+    --dark-bg-slideshow-color: rgba(0, 0, 0, 0.8); /* Darker background for slideshow in dark mode to make images stand out */
+    --dark-bg-slideshow-opacity: 0.2; /* Opacity for slideshow images in dark mode */
+
+    /* NEW: Intro screen specific colors for Dark Mode */
+    --dark-intro-text-color: black; /* Typing text, Countdown, Scroll-down arrow in Dark Intro (black) */
+    --dark-intro-button-color: transparent; /* Button background during Dark Intro (transparent) */
+    --dark-intro-button-text-color: black; /* Button text/border during Dark Intro (black) */
+
+
+    /* Sizing variables */
+    --nav-header-height: 0px; /* Placeholder, common.css handles this */
+    --diagonal-handle-thickness: 15px;
+    --glass-blur: 8px;
+    --glass-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    --glass-radius: 8px;
+
+    /* Highlight and accent colors (these might remain consistent or be themed) */
+    --main-highlight-color: #000000;
+    --main-accent-color: #00000081;
+
+    --transition-duration: 0.3s; /* For theme transitions */
+}
+
+/* Apply Light Theme by default using data-theme="light" */
+body[data-theme='light'] {
+    background-color: var(--light-bg);
+    color: var(--light-text);
+    --primary-color: var(--light-primary-color);
+    --primary-content-color: var(--light-primary-content-color);
+    --primary-opacity-25: var(--light-primary-opacity-25);
+    --poster-text-color: var(--light-poster-text);
+    --book-binding-color: var(--light-book-binding-color);
+    --poster-box-shadow: var(--light-poster-shadow);
+    --poster-hover-box-shadow: var(--light-poster-hover-shadow);
+    --bg-slideshow-color: var(--light-bg-slideshow-color);
+    --bg-slideshow-opacity: var(--light-bg-slideshow-opacity);
+
+    /* Apply intro-specific colors for light theme */
+    --intro-text-color: var(--light-intro-text-color);
+    --button-intro-color: var(--light-intro-button-color);
+    --button-intro-text-color: var(--light-intro-button-text-color);
+
+    /* Regular state button colors (after intro, when header is fully primary-content-color based) */
+    --button-bg-color: var(--light-primary-content-color); /* Black */
+    --button-border-color: var(--light-primary-content-color); /* Black */
+    --button-text-color: var(--light-primary-color); /* Light gray */
+}
+
+/* Override with Dark Theme when data-theme="dark" */
+body[data-theme='dark'] {
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+    --primary-color: var(--dark-primary-color);
+    --primary-content-color: var(--dark-primary-content-color);
+    --primary-opacity-25: rgba(26, 32, 44, 0.25);
+    --poster-text-color: var(--dark-poster-text);
+    --book-binding-color: var(--dark-book-binding-color);
+    --poster-box-shadow: var(--dark-poster-shadow);
+    --poster-hover-box-shadow: var(--dark-poster-hover-box-shadow);
+    --bg-slideshow-color: var(--dark-bg-slideshow-color);
+    --bg-slideshow-opacity: var(--dark-bg-slideshow-opacity);
+
+    /* Apply intro-specific colors for dark theme */
+    --intro-text-color: var(--dark-intro-text-color);
+    --button-intro-color: var(--dark-intro-button-color);
+    --button-intro-text-color: var(--dark-intro-button-text-color);
+
+    /* Regular state button colors (after intro, when header is fully primary-content-color based) */
+    --button-bg-color: var(--dark-primary-content-color); /* White */
+    --button-border-color: var(--dark-primary-content-color); /* White */
+    --button-text-color: var(--dark-primary-color); /* Dark gray */
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth theme transition */
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
