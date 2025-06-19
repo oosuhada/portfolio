@@ -384,51 +384,74 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function startBalloonInterval() {
+    // Expose startBalloonInterval and stopBalloonInterval globally
+    window.startBalloonInterval = function() {
         if (!balloonInterval) {
             balloonInterval = setInterval(launchBalloonBatch, 2200);
+            console.log("Balloon interval started.");
         }
-    }
+    };
 
-    function stopBalloonInterval() {
+    window.stopBalloonInterval = function() {
         if (balloonInterval) {
             clearInterval(balloonInterval);
             balloonInterval = null;
             pendingTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
             pendingTimeouts = [];
+            console.log("Balloon interval stopped and pending timeouts cleared.");
         }
-    }
+        // Remove any existing balloons immediately
+        document.querySelectorAll('.balloon, .fast-text-balloon').forEach(b => b.remove());
+    };
 
     // Handle tab visibility
     document.addEventListener('visibilitychange', () => {
         isTabActive = document.visibilityState === 'visible';
         if (isTabActive) {
-            startBalloonInterval();
+            window.startBalloonInterval();
         } else {
-            stopBalloonInterval();
+            window.stopBalloonInterval();
         }
     });
 
-    // === Initialize main portfolio ===
-    window.initializeMainPortfolio = function() {
-        const preloaderElement = document.getElementById("preloader");
-        if (preloaderElement) {
-            gsap.to(preloaderElement, {
-                opacity: 0,
-                duration: 0.5,
-                ease: "power1.out",
-                onComplete: () => {
-                    if (preloaderElement) preloaderElement.style.display = "none";
-                }
-            });
-        }
-        createFastTextBalloon('click me', 20, 45);
-        setTimeout(() => createFastTextBalloon('click me', 55, 80), 450);
-        setTimeout(launchBalloonBatch, 800);
-        startBalloonInterval();
+   // MODIFIED: initializeMainPortfolio for initial load
+window.initializeMainPortfolio = function() {
+    const preloaderElement = document.getElementById("preloader");
+    const mainPortfolio = document.getElementById('mainPortfolio');
+    const controls = document.getElementById('controls');
+    const inboxIconContainer = document.getElementById('inboxIconContainer'); // Get the inbox icon
+
+    console.log("initializeMainPortfolio called on load."); // Debugging
+
+    if (preloaderElement) {
+        gsap.set(preloaderElement, { opacity: 0, display: "none" }); // Ensure greeting is hidden
+    }
+    
+    // Ensure main portfolio is visible on initial load
+    gsap.set(mainPortfolio, { opacity: 1, display: 'block' });
+    
+    // Ensure controls are hidden on initial load
+    gsap.set(controls, { opacity: 0, display: 'none' });
+
+    // Ensure Lottie inbox icon is visible on initial load
+    if (inboxIconContainer) {
+        gsap.set(inboxIconContainer, { opacity: 1, display: 'block' });
+    }
+
+    createFastTextBalloon('click me', 20, 45);
+    setTimeout(() => createFastTextBalloon('click me', 55, 80), 450);
+    setTimeout(launchBalloonBatch, 800);
+    window.startBalloonInterval(); // Start balloons on initial load of main portfolio
+
+    // 나머지 슬라이더 초기화 (버튼 표시 등)는 initializeSlider에서 처리
+    window.initializeSlider();
+
+        // Ensure main portfolio is visible and greeting is hidden on initial load
+        document.getElementById('mainPortfolio').style.display = 'block';
+        document.getElementById('preloaderContainer').style.display = 'none';
+        document.getElementById('controls').style.display = 'none';
     };
 
-    // ---
     // === Slider Main ===
     // ---
     const slides = document.querySelectorAll('.slide');
@@ -652,7 +675,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // === 전역 클릭 리스너 (잉크 스플래시 생성) ===
     // ---
     document.addEventListener('click', function(e) {
-        const isInteractiveElement = e.target.closest('.balloon, .fast-text-balloon, .slide-title, .nav-button, .welcome-banner-link');
+        const isInteractiveElement = e.target.closest('.balloon, .fast-text-balloon, .slide-title, .nav-button, .welcome-banner-link, #inboxIconContainer'); // Added inboxIconContainer
         if (!isInteractiveElement) {
             // 전역 클릭 시에는 현재 슬라이드의 confetti 색상 사용
             createScreenInkSplash(document.body, e, slideColors[currentSlide].confetti);
@@ -789,6 +812,7 @@ document.addEventListener('DOMContentLoaded', function() {
         originalBalloonOpacities.clear();
     }
 
-    // 슬라이더 초기화 함수 호출
+    // Call initializeMainPortfolio directly on DOMContentLoaded to start with the slider
     window.initializeSlider();
+    window.initializeMainPortfolio();
 });

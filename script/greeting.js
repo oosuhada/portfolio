@@ -130,46 +130,8 @@ const fetchData = () => {
         });
 };
 
-// 프리로더 컨테이너에서 메인 포트폴리오 슬라이더로 전환
-const showMainPortfolio = () => {
-    const preloaderContainer = document.getElementById('preloaderContainer');
-    const mainPortfolio = document.getElementById('mainPortfolio');
-    const backgroundImage = document.querySelector('.background-image');
-    const navButtons = document.querySelectorAll('.nav-button');
-    const pageIndicator = document.querySelector('.page-indicator');
-    const controls = document.querySelector('.controls'); // Get the controls element
-
-    if (mainPortfolio) {
-        gsap.to(preloaderContainer, {
-            opacity: 0,
-            duration: 1,
-            onComplete: () => {
-                preloaderContainer.style.display = 'none';
-                mainPortfolio.style.display = 'block';
-                gsap.fromTo(mainPortfolio, { opacity: 0 }, { opacity: 1, duration: 1, ease: "power2.out" });
-                gsap.set(backgroundImage, { opacity: 0 });
-
-                // Animate controls, nav buttons, and page indicator
-                // Controls will already be fading out due to the timeline modification
-                gsap.fromTo(navButtons,
-                    { opacity: 0 },
-                    { opacity: 1, duration: 1, ease: "power2.out", delay: 0.2 }
-                );
-                gsap.fromTo(pageIndicator,
-                    { opacity: 0 },
-                    { opacity: 1, duration: 1, ease: "power2.out", delay: 0.3 }
-                );
-
-                if (window.initializeSlider) {
-                    window.initializeSlider();
-                }
-                if (window.initializeMainPortfolio) {
-                    window.initializeMainPortfolio();
-                }
-            }
-        });
-    }
-};
+// showMainPortfolio 함수 삭제 (혹은 이 파일에서는 사용하지 않음)
+// const showMainPortfolio = () => { /* ... */ };
 
 // 애니메이션 타임라인
 const animationTimeline = () => {
@@ -194,14 +156,65 @@ const animationTimeline = () => {
         skewX: "-15deg"
     };
 
+    // If a timeline already exists, kill it to prevent conflicts before re-creating
+    if (tl) {
+        tl.kill();
+        console.log("Existing greeting timeline killed."); // Debugging
+    }
+
     tl = gsap.timeline({
         onComplete: () => {
-            // showMainPortfolio가 최종 전환을 처리하므로 추가 작업 불필요
+            console.log("Greeting timeline completed. Returning to initial state."); // Debugging
+            // 메인 포트폴리오 화면으로 돌아가기
+            const preloaderContainer = document.getElementById('preloaderContainer');
+            const mainPortfolio = document.getElementById('mainPortfolio');
+            const controls = document.getElementById('controls');
+            const inboxIconContainer = document.getElementById('inboxIconContainer');
+
+            // Fade out greeting elements (preloaderContainer, controls)
+            gsap.to([preloaderContainer, controls], {
+                opacity: 0,
+                duration: 0.5,
+                onComplete: () => {
+                    preloaderContainer.style.display = 'none';
+                    controls.style.display = 'none';
+
+                    // Show main portfolio elements
+                    mainPortfolio.style.display = 'block';
+                    gsap.fromTo(mainPortfolio, { opacity: 0 }, { opacity: 1, duration: 0.5 });
+
+                    // Show Lottie inbox icon
+                    if (inboxIconContainer) {
+                        inboxIconContainer.style.display = 'block';
+                        gsap.fromTo(inboxIconContainer, { opacity: 0 }, { opacity: 1, duration: 0.5 });
+                    }
+
+                    // Restart balloons (if they were stopped)
+                    if (window.startBalloonInterval) {
+                        window.startBalloonInterval();
+                    }
+                    console.log("Returned to initial main portfolio state."); // Debugging
+                }
+            });
+        },
+        // IMPORTANT: Ensure elements are reset on reverse/restart
+        onReverseComplete: () => {
+            console.log("Greeting timeline reverse completed. Resetting elements for main portfolio."); // Debugging
+            gsap.set("#preloaderContainer", { visibility: "hidden", opacity: 0, display: 'none' });
+            gsap.set("#controls", { visibility: "hidden", opacity: 0, display: 'none' });
+            gsap.set("#mainPortfolio", { visibility: "visible", opacity: 1, display: 'block' });
+            const inboxIconContainer = document.getElementById('inboxIconContainer');
+            if (inboxIconContainer) {
+                 gsap.set(inboxIconContainer, { opacity: 1, display: 'block' });
+            }
+            if (window.startBalloonInterval) {
+                window.startBalloonInterval();
+            }
         }
     });
 
     tl
-        .to(".container", 0.1, { visibility: "visible" })
+        .to(".container", 0.1, { visibility: "visible", opacity: 1, display: 'block' }) // Ensure it becomes visible and opaque
         .addLabel("start")
 
         // 첫 번째 섹션: 인사말
@@ -412,7 +425,7 @@ const animationTimeline = () => {
             yoyo: true,
             duration: 0.8,
             ease: "power1.inOut"
-        }, "finalTextStart+=0.5") // Changed position to start with "balloonsAnimate"
+        }, "finalTextStart+=0.5")
 
         // 최종 메시지 컨테이너 숨김 (Controls는 별도 처리)
         .to(".final-message-section", {
@@ -442,42 +455,30 @@ const animationTimeline = () => {
 
         // Circle animation (2회) - blank-interlude가 완전히 사라진 후 시작하도록 조정
         .add(animateCirclesCanvas(0, 600, 0, 0.6, 1.5, 0.3, "blankScreenInterlude+=0.2"), "circlesFirstPassStart")
-        .add(animateCirclesCanvas(0, 700, 0.65, 0.95, 1.5, 0.4, "circlesFirstPassStart-=0.2"), "circlesSecondPassStart")
+        .add(animateCirclesCanvas(0, 700, 0.65, 0.95, 1.5, 0.4, "circlesFirstPassStart+=0.2"), "circlesSecondPassStart")
+     // --- controls 서서히 사라지는 애니메이션 ---
+.to("#controls", {
+    opacity: 0.3,
+    duration: 1.5,
+    ease: "power1.out"
+}, "circlesFirstPassStart+=0") // 적절히 1차 애니메이션 후쯤 시작
 
-        // **Controls three-stage fade out:**
-        // Stage 1: From 1 to 0.4 opacity in 1 second
-        .to(".controls", {
-            opacity: 0.4,
-            duration: 1,
-            ease: "linear" // Or ease: "power1.easeIn" if you want a slight initial acceleration
-        }, "circlesFirstPassStart") // Starts when "circlesFirstPassStart" begins
+.to("#controls", {
+    opacity: 0,
+    duration: 1.5,
+    ease: "power1.out"
+}, "circlesFirstPassStart+=1.5") // 바로 이어서 시작
 
-        // Stage 2: From 0.4 to 0.1 opacity in the next 1 second
-        .to(".controls", {
-            opacity: 0.1,
-            duration: 1,
-            ease: "linear"
-        }, "<+=1") // Starts 1 second after the previous tween
+.set("#controls", {
+    visibility: "hidden"
+}, "circlesFirstPassStart+=3") // opacity=0과 동시에 visibility도 hidden
 
-        // Stage 3: From 0.1 to 0 opacity in the final 1.5 seconds
-        .to(".controls", {
-            opacity: 0,
-            visibility: "hidden",
-            duration: 1.5,
-            ease: "linear"
-        }, "<+=1") // Starts 1 second after the previous tween (total 2 seconds from "circlesFirstPassStart")
+.addLabel("endAnimation") // 애니메이션 종료 지점
 
-
-        // Reveal portfolio before the second animation fully finishes
-        .call(showMainPortfolio, null, "circlesSecondPassStart+=1.5")
-        .to(".blank-interlude", 1, {
-            opacity: 0,
-            zIndex: 4
-        }, "<+=0.2")
-        .to(".blank-interlude", {
-            visibility: "hidden"
-        }, "<+=0")
-        .addLabel("mainPortfolioRevealed")
+.call(() => {
+    console.log("🔁 Greeting complete – reloading page.");
+    location.reload();
+});
 
     // 타임라인 레이블 순서 저장
     labelsInOrder = Object.keys(tl.labels).sort((a, b) => tl.labels[a] - tl.labels[b]);
@@ -509,7 +510,7 @@ const animationTimeline = () => {
     const replayBtn = document.getElementById("replay");
     if (replayBtn) {
         replayBtn.addEventListener("click", () => {
-            tl.restart();
+            tl.restart(true); // Ensure full restart when "replay" is clicked
             // #replay 요소의 GSAP 애니메이션을 강제로 중지하고 초기 상태로 재설정
             gsap.killTweensOf("#replay");
             gsap.set("#replay", { scale: 1, opacity: 1, rotation: 0 });
@@ -519,8 +520,7 @@ const animationTimeline = () => {
             gsap.set(".final-message-section p", { opacity: 1, y: 0, rotationX: 0, skewX: "0deg", visibility: "visible" });
 
             // Ensure controls are visible when replaying
-            gsap.to(".controls", { opacity: 1, visibility: "visible", duration: 0.3 });
-
+            gsap.to("#controls", { opacity: 1, visibility: "visible", duration: 0.3 });
 
             syncChatboxButtonState("start");
         });
@@ -580,7 +580,7 @@ const animationTimeline = () => {
                 console.log("Rewinding to previous segment:", prevLabel);
                 syncChatboxButtonState(prevLabel);
             } else {
-                tl.restart();
+                tl.restart(true); // Full restart for rewind to very beginning
                 console.log("Rewinding to the very beginning.");
                 syncChatboxButtonState("start");
             }
@@ -612,9 +612,9 @@ const animationTimeline = () => {
                 console.log("Fast-forwarding to next segment:", nextLabel);
                 syncChatboxButtonState(nextLabel);
             } else {
-                tl.play("end");
+                tl.play("endAnimation"); // Make sure to play to the *actual* end label
                 console.log("Fast-forwarding to the end.");
-                syncChatboxButtonState("end");
+                syncChatboxButtonState("endAnimation");
             }
         });
     }
@@ -629,12 +629,18 @@ const animationTimeline = () => {
     }
 
     // Controls drag functionality
-    const controls = document.querySelector(".controls");
+    const controls = document.getElementById("controls"); // Get by ID
     const handle = document.querySelector(".controls .handle");
 
     if (controls && handle) {
-        // Ensure initial positioning is handled by GSAP or CSS `top`/`left` is removed
-        gsap.set(controls, { x: 0, y: 0 }); // Initialize GSAP transform properties
+        // JS에서 처음에 수동 위치 보정 (드래그 전에)
+        // CSS의 right: 0; bottom: 0;와 함께 사용 시 초기 위치를 정확히 맞추고
+        // transform: translate(x, y)로 이동 가능하게 합니다.
+        // 이렇게 하면 드래그가 좌측 상단 기준으로 다시 작동할 수 있게 됩니다.
+        gsap.set(controls, {
+            x: window.innerWidth - controls.offsetWidth,
+            y: window.innerHeight - controls.offsetHeight
+        });
 
         let isDragging = false;
         let initialMouseX, initialMouseY;
@@ -727,8 +733,13 @@ const animationTimeline = () => {
     }
 };
 
-// Initialize Canvas before fetching data and starting animations
+// Expose fetchData, animationTimeline, and tl to the global scope
+window.fetchData = fetchData;
+window.animationTimeline = animationTimeline;
+// Make sure 'tl' is accessible globally, it's defined in animationTimeline
+Object.defineProperty(window, 'tl', {
+    get: function() { return tl; },
+    set: function(value) { tl = value; }
+});
+// No initial fetchData call here, it's triggered by Lottie click or slider.js
 document.addEventListener('DOMContentLoaded', initCanvas);
-
-// 데이터 가져오기 및 애니메이션 실행
-fetchData();

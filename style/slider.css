@@ -27,6 +27,25 @@
   }
 }
 
+#inboxIconContainer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 50px; /* Adjust size as needed */
+    height: 50px; /* Adjust size as needed */
+    cursor: pointer;
+    z-index: 1000; /* Ensure it's above other content */
+    /* Optional: add some padding or background if it's too small to click */
+    padding: 5px;
+    border-radius: 50%; /* If you want a circular hit area */
+    background-color: rgba(255, 255, 255, 0.1); /* Subtle background */
+    transition: background-color 0.3s ease;
+}
+
+#inboxIconContainer:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
 /* Original .background-image styles (body-level) - Unchanged */
 .background-image {
   position: fixed;
@@ -439,7 +458,7 @@
   letter-spacing: 0.08em;
   background: var(--welcome-bg, #222);
   /* box-shadow: var(--neon-box, 0 0 24px 4px #ffcaf7, 0 0 8px #ffffff48); */
-  text-shadow: var(--neon-text, 0 0 7px #ffcaf7, 0 0 10px #fd67d6, 1px 1px 2px #222);
+  text-shadow: var(--neon-text, 0 0 7px #949494, 0 0 10px #ffffff, 1px 1px 2px #222);
   position: relative;
   z-index: 2;
   overflow: hidden;
@@ -595,4 +614,8 @@
     min-width: 180px;
     margin-top: 1.3em;
   }
+
+  .slide-title {
+  font-size: 4rem;
+}
 }

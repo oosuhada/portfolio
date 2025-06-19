@@ -310,8 +310,8 @@ body {
   Playback Controls (Fixed Position)
 */
 .controls {
-  left: 0; /* 초기 왼쪽 정렬 */
-  top: 0; /* 초기 상단 정렬 */
+ left: 0;
+  top: 0;
   position: fixed;
   z-index: 10; /* Ensure controls are on top */
   padding: 10px;

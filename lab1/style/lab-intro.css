@@ -1,0 +1,189 @@
+/* === 기본 세팅 === */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    font-family: 'Pretendard', sans-serif;
+    overflow-x: hidden;
+}
+
+body {
+    min-height: 100vh;
+    position: relative;
+    opacity: 0; /* body 초기 투명하게 설정 */
+    transition: opacity 0.3s ease-out; /* body 페이드 인 효과 */
+}
+
+/* --- New Intro Screen Styles --- */
+#intro-screen {
+    position: fixed; /* Fixed to cover the entire viewport */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000; /* Ensure it's above other content initially */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000; /* Fallback for video or initial black screen */
+    opacity: 0; /* Will be faded in by JS */
+    visibility: hidden; /* Hidden until activated by JS */
+    overflow: hidden; /* Prevent scrollbars within intro screen */
+}
+
+#background-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -1; /* Place behind other intro content */
+    transform: translate(-50%, -50%);
+    background-size: cover;
+    filter: brightness(0.7); /* Darken video for better text contrast */
+}
+
+.intro-overlay {
+    position: relative; /* Container for positioning typing, countdown, and arrow */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* To push typing to top-left and countdown to bottom-right */
+    padding: 5vh 5vw; /* Padding from edges */
+    box-sizing: border-box;
+}
+
+.typing-container {
+    position: absolute;
+    top: 10vh; /* Adjusted for top-left position */
+    left: 7vw; /* Adjusted for top-left position */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    color: #fff;
+    font-family: 'Pretendard', sans-serif; /* Using Pretendard as it's already linked */
+    font-size: 2.5rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.4;
+    opacity: 0; /* Hidden initially, will fade in */
+    transform: translateY(20px); /* For entrance animation */
+}
+
+.typing-text {
+    overflow: hidden; /* Essential for typing effect */
+    white-space: nowrap;
+}
+
+.typing-text-line1 {
+    border-right: none; /* No cursor for first line */
+}
+
+.typing-text-line2 {
+    border-right: 2px solid transparent; /* Initial transparent cursor for second line */
+}
+
+.typing-cursor {
+    display: inline-block;
+    animation: blink-cursor 0.8s steps(1) infinite; /* Blinking animation for cursor */
+    margin-left: 2px;
+}
+
+@keyframes blink-cursor {
+    50% {
+        opacity: 0;
+    }
+}
+
+#countdown-container {
+    position: absolute;
+    bottom: 5vh; /* Adjusted for bottom-right position */
+    right: 5vw; /* Adjusted for bottom-right position */
+    font-family: 'night', sans-serif; /* Custom font for countdown */
+    font-size: 8vw; /* Responsive font size */
+    color: #fff;
+    text-align: right;
+    pointer-events: none; /* Do not block interaction with other elements */
+}
+
+.countdown-number {
+    opacity: 0; /* Hidden initially, will animate in */
+    line-height: 1; /* Tighter line height */
+    margin: 0;
+    padding: 0;
+    transform: translateY(20px); /* For entrance animation */
+}
+
+/* Font for countdown, ensure this path is correct */
+@font-face {
+    font-family: "night";
+    src: url("fonts/TheNightWatch.woff2") format("woff2"); /* New path for font */
+    font-display: swap; /* Optimizes font loading */
+}
+
+#scroll-down-arrow {
+    position: absolute;
+    bottom: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 3rem;
+    color: #fff;
+    cursor: pointer;
+    opacity: 0.9; /* Increased opacity for better visibility */
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    z-index: 10; /* Ensure it's above other elements */
+    pointer-events: none; /* Disable until activated by JS */
+}
+
+#scroll-down-arrow:hover {
+    transform: translateX(-50%) translateY(-10px); /* Subtle hover effect */
+    color: #fff; /* Keep white on hover, remove yellow (#ffd166) */
+}
+
+/* Responsive adjustments for intro screen elements */
+@media screen and (max-width: 1024px) {
+    .typing-container {
+        font-size: 2rem;
+    }
+    #countdown-container {
+        font-size: 10vw;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .typing-container {
+        font-size: 1.5rem;
+        top: 8vh;
+        left: 8vw;
+    }
+    #countdown-container {
+        font-size: 15vw;
+        bottom: 3vh;
+        right: 3vw;
+    }
+    #scroll-down-arrow {
+        font-size: 2.5rem;
+        bottom: 2vh;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .typing-container {
+        font-size: 1.2rem;
+        top: 8vh;
+        left: 6vw;
+    }
+    #countdown-container {
+        font-size: 20vw;
+        bottom: 2vh;
+        right: 2vw;
+    }
+    #scroll-down-arrow {
+        font-size: 2rem;
+        bottom: 1vh;
+    }
+}
