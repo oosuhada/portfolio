@@ -266,13 +266,13 @@ const animationTimeline = () => {
         .staggerTo(".portfolio-chatbox span", 0.5, { visibility: "visible" }, 0.05)
         .addLabel("chatboxTextComplete")
 
-        // 채팅 박스: "Ask AI" 단계 (초기 텍스트 설정)
+        // 채팅 박스: "Ask AI" 단계 (초기 텍스트 설정 및 색상 설정)
         .set(".fake-btn", {
             onStart: () => {
                 document.querySelector("[data-node-name='sendButtonLabel']").innerText = customizeData.sendButtonLabel;
                 gsap.set(".fake-btn", {
-                    backgroundColor: "rgb(136, 136, 136)", // Ensure initial color
-                    color: "#ffffff" // 텍스트 색상도 흰색으로 고정
+                    backgroundColor: "#888888", // Ask AI: Dark grey background
+                    color: "#ffffff"             // Ask AI: White text
                 });
             }
         })
@@ -290,8 +290,8 @@ const animationTimeline = () => {
                 document.querySelector("[data-node-name='sendButtonLabel']").innerText = customizeData.sendButtonLabel;
                 // 역방향으로 돌아올 때 버튼 색상도 초기 상태로 복구
                 gsap.set(".fake-btn", {
-                    backgroundColor: "rgb(136, 136, 136)",
-                    color: "#ffffff" // 텍스트 색상도 초기화 시 흰색으로 유지
+                    backgroundColor: "#888888", // Reset to Ask AI background
+                    color: "#ffffff"             // Reset to Ask AI text color
                 });
             }
         })
@@ -300,16 +300,14 @@ const animationTimeline = () => {
             { opacity: 0 },
             {
                 opacity: 1,
-                backgroundColor: "#333333", // "Let's Talk" 상태의 배경색
-                color: "#ffffff", // 텍스트 색상도 흰색 고정
+                backgroundColor: "#333333", // Let's Talk: Darker background
+                color: "#ffffff",            // Let's Talk: White text
                 onStart: () => {
-                    // 다시 나타날 때 현재 text 보장 (Let's Talk)
                     const target = document.querySelector("[data-node-name='sendButtonLabel']");
                     if (target.innerText !== customizeData.sendButtonLabelAlt)
                         target.innerText = customizeData.sendButtonLabelAlt;
                 },
                 onReverseComplete: () => {
-                    // 역방향으로 이 트윈을 완료할 때 텍스트를 "Ask AI"로 되돌림
                     document.querySelector("[data-node-name='sendButtonLabel']").innerText = customizeData.sendButtonLabel;
                 }
             }
@@ -515,13 +513,13 @@ const animationTimeline = () => {
 
         if (idxCurrent >= idxLetsTalk) {
             sendBtnLabel.innerText = customizeData.sendButtonLabelAlt;
-            gsap.set(fakeBtn, { backgroundColor: "#333333" });
+            gsap.set(fakeBtn, { backgroundColor: "#333333", color: "#fff"});
         } else if (idxCurrent >= idxAskAI && idxCurrent < idxLetsTalk) {
             sendBtnLabel.innerText = customizeData.sendButtonLabel;
-            gsap.set(fakeBtn, { backgroundColor: "rgb(136, 136, 136)" });
+            gsap.set(fakeBtn, { backgroundColor: "rgb(136, 136, 136)", color: "#fff"});
         } else {
             sendBtnLabel.innerText = customizeData.sendButtonLabel;
-            gsap.set(fakeBtn, { backgroundColor: "rgb(136, 136, 136)" });
+            gsap.set(fakeBtn, { backgroundColor: "rgb(136, 136, 136)" ,color: "#fff"});
         }
     }
 
@@ -657,8 +655,8 @@ const animationTimeline = () => {
         // transform: translate(x, y)로 이동 가능하게 합니다.
         // 이렇게 하면 드래그가 좌측 상단 기준으로 다시 작동할 수 있게 됩니다.
         gsap.set(controls, {
-            x: window.innerWidth - controls.offsetWidth,
-            y: window.innerHeight - controls.offsetHeight
+            // x: window.innerWidth - controls.offsetWidth,
+            y: window.innerHeight - controls.offsetHeight*1.8
         });
 
         let isDragging = false;

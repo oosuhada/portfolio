@@ -12,14 +12,18 @@ body {
   background-color: #f8f8f8; /* Default body background */
 }
 
+html, body {
+  cursor: var(--cursor-default);
+}
+
 /* Light Mode Variables (Default on .container) */
 :root {
   --bg-color-light: #f8f8f8;
     --text-color-light: #333;
     --intro-text-color-light: #333; /* Specific for intro text */
     --chatbox-border-light: #aaa;
-    --chatbox-button-bg-light: #555; /* CHANGED: Now matches dark mode background */
-    --chatbox-button-text-light: #f8f8f8; /* CHANGED: Now matches dark mode text */
+    --chatbox-button-bg-light: #333; /* CHANGED: Now matches dark mode background */
+    --chatbox-button-text-light: #ffffff; /* CHANGED: Now matches dark mode text */
     --strong-bg-light: transparent;
     --strong-text-light: inherit;
     --heading-main-color-light: #333;
@@ -39,7 +43,7 @@ body {
     --intro-text-color-dark: #f0f0f0;
     --chatbox-border-dark: #888;
     --chatbox-button-bg-dark: #555;
-    --chatbox-button-text-dark: #f8f8f8;
+    --chatbox-button-text-dark: #ffffff;
     --strong-bg-dark: #f8f8f8;
     --strong-text-dark: #1a1a1a;
     --heading-main-color-dark: #f8f8f8;
@@ -70,7 +74,7 @@ body {
     right: 10px; /* Adjusted position for larger size */
     width: 120px; /* Significantly larger clickable area */
     height: 120px; /* Significantly larger clickable area */
-    cursor: pointer;
+    cursor: var(--cursor-grab);
     z-index: 1000; /* Ensure it's above other content */
     display: flex; /* To center the Lottie inside */
     justify-content: center;
@@ -95,6 +99,7 @@ body {
   opacity: 1;
   transform: scale(2); /* 2배 확대 (원하는 배율로 조정 가능) */
   transform-origin: center; /* 중심 기준으로 확대 */
+  cursor: var(--cursor-grab);
 }
 
 /* Define keyframes for the shake animation */
@@ -315,7 +320,7 @@ body {
   position: absolute;
   right: 5px;
   bottom: 5px;
-  color: var(--chatbox-button-text-dark); /* Use variable */
+  color: var(--chatbox-button-text-light); /* Use variable */
   background-color: var(--chatbox-button-bg-dark); /* Use variable */
   padding: 5px 8px;
   border-radius: 3px;
@@ -480,7 +485,7 @@ body {
 
 #replay { /* Corresponds to "replayText" */
   z-index: 3;
-  cursor: pointer;
+  cursor: var(--cursor-grab);
   display: inline-block;
   margin-top: 20px;
   color: var(--replay-text-color-light);
@@ -499,6 +504,7 @@ body {
   display: flex;
   flex-direction: column; /* Arrange buttons vertically */
   align-items: center; /* Center items horizontally within the column */
+  cursor: var(--cursor-grab);
 }
 
 .controls button {
@@ -507,7 +513,6 @@ body {
   border: none;
   padding: 10px 15px;
   border-radius: 5px;
-  cursor: pointer;
   font-size: 1.2rem;
   transition: background-color 0.2s ease, transform 0.1s ease;
   width: 40px;
@@ -516,6 +521,7 @@ body {
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
+  cursor: var(--cursor-grab);
 }
 
 .controls button:last-child {
@@ -534,7 +540,7 @@ body {
 .controls .handle {
   width: 100%;
   height: 20px;
-  cursor: grab;
+  cursor: var(--cursor-grabbing);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -548,7 +554,7 @@ body {
   color: white;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
+  cursor: var(--cursor-grab);
   font-size: 1.2rem;
   transition: background-color 0.2s ease, transform 0.1s ease;
   display: flex;

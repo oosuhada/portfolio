@@ -9,7 +9,7 @@ body {
 /* 의미 단위 강조 - 마우스 오버/키보드 포커스 */
 .meaning-chunk {
   display: inline-block;
-  cursor: pointer;
+  cursor: var(--cursor-grab);
   transition: text-decoration 0.18s, background 0.14s;
   border-radius: 3px;
   outline: none;

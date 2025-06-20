@@ -71,48 +71,48 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // --- Language Maps and Navigation Logic ---
-    const languageMaps = [
-        {
-            name: 'hanja',
-            portfolio: '作品',
-            about: '紹介',
-            experience: '経歴',
-            lab: '實驗室',
-            connect: '連結'
-        },
-        {
-            name: 'korean',
-            portfolio: '작품집',
-            about: '소개',
-            experience: '경험',
-            lab: '실험실',
-            connect: '연결'
-        },
-        {
-            name: 'french',
-            portfolio: 'Portefeuille',
-            about: 'À propos',
-            experience: 'Expérience',
-            lab: 'Laboratoire',
-            connect: 'Connexion'
-        },
-        {
-            name: 'german',
-            portfolio: 'Portfolio',
-            about: 'Über',
-            experience: 'Erfahrung',
-            lab: 'Labor',
-            connect: 'Verbindung'
-        }
-    ];
+   const languageMaps = [
+   {
+       name: 'hanja',
+       portfolio: '作品',
+       about: '紹介',
+       experience: '經歷',
+       lab: '實驗室',
+       connect: '連結'
+   },
+   {
+       name: 'korean',
+       portfolio: '포트폴리오',
+       about: '소개',
+       experience: '경력',
+       lab: '실험실',
+       connect: '연결'
+   },
+   {
+       name: 'french',
+       portfolio: 'Portefeuille',
+       about: 'À propos',
+       experience: 'Parcours', // 경력/이력의 뉘앙스
+       lab: 'Laboratoire',
+       connect: 'Connexion'
+   },
+   {
+       name: 'japanese',
+       portfolio: 'ポートフォリオ',
+       about: '紹介',
+       experience: 'キャリア', // 또는 '経歴'
+       lab: 'ラボ',
+       connect: '接続'
+   }
+];
 
-    const englishMap = {
-        portfolio: 'Portfolio',
-        about: 'About',
-        experience: 'Experience',
-        lab: 'Lab',
-        connect: 'Connect'
-    };
+const englishMap = {
+   portfolio: 'Portfolio',
+   about: 'About',
+   experience: 'Career', // 또는 'Experience'
+   lab: 'Lab',
+   connect: 'Connect'
+};
 
     let headerEntryCount = 0;
     let currentLanguageIndex = 0;
@@ -938,6 +938,47 @@ document.addEventListener('DOMContentLoaded', function() {
         stopConfettiEffect();
     });
 
+    // ▼▼▼ [추가] 다크 모드 및 커스텀 커서 토글 로직 ▼▼▼
+    const initializeDarkMode = () => {
+        const darkModeToggle = document.getElementById('darkModeToggleContainer'); // HTML에 추가할 토글 버튼 컨테이너
+        const htmlElement = document.documentElement;
+
+        // 현재 테마를 적용하는 함수
+        const applyTheme = (theme) => {
+            if (theme === 'dark') {
+                htmlElement.classList.add('dark');
+            } else {
+                htmlElement.classList.remove('dark');
+            }
+        };
+
+        // 토글 버튼 클릭 이벤트
+        if (darkModeToggle) {
+            darkModeToggle.addEventListener('click', () => {
+                const isDarkMode = htmlElement.classList.contains('dark');
+                if (isDarkMode) {
+                    localStorage.setItem('theme', 'light');
+                    applyTheme('light');
+                } else {
+                    localStorage.setItem('theme', 'dark');
+                    applyTheme('dark');
+                }
+            });
+        }
+
+        // 페이지 로드 시 테마 결정
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (savedTheme) {
+            applyTheme(savedTheme);
+        } else if (prefersDark) {
+            applyTheme('dark');
+        } else {
+            applyTheme('light');
+        }
+    };
+    
     // --- Initialize Features ---
     initSentinelObserver();
     headerScrollLogic.init();
@@ -950,6 +991,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     initializeHighlighter();
     initializeAccordionMenu();
+    
+    // ▼▼▼ [추가] 다크 모드 초기화 함수 호출 ▼▼▼
+    initializeDarkMode();
 
     // --- Click Handler for Short Clicks ---
     document.addEventListener('click', function(event) {

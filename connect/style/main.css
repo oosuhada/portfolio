@@ -129,7 +129,7 @@ textarea,
   font-size: 1rem; /* .btn--signout과 동일하게 조정 */
   line-height: 1.5;
   text-align: center;
-  cursor: pointer;
+  cursor: var(--cursor-grab);
   background: var(--intro-bg-color); /* .btn--signout과 동일하게 조정 */
   transition: background-color 0.2s ease-in-out;
 }
@@ -231,7 +231,7 @@ textarea,
   border-radius: 40px;
   font-size: 1rem;
   line-height: 1.5;
-  cursor: pointer;
+  cursor: var(--cursor-grab);
   background: var(--intro-bg-color);
   transition: background-color 0.2s ease-in-out;
 }

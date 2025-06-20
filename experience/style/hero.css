@@ -130,11 +130,11 @@ body {
 
 .scroll-down-btn {
   position: absolute;
-  bottom: 20px;
+  bottom: 40px;
   color: #fff;
   font-size: 2rem;
   z-index: 10;
-  cursor: default;
+  cursor: url('../../img/grab.png'), grab;
   animation: bounce 2s infinite;
   padding: 10px 14px;
   border-radius: 50%;
@@ -145,6 +145,7 @@ body {
 }
 .scroll-down-btn:hover {
   background-color: rgba(0, 0, 0, 0.4);
+  cursor: url('../../img/grab.png'), grab;
 }
 @keyframes bounce {
   0%, 20%, 50%, 80%, 100% { transform: translateY(0); }

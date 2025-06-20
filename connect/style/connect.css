@@ -101,7 +101,7 @@ html, body {
     padding: var(--menu-button-padding);
     border: 1px solid var(--lang-button-border);
     border-radius: var(--menu-button-radius);
-    cursor: pointer;
+    cursor: var(--cursor-grab);
     background-color: var(--lang-button-bg);
     color: var(--lang-button-text);
     font-size: var(--menu-button-font-size);
@@ -371,7 +371,7 @@ html, body {
     color: white;
     border: none;
     border-radius: 5px;
-    cursor: pointer;
+    cursor: var(--cursor-grab);
     font-size: 1.1em;
     font-weight: bold;
     transition: background-color 0.3s ease, transform 0.2s ease;
@@ -566,7 +566,7 @@ html, body {
     border: none;
     color: var(--highlight-btn-text);
     font-size: 1.2em;
-    cursor: pointer;
+    cursor: var(--cursor-grab);
     margin-left: 10px;
     padding: 5px;
     border-radius: 50%;
@@ -587,7 +587,7 @@ html, body {
     border-radius: 5px;
     padding: 6px 12px;
     font-size: 0.85em;
-    cursor: pointer;
+    cursor: var(--cursor-grab);
     margin-left: 15px;
     transition: background-color 0.2s ease, transform 0.2s ease;
     flex-shrink: 0;

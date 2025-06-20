@@ -110,7 +110,7 @@ body.font-size-large { font-size: 1.2rem; }
   padding: var(--menu-button-padding);
   border: 1px solid var(--lang-button-border);
   border-radius: var(--menu-button-radius);
-  cursor: pointer;
+  cursor: var(--cursor-grab);
   background-color: var(--lang-button-bg);
   color: var(--lang-button-text);
   font-size: var(--menu-button-font-size);
@@ -333,7 +333,7 @@ body.font-size-large { font-size: 1.2rem; }
 
 .send-button {
   display: block; width: 100%; padding: 12px 15px; background-color: var(--button-bg-color);
-  color: white; border: none; border-radius: 5px; cursor: pointer;
+  color: white; border: none; border-radius: 5px; cursor: var(--cursor-grab);
   font-size: 1.1em; font-weight: bold; transition: background-color 0.3s ease, transform 0.2s ease;
   margin-top: auto;
 }
@@ -516,7 +516,7 @@ body.font-size-large { font-size: 1.2rem; }
   border: none;
   color: var(--highlight-btn-text);
   font-size: 1.2em;
-  cursor: pointer;
+  cursor: var(--cursor-grab);
   margin-left: 10px;
   padding: 5px;
   border-radius: 50%;
@@ -537,7 +537,7 @@ body.font-size-large { font-size: 1.2rem; }
   border-radius: 5px;
   padding: 6px 12px;
   font-size: 0.85em;
-  cursor: pointer;
+  cursor: var(--cursor-grab);
   margin-left: 15px;
   transition: background-color 0.2s ease, transform 0.2s ease;
   flex-shrink: 0;

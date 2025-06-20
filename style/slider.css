@@ -33,7 +33,7 @@
     right: 20px;
     width: 70px; /* Adjust size as needed */
     height: 70px; /* Adjust size as needed */
-    cursor: pointer;
+    cursor: var(--cursor-grab);
     z-index: 1000; /* Ensure it's above other content */
     /* Optional: add some padding or background if it's too small to click */
     padding: 5px;
@@ -72,7 +72,7 @@
   opacity: 0.8; /* Base opacity, JS can vary */
   transition: filter 0.2s;
   filter: url(#classicWetInk); /* Apply Ink Filter */
-  cursor: pointer;
+  cursor: var(--cursor-grab);
   /* Background color will be set by JavaScript to an achromatic color */
 }
 
@@ -91,7 +91,7 @@
   opacity: 1;
   pointer-events: auto;
   position: relative;
-  cursor: pointer;
+  cursor: var(--cursor-grab);
 }
 
 /* 테두리 번짐 효과를 위한 가상 요소 */
@@ -272,7 +272,7 @@
   color: white;
   text-align: center;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
+  cursor: var(--cursor-grab);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
   padding: 50px 20px 20px 20px;
@@ -462,7 +462,7 @@
   transition: background 0.5s, color 0.5s, box-shadow 0.5s, text-shadow 0.5s,
     transform 0.3s cubic-bezier(0.5, 1.7, 0.6, 0.85);
   min-width: 280px;
-  cursor: pointer;
+  cursor: var(--cursor-grab);
 }
 .welcome-banner[data-hovered="true"]::after {
   content: 'Learn more';
@@ -572,7 +572,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
+  cursor: var(--cursor-grab);
   z-index: 10;
   transition: all 0.3s cubic-bezier(0.63, 0, 0.7, 1);
   transition: opacity 0.5s ease;

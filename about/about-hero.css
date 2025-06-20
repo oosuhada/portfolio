@@ -44,7 +44,7 @@
   color: #9d9d9d;
   transition: color 0.2s;
   opacity: 1;
-  cursor: pointer;
+  cursor: var(--cursor-grab);
   display: inline-block;
   position: relative;
   font-size: inherit;
@@ -82,7 +82,7 @@
 }
 .swap-word {
   display: inline-block;
-  cursor: pointer;
+  cursor: var(--cursor-grab);
   transition: opacity 0.28s cubic-bezier(.4,1.2,.56,1);
 }
 
@@ -90,7 +90,7 @@
   width: 3px;
   min-width: 3px;
   background: linear-gradient(to bottom, #eee, #bbb 50%, #eee);
-  cursor: ew-resize;
+  cursor: var(--cursor-ew-resize);
   border-radius: 4px;
   margin: 0 2rem;
   position: relative;
@@ -105,7 +105,7 @@
   top: 0;
   width: 70px; /* 전체 넓이: divider(3px)+좌우 각 33.5px */
   height: 100%;
-  cursor: ew-resize;
+  cursor: var(--cursor-ew-resize);
   z-index: 2; /* drag-icon 보다 아래, divider보다 위 */
   background: transparent; /* 완전 투명 */
 }  
@@ -175,7 +175,7 @@
   display: flex;
   align-items: left;
   justify-content: left;
-  cursor: pointer; /* Add pointer cursor to indicate clickability */
+  cursor: var(--cursor-grab); /* Add pointer cursor to indicate clickability */
   transition: transform 0.3s ease-in-out; /* Add smooth transition for hover effect */
 }
 

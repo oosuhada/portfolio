@@ -76,7 +76,7 @@ body[data-theme="light"] .work-experience-intro .meaning-chunk {
   margin-right: 25px;
   margin-bottom: 12px;
   line-height: 1.2;
-  cursor: pointer;
+  cursor: var(--cursor-grab);
 }
 body[data-theme="light"] .list-item {
     color: var(--light-list-item-inactive-text); /* Apply light theme */
@@ -199,7 +199,7 @@ body[data-theme="light"] .list-item::before {
     font-weight: bold;
     font-size: 1.4em;
     letter-spacing: 0rem;
-    cursor: pointer;
+    cursor: var(--cursor-grab);
     position: sticky;
     bottom: 0;
     user-select: none;
@@ -382,7 +382,7 @@ body[data-theme="light"] .section-content-area::-webkit-scrollbar-track {
     padding: 3rem 2rem;
     gap: 0.5rem;
     border-top: 1px solid var(--dark-item-border); /* Default to dark theme */
-    cursor: pointer;
+    cursor: var(--cursor-grab);
     transition: all 0.3s ease-in-out;
     border-radius: 0.5rem;
 }
@@ -494,7 +494,7 @@ body[data-theme="light"] .item-container:hover {
         position: static;
         padding-bottom: 0;
         padding-right: 0;
-        cursor: pointer;
+        cursor: var(--cursor-grab);
         overflow-y: hidden;
         background: var(--dark-section-title-inactive-bg); /* Default to dark theme */
     }

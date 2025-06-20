@@ -205,7 +205,7 @@
   background: rgba(30, 30, 30, 0.8);
   box-shadow: 0 0 15px rgba(255,255,255,0.08), inset 0 0 5px rgba(255,255,255,0.05);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  cursor: pointer;
+  cursor: var(--cursor-grab);
   z-index: 4; /* process-galaxy-content 내에서 가장 위에 배치 */
   transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
@@ -291,7 +291,7 @@
   padding: 1.5rem 2rem;
   color: #333;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  cursor: pointer;
+  cursor: var(--cursor-grab);
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 0.6s ease-out, transform 0.6s ease-out;

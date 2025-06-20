@@ -1,37 +1,38 @@
 /* portfolio.css */
+
 /* :root variables should be in common.css or defined here if not already */
 :root {
---white: #fff;
---white2: #f8f9fa;
---gray-bg: #f8f9fa; /* For .project.active background */
---gray-dark: #343a40;
---gray-dark2: #495057;
---gray-mid: #adb5bd;
---gray: #ced4da;
---yellow: #ffc107; /* Sparkle color */
---yellow-pale: #fff3cd; /* Sparkle pale color */
---main-left-gap: 5vw;
---text-color: #212529; /* Default text */
---underline-extra: 0px; /* For guide underline */
+    --white: #fff;
+    --white2: #f8f9fa;
+    --gray-bg: #f8f9fa; /* For .project.active background */
+    --gray-dark: #343a40;
+    --gray-dark2: #495057;
+    --gray-mid: #adb5bd;
+    --gray: #ced4da;
+    --yellow: #ffc107; /* Sparkle color */
+    --yellow-pale: #fff3cd; /* Sparkle pale color */
+    --main-left-gap: 5vw;
+    --text-color: #212529; /* Default text */
+    --underline-extra: 0px; /* For guide underline */
 
-/* Base color variables for new elements */
---base-fg-solid: 0, 0, 0; /* Black for foreground elements like logo */
---ctx-primary: 255, 255, 255; /* White background color */
---ctx-primary-fg-primary: 0, 0, 0; /* Primary text color (Black) */
---ctx-primary-fg-secondary: 50, 50, 50; /* Secondary text color (Dark gray, almost black) */
+    /* Base color variables for new elements */
+    --base-fg-solid: 0, 0, 0; /* Black for foreground elements like logo */
+    --ctx-primary: 255, 255, 255; /* White background color */
+    --ctx-primary-fg-primary: 0, 0, 0; /* Primary text color (Black) */
+    --ctx-primary-fg-secondary: 50, 50, 50; /* Secondary text color (Dark gray, almost black) */
 }
 
 html, body {
-overflow-x: hidden;
+    overflow-x: hidden;
 }
 
 body.no-scroll {
-overflow: hidden;
-height: 100vh; /* 온보딩 시 스크롤을 완전히 막고 뷰포트 높이에 맞춤 */
+    overflow: hidden;
+    height: 100vh; /* 온보딩 시 스크롤을 완전히 막고 뷰포트 높이에 맞춤 */
 }
 
 h1 {
-font-weight: bold;
+    font-weight: bold;
 }
 
 /* =========================== */
@@ -42,7 +43,7 @@ font-weight: bold;
     top: 70px; /* Adjust as needed to align with nav-header or desired top offset */
     left: calc(var(--main-left-gap) - 10px); /* Align with main content, slightly offset */
     z-index: 1000; /* Ensure it's above most content but potentially below nav-header if nav is higher */
-    cursor: pointer;
+    cursor: var(--cursor-grab);
     display: flex; /* Flex container for SVG centering if needed */
     align-items: center;
     justify-content: center;
@@ -71,839 +72,859 @@ font-weight: bold;
     transform: translateY(0px); /* Move paths to original position on hover */
 }
 
-
 /* =========================== */
 /* 2. Onboarding Guide */
 /* =========================== */
 #guide-overlay {
-position: fixed;
-z-index: 20000;
-left: 0; top: 0;
-width: 100vw; height: 100vh;
-pointer-events: auto; /* Changed from none if it was, to allow interaction */
+    position: fixed;
+    z-index: 20000;
+    left: 0; top: 0;
+    width: 100vw; height: 100vh;
+    pointer-events: auto; /* Changed from none if it was, to allow interaction */
 }
 .guide-bg {
-position: absolute;
-left: 0; top: 0;
-width: 100vw; height: 100vh;
-background: rgba(30, 30, 30, 0.32);
-z-index: 0;
-pointer-events: none;
+    position: absolute;
+    left: 0; top: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(30, 30, 30, 0.25); /* Reduced opacity for subtlety */
+    z-index: 0;
+    pointer-events: none;
 }
 .guide-tooltip {
-position: absolute;
-z-index: 2;
-background: rgba(255,255,255,0.9);
-color: var(--gray-dark);
-padding: 1.1em 1.7em;
-border-radius: 12px;
-box-shadow: 0 4px 24px rgba(0,0,0,0.17); /* Fixed typo */
-font-size: 1.0rem;
-font-weight: 600;
-pointer-events: none;
-opacity: 1;
-max-width: 340px;
-white-space: pre-line;
-transition: left 0.7s, top 0.7s, opacity 0.3s;
+    position: absolute;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--gray-dark);
+    padding: 1em 1.5em; /* Reduced padding */
+    border-radius: 10px; /* Softer radius */
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    font-size: 0.9rem; /* Reduced font size */
+    font-weight: 500; /* Lighter weight */
+    pointer-events: none;
+    opacity: 1;
+    max-width: 300px; /* Reduced max width */
+    white-space: pre-line;
+    transition: left 0.5s, top 0.5s, opacity 0.2s;
 }
 .guide-close {
-position: absolute;
-right: 4vw;
-bottom: 6vw;
-z-index: 3;
-background: var(--gray-dark);
-color: var(--white);
-border: none;
-border-radius: 8px;
-font-size: 1.18rem;
-padding: 0.6em 1.5em;
-cursor: pointer;
-box-shadow: 0 2px 8px rgba(0,0,0,0.11); /* Fixed typo */
+    position: absolute;
+    right: 4vw;
+    bottom: 6vw;
+    z-index: 3;
+    background: var(--gray-dark);
+    color: var(--white);
+    border: none;
+    border-radius: 6px; /* Softer radius */
+    font-size: 1rem; /* Reduced font size */
+    padding: 0.5em 1.2em; /* Reduced padding */
+    cursor: var(--cursor-grab);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08); /* Softer shadow */
 }
 .guide-underline {
-position: relative;
+    position: relative;
 }
 .guide-underline::after {
-content: "";
-position: absolute;
-left: 0;
-right: calc(var(--underline-extra, 0px) * -1);
-bottom: -7px;
-height: 6px;
-background: var(--yellow) !important;
-border-radius: 3px;
-opacity: 0.85;
-z-index: 12001; /* Ensure it's above the element it's underlining */
-animation: underlinePulse 1.2s infinite alternate;
-transition: right 0.3s;
+    content: "";
+    position: absolute;
+    left: 0;
+    right: calc(var(--underline-extra, 0px) * -1);
+    bottom: -5px; /* Reduced height */
+    height: 4px; /* Reduced height */
+    background: var(--yellow);
+    border-radius: 2px;
+    opacity: 0.7; /* Reduced opacity */
+    z-index: 12001;
+    animation: underlinePulse 1.2s infinite alternate;
+    transition: right 0.3s;
 }
 @keyframes underlinePulse {
-0% { opacity: 0.85; transform: scaleX(1); }
-100% { opacity: 0.5; transform: scaleX(1.05); }
+    0% { opacity: 0.7; transform: scaleX(1); }
+    100% { opacity: 0.3; transform: scaleX(1.05); }
 }
+
 /* =========================== */
 /* 3. HERO 영역 */
 /* =========================== */
 
 .hero {
-width: 100vw;
-box-sizing: border-box;
-padding: 9rem 0 5rem 0;
-position: relative;
+    width: 100vw;
+    height: 90vh;
+    box-sizing: border-box;
+    padding: 6rem 0 3rem 0; /* Reduced padding for a sleeker look */
+    position: relative;
+    overflow: hidden; /* Prevent overflow issues */
 }
 
 .hero::after {
-content: '';
-position: absolute;
-top: 0; left: 0; width: 100%; height: 100%;
-z-index: 1; /* Below text, above background */
-pointer-events: none;
-background: url('https://grainy-gradients.vercel.app/noise.svg');
-opacity: 0.7;
-background-size: cover;
-background-repeat: repeat;
-filter: blur(1.2px);
-mix-blend-mode: multiply;
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 1; /* Below text, above background */
+    pointer-events: none;
+    background: url('https://grainy-gradients.vercel.app/noise.svg');
+    opacity: 0.5; /* Reduced opacity for subtlety */
+    background-size: cover;
+    background-repeat: repeat;
+    filter: blur(0.8px); /* Softer blur */
+    mix-blend-mode: multiply;
 }
 
 .hero-bg-default {
-background: linear-gradient(120deg,
-rgba(255, 251, 233, 0.3) 0%,
-rgba(246, 238, 255, 0.2) 70%,
-rgba(233, 240, 255, 0.1) 100%
-);
+    background: linear-gradient(120deg,
+        rgba(255, 251, 233, 0.2) 0%,
+        rgba(246, 238, 255, 0.15) 70%,
+        rgba(233, 240, 255, 0.05) 100%
+    );
 }
 .hero-bg-name-0 {
-background: linear-gradient(135deg,
-rgba(215, 220, 220, 0.25) 0%,
-rgba(235, 240, 240, 0.3) 40%,
-rgba(250, 250, 250, 0.25) 80%,
-rgba(245, 245, 245, 0.15) 100%
-);
+    background: linear-gradient(135deg,
+        rgba(215, 220, 220, 0.15) 0%,
+        rgba(235, 240, 240, 0.2) 40%,
+        rgba(250, 250, 250, 0.15) 80%,
+        rgba(245, 245, 245, 0.1) 100%
+    );
 }
 .hero-bg-name-1 {
-background: linear-gradient(135deg,
-rgba(215, 220, 220, 0.2) 0%,
-rgba(240, 235, 225, 0.25) 50%,
-rgba(255, 248, 230, 0.3) 100%
-);
+    background: linear-gradient(135deg,
+        rgba(215, 220, 220, 0.15) 0%,
+        rgba(240, 235, 225, 0.2) 50%,
+        rgba(255, 248, 230, 0.15) 100%
+    );
 }
 .hero-bg-name-2 {
-background: linear-gradient(135deg,
-rgba(230, 170, 245, 0.15) 0%,
-rgba(245, 200, 235, 0.22) 40%,
-rgba(250, 225, 200, 0.27) 70%,
-rgba(255, 235, 190, 0.3) 100%
-);
+    background: linear-gradient(135deg,
+        rgba(230, 170, 245, 0.1) 0%,
+        rgba(245, 200, 235, 0.15) 40%,
+        rgba(250, 225, 200, 0.2) 70%,
+        rgba(255, 235, 190, 0.15) 100%
+    );
 }
 .hero-bg-name-3 {
-background: linear-gradient(135deg,
-rgba(245, 180, 200, 0.18) 0%,
-rgba(255, 210, 215, 0.24) 35%,
-rgba(255, 235, 200, 0.28) 70%,
-rgba(255, 250, 190, 0.3) 100%
-);
+    background: linear-gradient(135deg,
+        rgba(245, 180, 200, 0.12) 0%,
+        rgba(255, 210, 215, 0.18) 35%,
+        rgba(255, 235, 200, 0.2) 70%,
+        rgba(255, 250, 190, 0.15) 100%
+    );
 }
 .hero-bg-name-4 {
-background: linear-gradient(135deg,
-rgba(140, 245, 180, 0.2) 0%,
-rgba(180, 255, 190, 0.25) 40%,
-rgba(210, 255, 170, 0.3) 100%
-);
+    background: linear-gradient(135deg,
+        rgba(140, 245, 180, 0.15) 0%,
+        rgba(180, 255, 190, 0.2) 40%,
+        rgba(210, 255, 170, 0.15) 100%
+    );
 }
 .hero-bg-dot-0 {
-background: linear-gradient(135deg,
-rgba(100, 225, 200, 0.17) 0%,
-rgba(130, 240, 210, 0.22) 35%,
-rgba(160, 255, 195, 0.28) 70%,
-rgba(150, 255, 195, 0.3) 100%
-);
+    background: linear-gradient(135deg,
+        rgba(100, 225, 200, 0.12) 0%,
+        rgba(130, 240, 210, 0.17) 35%,
+        rgba(160, 255, 195, 0.2) 70%,
+        rgba(150, 255, 195, 0.15) 100%
+    );
 }
 .hero-bg-dot-1 {
-background: linear-gradient(135deg,
-rgba(120, 160, 245, 0.19) 0%,
-rgba(130, 190, 255, 0.23) 40%,
-rgba(120, 230, 250, 0.28) 80%,
-rgba(120, 250, 255, 0.3) 100%
-);
+    background: linear-gradient(135deg,
+        rgba(120, 160, 245, 0.14) 0%,
+        rgba(130, 190, 255, 0.18) 40%,
+        rgba(120, 230, 250, 0.2) 80%,
+        rgba(120, 250, 255, 0.15) 100%
+    );
 }
 .hero-bg-dot-2 {
-background: linear-gradient(135deg,
-rgba(155, 210, 255, 0.2) 0%,
-rgba(175, 235, 255, 0.26) 50%,
-rgba(195, 255, 255, 0.3) 100%
-);
+    background: linear-gradient(135deg,
+        rgba(155, 210, 255, 0.15) 0%,
+        rgba(175, 235, 255, 0.2) 50%,
+        rgba(195, 255, 255, 0.15) 100%
+    );
+}
+.hero-bg-dot-3 {
+    background: linear-gradient(135deg,
+        rgba(220, 180, 255, 0.15) 0%,
+        rgba(235, 200, 255, 0.2) 50%,
+        rgba(255, 220, 250, 0.15) 100%
+    );
+}
+.hero-bg-dot-4 {
+    background: linear-gradient(135deg,
+        rgba(180, 245, 200, 0.13) 0%,
+        rgba(210, 255, 210, 0.18) 45%,
+        rgba(240, 255, 220, 0.15) 100%
+    );
 }
 .hero-bg-img-small {
-background: linear-gradient(135deg,
-rgba(180, 130, 245, 0.13) 0%,
-rgba(200, 155, 250, 0.18) 20%,
-rgba(220, 200, 255, 0.22) 50%,
-rgba(250, 220, 250, 0.24) 80%,
-rgba(255, 240, 255, 0.3) 100%
-);
+    background: linear-gradient(135deg,
+        rgba(180, 130, 245, 0.1) 0%,
+        rgba(200, 155, 250, 0.15) 20%,
+        rgba(220, 200, 255, 0.18) 50%,
+        rgba(250, 220, 250, 0.2) 80%,
+        rgba(255, 240, 255, 0.15) 100%
+    );
 }
 .hero-bg-img-medium {
-background: linear-gradient(135deg,
-rgba(220, 90, 85, 0.13) 0%,
-rgba(245, 125, 185, 0.17) 18%,
-rgba(215, 110, 160, 0.2) 35%,
-rgba(200, 140, 240, 0.23) 65%,
-rgba(180, 120, 245, 0.27) 88%,
-rgba(195, 150, 255, 0.3) 100%
-);
+    background: linear-gradient(135deg,
+        rgba(220, 90, 85, 0.1) 0%,
+        rgba(245, 125, 185, 0.14) 18%,
+        rgba(215, 110, 160, 0.17) 35%,
+        rgba(200, 140, 240, 0.2) 65%,
+        rgba(180, 120, 245, 0.15) 88%,
+        rgba(195, 150, 255, 0.1) 100%
+    );
 }
 .hero-bg-img-large {
-background: linear-gradient(135deg,
-rgba(255, 215, 160, 0.18) 0%,
-rgba(255, 200, 120, 0.22) 25%,
-rgba(255, 185, 155, 0.25) 58%,
-rgba(255, 160, 195, 0.27) 82%,
-rgba(245, 200, 220, 0.3) 100%
-);
+    background: linear-gradient(135deg,
+        rgba(255, 215, 160, 0.15) 0%,
+        rgba(255, 200, 120, 0.18) 25%,
+        rgba(255, 185, 155, 0.2) 58%,
+        rgba(255, 160, 195, 0.15) 82%,
+        rgba(245, 200, 220, 0.1) 100%
+    );
 }
 .hero-bg-img-xlarge {
-background: linear-gradient(135deg,
-rgba(125, 180, 245, 0.19) 0%,
-rgba(135, 215, 255, 0.23) 18%,
-rgba(160, 235, 255, 0.26) 52%,
-rgba(185, 250, 255, 0.29) 77%,
-rgba(140, 255, 255, 0.3) 100%
-);
+    background: linear-gradient(135deg,
+        rgba(125, 180, 245, 0.15) 0%,
+        rgba(135, 215, 255, 0.18) 18%,
+        rgba(160, 235, 255, 0.2) 52%,
+        rgba(185, 250, 255, 0.15) 77%,
+        rgba(140, 255, 255, 0.1) 100%
+    );
 }
 
 .hero-grid {
-display: grid;
-grid-template-columns: 2fr 1fr;
-grid-template-rows: auto auto;
-gap: 0 6vw;
-align-items: end;
-max-width: 1400px;
-margin-left: var(--main-left-gap);
-margin-right: auto;
-width: calc(100% - (2 * var(--main-left-gap)));
-box-sizing: border-box;
-position: relative; /* For z-index context if needed */
-z-index: 2; /* Ensure grid content is above hero::after */
+    display: grid;
+    grid-template-columns: 5fr 2fr;
+    grid-template-rows: auto auto;
+    gap: 0 2vw; /* Reduced gap for tighter layout */
+    align-items: center; /* Centered alignment for balance */
+    max-width: 1400px;
+    margin-top: 15vh;
+    margin-left: var(--main-left-gap);
+    margin-right: auto;
+    width: calc(100% - (2 * var(--main-left-gap)));
+    box-sizing: border-box;
+    position: relative;
+    z-index: 2; /* Ensure grid content is above hero::after */
 }
 
 .hero-text-area {
-grid-row: 1 / 2;
-grid-column: 1 / 2;
-display: flex;
-flex-direction: column;
-justify-content: flex-end;
-align-items: flex-start;
-min-height: 350px;
-padding-right: 0.5rem;
-padding-left: 2.5rem;
+    grid-row: 1 / 2;
+    grid-column: 1 / 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    min-height: 300px; /* Reduced for elegance */
+    padding-right: 1.5rem;
+    padding-left: 1.5rem; /* Reduced padding */
+    padding-right: 2rem;
 }
+
 .hero-img-area {
-grid-row: 1 / 2;
-grid-column: 2 / 3;
-display: flex;
-align-items: flex-end;
-justify-content: flex-start;
-margin-bottom: 2rem;
+    grid-row: 1 / 2;
+    grid-column: 2 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0;
 }
+
 .hero-slider-dots-area {
-grid-row: 2 / 3;
-grid-column: 1 / 2;
-display: flex;
-align-items: flex-start;
-justify-content: flex-start;
-margin-left: 2.5rem;
+    grid-row: 2 / 3;
+    grid-column: 1 / 2;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-left: 1.5rem; /* Reduced margin */
 }
+
 .hero-gauge-area {
-grid-row: 2 / 3;
-grid-column: 2 / 3;
-display: flex;
-align-items: flex-start;
-justify-content: flex-start;
+    grid-row: 2 / 3;
+    grid-column: 2 / 3;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
 }
 
 .hero-slider-dots,
 .horizontal-gauge {
-justify-content: flex-start !important; /* Overriding potential other styles */
-align-items: center;
-margin: 0;
-padding: 0;
+    justify-content: flex-start !important;
+    align-items: center;
+    margin: 0;
+    padding: 0;
 }
+
 .hero-slider-dots {
-display: flex;
-gap: 10px;
-/* Removed box-shadow from .hero-slider-dots */
+    display: flex;
+    gap: 8px; /* Reduced gap for subtlety */
 }
+
 .horizontal-gauge {
-position: relative;
-left: 0;
-top: 0;
-margin-left: 0;
-box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Fixed typo */
+    position: relative;
+    left: 0;
+    top: 0;
+    margin-left: 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05); /* Softer shadow */
+    visibility: hidden;
 }
 
 .img-sparkle-wrap {
-position: relative;
-display: inline-block;
+    position: relative;
+    display: inline-block;
 }
 
 .hero-text {
-font-size: 2.5rem;
-margin: 0;
-text-align: left;
-position: relative;
-color: var(--text-color);
+    font-family: 'Pretendard', sans-serif; /* Consistent modern font */
+    font-size: 2rem; /* Reduced for elegance */
+    margin: 0;
+    text-align: left;
+    position: relative;
+    color: var(--text-color);
+    line-height: 1.2; /* Tighter line height */
 }
+
 .hover-name {
-display: inline-block;
-font-size: 2.7rem;
-cursor: pointer;
-transition: transform 0.3s ease;
-position: relative; /* For sparkle positioning */
+    display: inline-block;
+    font-size: 2.3rem; /* Slightly reduced */
+    font-weight: 600;
+    cursor: var(--cursor-grab);
+    transition: transform 0.25s ease;
+    position: relative;
 }
+
 .hover-name:hover {
-transform: scale(1.05) rotate(2deg);
+    transform: scale(1.03) rotate(1deg); /* Subtle hover effect */
 }
+
 .hero-text .slider-text {
-font-size: 2.2rem;
-line-height: 1.3;
-color: var(--text-color);
+    font-size: 1.6rem; /* Reduced for balance */
+    line-height: 1.4;
+    color: var(--text-color);
+    font-weight: 400; /* Lighter weight */
 }
 
 .sparkle {
-display: inline-block;
-/* Changed to none by default in JS, JS will set to inline-block */
-vertical-align: middle;
-width: 24px;
-height: 24px;
-pointer-events: none;
-position: absolute;
-z-index: 5; /* Ensure sparkles are above their parent text/image */
+    display: none; /* Disabled by default, enabled via JS */
+    vertical-align: middle;
+    width: 18px; /* Reduced size */
+    height: 18px;
+    pointer-events: none;
+    position: absolute;
+    z-index: 5;
 }
+
 #sparkle-name {
-position: relative; /* As per "기존의 코드" */
-left: -4px;
-top: -18px;
-margin-left: 4px;
+    position: relative;
+    left: -3px;
+    top: -12px;
+    margin-left: 3px;
 }
+
 #sparkle-dot {
-position: absolute; /* As per "기존의 코드" */
-top: -15px;
-left: 75px; /* As per "기존의 코드" */
-transform: translateX(-50%); /* As per "기존의 코드" (and new) */
+    position: absolute;
+    top: -10px;
+    left: 110px; /* Adjusted for better positioning */
+    transform: translateX(-50%);
 }
+
 #sparkle-img {
-position: absolute; /* As per "기존의 코드" */
-right: 8px;
-top: 32px;
+    position: absolute;
+    right: 6px;
+    top: 4px; /* Adjusted for image alignment */
 }
-/* Sparkle animation details from new (and similar to old) code */
-.sparkle::before, .sparkle::after {
-content: '';
-position: absolute;
-left: 50%; top: 50%;
-transform: translate(-50%, -50%);
-width: 12px; height: 12px;
-border-radius: 50%;
-background: radial-gradient(circle,
-var(--yellow-pale) 55%,
-var(--yellow) 77%,
-rgba(255, 209, 102, 0.55) 87%,
-transparent 100%
-);
-animation: sparklePulse 1.3s infinite alternate;
-opacity: 0.7;
-}
+
+/* Sparkle animation with reduced intensity */
+.sparkle::before,
 .sparkle::after {
-width: 20px; height: 20px;
-opacity: 0.3;
-animation-delay: 0.5s; /* Stagger animation */
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+        var(--yellow-pale) 50%,
+        var(--yellow) 70%,
+        rgba(255, 209, 102, 0.4) 85%,
+        transparent 100%
+    );
+    animation: sparklePulse 1.5s infinite alternate;
+    opacity: 0.6;
 }
+
+.sparkle::after {
+    width: 14px;
+    height: 14px;
+    opacity: 0.2;
+    animation-delay: 0.4s;
+}
+
 @keyframes sparklePulse {
-0% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
-100% { opacity: 0.2; transform: translate(-50%, -50%) scale(1.3);}
+    0% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0.15; transform: translate(-50%, -50%) scale(1.2); }
 }
+
 .hero-slider-wrapper {
-margin-top: 1.2rem;
-margin-bottom: 1.2rem;
-min-height: 10rem; /* Approximate height of 3 lines of slider text */
-display: flex;
-flex-direction: column;
-justify-content: flex-start; /* Align content to top */
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    min-height: 8rem; /* Adjusted for text height */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
+
 .hero-slider {
-position: relative;
-min-height: 6.5rem; /* Accommodate text lines */
-margin-bottom: 1.5rem;
+    position: relative;
+    min-height: 5rem; /* Reduced for elegance */
+    margin-bottom: 1rem;
+    cursor: var(--cursor-grab);
 }
+
 .slider-text {
-opacity: 0;
-visibility: hidden;
-position: absolute;
-top: 0; left: 0;
-width: 100%;
-transition: opacity 0.5s, visibility 0.5s;
-text-align: left;
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    transition: opacity 0.4s, visibility 0.4s;
+    text-align: left;
 }
+
 .slider-text.active {
-opacity: 1;
-visibility: visible;
-position: relative; /* Take up space when active */
-z-index: 1;
+    opacity: 1;
+    visibility: visible;
+    position: relative;
+    z-index: 1;
 }
+
 .slider-dot {
-width: 12px; height: 12px;
-border-radius: 50%;
-background-color: #ddd;
-cursor: pointer;
-transition: background-color 0.3s, box-shadow 0.3s; /* Add box-shadow to transition */
-filter: blur(0.5px);
-border: none;
-outline: none;
-display: inline-block;
-position: relative; /* For sparkle positioning on #sparkle-dot if it were a child (from new CSS) */
-z-index: 1; /* dot 내용이 그림자 위에 오도록 */
-box-shadow: 0 4px 12px rgba(0,0,0,0.4); /* Stronger shadow added to individual dots */
+    width: 12px;
+    height: 12px;
+    border-radius: 50%; /* Perfect circles for elegance */
+    background-color: #ddd;
+    cursor: var(--cursor-grab);
+    transition: background-color 0.3s, transform 0.3s;
+    border: none;
+    outline: none;
+    display: inline-block;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Softer shadow */
 }
+
 .slider-dot.active {
-width: 13px; height: 13px;
-background-color: var(--gray-dark2);
-box-shadow: 0 6px 16px rgba(255, 255, 255, 0.9); /* Even stronger shadow for active dot */
-filter: blur(0.5px);
+    width: 14px;
+    height: 14px;
+    background-color: var(--gray-dark2);
+    box-shadow: 0 3px 8px rgba(255, 255, 255, 0.7);
 }
+
 .slider-dot.active::after {
-content: '';
-position: absolute;
-/* dot과 동일한 크기 또는 약간 크게 설정 */
-width: 105%;
-height: 105%;
-/* dot의 모양과 동일하게 (원형이라면) */
-border-radius: 50%;
-/* 그림자 색상 및 효과 - 예시: 검은색 그림자 */
-background-color: rgba(0, 0, 0, 0.6); /* 흐릿한 배경색으로 그림자 표현 */
-filter: blur(2px); /* 블러 효과로 부드러운 그림자 */
-/* 위치 조정: dot의 정중앙 뒤에 오도록 */
-top: 50%;
-left: 50%;
-transform: translate(calc(-50% + 1px), calc(-50% + 3px)) scale(1.2); /* 약간 크게 보이도록 scale 조정 가능 */
-z-index: -1; /* dot보다 뒤에 위치 */
-opacity: 0.8; /* 그림자 투명도 */
+    content: '';
+    position: absolute;
+    width: 110%;
+    height: 110%;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.4);
+    filter: blur(1.5px);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.1);
+    z-index: -1;
+    opacity: 0.6;
 }
-/* 또는 가상 요소에 직접 box-shadow 적용 */
-.slider-dot.active::before {
-content: '';
-position: absolute;
-width: 100%;
-height: 100%;
-border-radius: 50%;
-/* 가상 요소에 box-shadow 적용 */
-box-shadow: 0 6px 16px rgba(255, 255, 255, 0.5); /* 예시: 검은색 그림자 */
-top: 0;
-left: 0;
-z-index: -1;
-}
+
 .horizontal-gauge {
-width: 200px;
-height: 13px;
-background: #f3f3f37d; /* Semi-transparent background */
-border-radius: 8px;
-overflow: hidden;
-display: flex;
-align-items: flex-end; /* Bar fills from bottom if height changes */
-filter: blur(0.9px);
+    width: 180px; /* Reduced width */
+    height: 10px; /* Reduced height */
+    background: rgba(243, 243, 243, 0.5);
+    border-radius: 5px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    filter: blur(0.5px);
 }
+
 .gauge-bar {
-height: 100%;
-width: 0; /* Initial width */
-background: linear-gradient(to right, var(--gray-dark2) 60%, var(--white2) 100%);
-border-radius: 8px;
-transition: width 0.6s cubic-bezier(.68,0,.26,1);
+    height: 100%;
+    width: 0;
+    background: linear-gradient(to right, var(--gray-dark2) 50%, var(--white2) 100%);
+    border-radius: 5px;
+    transition: width 0.5s ease-out;
 }
 
 .hover-img {
-width: 220px;
-max-width: 100%;
-transition: transform 0.22s cubic-bezier(.66,.01,.46,1.17);
-vertical-align: bottom;
-transform-origin: bottom center;
---img-scale: 1;
---img-current-rotate: 0deg;
-position: relative;
-/* transform에 scale, rotate 둘 다 적용 */
-transform: scale(var(--img-current-scale, 1)) rotate(var(--img-current-rotate, 0deg));
-cursor: pointer;
- mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 90%, rgba(0, 0, 0, 0));
+    width: 200px; /* Reduced size */
+    max-width: 100%;
+    transition: transform 0.2s ease-out;
+    vertical-align: bottom;
+    transform-origin: bottom center;
+    --img-scale: 1;
+    --img-current-rotate: 0deg;
+    position: relative;
+    transform: scale(var(--img-current-scale, 1)) rotate(var(--img-current-rotate, 0deg));
+    cursor: var(--cursor-grab);
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 90%, rgba(0, 0, 0, 0));
     -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 90%, rgba(0, 0, 0, 0));
 }
 
-/* breathe1: 기본(hover 아닐 때) */
 @keyframes breathe1 {
-0%, 100% { transform: scale(var(--img-current-scale, 1)) rotate(0deg);}
-50% { transform: scale(calc(var(--img-current-scale, 1) * 1.05)) rotate(0deg);}
+    0%, 100% { transform: scale(var(--img-current-scale, 1)) rotate(0deg); }
+    50% { transform: scale(calc(var(--img-current-scale, 1) * 1.03)) rotate(0deg); }
 }
 
-/* breathe2: hover(이미지 회전값 9deg를 중심으로) */
 @keyframes breathe2 {
-0%, 100% { transform: scale(var(--img-current-scale, 1)) rotate(1deg);}
-50% { transform: scale(calc(var(--img-current-scale, 1) * 1.05)) rotate(6deg);}
+    0%, 100% { transform: scale(var(--img-current-scale, 1)) rotate(1deg); }
+    50% { transform: scale(calc(var(--img-current-scale, 1) * 1.03)) rotate(3deg); }
 }
 
 .hover-img.breathing1 {
-animation: breathe1 3s ease-in-out infinite;
+    animation: breathe1 3s ease-in-out infinite;
 }
+
 .hover-img.breathing2 {
-animation: breathe2 3.5s ease-in-out infinite;
+    animation: breathe2 3.5s ease-in-out infinite;
 }
 
 /* =========================== */
 /* 4. Scroll Indicator */
 /* =========================== */
 .scroll-indicator {
-position: absolute;
-left: 50%;
-bottom: -2rem; /* Adjusted from -2rem to push it down slightly if overlapping */
-transform: translateX(-50%);
-font-size: 2.3rem;
-animation: bounce 1s infinite;
-z-index: 2; /* Above hero grid, below header if header is over hero */
-color: var(--gray-dark);
-opacity: 1; /* Ensure it's visible by default */
-pointer-events: auto; /* Ensure clickable */
+    position: absolute;
+    left: 50%;
+    bottom: 1.5rem; 
+    transform: translateX(-50%);
+    font-size: 3rem;
+    animation: bounce 1.2s infinite;
+    z-index: 2;
+    color: var(--gray-mid); /* Lighter color */
+    opacity: 0.8; /* Reduced opacity */
+    pointer-events: auto;
 }
 @keyframes bounce {
-0%, 100% { transform: translateY(0) translateX(-50%); }
-50% { transform: translateY(-10px) translateX(-50%); }
+    0%, 100% { transform: translateY(0) translateX(-50%); }
+    50% { transform: translateY(-8px) translateX(-50%); }
 }
 .scroll-icon {
-display: inline-block;
-font-size: 2rem;
-cursor: pointer;
-transition: transform 0.18s;
+    display: inline-block;
+    font-size: 2rem;
+    cursor: var(--cursor-grab);
+    transition: transform 0.15s;
 }
 .scroll-icon:hover {
-transform: scale(1.15) rotate(-6deg);
+    transform: scale(1.1) rotate(-4deg); /* Subtle hover effect */
 }
 
 /* =========================== */
 /* 5. Projects Area */
 /* =========================== */
 .projects {
-margin-top: 4rem; /* Space below hero */
+    margin-top: 3rem; /* Reduced space below hero */
 }
 .project {
-display: flex;
-align-items: flex-start;
-min-height: 60vh;
-padding: 5rem 0;
-position: relative; /* Ensure this is relative for the ::before */
-transition: background-color 1s ease-in-out; /* Adjusted transition */
-width: 100vw;
-padding-left: var(--main-left-gap);
-box-sizing: border-box;
-background-color: transparent; /* Start transparent */
-background-image: none;
-z-index: 0;
+    display: flex;
+    align-items: flex-start;
+    min-height: 50vh; /* Reduced height */
+    padding: 4rem 0; /* Reduced padding */
+    position: relative;
+    transition: background-color 0.8s ease-in-out;
+    width: 100vw;
+    padding-left: var(--main-left-gap);
+    box-sizing: border-box;
+    background-color: transparent;
+    background-image: none;
+    z-index: 0;
 }
 
 .project.active {
-background-color: var(--gray-bg); /* Your existing gray background color */
-position: relative; /* Necessary for pseudo-element positioning */
-z-index: 0; /* Ensure it's layered correctly for pseudo-element */
+    background-color: rgba(var(--gray-bg), 0.9); /* Slightly transparent */
+    position: relative;
+    z-index: 0;
 }
 
 .project::before {
-content: '';
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background-image: url('../hanji.png'); /* Ensure this path is correct */
-background-size: cover;
-background-repeat: repeat;
-opacity: 0; /* Start transparent */
-mix-blend-mode: multiply;
-z-index: -1; /* Place behind the content */
-pointer-events: none; /* Prevent interaction with the overlay */
-transition: opacity 1.5s ease-in-out; /* Adjust duration and timing as needed */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../hanji.png');
+    background-size: cover;
+    background-repeat: repeat;
+    opacity: 0;
+    mix-blend-mode: multiply;
+    z-index: -1;
+    pointer-events: none;
+    transition: opacity 1.2s ease-in-out;
 }
 
 .project.active::before {
-opacity: 0.4; /* Fade to this opacity when .project becomes active */
+    opacity: 0.3; /* Reduced opacity */
 }
 
 .project-info {
-width: 30vw;
-max-width: 350px;
-position: fixed; /* Relative to viewport */
-top: 180px; /* Distance from top of viewport */
-left: var(--main-left-gap); /* Aligned with main content */
-opacity: 0;
-transform: translateX(-80px);
-transition: opacity 0.45s cubic-bezier(.77,0,.175,1), transform 0.5s cubic-bezier(.77,0,.175,1);
-pointer-events: none; /* Not interactive when hidden */
-z-index: 120; /* Above project image, below some other fixed elements */
-background: transparent; /* Ensure no unwanted bg */
-display: flex;
-flex-direction: column;
-align-items: flex-start;
-gap: 28px;
-color: var(--text-color);
+    width: 25vw; /* Reduced width */
+    max-width: 300px; /* Reduced max width */
+    position: fixed;
+    top: 150px; /* Reduced top distance */
+    left: var(--main-left-gap);
+    opacity: 0;
+    transform: translateX(-60px); /* Reduced offset */
+    transition: opacity 0.4s cubic-bezier(.77,0,.175,1), transform 0.4s cubic-bezier(.77,0,.175,1);
+    pointer-events: none;
+    z-index: 120;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px; /* Reduced gap */
+    color: var(--text-color);
 }
-.project-info.active {
-opacity: 1;
-pointer-events: auto; /* Interactive when visible */
-transform: translateX(0);
+.project-info.active{
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.view-project-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }
 
 .project-number {
-font-size: 4.5rem;
-font-weight: 800;
-color: var(--gray-dark);
-line-height: 1;
-margin-bottom: 0.3em;
-letter-spacing: -0.05em;
+    font-size: 3.5rem; /* Reduced size */
+    font-weight: 700; /* Slightly lighter */
+    color: var(--gray-dark);
+    line-height: 1;
+    margin-bottom: 0.2em;
+    letter-spacing: -0.03em;
 }
 .project-title {
-font-size: 2rem;
-font-weight: 700;
-margin-bottom: 0.2em;
-letter-spacing: -0.01em;
-color: var(--text-color);
+    font-size: 1.6rem; /* Reduced size */
+    font-weight: 600; /* Lighter weight */
+    margin-bottom: 0.15em;
+    letter-spacing: -0.01em;
+    color: var(--text-color);
 }
 .project-meta {
-display: flex;
-flex-direction: column;
-gap: 0.3em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2em; /* Reduced gap */
 }
 .project-date {
-font-size: 1.1rem;
-color: var(--gray-mid);
-font-weight: 400;
+    font-size: 0.9rem; /* Reduced size */
+    color: var(--gray-mid);
+    font-weight: 400;
 }
 .project-tools {
-font-size: 1rem;
-color: var(--gray); /* Lighter gray for tools */
-font-weight: 400;
+    font-size: 0.85rem; /* Reduced size */
+    color: var(--gray);
+    font-weight: 400;
 }
 
 .project-social-fixed {
-position: fixed;
-left: calc(var(--main-left-gap) - 6px); /* Align with project info, slightly offset */
-bottom: 3vw;
-display: flex;
-flex-direction: row;
-gap: 0.65rem;
-z-index: 200; /* Above project info */
+    position: fixed;
+    left: calc(var(--main-left-gap) - 4px); /* Adjusted alignment */
+    bottom: 2vw; /* Reduced bottom distance */
+    display: flex;
+    flex-direction: row;
+    gap: 0.8rem; /* Reduced gap */
+    z-index: 200;
 }
 .project-social-fixed a {
-color: var(--gray-mid);
-font-size: 1.12rem;
-transition: color 0.3s;
-text-decoration: none;
-padding: 0.2rem 0.15rem;
+    color: var(--gray-mid);
+    font-size: 1.6rem; /* Reduced size */
+    transition: color 0.3s;
+    text-decoration: none;
+    padding: 0.15rem 0.1rem; /* Reduced padding */
 }
 .project-social-fixed a:hover { color: var(--gray-dark); }
-.project-social-fixed a[aria-label="LinkedIn"] i { font-size: 1.2em; }
-.project-social-fixed a[aria-label="LinkedIn"] { margin-left: 2px; } /* Fine-tuning alignment */
-.project-social-fixed a[aria-label="Connect"] { margin-left: 1px; } /* Fine-tuning alignment */
+.project-social-fixed a[aria-label="LinkedIn"] i { font-size: 1.0em; margin-top: 0.25rem; }
+.project-social-fixed a[aria-label="Instagram"] { margin-bottom: 0px; }
+.project-social-fixed a[aria-label="Connect"] { margin-top: 0.1rem; font-size: 1.5rem; }
 .project-social-fixed svg {
-fill: currentColor;
-/* stroke: currentColor; Removed as per original SVG, let path define fill/stroke */
-/* stroke-width: 1.2px; Removed */
-width: 1.24em; height: 1.24em; display: inline-block;
-vertical-align: middle; transition: fill 0.3s; /* Changed from color/stroke to fill */
+    fill: currentColor;
+    width: 1.1em; height: 1.1em; /* Reduced size */
+    display: inline-block;
+    vertical-align: middle;
+    transition: fill 0.3s;
 }
 .project-social-fixed a:hover svg { fill: var(--gray-dark); }
 
-
-.project-image { /* This is an <a> tag */
-display: block;
-width: 65vw;
-max-width: 1200px;
-margin-left: auto; /* Pushes it to the right */
-margin-right: calc(var(--main-left-gap));
-position: relative;
+.project-image {
+    display: block;
+    width: 60vw; /* Reduced width */
+    max-width: 1100px; /* Reduced max width */
+    margin-left: auto;
+    margin-right: calc(var(--main-left-gap));
+    position: relative;
 }
 
 .project-image img {
-width: 90%; /* Reduced to 90% */
-height: 90%; /* Reduced to 90% */
-display: block;
-transition: filter 0.5s ease, transform 0.5s ease, opacity 0.35s ease; /* opacity transition 추가 */
-margin-left: auto; /* Aligns the image to the right within its container */
-filter: grayscale(100%); /* Make image grayscale by default */
+    width: 90%;
+    display: block;
+    transition: filter 0.4s ease, transform 0.4s ease, opacity 0.3s ease;
+    margin-left: auto;
+    filter: grayscale(100%);
 }
 
 .project-image.grayscale img {
-filter: grayscale(100%);
+    filter: grayscale(100%);
 }
 
-/* When .project.active, the .grayscale class is removed from .project-image by JS, making image color */
-/* Hover effect always removes grayscale and scales, regardless of active state (as per original) */
 .project-image:hover img {
-filter: grayscale(0%) !important; /* Important to override .grayscale if present */
-transform: scale(1.02);
-cursor: pointer;
+    filter: grayscale(0%) !important;
+    transform: scale(1.015); /* Subtle scale */
+    cursor: var(--cursor-grab);
 }
 
 .view-project-overlay {
-position: absolute;
-bottom: 20px;
-right: 20px;
-background-color: rgba(240, 240, 240, 0.85);
-color: var(--gray-dark);
-padding: 0.6em 1.1em;
-border-radius: 5px;
-font-size: 0.9rem;
-font-weight: 600;
-text-align: center;
-opacity: 0;
-visibility: hidden;
-transform: translateY(10px);
-transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease, background-color 0.3s ease, color 0.3s ease;
-pointer-events: none;
-z-index: 10; /* Above the image, below project-info if overlapping (unlikely) */
+    position: absolute;
+    bottom: 15px; /* Reduced distance */
+    right: 15px; /* Reduced distance */
+    background-color: rgba(240, 240, 240, 0.9);
+    color: var(--gray-dark);
+    padding: 0.5em 0.9em; /* Reduced padding */
+    border-radius: 4px; /* Softer radius */
+    font-size: 0.8rem; /* Reduced size */
+    font-weight: 500; /* Lighter weight */
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px); /* Reduced offset */
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+    pointer-events: none;
+    z-index: 10;
 }
 
-/* This rule makes the overlay visible when its parent .project is active */
 .project.active .project-image .view-project-overlay {
-opacity: 1;
-visibility: visible;
-transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }
 
-/* --- 추가된 부분: 모달 열릴 때 프로젝트 이미지를 숨기는 클래스 --- */
 .project-image.hidden-on-modal img {
-opacity: 0;
-pointer-events: none; /* 이미지 클릭 방지 */
+    opacity: 0;
+    pointer-events: none;
 }
-/* --- /추가된 부분 --- */
 
-.section-bottom-gap{
-height: 5rem;
+.section-bottom-gap {
+    height: 4rem; /* Reduced height */
 }
 
 /* =========================== */
 /* 6. Marquee Section */
 /* =========================== */
 .marquee-section {
-width: 100%;
-margin: 8rem 0 10rem 0; /* Adjust vertical margin as needed */
-display: flex;
-flex-direction: column;
-align-items: center;
+    width: 100%;
+    margin: 6rem 0 8rem 0; /* Reduced margins */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .marquee-container {
-position: relative;
-height: 100%; /* Take full height of its content */
-width: 100%; /* Adjusted for better responsiveness */
-max-width: 1400px; /* Limit max width for better readability */
-overflow: hidden; /* Hide overflowing content */
-margin: 0; /* Add vertical margin between marquee rows */
-font-family: 'Nunito Sans', sans-serif;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    max-width: 1300px; /* Reduced max width */
+    overflow: hidden;
+    margin: 0;
+    font-family: 'Nunito Sans', sans-serif;
 }
 
 .marquee-inner {
-display: flex;
-white-space: nowrap; /* Prevent text wrapping */
-animation: marquee-scroll 30s linear infinite; /* Increased speed for visibility */
+    display: flex;
+    white-space: nowrap;
+    animation: marquee-scroll 25s linear infinite; /* Reduced speed */
 }
 
-/* Animation direction for right-to-left scroll */
 .marquee-inner.right-to-left {
-animation-direction: reverse;
+    animation-direction: reverse;
 }
 
-/* Pause animation on hover */
 .marquee-inner.paused {
-animation-play-state: paused;
+    animation-play-state: paused;
 }
 
-/* Wrapper for each set of marquee items to control spacing */
 .marquee-item-wrapper {
-display: flex;
-gap: 16px; /* Spacing between individual items (equivalent to Tailwind's gap-x-4) */
-padding-right: 12px; /* Padding for separation when content repeats */
+    display: flex;
+    gap: 12px; /* Reduced gap */
+    padding-right: 10px; /* Reduced padding */
 }
 
-/* Individual marquee item (tag) styling */
 .marquee-item {
-font-family: 'Nunito Sans', sans-serif;
-font-size: 16px; /* text-base */
-font-weight: 400; /* font-normal */
-max-width: 65ch; /* max-w-prose (approximate character width) */
-font-style: normal; /* not-italic */
-padding: 8px 12px; /* Add some padding to make tags look better */
-border-radius: 12px; /* Rounded corners (full pill shape) */
-border: 1px solid currentColor; /* Add a subtle border */
-flex-shrink: 0; /* Prevent items from shrinking */
-transition: background-color 0.3s, color 0.3s;
-opacity: 0.2;
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 14px; /* Reduced size */
+    font-weight: 400;
+    max-width: 60ch; /* Reduced max width */
+    font-style: normal;
+    padding: 6px 10px; /* Reduced padding */
+    border-radius: 10px; /* Softer radius */
+    border: 1px solid currentColor;
+    flex-shrink: 0;
+    transition: background-color 0.3s, color 0.3s;
+    opacity: 0.15; /* Reduced opacity */
 }
 
 .marquee-item, p {
-margin-top: 10px; /* Remove default paragraph margin */
-margin-bottom: 10px; /* Remove default paragraph margin */
+    margin-top: 8px; /* Reduced margin */
+    margin-bottom: 8px; /* Reduced margin */
 }
 
 .marquee-item:hover {
-background-color: rgb(var(--base-fg-solid));
-color: rgb(var(--ctx-primary));
-opacity: 0.8;
+    background-color: rgb(var(--base-fg-solid));
+    color: rgb(var(--ctx-primary));
+    opacity: 0.7; /* Reduced opacity */
 }
 
-/* Primary color for marquee items */
 .marquee-primary-color {
-color: rgb(var(--ctx-primary-fg-primary)); /* Black */
+    color: rgb(var(--ctx-primary-fg-primary));
 }
 
-/* Secondary color for marquee items */
 .marquee-secondary-color {
-color: rgb(var(--ctx-primary-fg-secondary)); /* Dark gray */
+    color: rgb(var(--ctx-primary-fg-secondary));
 }
 
-/* Fade overlay for marquee edges */
 .fade-overlay {
-position: absolute;
-top: 0;
-z-index: 10;
-height: 100%;
-width: 20vw; /* Adjusted width for better visibility on various screens */
-pointer-events: none; /* Allow mouse events to pass through */
+    position: absolute;
+    top: 0;
+    z-index: 10;
+    height: 100%;
+    width: 15vw; /* Reduced width */
+    pointer-events: none;
 }
 
-/* Left fade overlay */
 .fade-left {
-left: 0;
-background: linear-gradient(to right, rgb(var(--ctx-primary)), transparent); /* White fade */
+    left: 0;
+    background: linear-gradient(to right, rgb(var(--ctx-primary)), transparent);
 }
 
-/* Right fade overlay */
 .fade-right {
-right: 0;
-left: unset; /* Override left property if set */
-background: linear-gradient(to left, rgb(var(--ctx-primary)), transparent); /* White fade */
+    right: 0;
+    left: unset;
+    background: linear-gradient(to left, rgb(var(--ctx-primary)), transparent);
 }
 
-/* Keyframe animation for horizontal scrolling */
 @keyframes marquee-scroll-rtl-fast {
-0% { transform: translateX(0%); }
-100% { transform: translateX(-100%); } /* Scrolls content to the left */
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
 }
 
 @keyframes marquee-scroll-ltr-medium {
-0% { transform: translateX(-100%); } /* Start off-screen left */
-100% { transform: translateX(0%); } /* Scrolls content to the right */
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(0%); }
 }
 
 @keyframes marquee-scroll-rtl-slow {
-0% { transform: translateX(0%); }
-100% { transform: translateX(-100%); }
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
 }
 
 @keyframes marquee-scroll-ltr-v_slow {
-0% { transform: translateX(-100%); }
-100% { transform: translateX(0%); }
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(0%); }
 }

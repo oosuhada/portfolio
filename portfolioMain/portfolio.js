@@ -37,9 +37,9 @@ function handlePreloader() {
             preloader.style.transition = 'opacity 0.6s ease-out';
             setTimeout(() => {
                 if (preloader.style.display !== 'none') {
-                     preloader.style.display = 'none';
-                     console.log("[DEBUG] Preloader forced hidden and preloaderHidden event dispatched.");
-                     document.dispatchEvent(new Event('preloaderHidden'));
+                    preloader.style.display = 'none';
+                    console.log("[DEBUG] Preloader forced hidden and preloaderHidden event dispatched.");
+                    document.dispatchEvent(new Event('preloaderHidden'));
                 }
             }, 700);
         }
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!mainContent) console.warn("[DEBUG] Main content element not found.");
 
         const names = ["Oosu", "우수", "佑守", "優秀", "憂愁"];
-        const scales = [1, 1.1, 1.2, 1.3];
+        const scales = [1.4, 1.5, 1.6, 1.7];
         const scalePercents = [10, 30, 60, 100];
         const profileImgs = [];
         const profileHoverImgs = [];
@@ -102,13 +102,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const sliderTexts = document.querySelectorAll('.hero-slider .slider-text');
         const sliderDots = document.querySelectorAll('.hero-slider-dots .slider-dot');
         const heroSection = document.getElementById('hero');
+        const heroSlider = document.querySelector('.hero-slider');
         const hoverName = document.querySelector('.hover-name');
         const hoverImg = document.querySelector('.hover-img');
         const gaugeBar = document.querySelector('.gauge-bar');
         const scrollIcon = document.querySelector('.scroll-indicator');
         const projects = Array.from(document.querySelectorAll('.project'));
         const portfolioSection = document.getElementById('portfolio');
-        const footer = document.querySelector('footer'); // RECTIFIED: Ensure footer is correctly retrieved
+        const footer = document.querySelector('footer');
 
         const mainLogo = document.getElementById('mainLogo');
         if (mainLogo) {
@@ -129,7 +130,6 @@ document.addEventListener('DOMContentLoaded', function () {
         let currentActiveProjectIndex = -1;
 
         const allMarqueeInnerRows = document.querySelectorAll('.marquee-container .marquee-inner');
-
 
         projectImageAnchors.forEach((anchor, index) => {
             const img = anchor.querySelector('img');
@@ -165,7 +165,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        function setGauge(percent) { if (gaugeBar) gaugeBar.style.width = `${percent}%`; }
+        function setGauge(percent) { 
+            if (gaugeBar) gaugeBar.style.width = `${percent}%`; 
+        }
 
         function setImgScaleCustom(idx) {
             if (hoverImg && scales.length > idx && scalePercents.length > idx) {
@@ -281,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (mainEl && spElement) {
                     spElement.style.display = 'inline-block';
                 } else {
-                    console.warn(` [DEBUG] Persistent sparkle target missing: mainEl ${target.el} or sparkle ${target.sparkle}`);
+                    console.warn(`[DEBUG] Persistent sparkle target missing: mainEl ${target.el} or sparkle ${target.sparkle}`);
                 }
             });
         }
@@ -315,50 +317,60 @@ document.addEventListener('DOMContentLoaded', function () {
             projects.forEach((project, idx) => {
                 const projectInfo = project.querySelector('.project-info');
                 const pImageAnchor = project.querySelector('.project-image');
-                const viewOverlay = project.querySelector('.view-project-overlay'); // Added for direct check
+                const viewOverlay = project.querySelector('.view-project-overlay');
                 const isActive = idx === activeIndex;
 
                 project.classList.toggle('active', isActive);
                 if (projectInfo) {
+                    // .active 클래스로 표시 여부를 제어하므로 projectInfo의 active 상태도 동기화
                     projectInfo.classList.toggle('active', isActive);
-                    console.log(`[DEBUG] Project ${idx+1} projectInfo active: ${isActive}`);
+                    console.log(`[DEBUG] Project ${idx + 1} projectInfo active: ${isActive}`);
+                } else {
+                    console.warn(`[DEBUG] Project ${idx + 1} projectInfo not found`);
                 }
                 if (pImageAnchor) {
                     pImageAnchor.classList.toggle('grayscale', !isActive);
-                    console.log(`[DEBUG] Project ${idx+1} pImageAnchor grayscale: ${!isActive}`);
+                    console.log(`[DEBUG] Project ${idx + 1} pImageAnchor grayscale: ${!isActive}`);
+                } else {
+                    console.warn(`[DEBUG] Project ${idx + 1} pImageAnchor not found`);
                 }
-                // Verify overlay state (optional, but useful for debugging)
                 if (viewOverlay) {
-                    console.log(`[DEBUG] Project ${idx+1} viewOverlay opacity: ${viewOverlay.style.opacity}, visibility: ${viewOverlay.style.visibility}`);
+                    viewOverlay.classList.toggle('visible', isActive);
+                    console.log(`[DEBUG] Project ${idx + 1} viewOverlay visible: ${isActive}`);
+                } else {
+                    console.warn(`[DEBUG] Project ${idx + 1} viewOverlay not found`);
                 }
             });
         }
 
+        // [DELETED] 겹침 문제를 일으키는 updateProjectVisibility 함수를 삭제했습니다.
+
         function onScroll() {
-            // console.log("[DEBUG] onScroll triggered.");
-            if (onboardingActive || !heroSection || !portfolioSection) return;
+            console.log("[DEBUG] onScroll triggered. ScrollY:", window.scrollY);
+            if (onboardingActive || !heroSection || !portfolioSection) {
+                console.log("[DEBUG] onScroll skipped: onboardingActive or hero/portfolio missing");
+                return;
+            }
 
             const scroll = window.scrollY;
             const windowHeight = window.innerHeight;
 
             const heroRect = getSectionRect(heroSection);
-            // console.log(`[DEBUG] heroRect.bottom: ${heroRect.bottom}`);
+            console.log(`[DEBUG] heroRect.bottom: ${heroRect.bottom}`);
             let footerTop = footer ? getSectionRect(footer).top : Infinity;
-            // console.log(`[DEBUG] footerTop: ${footerTop}`);
+            console.log(`[DEBUG] footerTop: ${footerTop}`);
 
             // --- Logo Visibility Control ---
-            const scrollThresholdEnter = heroRect.bottom - (windowHeight * 0.1); // 10% of hero remaining
-            const scrollThresholdExit = footerTop - (windowHeight * 0.9); // When 90% of screen is above footer
+            const scrollThresholdEnter = heroRect.bottom - (windowHeight * 0.1);
+            const scrollThresholdExit = footerTop - (windowHeight * 0.9);
 
             if (mainLogo) {
-                // console.log(`[DEBUG] Current scroll: ${scroll}, ThresholdEnter: ${scrollThresholdEnter}, ThresholdExit: ${scrollThresholdExit}`);
+                console.log(`[DEBUG] Logo check - scroll: ${scroll}, enter: ${scrollThresholdEnter}, exit: ${scrollThresholdExit}`);
                 if (scroll > scrollThresholdEnter && scroll < scrollThresholdExit) {
-                    // console.log("[DEBUG] Showing mainLogo.");
                     mainLogo.style.display = 'flex';
                     setTimeout(() => mainLogo.style.opacity = '1', 10);
                     mainLogo.classList.add('is-fixed');
                 } else {
-                    // console.log("[DEBUG] Hiding mainLogo.");
                     mainLogo.style.opacity = '0';
                     mainLogo.classList.remove('is-fixed');
                     setTimeout(() => {
@@ -368,45 +380,45 @@ document.addEventListener('DOMContentLoaded', function () {
                     }, 300);
                 }
             }
-            // --- End Logo Visibility Control ---
 
+            // --- Project Activation ---
             let newActiveProjectIndex = -1;
             for (let i = 0; i < projects.length; i++) {
                 const project = projects[i];
                 const rect = getSectionRect(project);
-                // console.log(`[DEBUG] Project ${i+1} rect.top: ${rect.top}, rect.bottom: ${rect.bottom}`);
-                // Project is active if its center is within the viewport, or a significant part of it.
-                // Using windowHeight / 2 as a target line.
+                console.log(`[DEBUG] Project ${i + 1} rect.top: ${rect.top}, rect.bottom: ${rect.bottom}, viewport center: ${scroll + windowHeight / 2}`);
                 if (scroll + windowHeight / 2 >= rect.top && scroll + windowHeight / 2 < rect.bottom) {
                     newActiveProjectIndex = i;
-                    // console.log(`[DEBUG] Project ${i+1} is the new active project.`);
+                    console.log(`[DEBUG] Project ${i + 1} is in view, setting as active`);
                     break;
                 }
             }
 
             if (newActiveProjectIndex !== currentActiveProjectIndex) {
-                console.log(`[DEBUG] Changing active project from ${currentActiveProjectIndex+1} to ${newActiveProjectIndex+1}`);
+                console.log(`[DEBUG] Changing active project from ${currentActiveProjectIndex + 1} to ${newActiveProjectIndex + 1}`);
                 setProjectActive(newActiveProjectIndex);
                 currentActiveProjectIndex = newActiveProjectIndex;
             }
 
-            // Deactivate all projects if outside project section (e.g., in hero or footer)
+            // Deactivate all projects if outside project section
             if (newActiveProjectIndex === -1) {
-                const inHeroZone = scroll < heroRect.bottom - (windowHeight * 0.2); // If still visually in hero section
-                const inFooterZone = footer && (scroll + windowHeight * 0.9 > footerTop); // If 90% of screen covers footer top
-
-                // console.log(`[DEBUG] No project active. In Hero Zone: ${inHeroZone}, In Footer Zone: ${inFooterZone}`);
+                const inHeroZone = scroll < heroRect.bottom - (windowHeight * 0.2);
+                const inFooterZone = footer && (scroll + windowHeight * 0.9 > footerTop);
+                console.log(`[DEBUG] No project active. In Hero Zone: ${inHeroZone}, In Footer Zone: ${inFooterZone}`);
 
                 if (inHeroZone || inFooterZone) {
                     if (currentActiveProjectIndex !== -1) {
-                        console.log(`[DEBUG] Deactivating all projects due to Hero/Footer zone.`);
+                        console.log(`[DEBUG] Deactivating all projects due to Hero/Footer zone`);
                         setProjectActive(-1);
                         currentActiveProjectIndex = -1;
                     }
                 }
             }
+            
+            // [DELETED] 겹침 문제를 일으키는 updateProjectVisibility() 호출을 삭제했습니다.
         }
 
+        // ▼▼▼ [수정됨] 온보딩 안내 문구 수정 ▼▼▼
         const guideSteps = [
             {
                 msg: "Click 'Oosu'",
@@ -415,10 +427,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 pos: (el) => { return getSectionRect(el) ? { top: getSectionRect(el).top - (guideTooltip?.offsetHeight || 60) - 25, left: getSectionRect(el).left - (guideTooltip?.offsetWidth || 180) - 10 } : { top: 0, left: 0 }; }
             },
             {
-                msg: "Click slider dots",
-                target: '.slider-dot' + '[data-index="0"]',
-                sparkle: '#sparkle-dot',
-                pos: (el) => { const r = getSectionRect(el); const tH = guideTooltip?.offsetHeight || 50; const tW = guideTooltip?.offsetWidth || 180; let iT = r.bottom + 15; let iL = r.left + (el.offsetWidth / 2) - tW + 100; if (iL < 10) iL = 10; if (iL + tW > window.innerWidth - 10) iL = window.innerWidth - tW - 10; if (iT < 10) iT = 10; if (iT + tH > window.innerHeight - 10) iT = window.innerHeight - tH - 10; return { top: iT, left: iL }; }
+                msg: "Double-click the slider text", // <-- 문구 수정
+                target: '.hero-slider-wrapper',
+                sparkle: '',
+                pos: (el) => {
+                    const r = getSectionRect(el);
+                    const tH = guideTooltip?.offsetHeight || 60;
+                    const tW = guideTooltip?.offsetWidth || 200;
+                    let iT = r.bottom - 10;
+                    let iL = r.left + (r.width / 2) - (tW / 2) - 60;
+                    if (iL < 10) iL = 10;
+                    if (iL + tW > window.innerWidth - 10) iL = window.innerWidth - 10 - tW;
+                    return { top: iT, left: iL };
+                }
             },
             {
                 msg: "Click profile image",
@@ -443,13 +464,17 @@ document.addEventListener('DOMContentLoaded', function () {
         function setSparkleDisplay(guideStepIndex) {
             if (!guideSteps) return;
             guideSteps.forEach((step, i) => {
-                const spElement = document.querySelector(step.sparkle);
-                if (spElement) spElement.style.display = (i === guideStepIndex ? 'inline-block' : 'none');
+                if (step.sparkle) {
+                    const spElement = document.querySelector(step.sparkle);
+                    if (spElement) spElement.style.display = (i === guideStepIndex ? 'inline-block' : 'none');
+                }
             });
             if (guideStepIndex < 0 || guideStepIndex >= guideSteps.length) {
                 guideSteps.forEach(step => {
-                    const spElement = document.querySelector(step.sparkle);
-                    if (spElement) spElement.style.display = 'none';
+                    if (step.sparkle) {
+                        const spElement = document.querySelector(step.sparkle);
+                        if (spElement) spElement.style.display = 'none';
+                    }
                 });
             }
         }
@@ -472,14 +497,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 guideTooltip.textContent = step.msg;
                 guideTooltip.style.opacity = "1";
             } else {
-                if (!targetElement) console.error(` [DEBUG] showGuideStep: Target element '${step.target}' not found for tooltip positioning at step ${idx}.`);
+                if (!targetElement) console.error(`[DEBUG] showGuideStep: Target element '${step.target}' not found for tooltip positioning at step ${idx}.`);
                 guideTooltip.style.opacity = "0";
                 guideTooltip.style.display = 'none';
             }
         }
 
         function clearGuide(isSkippingOrFinishedEarly = false) {
-            console.log(` [DEBUG] clearGuide called. isSkippingOrFinishedEarly: ${isSkippingOrFinishedEarly}`);
+            console.log(`[DEBUG] clearGuide called. isSkippingOrFinishedEarly: ${isSkippingOrFinishedEarly}`);
             if (guideOverlay) guideOverlay.style.display = "none";
             if (guideCloseButton) guideCloseButton.style.display = "none";
             setUnderline(null, false);
@@ -489,10 +514,10 @@ document.addEventListener('DOMContentLoaded', function () {
             document.body.classList.remove('no-scroll');
 
             if (localStorage.getItem('onboardingCompleted') === 'true' || !isSkippingOrFinishedEarly) {
-                console.log(" [DEBUG] clearGuide: Showing persistent sparkles.");
+                console.log("[DEBUG] clearGuide: Showing persistent sparkles.");
                 showPersistentSparkles();
             } else {
-                console.log(" [DEBUG] clearGuide: Hiding all sparkles.");
+                console.log("[DEBUG] clearGuide: Hiding all sparkles.");
                 hideAllSparkles();
             }
             if (sliderTexts.length > 0) showSlide(currentSlide);
@@ -505,14 +530,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 scrollIcon.style.pointerEvents = "auto";
             }
             if (!isSkippingOrFinishedEarly || (isSkippingOrFinishedEarly && localStorage.getItem('onboardingCompleted') !== 'true')) {
-                console.log(" [DEBUG] clearGuide: Setting onboardingCompleted to true in localStorage.");
+                console.log("[DEBUG] clearGuide: Setting onboardingCompleted to true in localStorage.");
                 localStorage.setItem('onboardingCompleted', 'true');
             }
             setTimeout(() => { onScroll(); }, 100);
         }
 
         function startGuide() {
-            console.log(" [DEBUG] startGuide: Attempting to start guide...");
+            console.log("[DEBUG] startGuide: Attempting to start guide...");
             if (!guideOverlay || !guideTooltip || !guideCloseButton) { return; }
             for (let i = 0; i < guideSteps.length; i++) { if (!document.querySelector(guideSteps[i].target)) return; }
             if (onboardingActive) { return; }
@@ -532,7 +557,7 @@ document.addEventListener('DOMContentLoaded', function () {
             nameIndex = 0;
             if (hoverName) hoverName.textContent = names[nameIndex];
             showGuideStep(guideIndex);
-            console.log(" [DEBUG] startGuide: Guide started successfully.");
+            console.log("[DEBUG] startGuide: Guide started successfully.");
         }
 
         // ===== Event Listener Setup (common interactions) =====
@@ -548,7 +573,29 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // ===== Image hover/leave events and effect management =====
+        // ▼▼▼ [수정됨] 'click'을 'dblclick'으로 변경 ▼▼▼
+        if (heroSlider) {
+            // 더블 클릭 시 슬라이드 넘김
+            heroSlider.addEventListener('dblclick', () => {
+                if (onboardingActive) return;
+
+                if (sliderTexts.length > 0) {
+                    const nextSlideIndex = (currentSlide + 1) % sliderTexts.length;
+                    showSlide(nextSlideIndex);
+                }
+
+                // 자동 넘김 일시 중지 후 재시작
+                sliderPaused = true;
+                if (sliderInterval) clearInterval(sliderInterval);
+                setTimeout(() => {
+                    sliderPaused = false;
+                    startSliderAutoPlay();
+                }, 8000);
+            });
+
+            // 싱글 클릭 이벤트는 제거되어, 부모(document)의 하이라이터 이벤트만 처리됩니다.
+        }
+
         if (hoverImg) {
             hoverImg.addEventListener('click', () => {
                 if (!onboardingActive) {
@@ -583,28 +630,50 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        sliderDots.forEach((dot, idx) => {
-            dot.addEventListener('click', (e) => {
+        const heroSliderDotsArea = document.querySelector('.hero-slider-dots-area');
+        if (heroSliderDotsArea) {
+            heroSliderDotsArea.addEventListener('click', (e) => {
                 if (!onboardingActive) {
-                    showSlide(idx);
+                    const clickedDot = e.target.closest('.slider-dot');
+                    let targetIndex = currentSlide;
+
+                    if (clickedDot && clickedDot.dataset.index) {
+                        targetIndex = parseInt(clickedDot.dataset.index, 10);
+                    }
+
+                    showSlide(targetIndex);
+
                     sliderPaused = true;
                     if (sliderInterval) clearInterval(sliderInterval);
                     setTimeout(() => { sliderPaused = false; startSliderAutoPlay(); }, 8000);
-                    if (idx === 0) { const sparkle = document.querySelector('#sparkle-dot'); if (sparkle) sparkle.style.display = 'none'; }
+
+                    const sparkle = document.querySelector('#sparkle-dot');
+                    if (sparkle) sparkle.style.display = 'none';
                 }
             });
-        });
+        }
 
         if (scrollIcon) {
-            scrollIcon.addEventListener('click', () => { const portfolioSection = document.getElementById('portfolio'); if (portfolioSection) portfolioSection.scrollIntoView({ behavior: 'smooth' }); });
+            scrollIcon.addEventListener('click', () => { 
+                const portfolioSection = document.getElementById('portfolio'); 
+                if (portfolioSection) portfolioSection.scrollIntoView({ behavior: 'smooth' }); 
+            });
         }
 
         projectImageAnchors.forEach(pImageAnchor => {
             const overlay = pImageAnchor.querySelector('.view-project-overlay');
             const parentProject = pImageAnchor.closest('.project');
             if (overlay && parentProject) {
-                pImageAnchor.addEventListener('mouseenter', () => { if (parentProject.classList.contains('active')) { overlay.style.backgroundColor = parentProject.dataset.projectColor || 'var(--gray-dark)'; overlay.style.color = '#fff'; } });
-                pImageAnchor.addEventListener('mouseleave', () => { overlay.style.backgroundColor = ''; overlay.style.color = ''; });
+                pImageAnchor.addEventListener('mouseenter', () => {
+                    if (parentProject.classList.contains('active')) {
+                        overlay.style.backgroundColor = parentProject.dataset.projectColor || 'var(--gray-dark)';
+                        overlay.style.color = '#fff';
+                    }
+                });
+                pImageAnchor.addEventListener('mouseleave', () => {
+                    overlay.style.backgroundColor = '';
+                    overlay.style.color = '';
+                });
             }
         });
 
@@ -616,21 +685,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 const currentStepConfig = guideSteps[guideIndex];
                 if (!currentStepConfig) { clearGuide(false); return; }
-                if (guideIndex === 0) { nameIndex = (nameIndex + 1) % names.length; if (hoverName) hoverName.textContent = names[nameIndex]; setHeroBgClass(`hero-bg-name-${nameIndex}`); }
-                else if (guideIndex === 1) {
-                    if (sliderTexts.length > 1) showSlide(1); else if (sliderTexts.length > 0) showSlide(0);
+                if (guideIndex === 0) { 
+                    nameIndex = (nameIndex + 1) % names.length; 
+                    if (hoverName) hoverName.textContent = names[nameIndex]; 
+                    setHeroBgClass(`hero-bg-name-${nameIndex}`); 
                 }
-                else if (guideIndex >= 2 && guideIndex <= 4) { scaleIndex = (scaleIndex + 1) % scales.length; setImgScaleCustom(scaleIndex); }
+                else if (guideIndex === 1) {
+                    if (sliderTexts.length > 1) showSlide(1); 
+                    else if (sliderTexts.length > 0) showSlide(0);
+                }
+                else if (guideIndex >= 2 && guideIndex <= 4) { 
+                    scaleIndex = (scaleIndex + 1) % scales.length; 
+                    setImgScaleCustom(scaleIndex); 
+                }
                 guideIndex++;
                 if (guideIndex < guideSteps.length) { showGuideStep(guideIndex); }
                 else { clearGuide(false); }
             });
         }
 
-        if (guideCloseButton) { guideCloseButton.addEventListener('click', () => { if (onboardingActive) clearGuide(true); }); }
-        if (guideTooltip) { guideTooltip.addEventListener('click', (e) => e.stopPropagation()); }
+        if (guideCloseButton) { 
+            guideCloseButton.addEventListener('click', () => { 
+                if (onboardingActive) clearGuide(true); 
+            }); 
+        }
+        if (guideTooltip) { 
+            guideTooltip.addEventListener('click', (e) => e.stopPropagation()); 
+        }
 
-        // ===== Project Modal Logic =====
         projectImageAnchors.forEach(anchor => {
             anchor.addEventListener('click', function (event) {
                 event.preventDefault();
@@ -639,7 +721,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (projectId) {
                     openModal(projectId, this);
                 } else {
-                    console.warn("Project ID not found for the clicked anchor.");
+                    console.warn("[DEBUG] Project ID not found for the clicked anchor.");
                 }
             });
         });
@@ -653,7 +735,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // Marquee animation setup (Leaving as is, per your request)
         if (allMarqueeInnerRows.length >= 4) {
             allMarqueeInnerRows[0].style.animation = 'marquee-scroll-rtl-fast 25s linear infinite';
             allMarqueeInnerRows[1].style.animation = 'marquee-scroll-ltr-medium 35s linear infinite';
@@ -666,7 +747,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        // Marquee pause on hover logic (Leaving as is, per your request)
         allMarqueeInnerRows.forEach(inner => {
             const container = inner.closest('.marquee-container');
             if (container) {
@@ -679,51 +759,54 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-
         // ===== [A] Initial Page Setup and Onboarding Decision Logic =====
-        console.log(" [DEBUG] Initial localStorage - onboardingCompleted:", onboardingCompletedSetting);
-        console.log(" [DEBUG] Came from index.html flag:", cameFromIndex);
+        console.log("[DEBUG] Initial localStorage - onboardingCompleted:", onboardingCompletedSetting);
+        console.log("[DEBUG] Came from index.html flag:", cameFromIndex);
 
         if (heroSection) {
             startProfileImgAutoPlay();
             if (sliderTexts.length > 0 && sliderTexts[0]) showSlide(0);
             else currentSlide = -1;
         }
-        setProjectActive(-1); // Ensure no project is active initially
+        setProjectActive(-1);
         hideAllSparkles();
 
         let runFullOnboardingNext = false;
         let showPersistentHintsNext = false;
 
-        if (cameFromIndex) { runFullOnboardingNext = true; localStorage.removeItem('onboardingCompleted'); }
-        else if (onboardingCompletedSetting === 'true') {
+        if (cameFromIndex) { 
+            runFullOnboardingNext = true; 
+            localStorage.removeItem('onboardingCompleted'); 
+        } else if (onboardingCompletedSetting === 'true') {
             showPersistentHintsNext = true;
+        } else { 
+            runFullOnboardingNext = true; 
         }
-        else { runFullOnboardingNext = true; }
 
         if (runFullOnboardingNext) {
-            if (document.body) document.body.classList.add('no-scroll');
+            document.body.classList.add('no-scroll');
             setTimeout(() => {
                 if (typeof startGuide === 'function') startGuide();
-                else console.error(" [DEBUG] startGuide function not found!");
+                else console.error("[DEBUG] startGuide function not found!");
             }, 100);
-        } else if (showPersistentHintsNext) {
-            if (document.body) document.body.classList.remove('no-scroll');
-            showPersistentSparkles();
-            scaleIndex = scales.length - 1;
-            setImgScaleCustom(scaleIndex);
-            startSliderAutoPlay();
         } else {
-            if (document.body) document.body.classList.remove('no-scroll');
-            scaleIndex = scales.length - 1;
-            setImgScaleCustom(scaleIndex);
-            startSliderAutoPlay();
+            document.body.classList.remove('no-scroll');
+            if (showPersistentHintsNext) {
+                showPersistentSparkles();
+                scaleIndex = scales.length - 1;
+                setImgScaleCustom(scaleIndex);
+                startSliderAutoPlay();
+            } else {
+                scaleIndex = scales.length - 1;
+                setImgScaleCustom(scaleIndex);
+                startSliderAutoPlay();
+            }
         }
 
         window.addEventListener('scroll', onScroll, { passive: true });
-        setTimeout(() => { onScroll(); }, 350); // Initial call to set states correctly
+        setTimeout(() => { onScroll(); }, 350);
 
-        console.log(" [DEBUG] Main script logic finished after preloader.");
+        console.log("[DEBUG] Main script logic finished after preloader.");
     });
 });
 

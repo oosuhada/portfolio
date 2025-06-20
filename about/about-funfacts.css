@@ -32,7 +32,7 @@
   padding: 1.8rem;
   box-shadow: 0 8px 25px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.07);
   color: var(--gray-dark);
-  cursor: grab;
+  cursor: var(--cursor-grab);
   overflow: hidden;
   will-change: transform, opacity, z-index, border-radius, filter; /* filter 추가 */
   opacity: 0; /* Default hidden state, animated by JS */
@@ -49,7 +49,7 @@
 
 /* Card dragging state */
 .funfact-card.is-dragging {
-  cursor: grabbing;
+  cursor: var(--cursor-grabbing);
   box-shadow: 0 15px 40px rgba(0,0,0,0.2), 0 5px 15px rgba(0,0,0,0.15);
   transform: scale(1.05);
   transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
@@ -159,7 +159,7 @@
   background-color: rgba(220, 220, 220, 0.8);
   border-radius: 50%;
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.7), 0 0 12px rgba(220, 220, 220, 0.5);
-  cursor: pointer;
+  cursor: var(--cursor-grab);
   transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), background-color 0.4s ease, box-shadow 0.4s ease;
   animation: sparkleAnimation 2.5s infinite ease-in-out alternate;
   will-change: transform, opacity, box-shadow;

@@ -133,7 +133,7 @@
      transform: translateX(-50%);
      font-size: 3rem;
      color: #fff;
-     cursor: pointer;
+     cursor: var(--cursor-grab);
      opacity: 0.9; /* Increased opacity for better visibility */
      transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
      z-index: 10; /* Ensure it's above other elements */
@@ -177,7 +177,7 @@
      border: none;
      background: #fff;
      font-size: 1.65rem;
-     cursor: pointer;
+     cursor: var(--cursor-grab);
      box-shadow: 0 2px 18px #ffd16644;
      transition: background 0.18s, color 0.16s, transform 0.14s;
      display: flex;
@@ -239,7 +239,7 @@
      justify-content: flex-end;
      align-items: flex-start;
      padding: 2.5rem 1.3rem 1.2rem 1.5rem;
-     cursor: pointer;
+     cursor: var(--cursor-grab);
      transition: box-shadow 0.18s;
      user-select: none;
      position: absolute;
@@ -509,7 +509,7 @@
      font-size: 2.8rem;
      color: #fff;
      font-weight: bold;
-     cursor: pointer;
+     cursor: var(--cursor-grab);
      opacity: 0.8;
      transition: color 0.2s, transform 0.4s, opacity 0.3s;
      z-index: 10;

@@ -13,6 +13,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="stylesheet" href="style/greeting.css">
   <link rel="stylesheet" href="style/slider.css">
+  <link rel="stylesheet" href="./common/common.css">
   <link rel="manifest" href="/site.webmanifest">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -53,7 +54,7 @@
   </svg>
 
   <div class="container texture-background" id="preloaderContainer" style="display: none; opacity: 0;">
-    <div id="darkModeToggleWrapper" style="position: fixed; top: 15px; right: 15px; width: 70px; height: 70px; cursor: pointer; z-index: 1000; background-color: rgba(93, 76, 76, 0.1); border-radius: 50%;">
+    <div id="darkModeToggleWrapper" style="position: fixed; top: 15px; right: 15px; width: 70px; height: 70px; cursor: var(--cursor-grab); z-index: 1000; background-color: rgba(93, 76, 76, 0.1); border-radius: 50%;">
         <div id="darkModeToggleContainer"></div> </div>
 
     <div class="intro-section">
@@ -160,7 +161,7 @@
       <div class="loading-text" id="loadingText"></div>
     </div>
 
-    <div id="inboxIconContainer" style="position: fixed; top: 20px; right: 20px; width: 70px; height: 70px; cursor: pointer; z-index: 1000;"></div>
+    <div id="inboxIconContainer" style="position: fixed; top: 20px; right: 20px; width: 70px; height: 70px; z-index: 1000;"></div>
 
     <div class="slide" id="slide1">
       <div class="slide-content">
@@ -275,6 +276,7 @@
   <script type="application/javascript" src="script/canvasCircles.js"></script>
   <script type="application/javascript" src="script/greeting.js"></script>
   <script type="application/javascript" src="script/slider.js"></script>
+  <script src="./common/common.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
         const inboxIconContainer = document.getElementById('inboxIconContainer');

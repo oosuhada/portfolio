@@ -62,7 +62,7 @@
 /* 마우스 오버시 의미단위 밑줄 효과 */
 .skill-chunk {
   display: inline-block;
-  cursor: pointer;
+  cursor: var(--cursor-grab);
   transition: text-decoration 0.18s, background 0.14s;
   border-radius: 3px;
   outline: none;
@@ -76,7 +76,7 @@
 }
 
 .skill-ink-blot {
-  cursor: pointer;
+  cursor: var(--cursor-grab);
   width: 190px;
   height: 190px;
   position: relative;

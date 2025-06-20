@@ -25,7 +25,7 @@
 
 :root {
     --main-left-gap: 5vw;
-    --site-min-width: 860px;
+    /* --site-min-width: 860px; */
     --gray-dark: #222;
     --gray-dark2: #22222293;
     --gray: #555;
@@ -48,10 +48,34 @@
     --pink-strong: #E36498;
     --gray-active-nav-bg: #bdbdbdaa;
     --gray-active-nav-text: var(--gray-dark);
+
+    /* ▼▼▼ [추가] 커스텀 커서 변수 정의 ▼▼▼ */
+    /* 라이트 모드 커서 */
+    --cursor-pointer-light: url('../img/pointer-light.png'), auto;
+    --cursor-ew-resize-light: url('../img/ew-resize-light.png') 40 20, auto;
+
+    /* 다크 모드 커서 */
+    --cursor-pointer-dark: url('../img/pointer-dark.png'), auto;
+    --cursor-ew-resize-dark: url('../img/ew-resize-dark.png') 40 20, auto;
+    
+    /* 단일 이미지 커서 (모드 공통) */
+    --cursor-grab-single: url('../img/grab.png') 11 3, auto;
+    --cursor-grabbing-single: url('../img/grabbing.png') 11 3, auto;
+
+    /* 현재 모드에 따라 적용될 커서 변수 (기본은 라이트 모드) */
+    --cursor-default: var(--cursor-pointer-light);
+    --cursor-pointer: var(--cursor-grab-single);
+    --cursor-grab: var(--cursor-grab-single);
+    --cursor-grabbing: var(--cursor-grabbing-single);
+    --cursor-ew-resize: var(--cursor-ew-resize-light);
 }
 
 html, body {
-    min-width: var(--site-min-width);
+  min-width: 100vw;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
     font-family: 'Pretendard', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', Arial, sans-serif;
     background: var(--white);
 }
@@ -151,7 +175,7 @@ body::before {
     background: none;
     border: none;
     font-size: 1.5rem;
-    cursor: pointer;
+    /* cursor 변수는 하단 전역 스타일에서 관리 */
     color: var(--gray-mid);
     padding: 0.5rem;
     display: flex;
@@ -377,7 +401,7 @@ footer {
 .skill-chunk,
 .timeline-tag-chunk1,
 .timeline-tag-chunk2 {
-    cursor: pointer;
+    /* cursor 변수는 하단 전역 스타일에서 관리 */
     transition: background-color 0.3s ease;
     display: inline;
     padding-top: 0.1em;
@@ -477,7 +501,7 @@ footer {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    cursor: pointer;
+    /* cursor 변수는 하단 전역 스타일에서 관리 */
     border: 2px solid transparent;
     transition: transform 0.2s ease, border-color 0.2s ease;
 }
@@ -529,6 +553,7 @@ footer {
 
     .nav-title {
         display: block;
+        display: none;
     }
 
     .nav-toggle-btn {
@@ -617,4 +642,40 @@ footer {
     .nav-center a:last-child {
         border-right: none;
     }
+}
+
+/* ▼▼▼ [수정됨] 다크 모드일 때 커서 변수 재정의 ▼▼▼ */
+html.dark {
+  --cursor-default: var(--cursor-pointer-dark);
+  --cursor-pointer: var(--cursor-grab-single);
+  --cursor-ew-resize: var(--cursor-ew-resize-dark);
+  /* grab, grabbing은 공통이므로 재정의 필요 없음 */
+}
+
+/* ▼▼▼ [수정됨] 커스텀 커서 전역 적용 ▼▼▼ */
+
+/* 기본 커서 스타일을 html과 body 모두에 적용하여
+  마우스가 화면 가장자리에 가도 커서가 사라지지 않도록 합니다.
+*/
+html, body {
+  cursor: var(--cursor-default);
+}
+
+/*
+  클릭 등 상호작용이 가능한 모든 요소에 grab 커서를 일괄 적용합니다.
+  !important를 사용하여 다른 스타일에 의해 덮어쓰이는 것을 방지합니다.
+*/
+a, 
+button, 
+[role="button"], 
+input[type="submit"], 
+input[type="button"],
+.nav-toggle-btn,
+#highlight-menu .color-swatch,
+.meaning-chunk, 
+.timeline-chunk, 
+.skill-chunk, 
+.timeline-tag-chunk1, 
+.timeline-tag-chunk2 {
+    cursor: var(--cursor-grab);
 }

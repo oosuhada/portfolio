@@ -132,7 +132,7 @@ body {
     transform: translateX(-50%);
     font-size: 3rem;
     color: #fff;
-    cursor: pointer;
+    cursor: var(--cursor-grab);
     opacity: 0.9; /* Increased opacity for better visibility */
     transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
     z-index: 10; /* Ensure it's above other elements */
