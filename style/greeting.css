@@ -9,8 +9,178 @@ body {
   margin: 0;
   font-family: "Work Sans", sans-serif;
   overflow: hidden; /* Added to prevent scroll during preloader */
-  background-color: #f8f8f8;
+  background-color: #f8f8f8; /* Default body background */
 }
+
+/* Light Mode Variables (Default on .container) */
+:root {
+  --bg-color-light: #f8f8f8;
+    --text-color-light: #333;
+    --intro-text-color-light: #333; /* Specific for intro text */
+    --chatbox-border-light: #aaa;
+    --chatbox-button-bg-light: #555; /* CHANGED: Now matches dark mode background */
+    --chatbox-button-text-light: #f8f8f8; /* CHANGED: Now matches dark mode text */
+    --strong-bg-light: transparent;
+    --strong-text-light: inherit;
+    --heading-main-color-light: #333;
+    --replay-text-color-light: inherit;
+    --replay-text-shadow-light: none;
+    --texture-background-image-light: url('../img/introbackground.png'); /* Ensure this path is correct */
+    --dark-mode-toggle-wrapper-bg-light: rgba(0, 0, 0, 0.1);
+    --dark-mode-toggle-wrapper-hover-bg-light: rgba(0, 0, 0, 0.3);
+    --wish-heading-part1-color-light: #666;
+    --wish-heading-part2-color-light: #666;
+}
+
+/* Dark Mode Variables applied to .container.dark-theme */
+.container.dark-theme {
+    --bg-color-dark: #1a1a1a;
+    --text-color-dark: #f8f8f8;
+    --intro-text-color-dark: #f0f0f0;
+    --chatbox-border-dark: #888;
+    --chatbox-button-bg-dark: #555;
+    --chatbox-button-text-dark: #f8f8f8;
+    --strong-bg-dark: #f8f8f8;
+    --strong-text-dark: #1a1a1a;
+    --heading-main-color-dark: #f8f8f8;
+    --replay-text-color-dark: #f8f8f8;
+    --replay-text-shadow-dark: none; /* REMOVED GLOW: No text shadow in dark mode */
+    --texture-background-image-dark: url('../img/introbackground0.png'); /* Placeholder for dark texture */
+    --dark-mode-toggle-wrapper-bg-dark: rgba(255, 255, 255, 0.1);
+    --dark-mode-toggle-wrapper-hover-bg-dark: rgba(255, 255, 255, 0.3);
+    /* Apply dark theme variables to greeting elements */
+    background-color: var(--bg-color-dark);
+    color: var(--text-color-dark);
+    background-image: var(--texture-background-image-dark);
+    transition: background-color 0.5s ease, color 0.5s ease, background-image 0.5s ease;
+}
+
+/* Apply variables to specific elements within the greeting container */
+.container {
+    background-color: var(--bg-color-light);
+    color: var(--text-color-light);
+    background-image: var(--texture-background-image-light);
+    transition: background-color 0.5s ease, color 0.5s ease, background-image 0.5s ease; /* Ensure smooth transitions */
+}
+
+/* Updated styles for dark mode toggle wrapper and container */
+#darkModeToggleWrapper {
+    position: fixed;
+    top: 10px; /* Adjusted position for larger size */
+    right: 10px; /* Adjusted position for larger size */
+    width: 120px; /* Significantly larger clickable area */
+    height: 120px; /* Significantly larger clickable area */
+    cursor: pointer;
+    z-index: 1000; /* Ensure it's above other content */
+    display: flex; /* To center the Lottie inside */
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%; /* Circular hit area */
+    background-color: var(--dark-mode-toggle-wrapper-bg-light); /* Use CSS variable for background */
+    transition: background-color 0.3s ease;
+    overflow: visible;
+}
+
+#darkModeToggleWrapper:hover {
+    background-color: var(--dark-mode-toggle-wrapper-hover-bg-light); /* Use CSS variable for hover background */
+}
+
+#darkModeToggleContainer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: block;
+  opacity: 1;
+  transform: scale(2); /* 2배 확대 (원하는 배율로 조정 가능) */
+  transform-origin: center; /* 중심 기준으로 확대 */
+}
+
+/* Define keyframes for the shake animation */
+@keyframes scaleThenWiggle {
+  0%   { transform: scale(2) rotate(0deg); }
+  10%  { transform: scale(1.8) rotate(0deg); }   /* 스케일 축소 */
+  20%  { transform: scale(2.4) rotate(0deg); }   /* 스케일 확대 */
+  30%  { transform: scale(1.9) rotate(0deg); }   /* 스케일 축소 */
+  40%  { transform: scale(2.3) rotate(0deg); }   /* 스케일 확대 */
+  50%  { transform: scale(2) rotate(0deg); }     /* 원래대로 */
+  60%  { transform: scale(2) rotate(-10deg); }
+  70%  { transform: scale(2) rotate(10deg); }
+  80%  { transform: scale(2) rotate(-5deg); }
+  90%  { transform: scale(2) rotate(5deg); }
+  100% { transform: scale(2) rotate(0deg); }     /* 종료 */
+}
+
+/* Apply animations on hover of the wrapper */
+#darkModeToggleWrapper:hover #darkModeToggleContainer {
+  animation: scaleThenWiggle 4s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.container .intro-greeting,
+.container .intro-text-wrapper,
+.container .product-statement p,
+.container .idea-statements p,
+.container .chatbox-section .text-box p,
+.container .idea-statements-continued p,
+.container .final-message-section p,
+.container .wish-message h5 {
+    color: var(--text-color-light); /* Default to light text color */
+    transition: color 0.5s ease;
+}
+.container.dark-theme .intro-greeting,
+.container.dark-theme .intro-text-wrapper,
+.container.dark-theme .product-statement p,
+.container.dark-theme .idea-statements p,
+.container.dark-theme .chatbox-section .text-box p,
+.container.dark-theme .idea-statements-continued p,
+.container.dark-theme .final-message-section p,
+.container.dark-theme .wish-message h5 {
+    color: var(--text-color-dark); /* Apply dark text color */
+}
+
+
+.container.dark-theme .chatbox-section .text-box {
+    border-color: var(--chatbox-border-dark);
+}
+
+.container.dark-theme .text-box .fake-btn {
+    background-color: var(--chatbox-button-bg-dark) !important; /* Use !important if needed to override JS */
+    color: var(--chatbox-button-text-dark);
+}
+
+.container.dark-theme .idea-3 strong {
+    background-color: var(--strong-bg-dark);
+    color: var(--strong-text-dark);
+}
+
+.container.dark-theme .heading-main {
+    color: var(--heading-main-color-dark);
+}
+
+/* --- MODIFIED SECTION --- */
+.container.dark-theme .heading-main .heading-part1 {
+    color: var(--wish-heading-part1-color-dark); /* Apply bright color for "Your Story" */
+}
+
+.container.dark-theme .heading-main .heading-part2 {
+    color: var(--wish-heading-part2-color-dark); /* Apply bright color for "My Design!" */
+}
+/* --- END MODIFIED SECTION --- */
+
+.container.dark-theme #replay {
+    color: var(--replay-text-color-dark);
+    text-shadow: var(--replay-text-shadow-dark); /* This will now be 'none' in dark mode */
+}
+
+.container.dark-theme #darkModeToggleWrapper {
+    background-color: var(--dark-mode-toggle-wrapper-bg-dark);
+}
+.container.dark-theme #darkModeToggleWrapper:hover {
+    background-color: var(--dark-mode-toggle-wrapper-hover-bg-dark);
+}
+
 
 /*
   Container for Preloader Content
@@ -28,11 +198,10 @@ body {
 
 /* NEW: Texture Background for preloaderContainer */
 .texture-background {
-  background-image: url('../img/introbackground.png'); /* Use the desired texture image */
   background-size: cover;
   background-position: center;
   opacity: 1; /* Initially visible */
-  transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease, background-image 0.5s ease; /* Added background-image transition */
 }
 
 
@@ -41,7 +210,7 @@ body {
   Specific sections like final-message-section, controls, blank-interlude
   will have their own explicit positioning.
 */
-.container > div:not(.final-message-section):not(.controls):not(.blank-interlude):not(.uxui-design-section):not(.idea-6) {
+.container > div:not(.final-message-section):not(.controls):not(.blank-interlude):not(.uxui-design-section):not(.idea-6):not(#darkModeToggleWrapper) {
   position: absolute;
   left: 0;
   right: 0;
@@ -126,10 +295,11 @@ body {
 .chatbox-section .text-box {
   width: 600px;
   margin: 0 auto;
-  border: 3px solid #aaa;
+  border: 3px solid var(--chatbox-border-light); /* Use variable */
   border-radius: 5px;
   padding: 10px;
   position: relative;
+  transition: border-color 0.5s ease;
 }
 
 .text-box p {
@@ -145,10 +315,11 @@ body {
   position: absolute;
   right: 5px;
   bottom: 5px;
-  color: #fff;
-  background-color:rgb(136, 136, 136);
+  color: var(--chatbox-button-text-dark); /* Use variable */
+  background-color: var(--chatbox-button-bg-dark); /* Use variable */
   padding: 5px 8px;
   border-radius: 3px;
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 /*
@@ -173,6 +344,9 @@ body {
   padding: 3px 5px;
   border-radius: 3px;
   display: inline-block;
+  background-color: var(--strong-bg-light);
+  color: var(--strong-text-light);
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 .idea-5 { /* Corresponds to "text5Content", "smiley" */
@@ -264,14 +438,18 @@ body {
   font-weight: 300;
   text-transform: uppercase;
   padding-top: 10px;
-  color: #333;
+  color: var(--heading-main-color-light); /* Use variable */
   font-family: "Anton", sans-serif;
+  transition: color 0.5s ease;
 }
 
-.heading-main .heading-part1,
-.heading-main .heading-part2 {
-  color: inherit; /* Inherit color from parent, then JS will change specific colors */
+.heading-main .heading-part1 {
+  color: var(--wish-heading-part1-color-light); /* Use variable for part1 */
 }
+.heading-main .heading-part2 {
+  color: var(--wish-heading-part2-color-light); /* Use variable for part2 */
+}
+
 
 .wish-message h5 { /* Corresponds to "wishText" */
   font-weight: lighter;
@@ -297,6 +475,7 @@ body {
   margin: 10px 0;
     opacity: 0;
   visibility: hidden; /* 요소가 공간을 차지하지 않고 이벤트에 반응하지 않도록 */
+  transition: color 0.5s ease, text-shadow 0.5s ease;
 }
 
 #replay { /* Corresponds to "replayText" */
@@ -304,6 +483,8 @@ body {
   cursor: pointer;
   display: inline-block;
   margin-top: 20px;
+  color: var(--replay-text-color-light);
+  text-shadow: var(--replay-text-shadow-light);
 }
 
 /*
@@ -347,7 +528,7 @@ body {
 }
 
 .controls button:active {
-  transform: scale(0.95);
+  transform: 0.95s;
 }
 
 .controls .handle {
@@ -404,7 +585,7 @@ body {
 }
 
 .baloons img:nth-child(even) {
-  left: -10%; 
+  left: -10%;
 }
 
 .baloons img:nth-child(odd) {
@@ -434,10 +615,11 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: #f8f8f8; /* Match container background */
+  background-color: var(--bg-color-light); /* Match container background */
   opacity: 0; /* Initially hidden */
   visibility: hidden; /* Ensure it's not visible initially */
   z-index: 4; /* Higher than final-message-section, lower than controls */
+  transition: background-color 0.5s ease;
 }
 
 /*
@@ -496,7 +678,7 @@ body {
     font-size: 1.5rem;
   }
 
-  .container > div:not(.final-message-section):not(.controls):not(.blank-interlude) {
+  .container > div:not(.final-message-section):not(.controls):not(.blank-interlude):not(#darkModeToggleWrapper) {
   top: 12rem;
 }
 

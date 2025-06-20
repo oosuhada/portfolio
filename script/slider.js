@@ -70,9 +70,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 duration: 0.5,
                 ease: "power1.out"
             });
-            // 풍선 색상 업데이트 시 confetti 색상도 같이 업데이트 (선택 사항)
             balloon.dataset.confettiColors = JSON.stringify(colors.confetti);
-            balloon.dataset.slideIndex = currentSlide; // 슬라이드 인덱스도 업데이트
+            balloon.dataset.slideIndex = currentSlide;
         });
 
         fastTextBalloons.forEach(balloon => {
@@ -82,14 +81,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 duration: 0.5,
                 ease: "power1.out"
             });
-            // 풍선 색상 업데이트 시 confetti 색상도 같이 업데이트 (선택 사항)
             balloon.dataset.confettiColors = JSON.stringify(colors.confetti);
-            balloon.dataset.slideIndex = currentSlide; // 슬라이드 인덱스도 업데이트
+            balloon.dataset.slideIndex = currentSlide;
         });
     }
 
     // === Helper: Screen click ink splash ===
-    function createScreenInkSplash(targetElement, event, confettiColors = null) { // confettiColors 파라미터 추가
+    function createScreenInkSplash(targetElement, event, confettiColors = null) {
         const existingSplash = targetElement.querySelector('.ink-splash');
         if (existingSplash) existingSplash.remove();
 
@@ -136,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // === Helper: External "Ink" Confetti Particles ===
-    function createExternalInkParticles(originX, originY, confettiColors = null) { // confettiColors 파라미터 추가
+    function createExternalInkParticles(originX, originY, confettiColors = null) {
         const particleCount = 5;
         const colors = confettiColors || slideColors[currentSlide].confetti;
         const irregularBorderRadii = [
@@ -222,9 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // === Main Balloon Click Effect Handler ===
     function createInkSplashes(clickedElement, event) {
-        // 클릭된 요소에서 confetti 색상 팔레트 정보를 가져옴
         let confettiColorsForSplash = null;
-        // dataset.slideIndex를 사용하여 confettiColors를 가져옴
         const slideIndexForConfetti = parseInt(clickedElement.dataset.slideIndex || currentSlide);
         confettiColorsForSplash = slideColors[slideIndexForConfetti].confetti;
 
@@ -253,6 +249,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // === "click me" fast text balloon ===
     function createFastTextBalloon(text, minLeft = 20, maxLeft = 80) {
+        if (!isTabActive) return; // Prevent balloon creation when tab is inactive
+
         const balloon = document.createElement('div');
         balloon.className = 'balloon fast-text-balloon';
         balloon.textContent = text;
@@ -271,9 +269,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const left = minLeft + Math.random() * (maxLeft - minLeft);
         balloon.style.left = `${left}vw`;
 
-        // !!! 추가: 생성 시 현재 슬라이드의 confetti 색상 팔레트 저장 !!!
         balloon.dataset.confettiColors = JSON.stringify(slideColors[currentSlide].confetti);
-        balloon.dataset.slideIndex = currentSlide; // 슬라이드 인덱스 저장
+        balloon.dataset.slideIndex = currentSlide;
 
         balloon.addEventListener('click', function(e) {
             this.style.pointerEvents = 'none';
@@ -313,6 +310,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // === General balloon effect ===
     function createBalloon() {
+        if (!isTabActive) return; // Prevent balloon creation when tab is inactive
+
         const balloon = document.createElement('div');
         balloon.className = 'balloon';
         document.body.appendChild(balloon);
@@ -327,10 +326,8 @@ document.addEventListener('DOMContentLoaded', function() {
         balloon.style.width = `${width}px`;
         balloon.style.height = `${height}px`;
 
-        // !!! 추가: 생성 시 현재 슬라이드의 confetti 색상 팔레트 저장 !!!
         balloon.dataset.confettiColors = JSON.stringify(slideColors[currentSlide].confetti);
-        balloon.dataset.slideIndex = currentSlide; // 슬라이드 인덱스 저장
-
+        balloon.dataset.slideIndex = currentSlide;
 
         balloon.addEventListener('click', function(e) {
             this.style.pointerEvents = 'none';
@@ -377,6 +374,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let pendingTimeouts = [];
 
     function launchBalloonBatch() {
+        if (!isTabActive) return; // Prevent launching balloons when tab is inactive
         const numToLaunch = Math.floor(Math.random() * 2) + 1;
         for (let i = 0; i < numToLaunch; i++) {
             const timeoutId = setTimeout(createBalloon, Math.random() * 500);
@@ -386,7 +384,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Expose startBalloonInterval and stopBalloonInterval globally
     window.startBalloonInterval = function() {
-        if (!balloonInterval) {
+        if (!balloonInterval && isTabActive) {
             balloonInterval = setInterval(launchBalloonBatch, 2200);
             console.log("Balloon interval started.");
         }
@@ -396,12 +394,16 @@ document.addEventListener('DOMContentLoaded', function() {
         if (balloonInterval) {
             clearInterval(balloonInterval);
             balloonInterval = null;
-            pendingTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
-            pendingTimeouts = [];
-            console.log("Balloon interval stopped and pending timeouts cleared.");
         }
-        // Remove any existing balloons immediately
+
+        // Clear all pending timeouts
+        pendingTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
+        pendingTimeouts = [];
+
+        // Remove all balloons
         document.querySelectorAll('.balloon, .fast-text-balloon').forEach(b => b.remove());
+
+        console.log("Balloon interval stopped and cleaned.");
     };
 
     // Handle tab visibility
@@ -414,46 +416,45 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-   // MODIFIED: initializeMainPortfolio for initial load
-window.initializeMainPortfolio = function() {
-    const preloaderElement = document.getElementById("preloader");
-    const mainPortfolio = document.getElementById('mainPortfolio');
-    const controls = document.getElementById('controls');
-    const inboxIconContainer = document.getElementById('inboxIconContainer'); // Get the inbox icon
+    // MODIFIED: initializeMainPortfolio for initial load
+    window.initializeMainPortfolio = function() {
+        const preloaderElement = document.getElementById("preloader");
+        const mainPortfolio = document.getElementById('mainPortfolio');
+        const controls = document.getElementById('controls');
+        const inboxIconContainer = document.getElementById('inboxIconContainer');
+        const darkModeToggleContainer = document.getElementById('darkModeToggleContainer');
 
-    console.log("initializeMainPortfolio called on load."); // Debugging
+        console.log("initializeMainPortfolio called on load.");
 
-    if (preloaderElement) {
-        gsap.set(preloaderElement, { opacity: 0, display: "none" }); // Ensure greeting is hidden
-    }
-    
-    // Ensure main portfolio is visible on initial load
-    gsap.set(mainPortfolio, { opacity: 1, display: 'block' });
-    
-    // Ensure controls are hidden on initial load
-    gsap.set(controls, { opacity: 0, display: 'none' });
+        if (preloaderElement) {
+            gsap.set(preloaderElement, { opacity: 0, display: "none" });
+        }
 
-    // Ensure Lottie inbox icon is visible on initial load
-    if (inboxIconContainer) {
-        gsap.set(inboxIconContainer, { opacity: 1, display: 'block' });
-    }
+        gsap.set(mainPortfolio, { opacity: 1, display: 'block' });
+        gsap.set(controls, { opacity: 0, display: 'none' });
 
-    createFastTextBalloon('click me', 20, 45);
-    setTimeout(() => createFastTextBalloon('click me', 55, 80), 450);
-    setTimeout(launchBalloonBatch, 800);
-    window.startBalloonInterval(); // Start balloons on initial load of main portfolio
+        if (inboxIconContainer) {
+            gsap.set(inboxIconContainer, { opacity: 1, display: 'block' });
+        }
+        if (darkModeToggleContainer) {
+            gsap.set(darkModeToggleContainer, { opacity: 0, display: 'none' });
+        }
 
-    // 나머지 슬라이더 초기화 (버튼 표시 등)는 initializeSlider에서 처리
-    window.initializeSlider();
+        if (isTabActive) {
+            createFastTextBalloon('click me', 20, 45);
+            setTimeout(() => createFastTextBalloon('click me', 55, 80), 450);
+            setTimeout(launchBalloonBatch, 800);
+            window.startBalloonInterval();
+        }
 
-        // Ensure main portfolio is visible and greeting is hidden on initial load
+        window.initializeSlider();
+
         document.getElementById('mainPortfolio').style.display = 'block';
         document.getElementById('preloaderContainer').style.display = 'none';
         document.getElementById('controls').style.display = 'none';
     };
 
     // === Slider Main ===
-    // ---
     const slides = document.querySelectorAll('.slide');
     const totalSlides = slides.length;
     const prevBtn = document.getElementById('prevBtn');
@@ -531,6 +532,7 @@ window.initializeMainPortfolio = function() {
             if (currentPageEl) currentPageEl.textContent = index + 1;
             isTransitioning = false;
             setupWelcomeBannerHover();
+            updateBalloonColors(); // Update balloon colors when slide changes
         }, 600);
     }
 
@@ -555,9 +557,7 @@ window.initializeMainPortfolio = function() {
         else if (touchEndX > touchStartX + swipeThreshold) showPreviousSlide();
     }
 
-    // ---
     // === Slide 1 Title Hover Animation ===
-    // ---
     const slide1Title = document.querySelector('#slide1 .slide-title');
     const inkSpreadFilterElement = document.getElementById(inkSpreadFilterID);
 
@@ -671,46 +671,37 @@ window.initializeMainPortfolio = function() {
 
     setupWelcomeBannerHover();
 
-    // ---
-    // === 전역 클릭 리스너 (잉크 스플래시 생성) ===
-    // ---
+    // === Global click listener (ink splash creation) ===
     document.addEventListener('click', function(e) {
-        const isInteractiveElement = e.target.closest('.balloon, .fast-text-balloon, .slide-title, .nav-button, .welcome-banner-link, #inboxIconContainer'); // Added inboxIconContainer
+        const isInteractiveElement = e.target.closest('.balloon, .fast-text-balloon, .slide-title, .nav-button, .welcome-banner-link, #inboxIconContainer, #darkModeToggleContainer');
         if (!isInteractiveElement) {
-            // 전역 클릭 시에는 현재 슬라이드의 confetti 색상 사용
             createScreenInkSplash(document.body, e, slideColors[currentSlide].confetti);
         }
     });
 
-    // ---
-    // =======================================================
-    // === 슬라이드 타이틀 클릭 (mousedown/mouseup) 인터랙션 로직 ===
-    // =======================================================
-    // ---
+    // === Slide title click (mousedown/mouseup) interaction logic ===
     let inkInterval;
     let isMouseDownOnTitle = false;
     let currentMousedownEvent = null;
-    let currentMousedownConfettiColors = null; // mousedown 시 confetti 색상 저장
+    let currentMousedownConfettiColors = null;
 
     const originalBalloonOpacities = new Map();
     const originalWelcomeBannerOpacities = new Map();
 
     document.querySelectorAll('.slide-title').forEach((title) => {
         title.addEventListener('mousedown', (e) => {
-            if (e.button === 2) return; // 마우스 우클릭은 무시
+            if (e.button === 2) return;
 
             console.log("Slide title mousedown: Activating ink burst mode.");
             isMouseDownOnTitle = true;
             currentMousedownEvent = e;
-            // mousedown 시 현재 슬라이드의 confetti 색상을 저장
             currentMousedownConfettiColors = slideColors[currentSlide].confetti;
 
             const slide = title.closest('.slide');
             if (slide) {
-                // Changed: Animate 'background' property instead of 'backgroundColor'
-                slide.classList.add('ink-mode-active'); // 클래스로 상태 표시
+                slide.classList.add('ink-mode-active');
                 gsap.to(slide, {
-                    background: '#000000', // Animating 'background' shorthand
+                    background: '#000000',
                     duration: 0.3,
                     ease: "power2.out"
                 });
@@ -722,55 +713,46 @@ window.initializeMainPortfolio = function() {
             document.querySelectorAll('.welcome-banner').forEach(banner => {
                 const currentOpacity = getComputedStyle(banner).opacity;
                 originalWelcomeBannerOpacities.set(banner, currentOpacity);
-                gsap.to(banner, { opacity: 0.1, duration: 0.3 }); // welcome-banner 투명도 조절
+                gsap.to(banner, { opacity: 0.1, duration: 0.3 });
             });
 
-            document.querySelectorAll('.balloon').forEach(balloon => { // 일반 풍선
+            document.querySelectorAll('.balloon').forEach(balloon => {
                 const currentOpacity = getComputedStyle(balloon).opacity;
                 originalBalloonOpacities.set(balloon, currentOpacity);
-                gsap.to(balloon, { opacity: 0.05, duration: 0.3 }); // 일반 풍선 투명도 조절
+                gsap.to(balloon, { opacity: 0.05, duration: 0.3 });
             });
 
-            document.querySelectorAll('.fast-text-balloon').forEach(balloon => { // fast-text 풍선
+            document.querySelectorAll('.fast-text-balloon').forEach(balloon => {
                 const currentOpacity = getComputedStyle(balloon).opacity;
                 originalBalloonOpacities.set(balloon, currentOpacity);
-                gsap.to(balloon, { opacity: 0.05, duration: 0.3 }); // fast-text 풍선 투명도 조절
+                gsap.to(balloon, { opacity: 0.05, duration: 0.3 });
             });
-
 
             clearInterval(inkInterval);
             inkInterval = setInterval(() => {
                 if (currentMousedownEvent) {
-                    // mousedown 시 저장된 confetti 색상을 사용하여 스플래시 생성
                     createScreenInkSplash(document.body, currentMousedownEvent, currentMousedownConfettiColors);
                     createExternalInkParticles(currentMousedownEvent.clientX, currentMousedownEvent.clientY, currentMousedownConfettiColors);
                 }
             }, 100);
         });
 
-        // !!! 수정: 슬라이드 타이틀 위에서 mouseup 시에도 resetInkBurstMode 호출 !!!
         title.addEventListener('mouseup', (e) => {
             if (e.button === 2) return;
-            // isMouseDownOnTitle이 true인 경우에만 reset, 다른 요소 위에서 뗀 경우도 여기서 처리
-            if (isMouseDownOnTitle) { // 이 조건만으로 충분합니다.
+            if (isMouseDownOnTitle) {
                 console.log("Slide title mouseup: Deactivating ink burst mode.");
                 resetInkBurstMode();
             }
         });
     });
 
-    // !!! 추가: mousemove 이벤트 리스너
     document.addEventListener('mousemove', (e) => {
         if (isMouseDownOnTitle) {
-            currentMousedownEvent = e; // 마우스가 움직일 때마다 현재 이벤트 객체 업데이트
+            currentMousedownEvent = e;
         }
     });
 
-
-    // !!! 수정: document 전체의 mouseup 리스너 조건 변경 (slide-title 자체 위에서 떼는 경우를 포함하기 위해)
     document.addEventListener('mouseup', (e) => {
-        // isMouseDownOnTitle이 true이고, 현재 마우스업 위치가 슬라이드 타이틀 외부일 경우에만 처리.
-        // 슬라이드 타이틀 위에서 떼는 경우는 위 title.addEventListener('mouseup')에서 처리
         if (isMouseDownOnTitle && !e.target.closest('.slide-title') && e.button !== 2) {
             console.log("Document-level mouseup fallback: Deactivating ink burst mode (outside title).");
             resetInkBurstMode();
@@ -780,7 +762,7 @@ window.initializeMainPortfolio = function() {
     function resetInkBurstMode() {
         isMouseDownOnTitle = false;
         currentMousedownEvent = null;
-        currentMousedownConfettiColors = null; // 초기화
+        currentMousedownConfettiColors = null;
 
         if (inkInterval) {
             clearInterval(inkInterval);
@@ -790,7 +772,7 @@ window.initializeMainPortfolio = function() {
         document.querySelectorAll('.slide.ink-mode-active').forEach(slide => {
             slide.classList.remove('ink-mode-active');
             gsap.to(slide, {
-                background: '', // Revert to original CSS background
+                background: '',
                 duration: 0.5,
                 ease: "power2.out"
             });
@@ -799,13 +781,11 @@ window.initializeMainPortfolio = function() {
         gsap.to('.nav-button', { opacity: 1, duration: 0.5, pointerEvents: 'auto' });
         gsap.to('.page-indicator', { opacity: 1, duration: 0.5 });
 
-        // welcome-banner opacity 복원
         originalWelcomeBannerOpacities.forEach((originalOpacity, banner) => {
             gsap.to(banner, { opacity: originalOpacity, duration: 0.5 });
         });
         originalWelcomeBannerOpacities.clear();
 
-        // balloon opacity 복원
         originalBalloonOpacities.forEach((originalOpacity, balloon) => {
             gsap.to(balloon, { opacity: originalOpacity, duration: 0.5 });
         });

@@ -53,6 +53,9 @@
   </svg>
 
   <div class="container texture-background" id="preloaderContainer" style="display: none; opacity: 0;">
+    <div id="darkModeToggleWrapper" style="position: fixed; top: 15px; right: 15px; width: 70px; height: 70px; cursor: pointer; z-index: 1000; background-color: rgba(93, 76, 76, 0.1); border-radius: 50%;">
+        <div id="darkModeToggleContainer"></div> </div>
+
     <div class="intro-section">
       <h1 class="intro-greeting">
         <span data-node-name="greeting">Hello</span>
@@ -275,8 +278,12 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
         const inboxIconContainer = document.getElementById('inboxIconContainer');
+        const darkModeToggleWrapper = document.getElementById('darkModeToggleWrapper'); // Get the wrapper
+        // The darkModeToggleContainer Lottie animation setup is now mostly handled in greeting.js
+
+        // Lottie animation for inbox icon (stays the same)
         if (inboxIconContainer) {
-            const animation = lottie.loadAnimation({
+            const animationInbox = lottie.loadAnimation({
                 container: inboxIconContainer,
                 renderer: 'svg',
                 loop: true,
@@ -299,17 +306,66 @@
                         gsap.fromTo('#preloaderContainer', { opacity: 0 }, { opacity: 1, duration: 0.5 });
                         gsap.fromTo('#controls', { opacity: 0 }, { opacity: 1, duration: 0.5 });
 
+                        // Show dark mode toggle wrapper and its container
+                        if (darkModeToggleWrapper) {
+                            darkModeToggleWrapper.style.display = 'flex'; // Make wrapper visible as flex
+                            gsap.fromTo(darkModeToggleWrapper, { opacity: 0 }, { opacity: 1, duration: 0.5 });
+
+                            // ✅ Add this block to ensure Lottie visibility and resize when entering greeting
+                            const darkModeToggleContainer = document.getElementById('darkModeToggleContainer');
+                            if (darkModeToggleContainer && window.animationDarkMode) {
+                                // These styles should already be set in greeting.js, but re-asserting for clarity
+                                darkModeToggleContainer.style.display = 'block';
+                                darkModeToggleContainer.style.opacity = '1';
+                                darkModeToggleContainer.style.width = '100%';
+                                darkModeToggleContainer.style.height = '100%';
+                                darkModeToggleContainer.style.position = 'absolute';
+
+                                setTimeout(() => {
+                                    window.animationDarkMode.resize(); // Use the globally exposed animationDarkMode
+                                }, 100);
+                            }
+                        }
+
+                        // Hide inbox icon
+                        if (inboxIconContainer) {
+                            inboxIconContainer.style.display = 'none';
+                            gsap.to(inboxIconContainer, { opacity: 0, duration: 0.2 });
+                        }
+
                         // Ensure greeting animation starts from the beginning
                         if (window.tl) {
                             window.tl.restart(true); // restart(true) forces a full reset
                         } else {
-                            // Fallback if tl isn't defined (should ideally not happen if scripts load correctly)
                             console.warn("GSAP timeline 'tl' not yet defined in greeting.js. Fetching data and starting animation.");
                             window.fetchData(); // This will create and run tl
                         }
                     }
                 });
             });
+        }
+        // Dark mode toggle logic (now simpler, as Lottie setup is in greeting.js)
+        const darkModeToggleContainer = document.getElementById('darkModeToggleContainer'); // Re-get for this block's scope
+        if (darkModeToggleContainer && window.animationDarkMode) { // Check if animationDarkMode is defined globally
+            let isDarkMode = false; // State for dark mode
+            // This ensures the animation starts at frame 0 (light)
+            window.animationDarkMode.goToAndStop(0, true); // Use the globally exposed animationDarkMode
+
+            if (darkModeToggleWrapper) {
+                darkModeToggleWrapper.addEventListener('click', () => {
+                    const preloaderContainer = document.getElementById('preloaderContainer');
+                    if (isDarkMode) {
+                        window.animationDarkMode.setDirection(-1); // Play backward (dark to light)
+                        window.animationDarkMode.play();
+                        preloaderContainer.classList.remove('dark-theme');
+                    } else {
+                        window.animationDarkMode.setDirection(1); // Play forward (light to dark)
+                        window.animationDarkMode.play();
+                        preloaderContainer.classList.add('dark-theme');
+                    }
+                    isDarkMode = !isDarkMode; // Toggle state
+                });
+            }
         }
     });
   </script>

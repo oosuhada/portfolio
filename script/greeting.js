@@ -130,9 +130,6 @@ const fetchData = () => {
         });
 };
 
-// showMainPortfolio 함수 삭제 (혹은 이 파일에서는 사용하지 않음)
-// const showMainPortfolio = () => { /* ... */ };
-
 // 애니메이션 타임라인
 const animationTimeline = () => {
     const textBoxChars = document.getElementsByClassName("portfolio-chatbox")[0];
@@ -170,14 +167,23 @@ const animationTimeline = () => {
             const mainPortfolio = document.getElementById('mainPortfolio');
             const controls = document.getElementById('controls');
             const inboxIconContainer = document.getElementById('inboxIconContainer');
+            const darkModeToggleWrapper = document.getElementById('darkModeToggleWrapper'); // Get wrapper here too
+            const darkModeToggleContainer = document.getElementById('darkModeToggleContainer'); // Get Lottie container here too
 
-            // Fade out greeting elements (preloaderContainer, controls)
-            gsap.to([preloaderContainer, controls], {
+            // Fade out greeting elements (preloaderContainer, controls, darkModeToggleWrapper)
+            // Note: darkModeToggleContainer will hide with its parent wrapper.
+            gsap.to([preloaderContainer, controls, darkModeToggleWrapper], { // Added darkModeToggleWrapper
                 opacity: 0,
                 duration: 0.5,
                 onComplete: () => {
                     preloaderContainer.style.display = 'none';
                     controls.style.display = 'none';
+                    if (darkModeToggleWrapper) { // Check before setting display
+                        darkModeToggleWrapper.style.display = 'none'; // Hide the wrapper
+                    }
+                    if (darkModeToggleContainer) { // Ensure Lottie container is also hidden
+                        darkModeToggleContainer.style.display = 'none';
+                    }
 
                     // Show main portfolio elements
                     mainPortfolio.style.display = 'block';
@@ -206,6 +212,14 @@ const animationTimeline = () => {
             const inboxIconContainer = document.getElementById('inboxIconContainer');
             if (inboxIconContainer) {
                  gsap.set(inboxIconContainer, { opacity: 1, display: 'block' });
+            }
+            const darkModeToggleWrapper = document.getElementById('darkModeToggleWrapper'); // Get wrapper here
+            const darkModeToggleContainer = document.getElementById('darkModeToggleContainer'); // Get Lottie container here
+            if (darkModeToggleWrapper) {
+                 gsap.set(darkModeToggleWrapper, { opacity: 0, display: 'none' }); // Hide dark mode toggle on reverse
+            }
+            if (darkModeToggleContainer) {
+                gsap.set(darkModeToggleContainer, { opacity: 0, display: 'none' }); // Ensure Lottie container is hidden too
             }
             if (window.startBalloonInterval) {
                 window.startBalloonInterval();
@@ -256,7 +270,10 @@ const animationTimeline = () => {
         .set(".fake-btn", {
             onStart: () => {
                 document.querySelector("[data-node-name='sendButtonLabel']").innerText = customizeData.sendButtonLabel;
-                gsap.set(".fake-btn", { backgroundColor: "rgb(136, 136, 136)" }); // Ensure initial color
+                gsap.set(".fake-btn", {
+                    backgroundColor: "rgb(136, 136, 136)", // Ensure initial color
+                    color: "#ffffff" // 텍스트 색상도 흰색으로 고정
+                });
             }
         })
         .addLabel("chatboxAskAI")
@@ -272,7 +289,10 @@ const animationTimeline = () => {
             onReverseComplete: () => {
                 document.querySelector("[data-node-name='sendButtonLabel']").innerText = customizeData.sendButtonLabel;
                 // 역방향으로 돌아올 때 버튼 색상도 초기 상태로 복구
-                gsap.set(".fake-btn", { backgroundColor: "rgb(136, 136, 136)" });
+                gsap.set(".fake-btn", {
+                    backgroundColor: "rgb(136, 136, 136)",
+                    color: "#ffffff" // 텍스트 색상도 초기화 시 흰색으로 유지
+                });
             }
         })
         // 3. 다시 opacity 1로 나타나면서 "Let's Talk" 텍스트 보장 및 배경색 변경
@@ -281,6 +301,7 @@ const animationTimeline = () => {
             {
                 opacity: 1,
                 backgroundColor: "#333333", // "Let's Talk" 상태의 배경색
+                color: "#ffffff", // 텍스트 색상도 흰색 고정
                 onStart: () => {
                     // 다시 나타날 때 현재 text 보장 (Let's Talk)
                     const target = document.querySelector("[data-node-name='sendButtonLabel']");
@@ -349,7 +370,7 @@ const animationTimeline = () => {
         // 1단계: 플립된 상태로 등장 (초기 opacity와 y도 애니메이션)
         .staggerFromTo(
             ".heading-main .heading-part1 span, .heading-main .heading-part2 span", 0.7,
-            { opacity: 0, y: -50, rotationY: 180, skewX: "30deg", color: "#333" },   // 등장 시 플립+기본색
+            { opacity: 0, y: -50, rotationY: 180, skewX: "30deg", color: "#666" },   // 등장 시 플립+기본색
             { opacity: 1, y: 0, rotationY: 180, skewX: "0deg", ease: "elastic.out(1, 0.5)" },  // 플립된 상태로 등장 (색상 변경 없음)
             0.1, "<"
         )
@@ -407,7 +428,6 @@ const animationTimeline = () => {
         .addLabel("finalTextStart")
         // --- 최종 메시지 섹션 P 태그 등장 부분 수정 끝 ---
 
-
         // 풍선 애니메이션
         .staggerFromTo(".baloons-animate img", 1.6, {
             opacity: 0.9, y: 1400
@@ -438,7 +458,6 @@ const animationTimeline = () => {
         }, "balloonsAnimate+=0.5")
         .addLabel("finalMessageGone")
 
-
         // Blank interlude
         .to(".blank-interlude", {
             opacity: 1,
@@ -455,30 +474,30 @@ const animationTimeline = () => {
 
         // Circle animation (2회) - blank-interlude가 완전히 사라진 후 시작하도록 조정
         .add(animateCirclesCanvas(0, 600, 0, 0.6, 1.5, 0.3, "blankScreenInterlude+=0.2"), "circlesFirstPassStart")
-        .add(animateCirclesCanvas(0, 700, 0.65, 0.95, 1.5, 0.4, "circlesFirstPassStart+=0.2"), "circlesSecondPassStart")
-     // --- controls 서서히 사라지는 애니메이션 ---
-.to("#controls", {
-    opacity: 0.3,
-    duration: 1.5,
-    ease: "power1.out"
-}, "circlesFirstPassStart+=0") // 적절히 1차 애니메이션 후쯤 시작
+        .add(animateCirclesCanvas(0, 700, 0.65, 0.95, 1.5, 0.4, "circlesFirstPassStart+=1.4"), "circlesSecondPassStart")
+        // --- controls 서서히 사라지는 애니메이션 ---
+        .to("#controls", {
+            opacity: 0.3,
+            duration: 1.5,
+            ease: "power1.out"
+        }, "circlesFirstPassStart+=0") // 적절히 1차 애니메이션 후쯤 시작
 
-.to("#controls", {
-    opacity: 0,
-    duration: 1.5,
-    ease: "power1.out"
-}, "circlesFirstPassStart+=1.5") // 바로 이어서 시작
+        .to("#controls", {
+            opacity: 0,
+            duration: 1.5,
+            ease: "power1.out"
+        }, "circlesFirstPassStart+=2.5") // 바로 이어서 시작
 
-.set("#controls", {
-    visibility: "hidden"
-}, "circlesFirstPassStart+=3") // opacity=0과 동시에 visibility도 hidden
+        .set("#controls", {
+            visibility: "hidden"
+        }, "circlesFirstPassStart+=3.5") // opacity=0과 동시에 visibility도 hidden
 
-.addLabel("endAnimation") // 애니메이션 종료 지점
+        .addLabel("endAnimation") // 애니메이션 종료 지점
 
-.call(() => {
-    console.log("🔁 Greeting complete – reloading page.");
-    location.reload();
-});
+        .call(() => {
+            console.log("🔁 Greeting complete – reloading page.");
+            location.reload();
+        });
 
     // 타임라인 레이블 순서 저장
     labelsInOrder = Object.keys(tl.labels).sort((a, b) => tl.labels[a] - tl.labels[b]);
@@ -526,7 +545,7 @@ const animationTimeline = () => {
         });
     }
 
-    // 재생 제어 버튼 (이하 동일)
+    // 재생 제어 버튼
     const playBtn = document.getElementById("playBtn");
     const pauseBtn = document.getElementById("pauseBtn");
     const rewindBtn = document.getElementById("rewindBtn");
@@ -733,6 +752,9 @@ const animationTimeline = () => {
     }
 };
 
+// Global variable to hold the dark mode Lottie animation instance
+let animationDarkMode;
+
 // Expose fetchData, animationTimeline, and tl to the global scope
 window.fetchData = fetchData;
 window.animationTimeline = animationTimeline;
@@ -741,5 +763,62 @@ Object.defineProperty(window, 'tl', {
     get: function() { return tl; },
     set: function(value) { tl = value; }
 });
-// No initial fetchData call here, it's triggered by Lottie click or slider.js
-document.addEventListener('DOMContentLoaded', initCanvas);
+
+// Initial setup for Lottie animations on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+    initCanvas(); // Initialize canvas as before
+
+    const darkModeToggleContainer = document.getElementById('darkModeToggleContainer');
+    if (darkModeToggleContainer) {
+        // Initialize Lottie animation for dark mode toggle
+        animationDarkMode = lottie.loadAnimation({
+            container: darkModeToggleContainer,
+            renderer: 'svg',
+            loop: false,
+            autoplay: false,
+            path: 'https://gist.githubusercontent.com/oosuhada/e2e69d3068f11292a0a03c142cc7d0af/raw/4152a2dd79071530a4dec1926c904a12605cd06e/darkmodetoggle.json'
+        });
+
+        let isDarkMode = false;
+        const midFrame = 77; // Sun to Moon transition midpoint
+        animationDarkMode.goToAndStop(0, true); // Start at frame 0 (sun)
+
+        // Apply initial styles for the Lottie container directly here
+        darkModeToggleContainer.style.display = 'block'; // Make sure it's block for Lottie to render
+        darkModeToggleContainer.style.opacity = '1';
+        darkModeToggleContainer.style.width = '100%';
+        darkModeToggleContainer.style.height = '100%';
+        darkModeToggleContainer.style.position = 'absolute'; // Position absolute relative to wrapper
+
+        // Trigger resize after a small delay to ensure correct rendering
+        setTimeout(() => {
+            animationDarkMode.resize();
+        }, 100);
+
+        const darkModeToggleWrapper = document.getElementById('darkModeToggleWrapper');
+        if (darkModeToggleWrapper) {
+            darkModeToggleWrapper.addEventListener('click', () => {
+                const preloaderContainer = document.getElementById('preloaderContainer');
+
+                if (!animationDarkMode) return;
+
+                if (!isDarkMode) {
+                    // Light → Dark: Play from frame 0 to 77 (sun → moon)
+                    animationDarkMode.setDirection(1); // Forward direction
+                    animationDarkMode.playSegments([0, midFrame], true);
+                    preloaderContainer.classList.add('dark-theme');
+                } else {
+                    // Dark → Light: Play from frame 77 to 0 (moon → sun)
+                    animationDarkMode.setDirection(-1); // Reverse direction
+                    animationDarkMode.playSegments([midFrame, 0], true);
+                    preloaderContainer.classList.remove('dark-theme');
+                }
+
+                isDarkMode = !isDarkMode; // Toggle state
+            });
+        }
+    }
+
+    // Expose animationDarkMode globally for use in other scripts
+    window.animationDarkMode = animationDarkMode;
+});

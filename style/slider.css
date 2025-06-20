@@ -31,8 +31,8 @@
     position: fixed;
     top: 20px;
     right: 20px;
-    width: 50px; /* Adjust size as needed */
-    height: 50px; /* Adjust size as needed */
+    width: 70px; /* Adjust size as needed */
+    height: 70px; /* Adjust size as needed */
     cursor: pointer;
     z-index: 1000; /* Ensure it's above other content */
     /* Optional: add some padding or background if it's too small to click */
@@ -71,9 +71,6 @@
   pointer-events: auto;
   opacity: 0.8; /* Base opacity, JS can vary */
   transition: filter 0.2s;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   filter: url(#classicWetInk); /* Apply Ink Filter */
   cursor: pointer;
   /* Background color will be set by JavaScript to an achromatic color */
