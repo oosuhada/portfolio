@@ -1,4 +1,11 @@
-/* --- Hero 영역 (Adjusted for Intro Screen) --- */
+/* lab-carousel.css */
+
+.carousel-main.initial-carousel-space {
+    padding-top: 100vh;
+    box-sizing: border-box; /* 패딩이 전체 크기에 영향을 주도록 설정 */
+}
+
+/* --- Hero 영역 --- */
 .carousel-hero {
     position: absolute;
     top: 8rem;
@@ -12,7 +19,7 @@
 .big-hero-desc {
     font-size: 1.6rem;
     font-weight: 700;
-    color: #4a4a4a;
+    color: var(--poster-text-color); /* Theme-aware */
     letter-spacing: -0.01em;
     line-height: 1.3;
     margin-bottom: 1.8rem;
@@ -30,7 +37,7 @@
     border: none;
     background: #fff;
     font-size: 1.65rem;
-    cursor: var(--cursor-grab);
+    cursor: var(--cursor-grab2);
     box-shadow: 0 2px 18px #ffd16644;
     transition: background 0.18s, color 0.16s, transform 0.14s;
     display: flex;
@@ -44,7 +51,7 @@
     transform: scale(1.12);
 }
 
-/* === 메인 (Adjusted for Intro Screen) === */
+/* === 메인 === */
 .carousel-section {
     display: flex;
     flex-direction: column;
@@ -80,18 +87,18 @@
     width: 200px;
     height: 280px;
     margin: 0 -50px;
-    background: #eee;
-    color: black; /* 텍스트 색상을 검은색으로 변경 */
-    font-size: 1.5rem; /* 폰트 크기를 줄임 (예시: 1.5rem) */
+    background-color: #eee; /* This will act as a base color behind the cover and texture */
+    color: var(--poster-text-color); /* Theme-aware text color */
+    font-size: 1.5rem;
     font-family: 'Georgia', serif;
     font-weight: bold;
-    box-shadow: 8px 8px 12px rgba(0, 0, 0, 0.15), -6px -6px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--poster-box-shadow); /* Theme-aware shadow */
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     align-items: flex-start;
     padding: 2.5rem 1.3rem 1.2rem 1.5rem;
-    cursor: var(--cursor-grab);
+    cursor: var(--cursor-grabbing2);
     transition: box-shadow 0.18s;
     user-select: none;
     position: absolute;
@@ -100,24 +107,37 @@
     perspective: 1000px;
     transform-style: preserve-3d;
     border-radius: 7px;
-    filter: sepia(20%); /* 동양적인 책 느낌을 위한 세피아 필터 */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* 텍스트에 부드러운 블러 효과 추가 */
-    /* Added for paper texture */
-    background-image: url('../papertexture.png'); /* Path to your SVG texture */
-    background-size: cover; /* Adjust as needed: cover, contain, or specific dimensions */
-    background-blend-mode: multiply; /* Blends the background color with the texture */
+    /* text-shadow for readability on light/dark images */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
+/* Light Mode Specific Poster Styles */
+body[data-theme='light'] .poster {
+    filter: sepia(20%); /* Apply sepia filter only in light mode */
+    background-image: url('../papertexture.png'); /* Paper texture only in light mode */
+    background-size: cover;
+    background-position: center;
+    background-repeat: repeat;
+    background-blend-mode: multiply; /* Blends base color with texture */
+}
+
+/* Dark Mode Specific Poster Styles */
+body[data-theme='dark'] .poster {
+    filter: none; /* Remove sepia filter in dark mode */
+    background-image: none; /* Remove paper texture in dark mode */
+}
+
+
+/* Poster before/after elements (borders/shadows) */
 .poster::before {
     content: '';
     position: absolute;
     top: -3px;
     left: -6px;
     width: 6px;
-    height: 100%;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2));
-    transform: translateZ(-10px);
     border-radius: 7px;
+    height: 100%;
+    transform: translateZ(-10px);
 }
 .poster::after {
     content: '';
@@ -125,29 +145,61 @@
     top: -6px;
     left: -3px;
     width: 100%;
-    height: 6px;
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2));
-    transform: translateZ(-10px);
     border-radius: 7px;
-}
-.poster-creative::before,
-.poster-creative::after {
-    background: linear-gradient(to bottom, rgba(0, 161, 129, 0.4), rgba(0, 161, 129, 0.3));
-}
-.poster-sensory::before,
-.poster-sensory::after {
-    background: linear-gradient(to bottom, rgba(255, 170, 43, 0.4), rgba(255, 170, 43, 0.3));
-}
-.poster-sports::before,
-.poster-sports::after {
-    background: linear-gradient(to bottom, rgba(139, 186, 230, 0.4), rgba(139, 186, 230, 0.3));
-}
-.poster-writing::before,
-.poster-writing::after {
-    background: linear-gradient(to bottom, rgba(255, 164, 211, 0.4), rgba(255, 164, 211, 0.3));
+    height: 6px;
+    transform: translateZ(-10px);
 }
 
-/* Updated Stitching effect using HTML elements */
+/* Theme-specific gradients for ::before and ::after */
+body[data-theme='light'] .poster::before {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2));
+}
+body[data-theme='light'] .poster::after {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2));
+}
+
+body[data-theme='dark'] .poster::before,
+body[data-theme='dark'] .poster::after {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
+}
+
+
+/* Specific poster types now define their primary background (cover image + color overlay) */
+.poster-creative {
+    background-image: url('../images/poster1cover.png'); /* Only the cover image */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: rgba(0, 161, 129, 0.5); /* Color overlay */
+    background-blend-mode: overlay; /* Use overlay blend to mix color with image */
+}
+.poster-sensory {
+    background-image: url('../images/poster2cover.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: rgba(255, 170, 43, 0.5);
+    background-blend-mode: overlay;
+}
+.poster-sports {
+    background-image: url('../images/poster3cover.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: rgba(139, 186, 230, 0.5);
+    background-blend-mode: overlay;
+}
+.poster-writing {
+    background-image: url('../images/poster4cover.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: rgba(255, 164, 211, 0.5);
+    background-blend-mode: overlay;
+}
+
+
+/* Book Binding and Binding Line Styles (Request 1 - Light Mode Only) */
 .book-binding {
     position: absolute;
     left: 10px;
@@ -155,25 +207,39 @@
     height: calc(100% - 8px);
     width: 12px;
     z-index: 5;
+    /* Transition for display property is not possible directly, but can fade */
+    transition: opacity 0.3s ease;
 }
+body[data-theme='light'] .book-binding {
+    opacity: 1; /* Fully visible in light mode */
+    display: block; /* Ensure it's displayed */
+}
+body[data-theme='dark'] .book-binding {
+    opacity: 0; /* Fully transparent in dark mode */
+    pointer-events: none; /* Make it unclickable in dark mode */
+}
+/* This rule must come AFTER the .book-binding opacity rules */
+body[data-theme='dark'] .book-binding {
+    display: none; /* Hide the entire book binding structure in dark mode */
+}
+
+
 .binding-line {
     position: absolute;
-    /* Apply the SVG filter for yarn-like distortion */
-    filter: url(#yarnFilter);
-    /* Base64 encoded SVG for internal yarn texture */
-    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNCIgaGVpZ2h0PSI0IiB2aWV3Qm94PSIwIDAgNCA0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMCI+CiAgPHBhdGggZD0iTTAgMCBMNCA0IE00IDAgTDAgNCIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zIi8+CiA8L3N2Zz4=');
+    filter: url(#yarnFilter); /* Apply SVG filter for yarn-like distortion */
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNCIgaGVpZ2h0PSI0IiB2aWV3Qm94PSIwIDAgNCA0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMCI+CiAgPHBhdGggZD0iTTAgMCBMNCA0IE00IDAgTDAgNCIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zIi8+CiA8L2h2Zz4=');
     background-repeat: repeat;
     background-blend-mode: multiply; /* Blends texture with background-color */
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.1); /* Very subtle shadow for depth */
-    /* Removed CSS blur as SVG filter handles distortion and fuzziness */
 }
+
 .binding-line.binding-main {
     position: absolute;
     left: 5px;
     top: 0;
     width: 2px;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7);
+    background: var(--book-binding-color); /* Theme-aware */
 }
 .binding-line.binding-top {
     position: absolute;
@@ -181,7 +247,7 @@
     top: -6px;
     width: 12px;
     height: 2px;
-    background: rgba(0, 0, 0, 0.7);
+    background: var(--book-binding-color); /* Theme-aware */
     transform: translateZ(-10px);
     opacity: 0;
 }
@@ -192,7 +258,7 @@
     top: calc((280px / 3) * 3 + 0px);
     width: 16px;
     height: 2px;
-    background: rgba(0, 0, 0, 0.7);
+    background: var(--book-binding-color); /* Theme-aware */
 }
 .binding-line.binding-front-2 {
     position: absolute;
@@ -201,7 +267,7 @@
     top: calc((280px / 3) * 2 - 20px);
     width: 16px;
     height: 2px;
-    background: rgba(0, 0, 0, 0.7);
+    background: var(--book-binding-color); /* Theme-aware */
 }
 .binding-line.binding-front-3 {
     position: absolute;
@@ -210,7 +276,7 @@
     top: calc((280px / 3) * 1 - 40px);
     width: 16px;
     height: 2px;
-    background: rgba(0, 0, 0, 0.7);
+    background: var(--book-binding-color); /* Theme-aware */
 }
 .binding-line.binding-side-1 {
     position: absolute;
@@ -218,7 +284,7 @@
     top: calc(280px / 4 - 5px);
     width: 6px;
     height: 2px;
-    background: rgba(0, 0, 0, 0.7);
+    background: var(--book-binding-color); /* Theme-aware */
     transform: translateZ(-10px);
     opacity: 0;
 }
@@ -228,7 +294,7 @@
     top: calc(280px / 2);
     width: 6px;
     height: 2px;
-    background: rgba(0, 0, 0, 0.7);
+    background: var(--book-binding-color); /* Theme-aware */
     transform: translateZ(-10px);
     opacity: 0;
 }
@@ -238,48 +304,14 @@
     top: calc(3 * 280px / 4 + 5px);
     width: 6px;
     height: 2px;
-    background: rgba(0, 0, 0, 0.7);
+    background: var(--book-binding-color); /* Theme-aware */
     transform: translateZ(-10px);
     opacity: 0;
 }
 .poster:hover {
-    box-shadow: 12px 12px 18px rgba(34, 34, 34, 0.25), -8px -8px 14px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--poster-hover-box-shadow); /* Theme-aware shadow */
 }
 
-.poster-creative,
-.poster-sensory,
-.poster-sports,
-.poster-writing {
-    color: #1a1a1a; /* 텍스트 색상 모두 동일하게 */
-    backdrop-filter: blur(1px); /* 블러 효과 */
-    -webkit-backdrop-filter: blur(1px); /* 사파리 대응 */
-}
-
-/* Individual Poster Background Images */
-.poster-creative {
-    background-image: url('../images/creative.jpg'), url('../papertexture.png'); /* Overlay creative.jpg */
-    background-size: cover, cover;
-    background-blend-mode: overlay, multiply;
-    background-color: rgba(0, 161, 129, 0.5); /* Original #00A181 with 50% opacity */
-}
-.poster-sensory {
-    background-image: url('../images/sensory.jpg'), url('../papertexture.png'); /* Overlay sensory.jpg */
-    background-size: cover, cover;
-    background-blend-mode: overlay, multiply;
-    background-color: rgba(255, 170, 43, 0.5); /* Original #FFAA2B with 50% opacity */
-}
-.poster-sports {
-    background-image: url('../images/sports.jpg'), url('../papertexture.png'); /* Overlay sports.jpg */
-    background-size: cover, cover;
-    background-blend-mode: overlay, multiply;
-    background-color: rgba(139, 186, 230, 0.5); /* Original #8BBAE6 with 50% opacity */
-}
-.poster-writing {
-    background-image: url('../images/writing.jpg'), url('../papertexture.png'); /* Overlay writing.jpg */
-    background-size: cover, cover;
-    background-blend-mode: overlay, multiply;
-    background-color: rgba(255, 164, 211, 0.5); /* Original #FFA4D3 with 50% opacity */
-}
 
 .carousel-labels {
     pointer-events: none;
@@ -293,7 +325,7 @@
     position: absolute;
     left: 50%;
     top: 0;
-    color: var(--gray-dark);
+    color: var(--gray-dark); /* This should probably be theme-aware too if used */
     font-size: 1.05em;
     font-family: 'Georgia', serif;
     opacity: 0.7;
@@ -303,7 +335,7 @@
 
 .footer {
     text-align: center;
-    color: #222;
+    color: var(--poster-text-color); /* Theme-aware */
     font-size: 1.08rem;
     margin: 2.2rem 0 1.1rem 0;
 }
@@ -334,11 +366,12 @@
     width: 100vw;
     height: 100vh;
     z-index: -10; /* Keep it behind the main carousel */
-    background-color: #ffffff; /* 흰색으로 변경 */
-    opacity: 0.5; /* Initial opacity when visible */
+    background-color: var(--bg-slideshow-color); /* Theme-aware background color */
+    /* opacity is handled by JS for image fade, not container directly */
     transform: translateZ(0) !important; /* GPU 가속 강제 적용 */
     -webkit-transform: translateZ(0); /* 웹킷 브라우저용 */
     backface-visibility: hidden; /* 일부 브라우저에서 깜빡임 방지 */
+    transition: background-color 0.3s ease; /* Smooth transition for background color */
 }
 
 #background-slideshow img {
@@ -348,7 +381,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0;
+    opacity: 0; /* JS controls this opacity */
     /* Add these for potential GPU acceleration benefits on the images themselves */
     will-change: opacity, transform; /* Hint to the browser for upcoming changes */
     transform: translateZ(0); /* Force GPU acceleration for the image */
@@ -369,4 +402,5 @@
     -webkit-transform: translateZ(0);
     /* Ensure they don't block pointer events */
     pointer-events: none;
+    transition: opacity 0.5s ease; /* Smooth transition for image opacity changes */
 }

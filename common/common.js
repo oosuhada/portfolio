@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
        name: 'hanja',
        portfolio: '作品',
        about: '紹介',
-       experience: '經歷',
+       career: '經歷',
        lab: '實驗室',
        connect: '連結'
    },
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
        name: 'korean',
        portfolio: '포트폴리오',
        about: '소개',
-       experience: '경력',
+       career: '경력',
        lab: '실험실',
        connect: '연결'
    },
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
        name: 'french',
        portfolio: 'Portefeuille',
        about: 'À propos',
-       experience: 'Parcours', // 경력/이력의 뉘앙스
+       career: 'Parcours', // 경력/이력의 뉘앙스
        lab: 'Laboratoire',
        connect: 'Connexion'
    },
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
        name: 'japanese',
        portfolio: 'ポートフォリオ',
        about: '紹介',
-       experience: 'キャリア', // 또는 '経歴'
+       career: 'キャリア', // 또는 '経歴'
        lab: 'ラボ',
        connect: '接続'
    }
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
 const englishMap = {
    portfolio: 'Portfolio',
    about: 'About',
-   experience: 'Career', // 또는 'Experience'
+   career: 'Career', // 또는 'Experience'
    lab: 'Lab',
    connect: 'Connect'
 };

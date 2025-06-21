@@ -74,6 +74,7 @@
     --cursor-grab-single: url('../img/grab.png') 11 3, auto;
     --cursor-grab-single2:  url('../../img/grab.png') 11 3, auto;
     --cursor-grabbing-single: url('../img/grabbing.png') 11 3, auto;
+    --cursor-grabbing-single2: url('../../img/grabbing.png') 11 3, auto;
 
     /* 현재 모드에 따라 적용될 커서 변수 (기본은 라이트 모드) */
     --cursor-default: var(--cursor-pointer-light);
@@ -82,6 +83,7 @@
     --cursor-grab: var(--cursor-grab-single);
     --cursor-grab2: var(--cursor-grab-single2);
     --cursor-grabbing: var(--cursor-grabbing-single);
+    --cursor-grabbing2: var(--cursor-grabbing-single2);
     --cursor-ew-resize: var(--cursor-ew-resize-light);
 }
 
@@ -347,7 +349,7 @@ footer {
     padding: 2rem var(--main-left-gap) 5rem 0;
     text-align: right;
     color: var(--gray-mid);
-    background: var(--white);
+    background: transparent;
     box-sizing: border-box;
 }
 
@@ -408,6 +410,34 @@ footer {
 .footer-image.shake-x {
     animation: shakeX 2.6s cubic-bezier(.66,0,.35,1) infinite;
     transform-origin: 50% 85%;
+}
+
+/* General footer background for 다크모드 대응*/
+footer {
+    background-color: transparent;
+    z-index: 8;
+    position: relative;
+    color: var(--dark-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body[data-theme="light"] footer {
+    background-color: var(--light-bg);
+    color: var(--light-text);
+}
+
+footer a {
+    color: var(--dark-text);
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+body[data-theme='dark'] #lottie-container #lottie-inner-section {
+    filter: invert(75%);
+}
+
+body[data-theme='light'] #lottie-container #lottie-inner-section {
+    filter: none;
 }
 
 /* Highlighter Styles */

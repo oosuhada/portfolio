@@ -156,13 +156,17 @@
     <button id="skipBtn">×</button>
   </div>
 
+<div id="inboxwrapper">
+  <div id="inboxIconContainer">
+    <div id="inboxCircle"></div>
+  </div>
+</div>
+
   <div class="slider-container" id="mainPortfolio">
     <div id="preloader">
       <div class="loading-text" id="loadingText"></div>
     </div>
-
-    <div id="inboxIconContainer" style="position: fixed; top: 20px; right: 20px; width: 70px; height: 70px; z-index: 1000;"></div>
-
+    
     <div class="slide" id="slide1">
       <div class="slide-content">
         <div class="slide-padding1"></div>
@@ -278,98 +282,107 @@
   <script type="application/javascript" src="script/slider.js"></script>
   <script src="./common/common.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const inboxIconContainer = document.getElementById('inboxIconContainer');
-        const darkModeToggleWrapper = document.getElementById('darkModeToggleWrapper'); // Get the wrapper
-        // The darkModeToggleContainer Lottie animation setup is now mostly handled in greeting.js
+document.addEventListener('DOMContentLoaded', () => {
+    const inboxIconContainer = document.getElementById('inboxIconContainer');
+    const darkModeToggleWrapper = document.getElementById('darkModeToggleWrapper'); // Get the wrapper
 
-        // Lottie animation for inbox icon (stays the same)
-        if (inboxIconContainer) {
-            const animationInbox = lottie.loadAnimation({
-                container: inboxIconContainer,
-                renderer: 'svg',
-                loop: true,
-                autoplay: true,
-                path: 'https://gist.githubusercontent.com/oosuhada/11ae1d45539024888bab22d7054f0719/raw/07292d69efaf0410cce8e62a89b28060879f9b7d/notification.json'
-            });
+    // Lottie animation for inbox icon (loop 없이, 0.8배속, 재생 후 1.2초 쉼)
+    if (inboxIconContainer) {
+        const animationInbox = lottie.loadAnimation({
+            container: inboxIconContainer,
+            renderer: 'svg',
+            loop: false, // 한 번만 재생
+            autoplay: true,
+            path: 'https://gist.githubusercontent.com/oosuhada/260471d9b7e2acfde4377ee6a895093c/raw/6dffaeafd1ab43ead99273b654e011dbd1ab4718/message-envelope.json'
+        });
 
-            inboxIconContainer.addEventListener('click', () => {
-                // Hide main portfolio and stop its balloon effects
-                gsap.to('#mainPortfolio', {
-                    opacity: 0,
-                    duration: 0.5,
-                    onComplete: () => {
-                        document.getElementById('mainPortfolio').style.display = 'none';
-                        window.stopBalloonInterval(); // Stop balloons from slider.js
+        animationInbox.setSpeed(0.8); // 0.8배속
 
-                        // Show greeting container and controls
-                        document.getElementById('preloaderContainer').style.display = 'block';
-                        document.getElementById('controls').style.display = 'block';
-                        gsap.fromTo('#preloaderContainer', { opacity: 0 }, { opacity: 1, duration: 0.5 });
-                        gsap.fromTo('#controls', { opacity: 0 }, { opacity: 1, duration: 0.5 });
+        // 루프 대신 완료 후 잠깐(1.2초) 쉬었다가 다시 재생
+        const delayMs = 1200;
+        animationInbox.addEventListener('complete', function () {
+            setTimeout(() => {
+                animationInbox.goToAndPlay(0, true);
+            }, delayMs);
+        });
 
-                        // Show dark mode toggle wrapper and its container
-                        if (darkModeToggleWrapper) {
-                            darkModeToggleWrapper.style.display = 'flex'; // Make wrapper visible as flex
-                            gsap.fromTo(darkModeToggleWrapper, { opacity: 0 }, { opacity: 1, duration: 0.5 });
+        inboxIconContainer.addEventListener('click', () => {
+            // Hide main portfolio and stop its balloon effects
+            gsap.to('#mainPortfolio', {
+                opacity: 0,
+                duration: 0.5,
+                onComplete: () => {
+                    document.getElementById('mainPortfolio').style.display = 'none';
+                    window.stopBalloonInterval(); // Stop balloons from slider.js
 
-                            // ✅ Add this block to ensure Lottie visibility and resize when entering greeting
-                            const darkModeToggleContainer = document.getElementById('darkModeToggleContainer');
-                            if (darkModeToggleContainer && window.animationDarkMode) {
-                                // These styles should already be set in greeting.js, but re-asserting for clarity
-                                darkModeToggleContainer.style.display = 'block';
-                                darkModeToggleContainer.style.opacity = '1';
-                                darkModeToggleContainer.style.width = '100%';
-                                darkModeToggleContainer.style.height = '100%';
-                                darkModeToggleContainer.style.position = 'absolute';
+                    // Show greeting container and controls
+                    document.getElementById('preloaderContainer').style.display = 'block';
+                    document.getElementById('controls').style.display = 'block';
+                    gsap.fromTo('#preloaderContainer', { opacity: 0 }, { opacity: 1, duration: 0.5 });
+                    gsap.fromTo('#controls', { opacity: 0 }, { opacity: 1, duration: 0.5 });
 
-                                setTimeout(() => {
-                                    window.animationDarkMode.resize(); // Use the globally exposed animationDarkMode
-                                }, 100);
-                            }
-                        }
+                    // Show dark mode toggle wrapper and its container
+                    if (darkModeToggleWrapper) {
+                        darkModeToggleWrapper.style.display = 'flex'; // Make wrapper visible as flex
+                        gsap.fromTo(darkModeToggleWrapper, { opacity: 0 }, { opacity: 1, duration: 0.5 });
 
-                        // Hide inbox icon
-                        if (inboxIconContainer) {
-                            inboxIconContainer.style.display = 'none';
-                            gsap.to(inboxIconContainer, { opacity: 0, duration: 0.2 });
-                        }
+                        // ✅ Add this block to ensure Lottie visibility and resize when entering greeting
+                        const darkModeToggleContainer = document.getElementById('darkModeToggleContainer');
+                        if (darkModeToggleContainer && window.animationDarkMode) {
+                            // These styles should already be set in greeting.js, but re-asserting for clarity
+                            darkModeToggleContainer.style.display = 'block';
+                            darkModeToggleContainer.style.opacity = '1';
+                            darkModeToggleContainer.style.width = '100%';
+                            darkModeToggleContainer.style.height = '100%';
+                            darkModeToggleContainer.style.position = 'absolute';
 
-                        // Ensure greeting animation starts from the beginning
-                        if (window.tl) {
-                            window.tl.restart(true); // restart(true) forces a full reset
-                        } else {
-                            console.warn("GSAP timeline 'tl' not yet defined in greeting.js. Fetching data and starting animation.");
-                            window.fetchData(); // This will create and run tl
+                            setTimeout(() => {
+                                window.animationDarkMode.resize(); // Use the globally exposed animationDarkMode
+                            }, 100);
                         }
                     }
-                });
-            });
-        }
-        // Dark mode toggle logic (now simpler, as Lottie setup is in greeting.js)
-        const darkModeToggleContainer = document.getElementById('darkModeToggleContainer'); // Re-get for this block's scope
-        if (darkModeToggleContainer && window.animationDarkMode) { // Check if animationDarkMode is defined globally
-            let isDarkMode = false; // State for dark mode
-            // This ensures the animation starts at frame 0 (light)
-            window.animationDarkMode.goToAndStop(0, true); // Use the globally exposed animationDarkMode
 
-            if (darkModeToggleWrapper) {
-                darkModeToggleWrapper.addEventListener('click', () => {
-                    const preloaderContainer = document.getElementById('preloaderContainer');
-                    if (isDarkMode) {
-                        window.animationDarkMode.setDirection(-1); // Play backward (dark to light)
-                        window.animationDarkMode.play();
-                        preloaderContainer.classList.remove('dark-theme');
+                    // Hide inbox icon
+                    if (inboxIconContainer) {
+                        inboxIconContainer.style.display = 'none';
+                        gsap.to(inboxIconContainer, { opacity: 0, duration: 0.2 });
+                    }
+
+                    // Ensure greeting animation starts from the beginning
+                    if (window.tl) {
+                        window.tl.restart(true); // restart(true) forces a full reset
                     } else {
-                        window.animationDarkMode.setDirection(1); // Play forward (light to dark)
-                        window.animationDarkMode.play();
-                        preloaderContainer.classList.add('dark-theme');
+                        console.warn("GSAP timeline 'tl' not yet defined in greeting.js. Fetching data and starting animation.");
+                        window.fetchData(); // This will create and run tl
                     }
-                    isDarkMode = !isDarkMode; // Toggle state
-                });
-            }
+                }
+            });
+        });
+    }
+
+    // Dark mode toggle logic (now simpler, as Lottie setup is in greeting.js)
+    const darkModeToggleContainer = document.getElementById('darkModeToggleContainer');
+    if (darkModeToggleContainer && window.animationDarkMode) {
+        let isDarkMode = false; // State for dark mode
+        window.animationDarkMode.goToAndStop(0, true);
+
+        if (darkModeToggleWrapper) {
+            darkModeToggleWrapper.addEventListener('click', () => {
+                const preloaderContainer = document.getElementById('preloaderContainer');
+                if (isDarkMode) {
+                    window.animationDarkMode.setDirection(-1);
+                    window.animationDarkMode.play();
+                    preloaderContainer.classList.remove('dark-theme');
+                } else {
+                    window.animationDarkMode.setDirection(1);
+                    window.animationDarkMode.play();
+                    preloaderContainer.classList.add('dark-theme');
+                }
+                isDarkMode = !isDarkMode;
+            });
         }
-    });
-  </script>
+    }
+});
+</script>
 </body>
 </html>

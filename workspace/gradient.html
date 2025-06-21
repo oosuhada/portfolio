@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>잉크 블롭 그라디언트 효과</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        /* 고정된 배경 컨테이너 */
+        .gradient-bg {
+            position: fixed;
+            top: 20vh;
+            left: 10vw;
+            width: 80vw;
+            height: 80vh;
+            z-index: -1;
+            background: transparent;
+            filter: blur(5px);
+        }
+
+        /* 잉크 블롭들 - 유기체 느낌 */
+        .blob {
+            position: absolute;
+            mix-blend-mode: screen;
+            animation: organicFloat 30s infinite ease-in-out;
+            filter: blur(30px) contrast(1.9) saturate(1.6);
+            transition: all 0.3s ease-out;
+        }
+
+        /* 강한 그레인 효과를 위한 의사 요소 */
+        .blob::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background-image:
+                radial-gradient(circle at 25% 25%, transparent 20%, rgba(255,255,255,0.1) 21%, rgba(255,255,255,0.1) 25%, transparent 26%),
+                radial-gradient(circle at 75% 75%, transparent 20%, rgba(255,255,255,0.08) 21%, rgba(255,255,255,0.08) 25%, transparent 26%),
+                radial-gradient(circle at 50% 10%, transparent 30%, rgba(0,0,0,0.1) 31%, rgba(0,0,0,0.1) 35%, transparent 36%),
+                radial-gradient(circle at 80% 30%, transparent 25%, rgba(255,255,255,0.05) 26%, rgba(255,255,255,0.05) 30%, transparent 31%),
+                radial-gradient(circle at 20% 80%, transparent 25%, rgba(0,0,0,0.08) 26%, rgba(0,0,0,0.08) 30%, transparent 31%);
+            background-size: 40px 40px, 60px 60px, 35px 35px, 50px 50px, 45px 45px;
+            background-position: 0 0, 30px 30px, 15px 15px, 45px 10px, 10px 40px;
+            opacity: 0.7;
+            mix-blend-mode: overlay;
+            border-radius: inherit;
+            animation: grainShift 8s infinite linear;
+        }
+
+        /* 그레인 애니메이션 */
+        @keyframes grainShift {
+            0% {
+                background-position: 0 0, 30px 30px, 15px 15px, 45px 10px, 10px 40px;
+                opacity: 0.6;
+            }
+            25% {
+                background-position: 10px -10px, 20px 40px, 25px 5px, 35px 20px, 0px 50px;
+                opacity: 0.8;
+            }
+            50% {
+                background-position: -5px 15px, 40px 20px, 5px 25px, 55px 0px, 20px 30px;
+                opacity: 0.7;
+            }
+            75% {
+                background-position: 15px 5px, 10px 50px, 35px -5px, 25px 30px, 40px 10px;
+                opacity: 0.9;
+            }
+            100% {
+                background-position: 0 0, 30px 30px, 15px 15px, 45px 10px, 10px 40px;
+                opacity: 0.6;
+            }
+        }
+
+        /* 유기체 같은 움직임 */
+        @keyframes organicFloat {
+            0%, 100% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
+                border-radius: 45% 55% 35% 65% / 60% 40% 55% 45%;
+                filter: blur(100px) contrast(1.4) saturate(1.6) hue-rotate(0deg);
+            }
+            12.5% {
+                transform: translate(25px, -35px) scale(1.3) rotate(45deg);
+                border-radius: 60% 40% 50% 50% / 45% 65% 35% 55%;
+                filter: blur(90px) contrast(1.6) saturate(1.8) hue-rotate(30deg);
+            }
+            25% {
+                transform: translate(40px, -60px) scale(1.5) rotate(90deg);
+                border-radius: 30% 70% 60% 40% / 55% 45% 65% 35%;
+                filter: blur(70px) contrast(1.2) saturate(2.0) hue-rotate(60deg);
+            }
+            37.5% {
+                transform: translate(15px, -25px) scale(1.2) rotate(135deg);
+                border-radius: 55% 45% 40% 60% / 35% 65% 45% 55%;
+                filter: blur(85px) contrast(1.5) saturate(1.7) hue-rotate(90deg);
+            }
+            50% {
+                transform: translate(-30px, 30px) scale(0.95) rotate(180deg);
+                border-radius: 40% 60% 55% 45% / 60% 40% 50% 50%;
+                filter: blur(65px) contrast(1.3) saturate(1.9) hue-rotate(120deg);
+            }
+            62.5% {
+                transform: translate(-45px, 45px) scale(1.15) rotate(225deg);
+                border-radius: 65% 35% 45% 55% / 40% 60% 35% 65%;
+                filter: blur(75px) contrast(1.7) saturate(1.6) hue-rotate(150deg);
+            }
+            75% {
+                transform: translate(60px, 15px) scale(1.28) rotate(270deg);
+                border-radius: 50% 50% 35% 65% / 55% 45% 60% 40%;
+                filter: blur(75px) contrast(1.1) saturate(2.1) hue-rotate(180deg);
+            }
+            87.5% {
+                transform: translate(35px, -15px) scale(1.05) rotate(315deg);
+                border-radius: 35% 65% 50% 50% / 45% 55% 40% 60%;
+                filter: blur(105px) contrast(1.4) saturate(1.8) hue-rotate(210deg);
+            }
+        }
+/* 개별 블롭 스타일링 (그레이스케일 조정) */
+.blob:nth-child(1) {
+    width: 250px;
+    height: 300px;
+    background: conic-gradient(from 45deg, #c78c9d, #a37a87, #d4b26b, #c78c9d);
+    top: 15%;
+    left: 8%;
+        opacity: 0.9;
+}
+
+.blob:nth-child(2) {
+    width: 280px;
+    height: 320px;
+    background: radial-gradient(ellipse at top, #8f9bc7, #917c9e, #d0a6d4, transparent 70%);
+    top: 55%;
+    right: 15%;
+        opacity: 0.6;
+}
+
+.blob:nth-child(3) {
+    width: 340px;
+    height: 240px;
+    background: linear-gradient(135deg, #84b2d8, #66d3d8, #80c99a, #7acfd1);
+    bottom: 25%;
+    left: 25%;
+        opacity: 0.8;
+}
+
+.blob:nth-child(4) {
+    width: 380px;
+    height: 300px;
+    background: conic-gradient(from 180deg at 30% 70%, #d492a5, #d8c97f, #917c9e, #8f9bc7);
+    top: 8%;
+    right: 12%;
+        opacity: 0.7;
+}
+
+.blob:nth-child(5) {
+    width: 300px;
+    height: 480px;
+    background: radial-gradient(circle at 25% 25%, #d8b2d5, #d08cc7, #81c5d7, transparent 65%);
+    bottom: 18%;
+    right: 28%;
+        opacity: 0.6;
+}
+
+.blob:nth-child(6) {
+    width: 360px;
+    height: 300px;
+    background: linear-gradient(45deg, #d89191, #cc8a6f, #69b5c7, #66c3d8);
+    top: 35%;
+    left: 45%;
+        opacity: 0.4;
+}
+
+.blob:nth-child(7) {
+    width: 300px;
+    height: 380px;
+    background: conic-gradient(from 270deg, #9c7aa7, #777dd8, #a37a87, #d8b2d5);
+    bottom: 45%;
+    left: 55%;
+        opacity: 0.6;
+}
+
+.blob:nth-child(8) {
+    width: 340px;
+    height: 400px;
+    background: radial-gradient(ellipse at bottom right, #66c0bd, #89b8d8, #9089c9, #b4afd8, transparent 75%);
+    top: 65%;
+    left: 15%;
+        opacity: 0.7;
+}
+
+.blob:nth-child(9) {
+    width: 420px;
+    height: 330px;
+    background: linear-gradient(90deg, #d8cdb0, #d5b6af, #c79385, #d89ab1);
+    top: 25%;
+    right: 35%;
+        opacity: 0.4;
+}
+
+.blob:nth-child(10) {
+    width: 390px;
+    height: 350px;
+    background: conic-gradient(from 0deg at 70% 30%, #98bcd8, #689cc8, #66c0bd, #7acfd1);
+    bottom: 35%;
+    right: 45%;
+    opacity: 0.6;
+}
+        /* 블롭별 클래스 할당 및 개별 애니메이션 */
+        .blob:nth-child(1) {
+            animation-delay: 0s;
+            animation-duration: 14s;
+        }
+        .blob:nth-child(2) {
+            animation-delay: -2s;
+            animation-duration: 16s;
+        }
+        .blob:nth-child(3) {
+            animation-delay: -4s;
+            animation-duration: 13s;
+        }
+        .blob:nth-child(4) {
+            animation-delay: -6s;
+            animation-duration: 17s;
+        }
+        .blob:nth-child(5) {
+            animation-delay: -3s;
+            animation-duration: 14s;
+        }
+        .blob:nth-child(6) {
+            animation-delay: -5s;
+            animation-duration: 15s;
+        }
+        .blob:nth-child(7) {
+            animation-delay: -2s;
+            animation-duration: 13s;
+        }
+        .blob:nth-child(8) {
+            animation-delay: -7s;
+            animation-duration: 16s;
+        }
+        .blob:nth-child(9) {
+            animation-delay: -2s;
+            animation-duration: 15s;
+        }
+        .blob:nth-child(10) {
+            animation-delay: -4s;
+            animation-duration: 12s;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .text-content {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(25px);
+            border-radius: 25px;
+            padding: 3.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            max-width: 650px;
+        }
+
+        .section h1 {
+            font-size: 3.8rem;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6);
+            font-weight: 300;
+            letter-spacing: 3px;
+            margin-bottom: 1.5rem;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section h2 {
+            font-size: 2.8rem;
+            color: white;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section p {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.9;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        .scroll-indicator {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+            animation: bounce 2.5s infinite;
+            z-index: 100;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-12px); }
+            60% { transform: translateX(-50%) translateY(-6px); }
+        }
+
+        @media (max-width: 768px) {
+            .section h1 { font-size: 2.8rem; }
+            .section h2 { font-size: 2.2rem; }
+            .section p { font-size: 1.1rem; }
+            .text-content { padding: 2.5rem; }
+            .blob { filter: blur(25px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="gradient-bg">
+        <div class="blob"></div>
+        <div class="blob"></div>
+        <div class="blob"></div>
+        <div class="blob"></div>
+        <div class="blob"></div>
+        <div class="blob"></div>
+        <div class="blob"></div>
+        <div class="blob"></div>
+        <div class="blob"></div>
+        <div class="blob"></div>
+    </div>
+    
+    <div class="scroll-indicator">↓ 스크롤하여 잉크 블롭 움직임을 확인하세요 ↓</div>
+
+    <div class="content">
+        <section class="section">
+            <div class="text-content">
+                <h1>잉크 블롭 효과</h1>
+                <p>다양한 형태의 컬러 블롭들이 유기적으로 변형되며 강한 블러 효과로 서로 겹쳐 아름다운 그라디언트를 만들어냅니다. 스크롤하며 유동적인 움직임을 감상해보세요.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="text-content">
+                <h2>색상의 춤</h2>
+                <p>원형, 타원, 물방울, 파동 등 다양한 형태의 블롭들이 독립적으로 움직이며 만들어내는 자연스러운 색상 혼합을 경험해보세요.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="text-content">
+                <h2>부드러운 경계</h2>
+                <p>강화된 블러 효과와 다채로운 그라디언트가 만들어내는 부드러운 색상 전환이 시각적 편안함을 제공합니다.</p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // 모든 JavaScript 이벤트 리스너를 제거했습니다.
+        // 이제 블롭들은 순수 CSS 애니메이션으로만 움직입니다.
+    </script>
+</body>
+</html>

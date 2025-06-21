@@ -165,8 +165,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        function setGauge(percent) { 
-            if (gaugeBar) gaugeBar.style.width = `${percent}%`; 
+        function setGauge(percent) {
+            if (gaugeBar) gaugeBar.style.width = `${percent}%`;
         }
 
         function setImgScaleCustom(idx) {
@@ -343,8 +343,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // [DELETED] 겹침 문제를 일으키는 updateProjectVisibility 함수를 삭제했습니다.
-
         function onScroll() {
             console.log("[DEBUG] onScroll triggered. ScrollY:", window.scrollY);
             if (onboardingActive || !heroSection || !portfolioSection) {
@@ -414,11 +412,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
             }
-            
-            // [DELETED] 겹침 문제를 일으키는 updateProjectVisibility() 호출을 삭제했습니다.
         }
 
-        // ▼▼▼ [수정됨] 온보딩 안내 문구 수정 ▼▼▼
+        // ▼▼▼ ORIGINAL ONBOARDING MESSAGES RESTORED ▼▼▼
         const guideSteps = [
             {
                 msg: "Click 'Oosu'",
@@ -427,7 +423,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 pos: (el) => { return getSectionRect(el) ? { top: getSectionRect(el).top - (guideTooltip?.offsetHeight || 60) - 25, left: getSectionRect(el).left - (guideTooltip?.offsetWidth || 180) - 10 } : { top: 0, left: 0 }; }
             },
             {
-                msg: "Double-click the slider text", // <-- 문구 수정
+                msg: "Double-click the slider text",
                 target: '.hero-slider-wrapper',
                 sparkle: '',
                 pos: (el) => {
@@ -439,7 +435,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (iL < 10) iL = 10;
                     if (iL + tW > window.innerWidth - 10) iL = window.innerWidth - 10 - tW;
                     return { top: iT, left: iL };
-                }
+                },
+                requiresDblClick: true // This flag remains to control behavior
             },
             {
                 msg: "Click profile image",
@@ -553,6 +550,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             resetImgAndGauge();
             if (sliderTexts.length > 0 && sliderTexts[0]) showSlide(0);
+            else currentSlide = -1; // Ensure currentSlide is valid or -1 if no sliders
             if (sliderInterval) clearInterval(sliderInterval);
             nameIndex = 0;
             if (hoverName) hoverName.textContent = names[nameIndex];
@@ -569,22 +567,39 @@ document.addEventListener('DOMContentLoaded', function () {
                     setHeroBgClass(`hero-bg-name-${nameIndex}`);
                     const sparkle = document.querySelector('#sparkle-name');
                     if (sparkle) sparkle.style.display = 'none';
+
+                } else if (onboardingActive && guideIndex === 0) {
+                    // Onboarding step 0: Click Oosu - specific interaction.
+                    // This will also advance the guide, so the overlay click below
+                    // acts as a fallback or general advance.
+                    nameIndex = (nameIndex + 1) % names.length;
+                    hoverName.textContent = names[nameIndex];
+                    setHeroBgClass(`hero-bg-name-${nameIndex}`);
+                    const sparkle = document.querySelector('#sparkle-name');
+                    if (sparkle) sparkle.style.display = 'none';
+
+                    // Advance the guide
+                    guideIndex++;
+                    if (guideIndex < guideSteps.length) {
+                        showGuideStep(guideIndex);
+                    } else {
+                        clearGuide(false);
+                    }
                 }
             });
         }
 
-        // ▼▼▼ [수정됨] 'click'을 'dblclick'으로 변경 ▼▼▼
+        // heroSlider dblclick event listener is now for general site interaction only,
+        // it will not advance onboarding. Onboarding dblclick will be handled by guideOverlay.
         if (heroSlider) {
-            // 더블 클릭 시 슬라이드 넘김
             heroSlider.addEventListener('dblclick', () => {
-                if (onboardingActive) return;
+                if (onboardingActive) return; // Prevent during onboarding
 
                 if (sliderTexts.length > 0) {
                     const nextSlideIndex = (currentSlide + 1) % sliderTexts.length;
                     showSlide(nextSlideIndex);
                 }
 
-                // 자동 넘김 일시 중지 후 재시작
                 sliderPaused = true;
                 if (sliderInterval) clearInterval(sliderInterval);
                 setTimeout(() => {
@@ -592,9 +607,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     startSliderAutoPlay();
                 }, 8000);
             });
-
-            // 싱글 클릭 이벤트는 제거되어, 부모(document)의 하이라이터 이벤트만 처리됩니다.
         }
+
 
         if (hoverImg) {
             hoverImg.addEventListener('click', () => {
@@ -603,6 +617,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     setImgScaleCustom(scaleIndex);
                     const sparkle = document.querySelector('#sparkle-img');
                     if (sparkle) sparkle.style.display = 'none';
+                } else if (onboardingActive && guideIndex >= 2 && guideIndex <= 4) {
+                    // Onboarding steps 2, 3, 4: Click profile image - specific interaction.
+                    // This will also advance the guide, so the overlay click below
+                    // acts as a fallback or general advance.
+                    scaleIndex = (scaleIndex + 1) % scales.length;
+                    setImgScaleCustom(scaleIndex);
+                    const sparkle = document.querySelector('#sparkle-img');
+                    if (sparkle) sparkle.style.display = 'none';
+
+                    // Advance the guide
+                    guideIndex++;
+                    if (guideIndex < guideSteps.length) {
+                        showGuideStep(guideIndex);
+                    } else {
+                        clearGuide(false);
+                    }
                 }
             });
 
@@ -633,7 +663,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const heroSliderDotsArea = document.querySelector('.hero-slider-dots-area');
         if (heroSliderDotsArea) {
             heroSliderDotsArea.addEventListener('click', (e) => {
-                if (!onboardingActive) {
+                if (!onboardingActive) { // Allow general interaction if not onboarding
                     const clickedDot = e.target.closest('.slider-dot');
                     let targetIndex = currentSlide;
 
@@ -654,9 +684,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (scrollIcon) {
-            scrollIcon.addEventListener('click', () => { 
-                const portfolioSection = document.getElementById('portfolio'); 
-                if (portfolioSection) portfolioSection.scrollIntoView({ behavior: 'smooth' }); 
+            scrollIcon.addEventListener('click', () => {
+                const portfolioSection = document.getElementById('portfolio');
+                if (portfolioSection) portfolioSection.scrollIntoView({ behavior: 'smooth' });
             });
         }
 
@@ -678,39 +708,85 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         if (guideOverlay) {
+            // SINGLE CLICK handler for the guide overlay
+            // This will advance the guide for steps that require a single click anywhere on the overlay.
             guideOverlay.addEventListener('click', (e) => {
                 if (!onboardingActive) return;
+
+                // Always allow closing the guide via button or clicking tooltip
                 if (e.target === guideTooltip || (guideCloseButton && guideCloseButton.contains(e.target))) {
                     return;
                 }
+
                 const currentStepConfig = guideSteps[guideIndex];
-                if (!currentStepConfig) { clearGuide(false); return; }
-                if (guideIndex === 0) { 
-                    nameIndex = (nameIndex + 1) % names.length; 
-                    if (hoverName) hoverName.textContent = names[nameIndex]; 
-                    setHeroBgClass(`hero-bg-name-${nameIndex}`); 
+
+                // If the current step explicitly requires a double-click (Step 1),
+                // then a single click on the overlay should NOT advance the guide.
+                if (currentStepConfig && currentStepConfig.requiresDblClick) {
+                    console.log("[DEBUG] Guide overlay single click ignored for double-click step.");
+                    return;
                 }
-                else if (guideIndex === 1) {
-                    if (sliderTexts.length > 1) showSlide(1); 
-                    else if (sliderTexts.length > 0) showSlide(0);
+
+                // For all other steps (Step 0, and Steps 2-4), a single click on the overlay advances the guide.
+                // This covers the initial requirement of "screen anywhere click" for these steps.
+                console.log(`[DEBUG] Guide overlay single click detected for step ${guideIndex}. Advancing guide.`);
+
+                // Perform the action for the current step
+                if (guideIndex === 0) {
+                    nameIndex = (nameIndex + 1) % names.length;
+                    if (hoverName) hoverName.textContent = names[nameIndex];
+                    setHeroBgClass(`hero-bg-name-${nameIndex}`);
+                    const sparkle = document.querySelector('#sparkle-name');
+                    if (sparkle) sparkle.style.display = 'none';
+                } else if (guideIndex >= 2 && guideIndex <= 4) {
+                    // For image steps, advance the image scale
+                    scaleIndex = (scaleIndex + 1) % scales.length;
+                    setImgScaleCustom(scaleIndex);
+                    const sparkle = document.querySelector('#sparkle-img');
+                    if (sparkle) sparkle.style.display = 'none';
                 }
-                else if (guideIndex >= 2 && guideIndex <= 4) { 
-                    scaleIndex = (scaleIndex + 1) % scales.length; 
-                    setImgScaleCustom(scaleIndex); 
-                }
+
+                // Advance the guide to the next step
                 guideIndex++;
-                if (guideIndex < guideSteps.length) { showGuideStep(guideIndex); }
-                else { clearGuide(false); }
+                if (guideIndex < guideSteps.length) {
+                    showGuideStep(guideIndex);
+                } else {
+                    clearGuide(false);
+                }
+            });
+
+            // DOUBLE CLICK handler for the guideOverlay (specifically for step 1)
+            guideOverlay.addEventListener('dblclick', (e) => {
+                if (!onboardingActive) return;
+                const currentStepConfig = guideSteps[guideIndex];
+
+                // Only advance if it's the specific step that requires a double-click
+                if (guideIndex === 1 && currentStepConfig && currentStepConfig.requiresDblClick) {
+                    console.log("[DEBUG] Guide overlay double-click detected for step 1. Advancing guide.");
+                    // Perform the action for this step (e.g., advance slider if needed)
+                    if (sliderTexts.length > 1) showSlide(1);
+                    else if (sliderTexts.length > 0) showSlide(0);
+
+                    // Advance the guide
+                    guideIndex++;
+                    if (guideIndex < guideSteps.length) {
+                        showGuideStep(guideIndex);
+                    } else {
+                        clearGuide(false);
+                    }
+                } else {
+                    console.log("[DEBUG] Guide overlay double-click ignored for current step or not onboarding.");
+                }
             });
         }
 
-        if (guideCloseButton) { 
-            guideCloseButton.addEventListener('click', () => { 
-                if (onboardingActive) clearGuide(true); 
-            }); 
+        if (guideCloseButton) {
+            guideCloseButton.addEventListener('click', () => {
+                if (onboardingActive) clearGuide(true);
+            });
         }
-        if (guideTooltip) { 
-            guideTooltip.addEventListener('click', (e) => e.stopPropagation()); 
+        if (guideTooltip) {
+            guideTooltip.addEventListener('click', (e) => e.stopPropagation());
         }
 
         projectImageAnchors.forEach(anchor => {
@@ -774,13 +850,13 @@ document.addEventListener('DOMContentLoaded', function () {
         let runFullOnboardingNext = false;
         let showPersistentHintsNext = false;
 
-        if (cameFromIndex) { 
-            runFullOnboardingNext = true; 
-            localStorage.removeItem('onboardingCompleted'); 
+        if (cameFromIndex) {
+            runFullOnboardingNext = true;
+            localStorage.removeItem('onboardingCompleted');
         } else if (onboardingCompletedSetting === 'true') {
             showPersistentHintsNext = true;
-        } else { 
-            runFullOnboardingNext = true; 
+        } else {
+            runFullOnboardingNext = true;
         }
 
         if (runFullOnboardingNext) {

@@ -31,7 +31,7 @@ const updateListStyleVariables = () => {
     listStyleChangeStartY = skillsShowcaseSection.offsetTop - (window.innerHeight * (1 - startActivationOffsetRatio));
     listStyleChangeStartY = Math.max(0, listStyleChangeStartY);
 
-    const endActivationOffsetRatio = 0.2;
+    const endActivationOffsetRatio = 0.4;
     // FIX: Changed 'skillsShowbox' to 'skillsShowcaseSection'
     listStyleChangeEndY = skillsShowcaseSection.offsetTop + skillsShowcaseSection.offsetHeight - (window.innerHeight * endActivationOffsetRatio);
 

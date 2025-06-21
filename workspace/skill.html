@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Skills Section</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <style>
+      :root {
+        --Grey: #a3a3a3;
+        --LightBlue: #12b3eb;
+        --DarkBlue: #5460f9;
+        --Black: #000000;
+        --White: #ffffff;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      #skills {
+        height: 1800px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .skills-container {
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+      }
+
+      .skills-header {
+        font-size: 35px;
+        font-weight: 600;
+      }
+
+      .skills-wrapper {
+        margin-top: 50px;
+        width: 90%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 30px;
+      }
+
+      .skill {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 10px;
+        height: 100px;
+        width: 100px;
+        background-color: var(--White);
+        border-radius: 100%;
+        cursor: pointer;
+        transform: scale(1);
+        transition: all 0.3s;
+      }
+
+      .skill:hover {
+        box-shadow: 0px 0px 10px 1px #26262680;
+        background: linear-gradient(90deg, var(--LightBlue), var(--DarkBlue));
+        transform: scale(1.1);
+        transition: all 0.3s;
+        color: var(--White);
+      }
+
+      .skills-logo {
+        width: 50px;
+        height: 50px;
+      }
+
+      .skill img {
+        width: 100%;
+        height: 100%;
+      }
+
+      .skill span {
+        font-size: 15px;
+        font-weight: 500;
+      }
+
+      @media only screen and (min-width: 1100px) {
+        #skills {
+          height: 1100px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .skills-container {
+          text-align: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          width: 100%;
+          height: 100%;
+        }
+
+        .skills-header {
+          font-size: 35px;
+          font-weight: 600;
+        }
+
+        .skills-wrapper {
+          margin-top: 50px;
+          width: 85%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+
+        .skill {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          gap: 10px;
+          height: 170px;
+          width: 170px;
+          background-color: var(--White);
+          border-radius: 100%;
+          cursor: pointer;
+          transform: scale(1);
+          transition: all 0.3s;
+        }
+
+        .skill:hover {
+          box-shadow: 0px 0px 10px 1px #26262680;
+          background: linear-gradient(90deg, var(--LightBlue), var(--DarkBlue));
+          transform: scale(1.1);
+          transition: all 0.3s;
+          color: var(--White);
+        }
+
+        .skills-logo {
+          width: 50px;
+          height: 50px;
+        }
+
+        .skill img {
+          width: 100%;
+          height: 100%;
+        }
+
+        .skill span {
+          font-size: 15px;
+          font-weight: 500;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section id="skills" data-aos="fade-up">
+      <div class="skills-container">
+        <h3 class="skills-header">MY SKILLS</h3>
+        <div class="skills-wrapper" data-aos="fade-up">
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/html-5.webp" alt="" />
+            </div>
+            <span>HTML</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/css-3.webp" alt="" />
+            </div>
+            <span>CSS</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/js.webp" alt="" />
+            </div>
+            <span>JavaScript</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/nodejs.webp" alt="" />
+            </div>
+            <span>NodeJS</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/express.webp" alt="" />
+            </div>
+            <span>ExpressJS</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/bootstrap.webp" alt="" />
+            </div>
+            <span>Bootstrap</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/tailwind.webp" alt="" />
+            </div>
+            <span>Tailwind</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/nextjs.webp" alt="" />
+            </div>
+            <span>Next.JS</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/react.webp" alt="" />
+            </div>
+            <span>React.JS</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/c.webp" alt="" />
+            </div>
+            <span>C</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/golang.webp" alt="" />
+            </div>
+            <span>Golang</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/cpp.webp" alt="" />
+            </div>
+            <span>C++</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/python.webp" alt="" />
+            </div>
+            <span>Python</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/java.webp" alt="" />
+            </div>
+            <span>Java</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/git.webp" alt="" />
+            </div>
+            <span>Git</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/github.webp" alt="" />
+            </div>
+            <span>GitHub</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/figma.webp" alt="" />
+            </div>
+            <span>Figma</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/postgresql.webp" alt="" />
+            </div>
+            <span>PostgreSQL</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/mongo.webp" alt="" />
+            </div>
+            <span>MongoDB</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/mysql.webp" alt="" />
+            </div>
+            <span>MySQL</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/premiere.webp" alt="" />
+            </div>
+            <span>Premiere Pro</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/photoshop.webp" alt="" />
+            </div>
+            <span>Photoshop</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/illustrator.webp" alt="" />
+            </div>
+            <span>Illustrator</span>
+          </div>
+          <div class="skill">
+            <div class="skills-logo">
+              <img src="./icons/aftereffects.webp" alt="" />
+            </div>
+            <span>After Effects</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+      AOS.init({
+        offest: 400,
+        duration: 800,
+      });
+    </script>
+  </body>
+</html>

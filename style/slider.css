@@ -26,24 +26,43 @@
     opacity: 1;
   }
 }
-
+@keyframes popBounce {
+    0%   { transform: scale(1);}
+    10%  { transform: scale(1.12);}
+    20%  { transform: scale(0.97);}
+    30%  { transform: scale(1.07);}
+    50% { transform: scale(1);}
+}
 #inboxIconContainer {
     position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 70px; /* Adjust size as needed */
-    height: 70px; /* Adjust size as needed */
+    top: -50px;
+    right: -50px;
+    width: 250px;
+    height: 250px;
+    z-index: 1000;
+    border-radius: 50%;
+    position: fixed;
     cursor: var(--cursor-grab);
-    z-index: 1000; /* Ensure it's above other content */
-    /* Optional: add some padding or background if it's too small to click */
-    padding: 5px;
-    border-radius: 50%; /* If you want a circular hit area */
-    background-color: rgba(255, 255, 255, 0.1); /* Subtle background */
     transition: background-color 0.3s ease;
+        animation: popBounce 2.5s cubic-bezier(0.42,0,0.58,1);
+    animation-iteration-count: infinite;
 }
-
+#inboxCircle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    background-color: rgba(113, 113, 113, 0.405);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
 #inboxIconContainer:hover {
-    background-color: rgba(255, 255, 255, 0.3);
+
+}
+#inboxIconContainer:hover #inboxCircle {
+    background-color: rgba(70, 120, 200, 0.62);  /* 원하는 색상으로 변경 */
 }
 
 /* Original .background-image styles (body-level) - Unchanged */

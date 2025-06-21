@@ -405,9 +405,82 @@
         </main>
     </div>
 
-  <div class="grape-footer-quote-section" id="grape-footer-section">
+ <div class="grape-footer-quote-section" id="grape-footer-section">
+   <svg style="display: none;">
+    <filter id="noiseFilter">
+        <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.65"
+            numOctaves="3"
+            stitchTiles="stitch"
+            result="noise"
+        />
+        <feColorMatrix
+            in="noise"
+            type="matrix"
+            values="1 0 0 0 0
+                    0 1 0 0 0
+                    0 0 1 0 0
+                    0 0 0 1 0"
+        />
+        <feComponentTransfer>
+            <feFuncR type="linear" slope="2" intercept="-0.5" />
+            <feFuncG type="linear" slope="2" intercept="-0.5" />
+            <feFuncB type="linear" slope="2" intercept="-0.5" />
+        </feComponentTransfer>
+    </filter>
+
+    <filter id="rgbSplitFilter">
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" in="SourceGraphic" result="colorMatrix"/>
+        <feOffset in="colorMatrix" dx="-2" dy="0" result="red" />
+        <feOffset in="colorMatrix" dx="2" dy="0" result="cyan" />
+        <feColorMatrix in="red" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="redOnly" />
+        <feColorMatrix in="cyan" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" result="cyanOnly" />
+        <feBlend in="redOnly" in2="cyanOnly" mode="screen" />
+    </filter>
+
+    <filter id="chromaticAberrationFilter">
+        <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" result="colorMatrix"/>
+        <feComponentTransfer in="colorMatrix" result="redComp">
+            <feFuncR type="linear" slope="1" intercept="0"/>
+            <feFuncG type="linear" slope="0" intercept="0"/>
+            <feFuncB type="linear" slope="0" intercept="0"/>
+        </feComponentTransfer>
+        <feComponentTransfer in="colorMatrix" result="greenComp">
+            <feFuncR type="linear" slope="0" intercept="0"/>
+            <feFuncG type="linear" slope="1" intercept="0"/>
+            <feFuncB type="linear" slope="0" intercept="0"/>
+        </feComponentTransfer>
+        <feComponentTransfer in="colorMatrix" result="blueComp">
+            <feFuncR type="linear" slope="0" intercept="0"/>
+            <feFuncG type="linear" slope="0" intercept="0"/>
+            <feFuncB type="linear" slope="1" intercept="0"/>
+        </feComponentTransfer>
+        <feOffset in="redComp" dx="2" dy="0" result="offsetRed"/>
+        <feOffset in="greenComp" dx="-2" dy="0" result="offsetGreen"/>
+        <feOffset in="blueComp" dx="0" dy="0" result="offsetBlue"/>
+        <feBlend in="offsetRed" in2="offsetGreen" mode="screen" result="blendRG"/>
+        <feBlend in="blendRG" in2="offsetBlue" mode="screen"/>
+    </filter>
+</svg>
     <div class="tv-container" id="tvContainer">
         <div class="tv-screen-area" id="tvScreen">
+            <div class="screen-container">
+                <div class="screen-wrapper">
+                    <div class="screen-wrapper">
+                        <div class="screen-wrapper">
+                            <div class="video-content" id="videoContent">
+                                <div class="footer-image-container">
+                                    <img id="grapeFooterImg" src="images/footer1.png" alt="grape to wine" class="grape-footer-img"/>
+                                    <div class="grape-footer-text" id="grapeFooterText">Now,</div>
+                                </div>
+                            </div>
+                            <canvas id="vcrNoiseCanvas" class="vcr"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="static-effect" id="staticEffect">
                 <div class="noise-layer noise-layer-1"></div>
                 <div class="noise-layer noise-layer-2"></div>
@@ -416,20 +489,45 @@
             <div class="tv-turnon" id="tvTurnon"></div>
             <div class="color-bars" id="colorBars"></div>
 
-            <div class="video-content" id="videoContent">
-                <div class="footer-image-container">
-                    <img id="grapeFooterImg" src="images/footer1.png" alt="grape to wine" class="grape-footer-img"/>
-                    <div class="grape-footer-text" id="grapeFooterText">Now,</div>
-                </div>
-            </div>
-
             <div class="scanlines" id="scanlines"></div>
             <div class="screen-glow" id="screenGlow"></div>
+            
+         <div class="settings-overlay" id="settingsOverlay">
+    <div class="settings-header">
+        <h2>Settings</h2>
+        <button id="closeSettingsBtn">X</button>
+    </div>
+    <div class="settings-content">
+        <div class="setting-item">
+            <label for="effectToggle_static">Static Effect:</label>
+            <input type="checkbox" id="effectToggle_static" checked>
+        </div>
+        <div class="setting-item">
+            <label for="effectToggle_vcr">VCR Noise:</label>
+            <input type="checkbox" id="effectToggle_vcr" checked>
+        </div>
+        <div class="setting-item">
+            <label for="effectToggle_scanlines">Scanlines:</label>
+            <input type="checkbox" id="effectToggle_scanlines" checked>
+        </div>
+        <div class="setting-item">
+            <label for="effectToggle_glow">Screen Glow:</label>
+            <input type="checkbox" id="effectToggle_glow" checked>
+        </div>
+        <div class="setting-item">
+            <label for="effectToggle_rgbSplit">RGB Split:</label>
+            <input type="checkbox" id="effectToggle_rgbSplit" checked> </div>
+        <div class="setting-item">
+            <label for="effectToggle_chromatic">Chromatic Aberration:</label>
+            <input type="checkbox" id="effectToggle_chromatic" checked> </div>
+        </div>
+</div>
         </div>
         <div class="tv-controls-panel">
-            <div class="tv-button"></div>
-            <div class="tv-button"></div>
-            <div class="tv-dial"></div>
+            <div class="tv-button channel-button" id="channelUpButton">CH+</div>
+            <div class="tv-button channel-button" id="channelDownButton">CH-</div>
+            <div class="tv-button settings-button" id="settingsButton">SET</div>
+            <div class="tv-dial" id="tvDial"></div>
         </div>
     </div>
 </div>
