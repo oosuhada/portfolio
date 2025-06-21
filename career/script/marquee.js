@@ -1,4 +1,5 @@
 // marquee.js
+console.log("--- marquee.js 파일 로드됨 ---");
 document.addEventListener('DOMContentLoaded', function () {
     const allMarqueeInnerRows = document.querySelectorAll('.marquee-container .marquee-inner');
 

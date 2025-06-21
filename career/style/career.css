@@ -1,4 +1,4 @@
-/* experience.css */
+/* career.css */
 /* General/Utility Styles and Root Variables */
 
 :root {
@@ -115,6 +115,10 @@ body {
     visibility: hidden;
 }
 
+.header-section-container{
+    z-index: 10000;
+}
+
 .nav-header.experience-header-hidden-override {
     opacity: 0;
     visibility: hidden;
@@ -129,7 +133,7 @@ body {
 }
 
 .experience-main {
-    margin-bottom: 8rem;
+    /* margin-bottom: 8rem; */
     max-width: 100%;
 }
 
@@ -159,7 +163,7 @@ body[data-theme="light"] .section-bottom-gap2 {
 
 /* Utility for hover effects on text */
 .meaning-chunk {
-    cursor: var(--cursor-drag);
+    cursor: var(--cursor-grab2);
     transition: text-decoration 0.15s;
     display: inline;
     white-space: normal;
@@ -222,7 +226,7 @@ body[data-theme="light"] .section-bottom-gap2 {
     border: 1px solid var(--primary-content-color);
     border-radius: 0.375rem;
     text-decoration: none;
-    cursor: var(--cursor-drag);
+    cursor: var(--cursor-grab2);
     transition: background-color var(--transition-duration), color var(--transition-duration);
 }
 
@@ -235,7 +239,7 @@ body[data-theme="light"] .section-bottom-gap2 {
     padding: 0.5rem;
     border: none;
     background: none;
-    cursor: var(--cursor-drag);
+    cursor: var(--cursor-grab2);
     position: relative;
     width: 2rem;
     height: 2rem;

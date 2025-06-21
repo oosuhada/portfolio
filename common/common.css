@@ -1,3 +1,13 @@
+:root {
+  /* 라이트 모드 변수 */
+  --light-bg: #ffffff;      /* 라이트 모드 배경색 (흰색) */
+  --light-text: #1d1d1f;    /* 라이트 모드 텍스트 색상 (검은색 계열) */
+
+  /* 다크 모드 변수 */
+  --dark-bg: #121212;       /* 다크 모드 배경색 (검은색 계열) */
+  --dark-text: #f5f5f7;     /* 다크 모드 텍스트 색상 (밝은 회색/흰색 계열) */
+}
+
 #preloader {
     position: fixed;
     top: 0;
@@ -52,20 +62,25 @@
     /* ▼▼▼ [추가] 커스텀 커서 변수 정의 ▼▼▼ */
     /* 라이트 모드 커서 */
     --cursor-pointer-light: url('../img/pointer-light.png'), auto;
+    --cursor-pointer-light2: url('../../img/pointer-light.png'), auto;
     --cursor-ew-resize-light: url('../img/ew-resize-light.png') 40 20, auto;
 
     /* 다크 모드 커서 */
     --cursor-pointer-dark: url('../img/pointer-dark.png'), auto;
-    --cursor-ew-resize-dark: url('../img/ew-resize-dark.png') 40 20, auto;
-    
+    --cursor-pointer-dark2: url('../../img/pointer-dark.png'), auto;
+    --cursor-ew-resize-dark: url('../img/ew-resize-dark.png') 40 20, auto;  
+
     /* 단일 이미지 커서 (모드 공통) */
     --cursor-grab-single: url('../img/grab.png') 11 3, auto;
+    --cursor-grab-single2:  url('../../img/grab.png') 11 3, auto;
     --cursor-grabbing-single: url('../img/grabbing.png') 11 3, auto;
 
     /* 현재 모드에 따라 적용될 커서 변수 (기본은 라이트 모드) */
     --cursor-default: var(--cursor-pointer-light);
+    --cursor-default2: var(--cursor-pointer-light2);
     --cursor-pointer: var(--cursor-grab-single);
     --cursor-grab: var(--cursor-grab-single);
+    --cursor-grab2: var(--cursor-grab-single2);
     --cursor-grabbing: var(--cursor-grabbing-single);
     --cursor-ew-resize: var(--cursor-ew-resize-light);
 }
@@ -121,7 +136,7 @@ body::before {
     width: 100vw;
     background: #ffffff96;
     backdrop-filter: blur(5px);
-    z-index: 1000;
+    z-index: 1001;
     border-bottom: 1px solid var(--gray-bg);
     height: 3rem;
     transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), height 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(.4,0,.2,1);

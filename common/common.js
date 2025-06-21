@@ -121,7 +121,7 @@ const englishMap = {
         const path = location.pathname;
         let activePageKey = 'portfolio';
         if (path.includes('about')) activePageKey = 'about';
-        else if (path.includes('experience')) activePageKey = 'experience';
+        else if (path.includes('career')) activePageKey = 'career';
         else if (path.includes('lab')) activePageKey = 'lab';
         else if (path.includes('connect')) activePageKey = 'connect';
 
@@ -407,7 +407,7 @@ const englishMap = {
     function getCurrentPathKey() {
         const path = location.pathname;
         if (path.includes('about')) return 'about';
-        if (path.includes('experience')) return 'experience';
+        if (path.includes('career')) return 'career';
         if (path.includes('lab')) return 'lab';
         if (path.includes('connect')) return 'connect';
         return 'portfolio';
@@ -751,7 +751,7 @@ const englishMap = {
 
         const setHeaderAndMenuState = () => {
             const isDesktop = window.innerWidth >= 768;
-            const isCollapsedPage = path.includes('experience') || path.includes('lab') || path.includes('connect');
+            const isCollapsedPage = path.includes('career') || path.includes('lab') || path.includes('connect');
 
             if (isDesktop) {
                 if (isCollapsedPage) {

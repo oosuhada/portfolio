@@ -16,7 +16,7 @@
     font-weight: bold;
     font-size: 1.4em;
     letter-spacing: 0rem;
-    cursor: var(--cursor-grab);
+    cursor: var(--cursor-grab2);
     position: sticky; /* Make the whole title column sticky on desktop */
     bottom: 0; /* Stick to the top of the viewport */
     user-select: none;
@@ -34,7 +34,7 @@
 .section-title.active {
     background: #1b1b1b; /* Active: Dark background */
     color: #ffffff; /* Active: White text */
-    cursor: default;
+    cursor: var(--cursor-default2);
     z-index: 2;
     box-shadow: 2px 0 16px 0 rgba(0,0,0,0.10);
 }
@@ -193,7 +193,7 @@
     padding: 3rem 2rem; /* px-8 py-12 */
     gap: 0.5rem; /* gap-2 */
     border-top: 1px solid #d1d5db; /* border-t border-gray-300 */
-    cursor: var(--cursor-grab);
+    cursor: var(--cursor-default2);
     transition: all 0.3s ease-in-out; /* transition-all duration-300 */
     border-radius: 0.5rem; /* rounded-lg */
 }
@@ -293,7 +293,7 @@
         position: static;
         padding-bottom: 0;
         padding-right: 0;
-        cursor: var(--cursor-grab);
+        cursor: var(--cursor-grab2);
         overflow-y: hidden;
         background: #ffffff; /* Inactive: White background */
     }
