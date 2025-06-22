@@ -7,8 +7,9 @@
     <link rel="icon" type="image/png" href="../apple-touch-icon.png" />
     <link rel="apple-touch-touch-icon" href="../apple-touch-icon.png" />
     <link rel="stylesheet" href="../common/common.css" />
-    <link rel="stylesheet" href="modal.css" />
-    <link rel="stylesheet" href="portfolio.css" />
+    <link rel="stylesheet" href="style/modal.css" />
+    <link rel="stylesheet" href="style/hero.css" />
+    <link rel="stylesheet" href="style/portfolio.css" />
     <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
@@ -49,6 +50,7 @@
     </nav>
 </header>
     <div id="top-sentinel"></div>
+   <div id="tickerContainer"></div>
     <div id="guide-overlay" style="display:none;">
         <div class="guide-bg"></div>
         <div class="guide-tooltip" id="guide-tooltip"></div>
@@ -486,7 +488,8 @@
         </div>
 
         <script src="../common/common.js"></script>
-        <script type="module" src="portfolio.js"></script>
+        <script type="module" src="script/portfolio.js"></script>
+        <script type="module" src="script/hero.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
         <script>
             lottie.loadAnimation({

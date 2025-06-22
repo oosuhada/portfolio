@@ -92,7 +92,7 @@ body.no-scroll2 {
   right: 25px;
   font-size: 36px;
   font-weight: bold;
-  cursor: var(--cursor-grab);
+  cursor: var(--cursor-grab2);
   transition: color 0.3s ease;
   padding: 5px;
   z-index: 10002; /* Ensure close button is above modal content */
@@ -101,7 +101,7 @@ body.no-scroll2 {
 .close-button:hover, .close-button:focus {
   color: var(--gray-mid);
   text-decoration: none;
-  cursor: var(--cursor-grab);
+  cursor: var(--cursor-grab2);
 }
 
 #modal-title {
@@ -317,7 +317,7 @@ body.no-scroll2 {
   display: flex;
   align-items: center;
   gap: 10px;
-  cursor: var(--cursor-grab);
+  cursor: var(--cursor-grab2);
   padding: 20px;
   margin: 0;
   transition: all 0.2s ease;
@@ -397,7 +397,7 @@ body.no-scroll2 {
   color: #fff;
   border: none;
   padding: 10px;
-  cursor: var(--cursor-grab);
+  cursor: var(--cursor-grab2);
   font-size: 16px;
   transition: background 0.2s ease;
 }
@@ -632,7 +632,7 @@ body.no-scroll2 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  cursor: var(--cursor-grab);
+  cursor: var(--cursor-grab2);
   transition: background 0.2s ease;
   position: relative;
 }
