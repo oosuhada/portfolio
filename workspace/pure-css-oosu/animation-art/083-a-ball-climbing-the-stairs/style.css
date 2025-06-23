@@ -1,0 +1,132 @@
+:root {
+    /* 새로운 색상 팔레트 정의 */
+    --primary-bg-color: #1a1a1a; /* 어두운 배경 */
+    --secondary-bg-color: #2c2c2c; /* 약간 밝은 어두운 배경 */
+    --accent-color-1: #FF8C42; /* 따뜻한 오렌지 (주요 강조색) */
+    --accent-color-2: #FFAD69; /* 밝은 오렌지 */
+    --text-color: #e0e0e0; /* 밝은 텍스트 */
+    --loader-column-color: #888; /* 로더 컬럼 색상 */
+    --ball-color: #FF8C42; /* 로더 볼 색상 */
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column; /* 콘텐츠를 수직으로 정렬하기 위해 변경 */
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-bg-color); /* 배경색 변경 */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* 폰트 변경 */
+    color: var(--text-color);
+    overflow: hidden; /* 로더 외 콘텐츠가 로드되는 동안 스크롤 방지 */
+}
+
+/* 로더 컨테이너 스타일 */
+.loader {
+    --duration: 5s; /* 애니메이션 지속 시간 (변경 없음) */
+    font-size: 45px; /* 로더 크기 조정 (조금 더 커짐) */
+    width: 7em;
+    height: 5em;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    position: relative;
+    transition: opacity 0.5s ease, visibility 0.5s ease; /* 부드러운 사라짐 효과 */
+}
+
+/* 로더 볼 스타일 */
+.loader::before,
+.loader::after {
+    content: '';
+    position: absolute;
+    width: 1.1em; /* 볼 크기 살짝 키움 */
+    height: 1.1em; /* 볼 크기 살짝 키움 */
+    background-color: var(--ball-color); /* 볼 색상 변경 */
+    border-radius: 30%; /* 원형 대신 부드러운 사각형 (squircle) 형태로 변경 */
+    bottom: 1em;
+    animation: var(--duration) infinite;
+    animation-name: jumpY, moveX, hideMe;
+    animation-timing-function: cubic-bezier(0.4, 1.7, 0.5, 1.2), ease, ease;
+    box-shadow: 0 0 15px rgba(255, 140, 66, 0.5); /* 볼에 은은한 그림자 효과 추가 */
+}
+
+.loader::before {left: 0; --direction: 1;}
+.loader::after {left: 6em; --direction: -1;}
+
+.loader::after {
+    animation-delay: calc(var(--duration) / 2 * -1);
+}
+
+/* 키프레임은 기존 로직을 유지하면서 미세 조정 */
+@keyframes jumpY {
+    0%, 100% {bottom: 1em;}
+    10% {bottom: 2em;}
+    20% {bottom: 3em;}
+    30% {bottom: 4em;}
+    40% {bottom: 5em; animation-timing-function: ease;}
+    50% {bottom: 1em;}
+}
+
+@keyframes moveX {
+    0%, 100% {transform: translateX(0);}
+    10% {transform: translateX(calc(1 * 1.5em * var(--direction)));}
+    20% {transform: translateX(calc(2 * 1.5em * var(--direction)));}
+    30% {transform: translateX(calc(3 * 1.5em * var(--direction)));}
+    40%, 50% {transform: translateX(calc(4 * 1.5em * var(--direction)));}
+}
+
+@keyframes hideMe {
+    50%, 100% {
+        opacity: 0; /* 완전히 숨기기 위해 opacity 사용 */
+        visibility: hidden;
+    }
+}
+
+/* 로더 컬럼 스타일 */
+.loader span {
+    width: 0.8em; /* 컬럼 너비 살짝 줄임 */
+    height: calc(var(--n) * 1em);
+    background-color: var(--loader-column-color); /* 컬럼 색상 변경 */
+    border-radius: 0.2em; /* 모서리를 둥글게 */
+    animation: sort ease var(--duration) infinite;
+    transform: skewX(-5deg); /* 컬럼에 살짝 기울어진 효과 추가 */
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3); /* 컬럼에 은은한 그림자 */
+}
+
+@keyframes sort {
+    0%, 40%, 100% {height: calc(var(--n) * 1em);}
+    50%, 90% {height: calc((6 - var(--n)) * 1em);}
+}
+
+/* 컬럼별 높이 변수 정의 (변경 없음) */
+.loader span:nth-child(1) {--n: 1;}
+.loader span:nth-child(2) {--n: 2;}
+.loader span:nth-child(3) {--n: 3;}
+.loader span:nth-child(4) {--n: 4;}
+.loader span:nth-child(5) {--n: 5;}
+
+/* 메인 콘텐츠 스타일 (로더가 사라진 후 보여질 내용) */
+.main-content {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1s ease, visibility 1s ease;
+    text-align: center;
+    padding: 2em;
+    max-width: 800px;
+    margin-top: 50px; /* 로더와 콘텐츠 간의 간격 조정 */
+    background-color: var(--secondary-bg-color);
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+}
+
+.main-content h1 {
+    font-size: 3em;
+    color: var(--accent-color-1);
+    margin-bottom: 0.5em;
+}
+
+.main-content p {
+    font-size: 1.2em;
+    line-height: 1.6;
+}

@@ -139,10 +139,10 @@ body {
 
 .section-top-gap {
     height: 4.5rem;
-    background-color: var(--dark-bg); /* Default to dark theme */
+    background-color: transparent;
 }
 body[data-theme="light"] .section-top-gap {
-    background-color: var(--light-bg); /* Apply light theme */
+    background-color: transparent; /* Apply light theme */
 }
 
 .section-bottom-gap {

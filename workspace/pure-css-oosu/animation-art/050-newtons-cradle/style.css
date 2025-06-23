@@ -1,0 +1,84 @@
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column; /* 세로 정렬을 위해 변경 */
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to right, #4facfe, #00f2fe); /* 시원한 그라데이션 배경 */
+    font-family: 'Arial', sans-serif;
+    overflow: hidden; /* 로더가 화면 밖으로 나가지 않도록 */
+}
+
+.loader {
+    font-size: 12px; /* 폰트 크기 증가로 로더 크기 키움 */
+    width: 15em;
+    padding: 0 4em 2.5em 4em; /* 패딩 조정 */
+    color: #fff; /* 로더 색상을 흰색으로 변경 */
+    border-style: solid;
+    border-width: 0.5em 0.15em 4.5em 0.15em; /* 테두리 두께 조정 */
+    border-color: rgba(255, 255, 255, 0.4); /* 투명도를 가진 흰색 테두리 */
+    display: flex;
+    justify-content: space-between;
+    position: relative; /* 자식 요소를 위한 포지션 */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3); /* 그림자 효과 추가 */
+    border-radius: 15px; /* 모서리 둥글게 */
+    margin-bottom: 50px; /* 아래 콘텐츠와의 간격 */
+}
+
+.loader span {
+    width: 0.3em; /* 스틱 두께 조정 */
+    height: 12em; /* 스틱 길이 조정 */
+    background-color: currentColor;
+    position: relative;
+    transform-origin: top;
+    animation: moving-up 1s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; /* 애니메이션 속도 조정 */
+    border-radius: 5px; /* 스틱 모서리 둥글게 */
+}
+
+@keyframes moving-up {
+    0%, 50% {transform: rotate(0deg) scaleY(1);} /* 스케일Y 추가 */
+    100% {transform: rotate(calc(45deg * var(--direction))) scaleY(0.8);} /* 회전과 함께 스케일 변경 */
+}
+
+.loader span::before {
+    content: '';
+    position: absolute;
+    width: 3.5em; /* 구슬 크기 증가 */
+    height: 3.5em; /* 구슬 크기 증가 */
+    background-color: #ff6b6b; /* 구슬 색상 변경 (강렬한 빨간색) */
+    border-radius: 50%;
+    bottom: -1em; /* 구슬 위치 조정 */
+    left: -1.75em; /* 구슬 위치 조정 */
+    box-shadow: 0 0 15px rgba(255, 107, 107, 0.7); /* 구슬에 그림자 효과 추가 */
+}
+
+/* 개별 스틱의 애니메이션 방향 및 지연 */
+.loader span:nth-child(1) {--direction: 1; animation-direction: alternate; animation-delay: 0s;}
+.loader span:nth-child(2) {--direction: -1; animation-direction: alternate-reverse; animation-delay: 0.1s;}
+.loader span:nth-child(3) {--direction: 1; animation-direction: alternate; animation-delay: 0.2s;}
+.loader span:nth-child(4) {--direction: -1; animation-direction: alternate-reverse; animation-delay: 0.3s;}
+.loader span:nth-child(5) {--direction: 1; animation-direction: alternate; animation-delay: 0.4s;}
+
+
+.portfolio-content {
+    text-align: center;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 텍스트 그림자 */
+    opacity: 0; /* 초기에는 숨김 */
+    animation: fadeIn 1.5s forwards 1.5s; /* 로더 애니메이션 후 나타나도록 지연 */
+}
+
+.portfolio-content h1 {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.portfolio-content p {
+    font-size: 1.2em;
+    line-height: 1.5;
+}
+
+@keyframes fadeIn {
+    to {opacity: 1;}
+}

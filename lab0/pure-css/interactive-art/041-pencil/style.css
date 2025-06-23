@@ -1,0 +1,232 @@
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to bottom right, #f8f0e3, #e0d8c9);
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #5a4b3d;
+}
+
+/* 컬러 스킴 선택 버튼 스타일 */
+.color-schemes {
+    position: absolute;
+    bottom: 2em; /* 화면 하단으로 이동 */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    gap: 1em;
+}
+
+.scheme-button {
+    padding: 0.8em 1.5em;
+    font-size: 1em;
+    font-weight: bold;
+    color: #000; /* 텍스트 색상 검정 */
+    background-color: #f0f0f0; /* 배경색 밝은 회색 */
+    border: 1px solid #333; /* 테두리 어두운 회색 */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.scheme-button:hover {
+    background-color: #333; /* 호버 시 배경색 어두운 회색 */
+    color: #fff; /* 호버 시 텍스트 색상 흰색 */
+}
+
+figure {
+    font-size: 10px;
+    /* 연필 전체 위치를 더 밑으로 조정 */
+    transform: translate(-70em, 45em); /* Y축 값을 늘려 더 아래로 */
+}
+
+.pencil {
+    display: flex;
+    width: 55em;
+    height: 3.8em;
+    position: absolute;
+    /* 그림자 조정: 약간 더 부드럽게 */
+    filter: drop-shadow(0 0.3em 0.8em hsla(0, 0%, 0%, 0.25));
+    transform-origin: 150% center;
+    transform: rotate(calc((110 - 12 * var(--n)) * 1deg));
+
+    /* 연필 몸통 색상 변수 */
+    --color-h: 0;
+    --color-s: 0%;
+    --color-l: 0%;
+    --color-middle: hsl(var(--color-h), var(--color-s), var(--color-l));
+    --color-top: hsl(var(--color-h), var(--color-s), calc(var(--color-l) * 1.15));
+    --color-bottom: hsl(var(--color-h), var(--color-s), calc(var(--color-l) * 0.85));
+
+    /* 지우개 색상 변수 (연필 몸통 Hue를 따라감) */
+    --eraser-h: var(--color-h);
+    --eraser-s: calc(var(--color-s) - 30%); /* 채도 낮춰서 고무 느낌 */
+    --eraser-l: calc(var(--color-l) + 20%); /* 밝기 높여서 고무 느낌 */
+    --eraser-main: hsl(var(--eraser-h), var(--eraser-s), var(--eraser-l));
+    --eraser-top: hsl(var(--eraser-h), var(--eraser-s), calc(var(--eraser-l) + 5%));
+    --eraser-bottom: hsl(var(--eraser-h), var(--eraser-s), calc(var(--eraser-l) - 5%));
+
+    /* 금속 띠 색상 변수 (연필 몸통 Hue를 따라감) */
+    --metal-h: var(--color-h);
+    --metal-s: calc(var(--color-s) - 50%); /* 채도 더 낮춰서 금속 느낌 */
+    --metal-l: calc(var(--color-l) + 10%); /* 밝기 약간 높여서 금속 느낌 */
+    --metal-main: hsl(var(--metal-h), var(--metal-s), var(--metal-l));
+    --metal-top: hsl(var(--metal-h), var(--metal-s), calc(var(--metal-l) + 5%));
+    --metal-bottom: hsl(var(--metal-h), var(--metal-s), calc(var(--metal-l) - 5%));
+
+    --wood-color: burlywood; /* 나무 부분 색상 */
+}
+
+/* --- 컬러 스킴 정의 시작 --- */
+/* 각 컬러 스킴은 연필별로 HSL 값을 정의합니다. */
+/* 지우개와 금속 띠 색상은 위에 정의된 HSL 계산 공식에 따라 자동으로 바뀝니다. */
+
+/* Warm Tones Scheme (기본) */
+.scheme-warm .pencil:nth-child(1) { --color-h: 30; --color-s: 70%; --color-l: 55%; --wood-color: #7a5c3e; } /* #DD996B */
+.scheme-warm .pencil:nth-child(2) { --color-h: 45; --color-s: 75%; --color-l: 60%; } /* #EBB259 */
+.scheme-warm .pencil:nth-child(3) { --color-h: 60; --color-s: 80%; --color-l: 65%; } /* #FAD260 */
+.scheme-warm .pencil:nth-child(4) { --color-h: 15; --color-s: 65%; --color-l: 50%; } /* #CC7C47 */
+.scheme-warm .pencil:nth-child(5) { --color-h: 0; --color-s: 70%; --color-l: 50%; } /* #CC4F4F */
+
+/* Cool Tones Scheme */
+.scheme-cool .pencil:nth-child(1) { --color-h: 220; --color-s: 70%; --color-l: 55%; --wood-color: #4f5a7a; } /* #4F7FC2 */
+.scheme-cool .pencil:nth-child(2) { --color-h: 200; --color-s: 75%; --color-l: 60%; } /* #5AA8E0 */
+.scheme-cool .pencil:nth-child(3) { --color-h: 180; --color-s: 80%; --color-l: 65%; } /* #5AEBEB */
+.scheme-cool .pencil:nth-child(4) { --color-h: 240; --color-s: 65%; --color-l: 50%; } /* #4747CC */
+.scheme-cool .pencil:nth-child(5) { --color-h: 260; --color-s: 70%; --color-l: 50%; } /* #6E4FCC */
+
+/* Pastel Tones Scheme */
+.scheme-pastel .pencil:nth-child(1) { --color-h: 300; --color-s: 40%; --color-l: 80%; --wood-color: #bfa0a0; } /* #F2CCF2 */
+.scheme-pastel .pencil:nth-child(2) { --color-h: 240; --color-s: 45%; --color-l: 85%; } /* #D4D4F9 */
+.scheme-pastel .pencil:nth-child(3) { --color-h: 180; --color-s: 50%; --color-l: 80%; } /* #CCF2F2 */
+.scheme-pastel .pencil:nth-child(4) { --color-h: 120; --color-s: 40%; --color-l: 85%; } /* #D9F9D9 */
+.scheme-pastel .pencil:nth-child(5) { --color-h: 60; --color-s: 45%; --color-l: 80%; } /* #F2F2CC */
+
+/* Vibrant Tones Scheme */
+.scheme-vibrant .pencil:nth-child(1) { --color-h: 340; --color-s: 90%; --color-l: 60%; --wood-color: #8c4250; } /* #E01962 */
+.scheme-vibrant .pencil:nth-child(2) { --color-h: 270; --color-s: 95%; --color-l: 55%; } /* #720CDE */
+.scheme-vibrant .pencil:nth-child(3) { --color-h: 160; --color-s: 90%; --color-l: 50%; } /* #0CCC72 */
+.scheme-vibrant .pencil:nth-child(4) { --color-h: 40; --color-s: 95%; --color-l: 55%; } /* #DE9C0C */
+.scheme-vibrant .pencil:nth-child(5) { --color-h: 10; --color-s: 90%; --color-l: 50%; } /* #CC330D */
+
+/* --- 공통 연필 스타일 --- */
+.pencil .taper {
+    width: 4.5em;
+}
+
+.pencil .taper::before,
+.pencil .taper::after {
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-width: calc(3.8em / 2) 4.5em calc(3.8em / 2) 0;
+    border-color: transparent;
+    /* 테이퍼 위치를 연필 몸통 위로 살짝만 올림 */
+    left: -1.2em; /* 이 값을 조정하여 위아래 위치 조절 */
+}
+
+.pencil .taper::before {
+    border-right-color: var(--wood-color);
+}
+
+.pencil .taper::after {
+    border-right-color: var(--color-middle);
+    transform-origin: left;
+    transform: scale(0.35);
+}
+
+.pencil .barrel {
+    width: 45em;
+    background-color: var(--color-middle);
+    border-top: 0.9em solid var(--color-top);
+    border-bottom: 0.9em solid var(--color-bottom);
+    color: #fff;
+    line-height: 2em;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: bold;
+    font-size: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; /* ::before 가상 요소의 기준점 설정 */
+}
+
+.pencil .eraser {
+    position: relative;
+    width: 5.5em;
+    background-color: var(--eraser-main);
+    border-top: 0.8em solid var(--eraser-top);
+    border-bottom: 0.8em solid var(--eraser-bottom);
+    border-radius: 0 0.6em 0.6em 0;
+}
+
+.pencil .eraser::before {
+    content: '';
+    position: absolute;
+    top: -0.8em;
+    width: 1.6em;
+    height: 1.6em;
+    background-color: var(--metal-main);
+    border-top: 0.6em solid var(--metal-top);
+    border-bottom: 0.6em solid var(--metal-bottom);
+    border-radius: 0.2em;
+    left: 1.5em;
+}
+
+/* 각 연필의 색상 변수 (--n) 설정 (변화 없음) */
+.pencil:nth-child(1) {--n: 1;}
+.pencil:nth-child(2) {--n: 2;}
+.pencil:nth-child(3) {--n: 3;}
+.pencil:nth-child(4) {--n: 4;}
+.pencil:nth-child(5) {--n: 5;}
+
+/* 각 연필에 헥사 코드 표시 */
+.pencil .barrel::before {
+    position: absolute;
+    /* 텍스트를 연필 몸통 아래에 위치 */
+    bottom: -0.8em; /* 연필 몸통의 아래쪽 경계에 가깝게 위치 */
+    left: 50%;
+    transform: translateX(-50%);
+    color: #000; /* 헥사 코드 텍스트 색상 검정 */
+    font-size: 0.8em;
+    opacity: 0.8;
+    white-space: nowrap;
+    text-shadow: 0 0 2px rgba(255,255,255,0.7); /* 흰색 배경이 있는 그림자 추가 */
+}
+
+/* 각 컬러 스킴에 따라 헥사 코드 텍스트 업데이트 (수동으로 값 입력) */
+/* Warm Tones */
+.scheme-warm .pencil:nth-child(1) .barrel::before { content: '#DD996B'; }
+.scheme-warm .pencil:nth-child(2) .barrel::before { content: '#EBB259'; }
+.scheme-warm .pencil:nth-child(3) .barrel::before { content: '#FAD260'; }
+.scheme-warm .pencil:nth-child(4) .barrel::before { content: '#CC7C47'; }
+.scheme-warm .pencil:nth-child(5) .barrel::before { content: '#CC4F4F'; }
+
+/* Cool Tones */
+.scheme-cool .pencil:nth-child(1) .barrel::before { content: '#4F7FC2'; }
+.scheme-cool .pencil:nth-child(2) .barrel::before { content: '#5AA8E0'; }
+.scheme-cool .pencil:nth-child(3) .barrel::before { content: '#5AEBEB'; }
+.scheme-cool .pencil:nth-child(4) .barrel::before { content: '#4747CC'; }
+.scheme-cool .pencil:nth-child(5) .barrel::before { content: '#6E4FCC'; }
+
+/* Pastel Tones */
+.scheme-pastel .pencil:nth-child(1) .barrel::before { content: '#F2CCF2'; }
+.scheme-pastel .pencil:nth-child(2) .barrel::before { content: '#D4D4F9'; }
+.scheme-pastel .pencil:nth-child(3) .barrel::before { content: '#CCF2F2'; }
+.scheme-pastel .pencil:nth-child(4) .barrel::before { content: '#D9F9D9'; }
+.scheme-pastel .pencil:nth-child(5) .barrel::before { content: '#F2F2CC'; }
+
+/* Vibrant Tones */
+.scheme-vibrant .pencil:nth-child(1) .barrel::before { content: '#E01962'; }
+.scheme-vibrant .pencil:nth-child(2) .barrel::before { content: '#720CDE'; }
+.scheme-vibrant .pencil:nth-child(3) .barrel::before { content: '#0CCC72'; }
+.scheme-vibrant .pencil:nth-child(4) .barrel::before { content: '#DE9C0C'; }
+.scheme-vibrant .pencil:nth-child(5) .barrel::before { content: '#CC330D'; }

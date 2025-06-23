@@ -46,10 +46,10 @@
                     <span class="nav-text-wrapper">?</span>
                     <span class="visually-hidden">About</span>
                 </a>
-            <a href="../career/career.html" data-nav="career">
-                <span class="nav-text-wrapper">⌗</span>
-                <span class="visually-hidden">career</span>
-            </a>
+                <a href="../career/career.html" data-nav="career">
+                    <span class="nav-text-wrapper">⌗</span>
+                    <span class="visually-hidden">career</span>
+                </a>
                 <a href="../lab/lab.html" data-nav="lab">
                     <span class="nav-text-wrapper">:</span>
                     <span class="visually-hidden">Lab</span>
@@ -123,6 +123,9 @@
             </section>
 
             <section id="skills-showcase-section">
+                <div class="skills-3d-container"></div>
+                <div class="color-overlay"></div>
+                
                 <div class="work-experience-intro center" style="margin-bottom: 20px;">
                     <strong>
                         <div class="section-top-gap" id="first-gap"></div>
@@ -163,13 +166,12 @@
                 </ul>
                 <main>
                     <section id="panel1-img">
-                        <img id="grape-img" src="./images/grape.png" alt="Ryan image for animation" />
-                    </section>
+                        </section>
                 </main>
             </section>
 
             <div class="experience-content-wrapper" id="timeline-wrapper">
-                <div class="section-top-gap"></div>
+                <!-- <div class="section-top-gap"></div> -->
                 <div class="timeline-section-container">
                     <div class="section-row" id="sectionRow">
                         <div class="section-title active" data-idx="0">
@@ -434,7 +436,7 @@
         <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" in="SourceGraphic" result="colorMatrix"/>
         <feOffset in="colorMatrix" dx="-2" dy="0" result="red" />
         <feOffset in="colorMatrix" dx="2" dy="0" result="cyan" />
-        <feColorMatrix in="red" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="redOnly" />
+        <feColorMatrix in="red" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="redOnly" />
         <feColorMatrix in="cyan" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" result="cyanOnly" />
         <feBlend in="redOnly" in2="cyanOnly" mode="screen" />
     </filter>
@@ -472,10 +474,10 @@
                             <div class="video-content" id="videoContent">
                                 <div class="footer-image-container">
                                     <img id="grapeFooterImg" src="images/footer1.png" alt="grape to wine" class="grape-footer-img"/>
-                                    <div class="grape-footer-text" id="grapeFooterText">Now,</div>
                                 </div>
                             </div>
                             <canvas id="vcrNoiseCanvas" class="vcr"></canvas>
+                             <div class="grape-footer-text" id="grapeFooterText">Now,</div>
                         </div>
                     </div>
                 </div>
@@ -558,14 +560,20 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
-    <script src="../common/common.js"></script>
-    <script src="script/texthero.js"></script>
-    <script src="script/timeline.js"></script>
-    <script src="script/grapefooter.js"></script> <script src="script/career.js"></script>
-    <script src="script/marquee.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <script src="../common/common.js"></script>
 
+    <script type="module" src="./lib/three-module-min.js"></script>
+    <script type="module" src="./lib/GLTFLoader.js"></script>
+    
+    <script type="module" src="script/texthero.js"></script>
+
+    <script src="script/timeline.js"></script>
+    <script src="script/grapefooter.js"></script> 
+    <script src="script/career.js"></script>
+    <script src="script/marquee.js"></script>
+    
     <script>
         lottie.loadAnimation({
             container: document.getElementById('lottie-inner-section'),

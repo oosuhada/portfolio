@@ -1,0 +1,109 @@
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* 노을 지는 하늘을 연상시키는 그라데이션 배경 */
+    background: linear-gradient(to top right, #ff7e5f, #feb47b, #ffecd2); /* 따뜻한 주황-핑크-베이지 계열 그라데이션 */
+    overflow: hidden; /* 두루미가 화면 밖으로 나가지 않도록 설정 */
+}
+
+.cranes {
+    width: 60em; /* 전체 크기를 살짝 키워 웅장함 강조 */
+    height: 55em;
+    font-size: 8px; /* 두루미 자체의 크기를 좀 더 키웁니다. */
+    color: #ffd700; /* 황금빛 두루미 */
+    position: relative;
+    transform: scale(0.9); /* 전체적으로 살짝 축소하여 여백 미 조정 */
+}
+
+.cranes span {
+    border-left: calc(var(--left) * 1em) solid transparent;
+    border-right: calc(var(--right) * 1em) solid transparent;
+    border-bottom: calc(var(--bottom) * 1em) solid;
+    position: absolute;
+    transform: rotate(calc(var(--rotation) * 1deg));
+    left: calc(var(--x) * 1em);
+    top: calc(var(--y) * 1em);
+    filter: opacity(0.8); /* 불투명도를 살짝 높여 존재감 부여 */
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); /* 은은한 발광 효과 추가 */
+}
+
+.cranes:hover span {
+    animation: appear 1.2s ease-in-out forwards; /* 애니메이션 시간 및 효과 조정 */
+}
+
+@keyframes appear {
+    from {
+        border-left: 3em solid transparent;
+        border-right: 3em solid transparent;
+        border-bottom: 3em solid;
+        position: absolute;
+        transform: rotate(0deg) scale(0.5); /* 시작 시 작게 시작하여 커지도록 */
+        left: calc((60em - 3em) / 2);
+        top: calc((55em - 3em) / 2 - 5em); /* 중앙에서 살짝 위에서 시작 */
+        filter: opacity(0); /* 시작 시 투명 */
+    }
+    to {
+        filter: opacity(0.8); /* 최종 불투명도 */
+        transform: rotate(calc(var(--rotation) * 1deg)) scale(1); /* 최종 크기와 회전 */
+        left: calc(var(--x) * 1em);
+        top: calc(var(--y) * 1em);
+    }
+}
+
+/* 각 부위별 형태와 위치 조정 - 더욱 유려하고 자연스러운 실루엣 */
+.head {
+    --left: 14;
+    --right: 7;
+    --bottom: 2.5;    
+    --x: 0;
+    --y: 20;
+    --rotation: -8; /* 살짝 더 숙인 듯한 머리 */
+}
+
+.neck {
+    --left: 6.5;
+    --right: 6.5;
+    --bottom: 13;
+    --x: 15;
+    --y: 18;
+    --rotation: 70; /* 목의 각도 미세 조정 */
+}
+
+.side {
+    --left: 2;
+    --right: 12;
+    --bottom: 22;
+    --x: 19.5;
+    --y: 14;
+    --rotation: 25; /* 옆구리 각도 조정 */
+}
+
+.wing {
+    --left: 20;
+    --right: 32;
+    --bottom: 9;
+    --x: 7;
+    --y: 8;
+    --rotation: -45; /* 날개를 더 펴서 비상하는 느낌 */
+}
+
+.tail {
+    --left: 19;
+    --right: 8;
+    --bottom: 4.5;
+    --x: 20;
+    --y: 39;
+    --rotation: -120; /* 꼬리 각도를 살짝 올려 활기찬 느낌 */
+}
+
+.belly {
+    --left: 6.5;
+    --right: 2;
+    --bottom: 12;
+    --x: 18;
+    --y: 28.5;
+    --rotation: -102; /* 배 부분의 각도 미세 조정 */
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>제 포트폴리오</title> <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="loader">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <div class="main-content">
+        <h1>환영합니다!</h1>
+        <p>저는 [당신의 이름]입니다. 제 포트폴리오를 탐색해보세요!</p>
+        </div>
+
+    <script>
+        // 로더 애니메이션이 끝난 후 main-content를 표시하는 간단한 JavaScript (선택 사항)
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loader');
+            const mainContent = document.querySelector('.main-content');
+            
+            // CSS 애니메이션 duration과 일치시키거나 조금 더 길게 설정
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                loader.style.visibility = 'hidden';
+                mainContent.style.opacity = '1';
+                mainContent.style.visibility = 'visible';
+            }, 5500); // CSS 애니메이션 5초 + 여유 시간 0.5초
+        });
+    </script>
+</body>
+</html>

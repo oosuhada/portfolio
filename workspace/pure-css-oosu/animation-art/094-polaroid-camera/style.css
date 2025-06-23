@@ -1,0 +1,176 @@
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* 배경 색상 변경: 부드러운 그레이디언트 */
+    background: linear-gradient(to right top, #ece9e6, #ffffff); /* 밝은 베이지-화이트 톤 */
+    font-family: 'Arial', sans-serif; /* 폰트 변경 (선택 사항) */
+}
+
+.camera {
+    width: 22em; /* 카메라 크기 약간 확대 */
+    height: 25em; /* 카메라 높이 약간 확대 */
+    font-size: 10px;
+    /* 카메라 본체 색상 및 그라디언트 변경 */
+    background:
+        /* 상단 좌측 버튼: 좀 더 차분한 청록색 계열 */
+        radial-gradient(
+            circle at 18em 7em,
+            #34495e 0.8em, /* 어두운 청록색 */
+            #5f7f9b 0.8em, #5f7f9b 1em, /* 중간 청록색 */
+            transparent 1em
+        ),
+        /* 상단 우측 버튼: 포인트 컬러 (진한 주황) */
+        radial-gradient(
+            circle at 4em 7em,
+            #e67e22 1em, /* 진한 주황색 */
+            #d35400 1em, #d35400 1.2em, /* 더 진한 주황색 */
+            transparent 1.2em
+        ),
+        /* 하단 바: 어두운 회색 */
+        linear-gradient(
+            transparent 19em, /* 본체 높이 조정에 따라 값 변경 */
+            #333 19em, #333 20.5em, /* 좀 더 두껍게 */
+            transparent 20.5em
+        ) no-repeat center / 85% 100%, /* 가로 너비 약간 확장 */
+        /* 카메라 본체 메인 색상: 부드러운 그레이 */
+        linear-gradient(
+            #cccccc 10em, /* 밝은 회색 */
+            #b3b3b3 10em, #b3b3b3 15em, /* 중간 회색 */
+            #999999 15em /* 어두운 회색 */
+        );
+    border-radius: 2.5em; /* 모서리 더 둥글게 */
+    position: relative;
+    top: -4em;
+    /* 그림자 추가하여 입체감 부여 */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.camera::before {
+    content: '';
+    position: absolute;
+    width: 5em; /* 약간 넓게 */
+    height: 2.2em; /* 약간 높게 */
+    background-color: #2c3e50; /* 진한 청회색 */
+    border-radius: 0.7em; /* 모서리 더 둥글게 */
+    top: 1.8em; /* 위치 약간 조정 */
+    left: 1.8em; /* 위치 약간 조정 */
+}
+
+.camera::after {
+    content: '';
+    position: absolute;
+    width: 3.5em; /* 약간 크게 */
+    height: 3.5em; /* 약간 크게 */
+    /* 디자인 변경: 더 미니멀한 버튼 느낌 */
+    background:
+        radial-gradient(
+            #3498db 15%, /* 밝은 파랑 */
+            #2980b9 35%, /* 진한 파랑 */
+            transparent 45% /* 투명도 추가 */
+        ),
+        #444; /* 어두운 배경 */
+    right: 1.8em; /* 위치 약간 조정 */
+    top: 1.8em; /* 위치 약간 조정 */
+    border-radius: 0.5em; /* 모서리 더 둥글게 */
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3); /* 내부 그림자 추가 */
+}
+
+.lens {
+    position: absolute;
+    width: 9em; /* 렌즈 크기 약간 확대 */
+    height: 9em; /* 렌즈 크기 약간 확대 */
+    /* 렌즈 디자인 변경: 더 깊이감 있고 현대적인 느낌 */
+    background:
+        radial-gradient(
+            circle at 55% 40%,
+            #e0e0e0 0.1em, /* 밝은 하이라이트 */
+            transparent 0.3em
+        ),
+        radial-gradient(
+            circle at 50% 35%,
+            #c0c0c0 0.3em, /* 중간 하이라이트 */
+            transparent 0.5em
+        ),
+        radial-gradient(
+            #4a69bd 2.5em, /* 진한 파랑 계열 */
+            #3d5a9d 2.5em, #3d5a9d 3em, /* 더 진한 파랑 */
+            #2e477c 3em, #2e477c 4.5em /* 가장 진한 파랑 */
+        );
+    border-radius: 50%;
+    top: 3.5em; /* 위치 약간 조정 */
+    left: 6.5em; /* 위치 약간 조정 */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); /* 렌즈 그림자 추가 */
+}
+
+.lens::before,
+.lens::after {
+    content: '';
+    position: absolute;
+    width: 5.5em; /* 약간 넓게 */
+    height: 0.1em;
+    background-color: #555; /* 좀 더 어두운 회색 */
+    left: 1.75em; /* 위치 조정 */
+    animation: take-a-photo 3s infinite;
+}
+
+@keyframes take-a-photo {
+    10% {
+        height: calc(50% - 1.2em); /* 높이 약간 조정 */
+    }
+
+    20% {
+        height: 0.1em;
+    }
+}
+
+.lens::before {
+    top: 1.2em; /* 위치 약간 조정 */
+}
+
+.lens::after {
+    bottom: 1.2em; /* 위치 약간 조정 */
+}
+
+.picture {
+    position: absolute;
+    width: inherit;
+    height: 0em;
+    top: 19em; /* 사진 나오는 위치 조정 (카메라 본체 높이에 맞춰) */
+    overflow: hidden;
+    animation: print 3s infinite;
+}
+
+@keyframes print {
+    30% {
+        height: 0em;
+    }
+
+    80%, 100% {
+        height: 16em; /* 사진 나오는 높이 약간 확대 */
+    }
+}
+
+.picture::before {
+    content: '';
+    position: absolute;
+    box-sizing: border-box;
+    width: 16em; /* 사진 크기 약간 확대 */
+    height: 16em; /* 사진 크기 약간 확대 */
+    /* 사진 디자인 변경: 더 추상적이고 현대적인 패턴 */
+    background: linear-gradient(
+        45deg,
+        #7f8c8d 25%, /* 회색 계열 */
+        #95a5a6 25%, #95a5a6 50%,
+        #7f8c8d 50%, #7f8c8d 75%,
+        #95a5a6 75%, #95a5a6 100%
+    );
+    background-size: 2em 2em; /* 패턴 크기 조정 */
+    left: 3em; /* 위치 조정 */
+    border: solid #ffffff; /* 흰색 테두리 */
+    border-width: 0 1.2em 2.5em 1.2em; /* 테두리 두께 약간 확대 */
+    bottom: 0;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1); /* 사진 그림자 추가 */
+}

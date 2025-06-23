@@ -1,0 +1,52 @@
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* 배경색 변경: 밝은 파스텔톤의 보라색 */
+    background-color: #e0e0ff; /* Lavender Blush */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* 폰트 변경 */
+}
+
+.container {
+    /* 그리드 셀 크기를 약간 더 작게 조정하여 더 많은 요소를 볼 수 있도록 합니다. */
+    width: calc(30px * var(--side-length));
+    height: calc(30px * var(--side-length));
+    position: relative;
+    /* 컨테이너에 그림자 추가하여 입체감 부여 */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    border-radius: 8px; /* 모서리 약간 둥글게 */
+    overflow: hidden; /* 자식 요소가 넘칠 경우 잘라내기 */
+}
+
+.container .horizontal,
+.container .vertical {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: grid;
+    grid-template-columns: repeat(var(--side-length), 1fr);
+}
+
+.container .horizontal span {
+    /* 가로 요소의 너비와 높이 변경 */
+    width: 30px;
+    height: 6px; /* 더 얇게 */
+    /* 배경색 변경: 산뜻한 민트색 */
+    background-color: #66e0da; /* Turquoise */
+    margin: 12px 0; /* 간격 조정 */
+    border-radius: 3px; /* 모서리 둥글게 */
+    opacity: 0.8; /* 약간의 투명도 추가 */
+}
+
+.container .vertical span {
+    /* 세로 요소의 너비와 높이 변경 */
+    width: 6px; /* 더 얇게 */
+    height: 30px;
+    /* 배경색 변경: 밝은 오렌지색 */
+    background-color: #ff9966; /* Coral */
+    margin: 0 12px; /* 간격 조정 */
+    border-radius: 3px; /* 모서리 둥글게 */
+    opacity: 0.8; /* 약간의 투명도 추가 */
+}

@@ -1,0 +1,180 @@
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    /* 케이블이 중앙에 위치하도록 정렬 */
+    justify-content: center; 
+    align-items: center;
+    overflow: hidden;
+    /* 배경에 부드러운 그라데이션 추가 */
+    background: linear-gradient(135deg, #e0f7fa, #bbdefb, #90caf9); 
+}
+
+.cable {
+    display: flex;
+    align-items: center;
+    font-size: 10px; /* 기본 크기 유지 */
+    margin-left: 0; /* 중앙 정렬을 위해 margin-left 제거 */
+    /* 애니메이션 속도를 조절하고, 부드러운 흐름처럼 보이도록 조정 */
+    animation: flowEffect 8s ease-in-out infinite; 
+    position: relative; /* z-index를 위해 추가 */
+    z-index: 10;
+}
+
+/* 새로운 애니메이션 키프레임 */
+@keyframes flowEffect {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    25% {
+        transform: translateY(-10px) scale(1.02);
+        opacity: 0.98;
+    }
+    50% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    75% {
+        transform: translateY(10px) scale(1.02);
+        opacity: 0.98;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+
+.head {
+    width: 8.5em;
+    height: 8.5em;
+    border-radius: 2em 0 0 2em;
+    position: relative;
+    /* 밝고 활기찬 그라데이션 */
+    background:
+        linear-gradient(
+            90deg, 
+            transparent 80%,
+            rgba(0,0,0,8%) /* 그림자 색상 약간 연하게 */
+        ),
+        linear-gradient(
+            -45deg, 
+            hsl(190, 70%, 75%), /* 시원한 파랑 계열 */
+            hsl(210, 80%, 85%), /* 밝은 파랑 */
+            hsl(230, 90%, 90%) 80% /* 보라빛 파랑 */
+        );
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* 부드러운 그림자 */
+}
+
+.head::before {
+    content: '';
+    position: absolute;
+    box-sizing: border-box;
+    width: 3em;
+    height: 7.3em;
+    top: calc((8.5em - 7.3em) / 2);
+    left: 0.7em;
+    border-radius: 1em;
+    background-color: #e0f7fa; /* 밝은 청록색 */
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); /* 내부 그림자 추가 */
+}
+
+.head::after {
+    content: '';
+    position: absolute;
+    box-sizing: border-box;
+    width: 2.2em;
+    height: 0.4em;
+    color: #ffd700; /* 황금색 유지 */
+    background-color: currentColor;
+    border-radius: 0.5em;
+    left: 1.1em;
+    top: 1.2em;
+    /* 빛나는 효과를 위한 box-shadow 확장 */
+    box-shadow: 
+        0 0.8em 0,
+        0 1.6em 0,
+        0 2.4em 0,
+        0 3.2em 0,
+        0 4em 0,
+        0 4.8em 0,
+        0 5.6em 0,
+        0 0 15px rgba(255, 215, 0, 0.7); /* 빛나는 효과 */
+}
+
+.body {
+    width: 15.5em;
+    height: 11em;
+    border-radius: 0.5em;
+    position: relative;
+    display: flex;
+    align-items: center;
+    /* 바디에 밝고 부드러운 그라데이션 적용 */
+    background:linear-gradient(
+        hsl(200, 40%, 95%), /* 매우 밝은 파랑 */
+        hsl(200, 50%, 98%) 15%, /* 거의 흰색 */ 
+        hsl(200, 60%, 96%) 50%, /* 밝은 파랑 */ 
+        hsl(200, 70%, 90%) 70%, /* 약간 진한 파랑 */
+        hsl(200, 80%, 85%) 90%, /* 더 진한 파랑 */
+        hsl(200, 90%, 88%), /* 밝은 파랑 */ 
+        hsl(200, 95%, 90%) /* 밝은 파랑 */
+    );
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* 부드러운 그림자 */
+}
+
+.body::before {
+    content: '';
+    position: absolute;
+    width: 13.5em;
+    height: 6em;
+    left: 15.5em;
+    /* 투명도를 조절하여 부드러운 연결감 */
+    background:
+        linear-gradient(
+            45deg, 
+            rgba(0,0,0,2%), /* 그림자 약간 연하게 */
+            transparent 10%
+        ),    
+        linear-gradient(
+            90deg, 
+            rgba(0,0,0,2%), /* 그림자 약간 연하게 */ 
+            transparent 20%
+        ),
+        linear-gradient(
+            hsl(200, 50%, 98%), /* 본체와 연결되는 밝은 그라데이션 */
+            hsl(200, 60%, 96%) 5%,  
+            hsl(200, 70%, 95%) 20%, 
+            hsl(200, 80%, 93%) 50%, 
+            hsl(200, 90%, 88%) 95%,
+            hsl(200, 95%, 90%)
+        );
+}
+
+.body::after {
+    content: '';
+    position: absolute;
+    width: 100vw;
+    height: 3.9em;
+    left: calc(15.5em + 13.5em);
+    /* 투명도를 조절하여 부드러운 연결감 */
+    background:
+        linear-gradient(
+            45deg, 
+            rgba(0,0,0,2%), /* 그림자 약간 연하게 */
+            transparent 2%
+        ),
+        linear-gradient(
+            90deg, 
+            rgba(0,0,0,2%), /* 그림자 약간 연하게 */
+            transparent 1%
+        ),
+        linear-gradient(
+            hsl(200, 50%, 98%), /* 본체와 연결되는 밝은 그라데이션 */
+            hsl(200, 60%, 96%) 5%,  
+            hsl(200, 70%, 95%) 25%, 
+            hsl(200, 80%, 93%) 40%, 
+            hsl(200, 90%, 88%) 95%,
+            hsl(200, 95%, 90%)
+        );
+}

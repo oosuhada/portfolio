@@ -1,0 +1,90 @@
+/* ======= Modal (Updated Version) ======= */
+#card-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-bg {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(40, 40, 40, 0.8);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: background 0.5s, opacity 0.5s;
+}
+.modal-bg.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-card {
+    width: 80vw;
+    max-width: 900px;
+    height: 80vh;
+    max-height: 600px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 38px rgba(17, 17, 17, 0.1);
+    transform: scale(0.7);
+    opacity: 0;
+    transition: transform 0.65s cubic-bezier(.76,0,.24,1), opacity 0.4s;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    will-change: transform, opacity;
+}
+.modal-bg.active .modal-card {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.modal-content {
+    flex: 1;
+    overflow: hidden;
+    border-radius: 12px;
+    margin: 10px;
+}
+
+.modal-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+.modal-x {
+    font-family: Arial, sans-serif;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 2.1rem;
+    color: #fff;
+    font-weight: bold;
+    cursor: var(--cursor-grab2);
+    opacity: 0.8;
+    transition: color 0.2s, transform 0.4s, opacity 0.3s;
+    z-index: 10;
+}
+.modal-x:hover {
+    color: #ffe1e1;
+    opacity: 1;
+}
+
+.modal-bg.zoom-out {
+    animation: zoomOutModal 0.45s cubic-bezier(.68,-0.55,.27,1.55) forwards;
+}
+@keyframes zoomOutModal {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.4); }
+}

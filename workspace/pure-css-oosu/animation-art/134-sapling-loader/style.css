@@ -1,0 +1,70 @@
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* 배경색을 심해를 연상시키는 부드러운 다크 블루로 변경 */
+    background-color: #1a2a3a;
+    /* 은은한 그라데이션 추가 */
+    background: linear-gradient(to bottom right, #1a2a3a, #0a1a2a);
+}
+
+.sapling {
+    width: 6em; /* 폭을 약간 늘려 더 안정감 있게 */
+    height: 20em; /* 높이를 약간 늘려 웅장함 강조 */
+    font-size: 10px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.branch {
+    position: absolute;
+    width: 0.3em; /* 나뭇가지 두께 약간 두껍게 */
+    height: inherit;
+    /* 나뭇가지 색상을 좀 더 깊은 갈색으로 변경 */
+    background-color: #6F4E37;
+    border-radius: 50%; /* 완전한 원통형으로 변경 */
+    transform-origin: bottom;
+    /* 은은한 그림자 효과 추가 */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.leaves {
+    position: absolute;
+    width: inherit;
+    height: 80%;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.leaves span {
+    width: 3em; /* 잎사귀 크기 약간 키움 */
+    height: 3em;
+    /* 잎사귀 색상을 신비로운 느낌의 청록색으로 변경 */
+    background-color: #3CB371; /* MediumSeaGreen에서 좀 더 톤 다운된 색상 */
+    /* 잎사귀에 부드러운 그라데이션 추가 */
+    background: linear-gradient(to bottom right, #3CB371, #2E8B57);
+    /* 잎사귀에 그림자 효과 추가 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    /* 잎사귀 모서리를 좀 더 부드러운 곡선으로 변경 */
+    border-radius: 50% 10% 50% 10%; /* 비대칭 타원형 */
+}
+
+.leaves span:nth-child(odd) {
+    align-self: flex-start;
+    /* 비대칭 타원형 유지 */
+    border-top-right-radius: 4em;
+    border-bottom-left-radius: 2em;
+    transform-origin: right bottom;
+}
+
+.leaves span:nth-child(even) {
+    align-self: flex-end;
+    /* 비대칭 타원형 유지 */
+    border-top-left-radius: 4em;
+    border-bottom-right-radius: 2em;
+    transform-origin: left bottom;
+}

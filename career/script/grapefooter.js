@@ -360,44 +360,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function playLoopSequence() {
-        loopInterrupted = false;
-        mainTimeline = gsap.timeline({
-            onComplete: () => {
-                expandToFullScreen();
-                gsap.set([footerImgEl, footerTextEl], { opacity: 0 });
-                footerImgEl.src = "";
-                footerTextEl.innerHTML = "";
-                
-                setTimeout(() => {
-                    if (loopInterrupted) return;
-                    playBlossomLoopSequence(() => playFooterLoopSequence(playBlossomLoopSequence));
-                }, 400);
-            }
+    loopInterrupted = false;
+    mainTimeline = gsap.timeline({
+        onComplete: () => {
+            expandToFullScreen();
+            gsap.set([footerImgEl, footerTextEl], { opacity: 0 });
+            footerImgEl.src = "";
+            footerTextEl.innerHTML = "";
+
+            setTimeout(() => {
+                if (loopInterrupted) return;
+                playBlossomLoopSequence(() => playFooterLoopSequence(playBlossomLoopSequence));
+            }, 400);
+        }
+    });
+
+    mainTimeline.set(tvContainer, { opacity: 1, visibility: 'visible' })
+        .to(tvTurnon, { width: "100%", duration: 0.3, ease: "power2.out" })
+        .to(tvTurnon, { height: "100%", duration: 0.3, ease: "power2.out" })
+        .to(tvTurnon, { opacity: 0, duration: 0.1 })
+        .to(colorBars, { opacity: 1, duration: 1.5 })
+        .to(colorBars, { opacity: 0, duration: 0.3, delay: 0.3 })
+        .to(videoContent, { opacity: 1, duration: 1 }, "<")
+        .call(() => {
+            // --- REMOVE OR COMMENT OUT THESE LINES TO DISABLE INITIAL STATIC/VCR NOISE ---
+            // gsap.to(staticEffect, { opacity: 1, duration: 0.5 });
+            // staticEffect.classList.add('noise-active');
+            // vcrScreenEffect.enableVCRNoise();
+            // gsap.to(scanlines, { opacity: 1, duration: 0.5 }); // Keep if you want scanlines on by default
+            // gsap.to(screenGlow, { opacity: 1, duration: 0.5 }); // Keep if you want glow on by default
+            updateVideoContentFilter();
         });
 
-        mainTimeline.set(tvContainer, { opacity: 1, visibility: 'visible' })
-            .to(tvTurnon, { width: "100%", duration: 0.3, ease: "power2.out" })
-            .to(tvTurnon, { height: "100%", duration: 0.3, ease: "power2.out" })
-            .to(tvTurnon, { opacity: 0, duration: 0.1 })
-            .to(colorBars, { opacity: 1, duration: 1.5 })
-            .to(colorBars, { opacity: 0, duration: 0.3, delay: 0.3 })
-            .to(videoContent, { opacity: 1, duration: 1 }, "<")
-            .call(() => {
-                gsap.to(staticEffect, { opacity: 1, duration: 0.5 });
-                staticEffect.classList.add('noise-active');
-                vcrScreenEffect.enableVCRNoise();
-                gsap.to(scanlines, { opacity: 1, duration: 0.5 });
-                gsap.to(screenGlow, { opacity: 1, duration: 0.5 });
-                updateVideoContentFilter();
-            });
-
-        effectToggleStatic.checked = true;
-        effectToggleVCR.checked = true;
-        effectToggleScanlines.checked = true;
-        effectToggleGlow.checked = true;
-        effectToggleRGBSplit.checked = true;
-        effectToggleChromatic.checked = true;
-    }
+    // --- ALSO UNCHECK THESE TOGGLES IF YOU WANT THEM OFF BY DEFAULT ---
+    effectToggleStatic.checked = false; // Change to false
+    effectToggleVCR.checked = false;    // Change to false
+    // effectToggleScanlines.checked = true; // Keep true or change to false as desired
+    // effectToggleGlow.checked = true;      // Keep true or change to false as desired
+    effectToggleRGBSplit.checked = false; // Change to false if you want it off by default
+    effectToggleChromatic.checked = false; // Change to false if you want it off by default
+}
 
     function playChannelSwitchEffect(cb) {
         if (isAnimating) return;

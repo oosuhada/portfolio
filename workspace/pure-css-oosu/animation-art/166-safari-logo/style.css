@@ -1,0 +1,92 @@
+:root {
+    /* Color Palette */
+    --bg-color: #1a1a2e; /* Deep Purple Background */
+    --compass-body-color: #2e2e4a; /* Slightly Lighter Deep Purple */
+    --gradient-start: #4a00e0; /* Bright Deep Purple */
+    --gradient-end: #8e2de2; /* Aqua Blue */
+    --mark-color: #ffffff; /* White Marks */
+    --pointer-top: #00ff88; /* Neon Green Pointer Top */
+    --pointer-bottom: #ffffff; /* White Pointer Bottom */
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-color); /* Apply new background color */
+    overflow: hidden; /* Prevent scrollbar if element slightly exceeds viewport */
+}
+
+.safari {
+    font-size: 12px; /* Slightly increased font-size for larger elements */
+    width: 18em; /* Increased width */
+    height: 18em; /* Increased height */
+    background-color: var(--compass-body-color); /* Apply new compass body color */
+    border-radius: 35%; /* Softer, slightly more rounded rectangle */
+    padding: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5); /* Add a subtle shadow */
+}
+
+.marks {
+    width: inherit;
+    height: inherit;
+    background-image: linear-gradient(
+        to bottom right, /* Changed gradient direction */
+        var(--gradient-start),
+        var(--gradient-end)
+    );
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; /* Ensure marks can be positioned absolutely within */
+}
+
+.marks span {
+    position: absolute;
+    width: 0.12em; /* Slightly thicker marks */
+    height: var(--h);
+    background-color: var(--mark-color); /* Apply new mark color */
+    transform: rotate(var(--rotate-deg)) translateY(var(--y));
+    opacity: 0.8; /* Slightly translucent marks */
+}
+
+.marks span:nth-child(odd) {--h: 1.1em; --y: 7.5em;} /* Adjusted height and translateY */
+.marks span:nth-child(even) {--h: 0.7em; --y: 7.6em;} /* Adjusted height and translateY */
+
+.pointer {
+    position: absolute;
+    width: 1.6em; /* Slightly wider pointer */
+    height: 14em; /* Taller pointer */
+    display: flex;
+    flex-direction: column;
+    transform-origin: bottom center; /* Set transform origin for rotation */
+    transform: rotate(30deg);
+    animation: rotate 1.5s ease-in-out infinite alternate; /* Slower and smoother animation */
+}
+
+@keyframes rotate {
+    to {
+        transform: rotate(50deg);
+    }
+}
+
+.pointer::before,
+.pointer::after {
+    content: '';
+    border-bottom: 7em solid var(--c); /* Adjusted border-bottom for new height */
+    border-left: 0.8em solid transparent; /* Slightly wider base */
+    border-right: 0.8em solid transparent; /* Slightly wider base */
+}
+
+.pointer::after {
+    transform: rotate(180deg);
+}
+
+.pointer::before {--c: var(--pointer-top);} /* Apply new pointer top color */
+.pointer::after {--c: var(--pointer-bottom);} /* Apply new pointer bottom color */
