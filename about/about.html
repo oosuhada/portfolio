@@ -8,12 +8,12 @@
   <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
 
   <link rel="stylesheet" href="../common/common.css" />
-  <link rel="stylesheet" href="about-hero.css" />
-  <link rel="stylesheet" href="about-main.css" />
-  <link rel="stylesheet" href="about-skills.css" />
-  <link rel="stylesheet" href="about-values.css" />
-  <link rel="stylesheet" href="about-process.css" />
-  <link rel="stylesheet" href="about-funfacts.css" />
+  <link rel="stylesheet" href="./style/about-hero.css" />
+  <link rel="stylesheet" href="./style/about-main.css" />
+  <link rel="stylesheet" href="./style/about-skills.css" /> 
+  <link rel="stylesheet" href="./style/about-values.css" />
+  <link rel="stylesheet" href="./style/about-process.css" />
+  <link rel="stylesheet" href="./style/about-funfacts.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&family=LXGW+WenKai+Mono+TC&family=Noto+Serif+TC:wght@200..900&display=swap" rel="stylesheet">
@@ -22,10 +22,6 @@
   <span style="position:absolute; left:-9999px; font-family:'East Sea Dokdo',cursive;">가나다라마바사</span>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 </head>
 <body class="about-page">
   
@@ -55,6 +51,7 @@
       </filter>
     </defs>
   </svg>
+
 <header class="nav-header" aria-label="Main Navigation">
     <div class="nav-top-row">
         <button class="nav-toggle-btn" aria-label="Toggle navigation menu">
@@ -116,7 +113,7 @@
     
       <div class="about-profile">
         <div class="about-profile-photo" id="profilePhoto">
-          <img src="profile1.png" alt="Profile Photo of Oosu" id="profileImage" />
+          <img src="./img/profile1.png" alt="Profile Photo of Oosu" id="profileImage" />
         </div>
         <div class="about-profile-desc">
           <p>
@@ -141,162 +138,435 @@
         </div>
       </div>          
     </section>        
-    
     <div class="about-section-gap"></div>
-    <section class="about-skills section-background-active">
-      <h2 class="section-title">MY SKILLSET FOR OUR COLLABORATION</h2>
-      <div class="about-skills-carousel horizontal-layout" id="about-skills-carousel">
-        <div class="about-skills-cols" id="skills-sortable">
-          
-          <div class="skill-card" data-skill-category="Strengths" tabindex="0" aria-labelledby="strengths-title">
-            <div class="skill-ink-blot" tabindex="0">
-              <div class="skill-ink-shape"></div>
-              <div class="skill-initial-content">
-                <i class="fas fa-lightbulb skill-icon" aria-label="Strengths"></i>
-                <div class="skill-initial-text">
-                  <p id="strengths-title">Strengths</p>
-                  <small>Tap for more</small>
-                </div>
-              </div>
-              <div class="skill-expanded-content" aria-live="polite">
-                <i class="fas fa-lightbulb skill-icon expanded-icon" aria-hidden="true"></i>
-                <h3 class="skill-expanded-title">STRENGTHS</h3>
-                <ul class="skill-details-list">
-                  <li tabindex="0" aria-label="Problem-solving">
-                    <span class="skill-chunk" data-highlight-id="about-skill-strength1">Problem-solving skills</span>
-                  </li>
-                  <li tabindex="0" aria-label="Fast learning">
-                    <span class="skill-chunk" data-highlight-id="about-skill-strength2">Fast learning</span>
-                  </li>
-                  <li tabindex="0" aria-label="Creative intuition">
-                    <span class="skill-chunk" data-highlight-id="about-skill-strength3">Creative intuition</span>
-                  </li>
-                  <li tabindex="0" aria-label="Cross-functional communication">
-                    <span class="skill-chunk" data-highlight-id="about-skill-strength4">Cross-functional communication</span>
-                  </li>
-                </ul>
-              </div>
+<section class="about-skills section-background-active" id="skills-section">
+<h2 class="section-title" id="skills-toggle">
+  <span class="skills-main-title-text">MY SKILLSET FOR OUR COLLABORATION</span>
+  <span class="view-toggle-description" id="skills-toggle-description">(Click to switch to Icon View)</span>
+</h2>
+  <div class="about-skills-carousel horizontal-layout">
+    <div class="about-skills-cols" id="skills-sortable">
+      <div class="skill-card" data-skill-category="Strengths" tabindex="0" aria-labelledby="strengths-title">
+        <div class="skill-ink-blot" tabindex="0">
+          <div class="skill-ink-shape"></div>
+          <div class="skill-initial-content">
+            <i class="fas fa-lightbulb skill-icon" aria-label="Strengths"></i>
+            <div class="skill-initial-text">
+              <p id="strengths-title">Strengths</p>
+              <small>Tap for more</small>
             </div>
-            <h3 class="skill-main-title" id="strengths-title-main">STRENGTHS</h3>
-            <p class="click-drag-hint">Click blot to expand, or long-press to reorder.</p>
           </div>
-    
-          <div class="skill-card" data-skill-category="UXUI" tabindex="0" aria-labelledby="uxui-title">
-            <div class="skill-ink-blot" tabindex="0">
-              <div class="skill-ink-shape"></div>
-              <div class="skill-initial-content">
-                <i class="fas fa-paint-brush skill-icon" aria-label="UX/UI Design"></i>
-                <div class="skill-initial-text">
-                  <p id="uxui-title">UX/UI Design</p>
-                  <small>Tap for more</small>
-                </div>
-              </div>
-              <div class="skill-expanded-content" aria-live="polite">
-                <i class="fas fa-paint-brush skill-icon expanded-icon" aria-hidden="true"></i>
-                <h3 class="skill-expanded-title">UX/UI & PRODUCT DESIGN</h3>
-                <ul class="skill-details-list">
-                  <li tabindex="0" aria-label="Wireframing, user flow, and prototyping">
-                    <span class="skill-chunk" data-highlight-id="about-skill-ux1">Wireframing,</span>
-                    <span class="skill-chunk" data-highlight-id="about-skill-ux2">User Flow,</span>
-                    <span class="skill-chunk" data-highlight-id="about-skill-ux3">Prototyping</span>
-                  </li>
-                  <li tabindex="0" aria-label="Responsive Web and Mobile App Design">
-                    <span class="skill-chunk" data-highlight-id="about-skill-ux4">Responsive Web &</span>
-                    <span class="skill-chunk" data-highlight-id="about-skill-ux5">Mobile App Design</span>
-                  </li>
-                  <li tabindex="0" aria-label="Design Systems">
-                    <span class="skill-chunk" data-highlight-id="about-skill-ux6">Design Systems</span>
-                  </li>
-                </ul>
-              </div>
+          <div class="skill-expanded-content" aria-live="polite">
+            <ul class="skill-details-list">
+              <li tabindex="0" aria-label="Problem-solving">
+                <span class="skill-chunk" data-highlight-id="about-skill-strength1">Problem-solving skills</span>
+              </li>
+              <li tabindex="0" aria-label="Fast learning">
+                <span class="skill-chunk" data-highlight-id="about-skill-strength2">Fast learning</span>
+              </li>
+              <li tabindex="0" aria-label="Creative intuition">
+                <span class="skill-chunk" data-highlight-id="about-skill-strength3">Creative intuition</span>
+              </li>
+              <li tabindex="0" aria-label="Cross-functional communication">
+                <span class="skill-chunk" data-highlight-id="about-skill-strength4">Cross-functional communication</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <h3 class="skill-main-title" id="strengths-title-main">STRENGTHS</h3>
+        <p class="click-drag-hint">Click blot to expand, or long-press to reorder.</p>
+      </div>
+      <div class="skill-card" data-skill-category="UXUI" tabindex="0" aria-labelledby="uxui-title">
+        <div class="skill-ink-blot" tabindex="0">
+          <div class="skill-ink-shape"></div>
+          <div class="skill-initial-content">
+            <i class="fas fa-paint-brush skill-icon" aria-label="UX/UI Design"></i>
+            <div class="skill-initial-text">
+              <p id="uxui-title">UX/UI Design</p>
+              <small>Tap for more</small>
             </div>
-            <h3 class="skill-main-title" id="uxui-title-main">UX/UI & PRODUCT DESIGN</h3>
-            <p class="click-drag-hint">Click blot to expand, or long-press to reorder.</p>
           </div>
-    
-          <div class="skill-card" data-skill-category="Frontend" tabindex="0" aria-labelledby="frontend-title">
-            <div class="skill-ink-blot" tabindex="0">
-              <div class="skill-ink-shape"></div>
-              <div class="skill-initial-content">
-                <i class="fas fa-code skill-icon" aria-label="Frontend Development"></i>
-                <div class="skill-initial-text">
-                  <p id="frontend-title">Frontend Dev</p>
-                  <small>Tap for more</small>
-                </div>
-              </div>
-              <div class="skill-expanded-content" aria-live="polite">
-                <i class="fas fa-code skill-icon expanded-icon" aria-hidden="true"></i>
-                <h3 class="skill-expanded-title">FRONTEND DEVELOPMENT</h3>
-                <ul class="skill-details-list">
-                  <li tabindex="0" aria-label="HTML, CSS, and JavaScript">
-                    <b>Web:</b><br>
-                    <span class="skill-chunk" data-highlight-id="about-skill-frontend-html">HTML,</span>
-                    <span class="skill-chunk" data-highlight-id="about-skill-frontend-css">CSS,</span>
-                    <span class="skill-chunk" data-highlight-id="about-skill-frontend-js">JavaScript</span>
-                  </li>
-                  <li tabindex="0" aria-label="jQuery, React, and Vue">
-                    <b>JS Frameworks:</b>
-                    <span class="skill-chunk" data-highlight-id="about-skill-frontend-jquery">jQuery,</span>
-                    <span class="skill-chunk" data-highlight-id="about-skill-frontend-react">React,</span>
-                    <span class="skill-chunk" data-highlight-id="about-skill-frontend-vue">Vue</span>
-                  </li>
-                  <li tabindex="0" aria-label="Flutter">
-                    <b>App Dev:</b>
-                    <span class="skill-chunk" data-highlight-id="about-skill-frontend-flutter">Flutter</span>
-                  </li>
-                  <li tabindex="0" aria-label="Firebase">
-                    <b>Integration:</b>
-                    <span class="skill-chunk" data-highlight-id="about-skill-frontend-firebase">Firebase</span>
-                  </li>
-                </ul>
-              </div>
+          <div class="skill-expanded-content" aria-live="polite">
+            <ul class="skill-details-list">
+              <li tabindex="0" aria-label="Wireframing, user flow, and prototyping">
+                <span class="skill-chunk" data-highlight-id="about-skill-ux1">Wireframing,</span>
+                <span class="skill-chunk" data-highlight-id="about-skill-ux2">User Flow,</span>
+                <span class="skill-chunk" data-highlight-id="about-skill-ux3">Prototyping</span>
+              </li>
+              <li tabindex="0" aria-label="Responsive Web and Mobile App Design">
+                <span class="skill-chunk" data-highlight-id="about-skill-ux4">Responsive Web &</span>
+                <span class="skill-chunk" data-highlight-id="about-skill-ux5">Mobile App Design</span>
+              </li>
+              <li tabindex="0" aria-label="Design Systems">
+                <span class="skill-chunk" data-highlight-id="about-skill-ux6">Design Systems</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <h3 class="skill-main-title" id="uxui-title-main">UX/UI & PRODUCT DESIGN</h3>
+        <p class="click-drag-hint">Click blot to expand, or long-press to reorder.</p>
+      </div>
+      <div class="skill-card" data-skill-category="Frontend" tabindex="0" aria-labelledby="frontend-title">
+        <div class="skill-ink-blot" tabindex="0">
+          <div class="skill-ink-shape"></div>
+          <div class="skill-initial-content">
+            <i class="fas fa-code skill-icon" aria-label="Frontend Development"></i>
+            <div class="skill-initial-text">
+              <p id="frontend-title">Frontend Dev</p>
+              <small>Tap for more</small>
             </div>
-            <h3 class="skill-main-title" id="frontend-title-main">FRONTEND DEVELOPMENT</h3>
-            <p class="click-drag-hint">Click blot to expand, or long-press to reorder.</p>
           </div>
-    
-          <div class="skill-card" data-skill-category="Tools" tabindex="0" aria-labelledby="tools-title">
-            <div class="skill-ink-blot" tabindex="0">
-              <div class="skill-ink-shape"></div>
-              <div class="skill-initial-content">
-                <i class="fas fa-tools skill-icon" aria-label="Tools & Systems"></i>
-                <div class="skill-initial-text">
-                  <p id="tools-title">Tools & Systems</p>
-                  <small>Tap for more</small>
-                </div>
-              </div>
-              <div class="skill-expanded-content" aria-live="polite">
-                <i class="fas fa-tools skill-icon expanded-icon" aria-hidden="true"></i>
-                <h3 class="skill-expanded-title">TOOLS & SYSTEMS</h3>
-                <ul class="skill-details-list">
-                  <li tabindex="0" aria-label="Figma, Photoshop, Illustrator, After Effects">
-                    <b>Design:</b>
-                    <span class="skill-chunk" data-highlight-id="about-skill-tool-figma">Figma,</span>
-                    <span class="skill-chunk" data-highlight-id="about-skill-tool-ps">Photoshop,</span>
-                    <span class="skill-chunk" data-highlight-id="about-skill-tool-ai">Illustrator,</span>
-                    <span class="skill-chunk" data-highlight-id="about-skill-tool-ae">After Effects</span>
-                  </li>
-                  <li tabindex="0" aria-label="Notion, GitHub, Slack">
-                    <b>Collaboration:</b>
-                    <span class="skill-chunk" data-highlight-id="about-skill-tool-notion">Notion,</span>
-                    <span class="skill-chunk" data-highlight-id="about-skill-tool-github">GitHub,</span>
-                    <span class="skill-chunk" data-highlight-id="about-skill-tool-slack">Slack</span>
-                  </li>
-                  <li tabindex="0" aria-label="VS Code, Cursor">
-                    <b>Development:</b>
-                    <span class="skill-chunk" data-highlight-id="about-skill-tool-vscode">VS Code,</span>
-                    <span class="skill-chunk" data-highlight-id="about-skill-tool-cursor">Cursor</span>
-                  </li>
-                </ul>
-              </div>
+          <div class="skill-expanded-content" aria-live="polite">
+            <ul class="skill-details-list">
+              <li tabindex="0" aria-label="HTML, CSS, and JavaScript">
+                <b>Web:</b><br>
+                <span class="skill-chunk" data-highlight-id="about-skill-frontend-html">HTML,</span>
+                <span class="skill-chunk" data-highlight-id="about-skill-frontend-css">CSS,</span>
+                <span class="skill-chunk" data-highlight-id="about-skill-frontend-js">JavaScript</span>
+              </li>
+              <li tabindex="0" aria-label="jQuery, React, and Vue">
+                <b>JS Frameworks:</b>
+                <span class="skill-chunk" data-highlight-id="about-skill-frontend-jquery">jQuery,</span>
+                <span class="skill-chunk" data-highlight-id="about-skill-frontend-react">React,</span>
+                <span class="skill-chunk" data-highlight-id="about-skill-frontend-vue">Vue</span>
+              </li>
+              <li tabindex="0" aria-label="Flutter">
+                <b>App Dev:</b>
+                <span class="skill-chunk" data-highlight-id="about-skill-frontend-flutter">Flutter</span>
+              </li>
+              <li tabindex="0" aria-label="Firebase">
+                <b>Integration:</b>
+                <span class="skill-chunk" data-highlight-id="about-skill-frontend-firebase">Firebase</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <h3 class="skill-main-title" id="frontend-title-main">FRONTEND DEVELOPMENT</h3>
+        <p class="click-drag-hint">Click blot to expand, or long-press to reorder.</p>
+      </div>
+      <div class="skill-card" data-skill-category="Tools" tabindex="0" aria-labelledby="tools-title">
+        <div class="skill-ink-blot" tabindex="0">
+          <div class="skill-ink-shape"></div>
+          <div class="skill-initial-content">
+            <i class="fas fa-tools skill-icon" aria-label="Tools & Systems"></i>
+            <div class="skill-initial-text">
+              <p id="tools-title">Tools & Systems</p>
+              <small>Tap for more</small>
             </div>
-            <h3 class="skill-main-title" id="tools-title-main">TOOLS & SYSTEMS</h3>
-            <p class="click-drag-hint">Click blot to expand, or long-press to reorder.</p>
           </div>
+          <div class="skill-expanded-content" aria-live="polite">
+            <ul class="skill-details-list">
+              <li tabindex="0" aria-label="Figma, Photoshop, Illustrator, After Effects">
+                <b>Design:</b>
+                <span class="skill-chunk" data-highlight-id="about-skill-tool-figma">Figma,</span>
+                <span class="skill-chunk" data-highlight-id="about-skill-tool-ps">Photoshop,</span>
+                <span class="skill-chunk" data-highlight-id="about-skill-tool-ai">Illustrator,</span>
+                <span class="skill-chunk" data-highlight-id="about-skill-tool-ae">After Effects</span>
+              </li>
+              <li tabindex="0" aria-label="Notion, GitHub, Slack">
+                <b>Collaboration:</b>
+                <span class="skill-chunk" data-highlight-id="about-skill-tool-notion">Notion,</span>
+                <span class="skill-chunk" data-highlight-id="about-skill-tool-github">GitHub,</span>
+                <span class="skill-chunk" data-highlight-id="about-skill-tool-slack">Slack</span>
+              </li>
+              <li tabindex="0" aria-label="VS Code, Cursor">
+                <b>Development:</b>
+                <span class="skill-chunk" data-highlight-id="about-skill-tool-vscode">VS Code,</span>
+                <span class="skill-chunk" data-highlight-id="about-skill-tool-cursor">Cursor</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <h3 class="skill-main-title" id="tools-title-main">TOOLS & SYSTEMS</h3>
+        <p class="click-drag-hint">Click blot to expand, or long-press to reorder.</p>
+      </div>
+    </div>
 
+    <div class="skills-icon-view" id="skills-icon-view">
+      <div class="skills-section">
+        <h3 class="skills-header">Design</h3> <div class="skills-wrapper marquee-container">
+          <div class="marquee-content">
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/figma.webp" alt="Figma" /></div><span>Figma</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/premiere.webp" alt="Premiere Pro" /></div><span>Premiere Pro</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/photoshop.webp" alt="Photoshop" /></div><span>Photoshop</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/illustrator.webp" alt="Illustrator" /></div><span>Illustrator</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/aftereffects.webp" alt="After Effects" /></div><span>After Effects</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/webflow.webp" alt="Webflow" /></div><span>Webflow</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/lottiefiles.webp" alt="Lottie" /></div><span>Lottie</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/figma.webp" alt="Figma" /></div><span>Figma</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/premiere.webp" alt="Premiere Pro" /></div><span>Premiere Pro</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/photoshop.webp" alt="Photoshop" /></div><span>Photoshop</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/illustrator.webp" alt="Illustrator" /></div><span>Illustrator</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/aftereffects.webp" alt="After Effects" /></div><span>After Effects</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/webflow.webp" alt="Webflow" /></div><span>Webflow</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/lottiefiles.webp" alt="Lottie" /></div><span>Lottie</span>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
+      <div class="skills-section">
+        <h3 class="skills-header">Development</h3> <div class="skills-wrapper marquee-container">
+          <div class="marquee-content reverse-marquee">
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/html-5.webp" alt="HTML" /></div><span>HTML</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/css-3.webp" alt="CSS" /></div><span>CSS</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/js.webp" alt="JavaScript" /></div><span>JavaScript</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/nodejs.webp" alt="NodeJS" /></div><span>NodeJS</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/express.webp" alt="ExpressJS" /></div><span>ExpressJS</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/tailwind.webp" alt="Tailwind" /></div><span>Tailwind</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/nextjs.webp" alt="Next.JS" /></div><span>Next.JS</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/react.webp" alt="React.JS" /></div><span>React.JS</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/flutter.webp" alt="Flutter" /></div><span>Flutter</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/mongo.webp" alt="MongoDB" /></div><span>MongoDB</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/python.webp" alt="Python" /></div><span>Python</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/html-5.webp" alt="HTML" /></div><span>HTML</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/css-3.webp" alt="CSS" /></div><span>CSS</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/js.webp" alt="JavaScript" /></div><span>JavaScript</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/nodejs.webp" alt="NodeJS" /></div><span>NodeJS</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/express.webp" alt="ExpressJS" /></div><span>ExpressJS</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/tailwind.webp" alt="Tailwind" /></div><span>Tailwind</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/nextjs.webp" alt="Next.JS" /></div><span>Next.JS</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/react.webp" alt="React.JS" /></div><span>React.JS</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/flutter.webp" alt="Flutter" /></div><span>Flutter</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/mongo.webp" alt="MongoDB" /></div><span>MongoDB</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/python.webp" alt="Python" /></div><span>Python</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="skills-section">
+        <h3 class="skills-header">Collaboration</h3> <div class="skills-wrapper marquee-container">
+          <div class="marquee-content">
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/git.webp" alt="Git" /></div><span>Git</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/github.webp" alt="GitHub" /></div><span>GitHub</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/vscode.webp" alt="VS Code" /></div><span>VS Code</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/cursor.webp" alt="Cursor" /></div><span>Cursor</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/notion.webp" alt="Notion" /></div><span>Notion</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/slack.webp" alt="Slack" /></div><span>Slack</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/git.webp" alt="Git" /></div><span>Git</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/github.webp" alt="GitHub" /></div><span>GitHub</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/vscode.webp" alt="VS Code" /></div><span>VS Code</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/cursor.webp" alt="Cursor" /></div><span>Cursor</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/notion.webp" alt="Notion" /></div><span>Notion</span>
+            </div>
+            <div class="skill">
+              <div class="skill-ink-background"></div>
+              <div class="skills-logo"><img src="./icons/slack.webp" alt="Slack" /></div><span>Slack</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <div class="skills-icon-view" id="skills-icon-view">
+      <div class="skills-section">
+        <h3 class="skills-header">Design</h3> <div class="skills-wrapper marquee-container" data-aos="fade-up">
+          <div class="marquee-content">
+            <div class="skill"><div class="skills-logo"><img src="./icons/figma.webp" alt="Figma" /></div><span>Figma</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/premiere.webp" alt="Premiere Pro" /></div><span>Premiere Pro</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/photoshop.webp" alt="Photoshop" /></div><span>Photoshop</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/illustrator.webp" alt="Illustrator" /></div><span>Illustrator</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/aftereffects.webp" alt="After Effects" /></div><span>After Effects</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/webflow.webp" alt="Webflow" /></div><span>Webflow</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/lottiefiles.webp" alt="Lottie" /></div><span>Lottie</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/figma.webp" alt="Figma" /></div><span>Figma</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/premiere.webp" alt="Premiere Pro" /></div><span>Premiere Pro</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/photoshop.webp" alt="Photoshop" /></div><span>Photoshop</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/illustrator.webp" alt="Illustrator" /></div><span>Illustrator</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/aftereffects.webp" alt="After Effects" /></div><span>After Effects</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/webflow.webp" alt="Webflow" /></div><span>Webflow</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/lottiefiles.webp" alt="Lottie" /></div><span>Lottie</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="skills-section">
+        <h3 class="skills-header">Development</h3> <div class="skills-wrapper marquee-container" data-aos="fade-up">
+          <div class="marquee-content reverse-marquee">
+            <div class="skill"><div class="skills-logo"><img src="./icons/html-5.webp" alt="HTML" /></div><span>HTML</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/css-3.webp" alt="CSS" /></div><span>CSS</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/js.webp" alt="JavaScript" /></div><span>JavaScript</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/nodejs.webp" alt="NodeJS" /></div><span>NodeJS</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/express.webp" alt="ExpressJS" /></div><span>ExpressJS</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/tailwind.webp" alt="Tailwind" /></div><span>Tailwind</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/nextjs.webp" alt="Next.JS" /></div><span>Next.JS</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/react.webp" alt="React.JS" /></div><span>React.JS</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/flutter.webp" alt="Flutter" /></div><span>Flutter</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/mongo.webp" alt="MongoDB" /></div><span>MongoDB</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/python.webp" alt="Python" /></div><span>Python</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/html-5.webp" alt="HTML" /></div><span>HTML</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/css-3.webp" alt="CSS" /></div><span>CSS</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/js.webp" alt="JavaScript" /></div><span>JavaScript</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/nodejs.webp" alt="NodeJS" /></div><span>NodeJS</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/express.webp" alt="ExpressJS" /></div><span>ExpressJS</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/tailwind.webp" alt="Tailwind" /></div><span>Tailwind</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/nextjs.webp" alt="Next.JS" /></div><span>Next.JS</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/react.webp" alt="React.JS" /></div><span>React.JS</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/flutter.webp" alt="Flutter" /></div><span>Flutter</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/mongo.webp" alt="MongoDB" /></div><span>MongoDB</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/python.webp" alt="Python" /></div><span>Python</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="skills-section">
+        <h3 class="skills-header">Collaboration</h3> <div class="skills-wrapper marquee-container" data-aos="fade-up">
+          <div class="marquee-content">
+            <div class="skill"><div class="skills-logo"><img src="./icons/git.webp" alt="Git" /></div><span>Git</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/github.webp" alt="GitHub" /></div><span>GitHub</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/vscode.webp" alt="VS Code" /></div><span>VS Code</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/cursor.webp" alt="Cursor" /></div><span>Cursor</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/notion.webp" alt="Notion" /></div><span>Notion</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/slack.webp" alt="Slack" /></div><span>Slack</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/git.webp" alt="Git" /></div><span>Git</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/github.webp" alt="GitHub" /></div><span>GitHub</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/vscode.webp" alt="VS Code" /></div><span>VS Code</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/cursor.webp" alt="Cursor" /></div><span>Cursor</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/notion.webp" alt="Notion" /></div><span>Notion</span></div>
+            <div class="skill"><div class="skills-logo"><img src="./icons/slack.webp" alt="Slack" /></div><span>Slack</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
     
     <div class="about-section-gap2"></div>
     <section class="about-values section-background-active">
@@ -479,7 +749,7 @@
         <p class="funfact-instruction">Click on each dot to reveal a fun fact.</p>
       </div>
       <div class="mountain-interactive-container">
-        <img src="funfacts.png" alt="Mountain Peaks Illustration" class="mountain-background-image">
+        <img src="./img/funfacts.png" alt="Mountain Peaks Illustration" class="mountain-background-image">
       </div>
 
       <div class="funfact-card" data-fact-id="name-path" tabindex="0">
@@ -570,13 +840,20 @@
         </div>
     </div>
   </footer>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init(); // AOS 초기화 코드
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
   <script src="../common/common.js"></script>
-  <script src="about-hero.js"></script>
-  <script src="about-main.js"></script>
-  <script src="about-skills.js"></script>
-  <script src="about-values.js"></script>
-  <script src="about-process.js"></script>
-  <script src="about-funfacts.js"></script>
+  <script src="./script/about-hero.js"></script>
+  <script src="./script/about-main.js"></script>
+  <script src="./script/about-skills.js"></script> 
+  <script src="./script/about-values.js"></script>
+  <script src="./script/about-process.js"></script>
+  <script src="./script/about-funfacts.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
   <script>
       lottie.loadAnimation({

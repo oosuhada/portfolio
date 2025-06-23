@@ -1,0 +1,281 @@
+/* Main Layout */
+.about-main {
+  margin-top: 8rem;
+  margin-bottom: 8rem;
+  padding: 0;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  overflow-x: hidden;
+}
+
+/* Hero Section */
+.about-hero {
+  display: flex;
+  gap: 0;
+  align-items: stretch;
+  position: relative;
+  overflow-x: hidden;
+  padding-right: 3vw; 
+}
+
+.about-purpose {
+  flex: 1 1 0%;
+  max-width: 1200px;
+  min-width: 140px;
+  transition: width 0.2s, opacity 0.22s, filter 0.22s;
+}
+
+.about-purpose-title {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: var(--purpose-font, 3.2rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  word-break: keep-all;
+  margin: 0;
+  color: #1a1a1a;
+  transition: font-size 0.22s cubic-bezier(.51,1.22,.31,1);
+  /* about-purpose 내부에서 오른쪽 여백을 줄임 */
+  padding-right: 1vw;
+}
+
+.purpose-section {
+  color: #9d9d9d;
+  transition: color 0.2s;
+  opacity: 1;
+  cursor: var(--cursor-grab2);
+  display: inline-block;
+  position: relative;
+  font-size: inherit;
+  margin: 0 0.9em;  /* 좌우 각각 0.33em 여백 */
+}
+.purpose-section.hovered {
+  color: #222;
+  font-weight: bold;
+}  
+
+.swap-hanja {
+  font-family: 'Noto Serif TC', serif;
+  font-weight: 900;
+  font-size: 0.9em;
+  color: #232323;
+  letter-spacing: 0.01em;
+  vertical-align: 0.08em;
+}
+.swap-hangul {
+  font-family: 'East Sea Dokdo', cursive;
+  font-weight: 900;
+  font-size: 1.1em;
+  color: #232323;
+  margin-left: 0.04em;
+  letter-spacing: 0.01em;
+  vertical-align: 0.15em;
+}
+.swap-roma {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 0.76em;
+  font-weight: 700;
+  color: #232323;
+  margin-left: 0.04em;
+  vertical-align: 0.1em;
+}
+.swap-word {
+  display: inline-block;
+  cursor: var(--cursor-grab2);
+  transition: opacity 0.28s cubic-bezier(.4,1.2,.56,1);
+}
+
+.about-divider {
+  width: 3px;
+  min-width: 3px;
+  background: linear-gradient(to bottom, #eee, #bbb 50%, #eee);
+  cursor: var(--cursor-ew-resize2);
+  border-radius: 4px;
+  margin: 0 2rem;
+  position: relative;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.about-divider-hitzone {
+  position: absolute;
+  left: -35px; /* 좌측으로 넓히기 */
+  top: 0;
+  width: 70px; /* 전체 넓이: divider(3px)+좌우 각 33.5px */
+  height: 100%;
+  cursor: var(--cursor-ew-resize2);
+  z-index: 2; /* drag-icon 보다 아래, divider보다 위 */
+  background: transparent; /* 완전 투명 */
+}  
+.drag-icon {
+  position: absolute;
+  top: 50%;
+  font-size: 1.6rem;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0.92;
+  color: #888;
+  transition: color 0.18s, opacity 0.18s;
+  animation: icon-bounce 1.2s infinite alternate;
+}
+.drag-icon.left  { left: -35px; animation: icon-bounce-left 1.2s infinite alternate; }
+.drag-icon.right { left: 10px;  animation: icon-bounce-right 1.2s infinite alternate; }
+
+@keyframes icon-bounce-left {
+  from { transform: translateY(-50%) translateX(0); }
+  to   { transform: translateY(-50%) translateX(-9px); }
+}
+@keyframes icon-bounce-right {
+  from { transform: translateY(-50%) translateX(0); }
+  to   { transform: translateY(-50%) translateX(9px); }
+}
+.drag-icon.hide { opacity: 0; pointer-events: none; }
+
+.about-divider:hover .drag-icon { color: #111; }
+
+.about-divider:hover, .about-divider.dragging {
+  background: linear-gradient(to bottom, #ddd, #888 50%, #ddd);
+}
+
+.about-profile {
+  flex: 0 0 400px;
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-top: 10rem;
+  transition: width 0.2s;
+  max-width: 900px;
+  /* ← divider와 더 떨어지게 */
+  padding-left: 2.5rem;   /* 원하는 만큼(px, rem 등 단위 조절 가능) */
+}
+
+.about-profile-desc {
+  font-size: 1.1rem;
+  color: #333;
+  line-height: 1.7;
+  padding-right: 2rem; /* 충분히 크게(원하면 더 크게) */
+  margin-right: 3rem;
+  word-break: normal;         /* 기본값: 단어 단위로 줄바꿈 */
+  overflow-wrap: break-word;  /* 아주 긴 단어/URL 등만 강제 줄바꿈 */
+  white-space: normal;        /* 기본값 */
+  hyphens: none;              /* 필요시 자동 하이픈 금지 */
+  
+}
+
+.about-profile-photo {
+  width: 150px;
+  height: 150px;
+  border-radius: 1.5rem;
+  overflow: hidden;  /* 이미지를 넘치지 않게 자름 */
+  margin-left: -1rem; /* desc와 여백 동일하게 맞추기 */
+  margin-bottom: -2rem;
+  display: flex;
+  align-items: left;
+  justify-content: left;
+  cursor: var(--cursor-grab2); /* Add pointer cursor to indicate clickability */
+  transition: transform 0.3s ease-in-out; /* Add smooth transition for hover effect */
+}
+
+.about-profile-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 1.5rem;
+  display: block;
+}
+
+/* Hover effect for the image */
+.about-profile-photo:hover {
+  transform: scale(1.05); /* Slightly enlarge the image on hover */
+}
+
+ .about-profile-desc p {
+  margin-bottom: 1.2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .about-main { 
+    max-width: 100%; 
+  }
+  .about-hero,
+  .about-skills,
+  .about-process,
+  .about-values,
+  .about-funfacts {
+    padding: 0 4rem;
+  }
+  .about-hero {
+    gap: 4rem;
+  }
+  .about-skills-cols,
+  .about-funfacts-cols {
+    gap: 4rem;
+  }
+  .about-process-wrap {
+    gap: 4rem;
+  }
+}
+
+@media (max-width: 1000px) {
+  .about-hero {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 0 !important;
+    width: fit-content;
+  }
+  .about-main {
+    overflow-x: auto !important;
+    min-width: 600px;
+  }
+  .about-purpose {
+    min-width: 240px;
+  }
+  .about-divider {
+    width: 3px !important;
+    min-width: 3px !important;
+    height: auto !important;
+    background: linear-gradient(to bottom, #eee, #bbb 50%, #eee) !important;
+    margin: 0 2rem !important;
+  }
+  .about-profile {
+    min-width: 180px;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .about-main {
+    margin-top: 6rem;
+    margin-bottom: 6rem;
+  }
+  .about-hero,
+  .about-skills,
+  .about-process,
+  .about-values,
+  .about-funfacts {
+    margin-bottom: 4rem;
+  }
+  .about-purpose-title {
+    font-size: 2rem;
+  }
+  .about-profile {
+    flex-direction: row !important;
+    gap: 1.5rem;
+  }
+  .about-divider {
+    width: 3px !important;
+    min-width: 3px !important;
+    height: auto !important;
+    background: linear-gradient(to bottom, #eee, #bbb 50%, #eee) !important;
+    margin: 0 2rem !important;
+  }
+}
+
+.about-section-gap {
+  height: 10rem; 
+  width: 100%;
+}

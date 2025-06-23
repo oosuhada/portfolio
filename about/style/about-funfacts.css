@@ -1,0 +1,295 @@
+/* --- Animation Styles for Modals (these are not directly used for funfact cards) --- */
+/* (omitted for brevity, as they are part of the original HTML) */
+
+/* ======================= FUN FACTS (수정 완료) ======================= */
+
+/* Main section is now the positioning context for floating cards. */
+.about-funfacts {
+  position: relative;
+  width: 100%;
+  padding-bottom: 2rem;
+  min-height: 500px;
+  overflow: hidden;
+}
+
+/* These containers are no longer used. */
+.funfacts-card-display-area,
+.about-funfacts-cols {
+  display: none;
+}
+
+/* ---------- Card Base Styles: Floating Ink Blot Theme ---------- */
+.funfact-card {
+  position: absolute;
+  display: none; /* Controlled by JS and .is-active-fact */
+  flex-direction: column;
+  align-items: flex-start;
+  width: 90%;
+  max-width: 320px;
+  min-height: 220px; /* Used as a base for height calculation in JS */
+  background: #fff;
+  /* border-radius is animated by JS */
+  padding: 1.8rem;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.07);
+  color: var(--gray-dark);
+  cursor: var(--cursor-grab2);
+  overflow: hidden;
+  will-change: transform, opacity, z-index, border-radius, filter; /* filter 추가 */
+  opacity: 0; /* Default hidden state, animated by JS */
+  transform-origin: center center;
+  z-index: 10;
+  border-radius: 12px; /* 기본값 설정 */
+  filter: blur(0px); /* 기본 블러 값 */
+}
+
+/* Existing floating animation */
+.funfact-card.is-floating {
+  animation: floatAnimation 18s infinite ease-in-out;
+}
+
+/* Card dragging state */
+.funfact-card.is-dragging {
+  cursor: var(--cursor-grabbing2);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2), 0 5px 15px rgba(0,0,0,0.15);
+  transform: scale(1.05);
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+  animation-play-state: paused; /* Pause floating animation while dragging */
+}
+
+/* Click-me message no longer needed, hide it. */
+.click-me-msg {
+  display: none;
+}
+
+.fact-text-content {
+  display: block !important;
+}
+
+.fact-text-content p {
+  font-family: 'Pretendard', sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #555;
+  position: relative;
+  z-index: 3;
+}
+
+.funfact-card h3 {
+  font-family: 'Pretendard', sans-serif;
+  font-size: 1.13rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+  color: #333;
+  position: relative;
+  z-index: 3;
+}
+
+/* Ink blot and paper effect styles */
+.funfact-card .ink-splash-container {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; overflow: hidden; z-index: 0; filter: url(#classicWetInk);
+}
+
+.ink-blot-drop {
+  position: absolute; width: 0; height: 0; border-radius: 50%;
+  background-color: rgba(30, 30, 30, 0.6); opacity: 0; transform: scale(0.1);
+  animation: ink-blot-animation 1.0s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  pointer-events: none;
+}
+
+@keyframes ink-blot-animation {
+  0% { opacity: 0; transform: scale(0.1); }
+  20% { opacity: 0.8; transform: scale(0.8); }
+  80% { opacity: 0.6; transform: scale(1.1); }
+  100% { opacity: 0; transform: scale(1.3); }
+}
+
+.confetti-particle {
+  position: fixed; pointer-events: none; z-index: 10001; opacity: 1;
+  will-change: transform, opacity; background-color: #222;
+  border-radius: 45% 55% 50% 50% / 50% 55% 45% 50%;
+}
+
+
+/* ======================= Mountain Interactive Styles (Revised) ======================= */
+
+.funfact-instruction {
+  text-align: center;
+  margin: 0;
+  font-size: 0.9rem;
+  font-style: italic;
+  font-family: 'Pretendard', sans-serif;
+  color: #888;
+  opacity: 0.8;
+  max-width: 90%;
+}
+
+.funfact-spacer {
+  width: 100%;
+  transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mountain-interactive-container {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  cursor: default;
+  z-index: 5;
+}
+
+.mountain-background-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  user-select: none;
+  pointer-events: none;
+  filter: grayscale(30%) contrast(1.1);
+}
+
+.sparkle-dot {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background-color: rgba(220, 220, 220, 0.8);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.7), 0 0 12px rgba(220, 220, 220, 0.5);
+  cursor: var(--cursor-grab2);
+  transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), background-color 0.4s ease, box-shadow 0.4s ease;
+  animation: sparkleAnimation 2.5s infinite ease-in-out alternate;
+  will-change: transform, opacity, box-shadow;
+  transform-origin: center center;
+}
+
+.sparkle-dot:hover {
+  transform: scale(2.2) !important;
+}
+
+.sparkle-dot.is-active {
+  background-color: #ff8e8e;
+  box-shadow: 0 0 12px #ff8e8e, 0 0 20px rgba(255, 142, 142, 0.7);
+  animation: none;
+  transform: scale(1.5);
+  opacity: 1;
+}
+
+@keyframes sparkleAnimation {
+  0% { opacity: 0.7; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 0.7; transform: scale(0.95); }
+}
+
+@keyframes floatAnimation {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(-3px, 4px) rotate(-0.4deg); }
+  50% { transform: translate(2px, -3px) rotate(0.3deg); }
+  75% { transform: translate(3px, 2px) rotate(0.4deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.funfact-card .fact-text-content .meaning-chunk {
+  display: inline;
+  line-height: inherit;
+}
+
+/* ======================= LOTTIE Icon Styles ======================= */
+.lottie-icon-container {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 0.8rem;
+  position: relative;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Default Lottie animation style */
+.lottie-animation {
+  width: 70%;
+  height: 70%;
+  transform: scale(1.8);
+}
+
+/* 2nd card ('Certified Sensory Player') icon style */
+.funfact-card[data-fact-id="sensory-player"] .lottie-animation {
+  width: 90%;
+  height: 90%;
+}
+
+/* 3rd and 4th card icon style */
+.funfact-card[data-fact-id="piano-precision"] .lottie-animation,
+.funfact-card[data-fact-id="holistic-experience"] .lottie-animation {
+  width: 50%;
+  height: 50%;
+}
+
+/* ======================= FUN FACTS Card Active Layout Changes ======================= */
+
+.funfact-card.is-active-fact {
+  display: flex; /* Makes the card visible */
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  /* GSAP가 opacity와 transform을 제어합니다. */
+}
+
+/* [Modified] Blob-like entry and exit animations for funfact cards */
+/* CSS 애니메이션은 border-radius만 제어합니다. */
+.funfact-card.blob-enter {
+  animation: funfactBlobBorderRadiusIn 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.funfact-card.blob-exit {
+  animation: funfactBlobBorderRadiusOut 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* 등장 애니메이션 (border-radius만) */
+@keyframes funfactBlobBorderRadiusIn {
+  0% { border-radius: 0% 100% 0% 100% / 0% 100% 0% 100%; }
+  50% { border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%; }
+  100% { border-radius: 12px; }
+}
+
+/* 퇴장 애니메이션 (border-radius 및 filter) */
+@keyframes funfactBlobBorderRadiusOut {
+  0% {
+    border-radius: 12px;
+    filter: blur(0px); /* 초기 블러 없음 */
+  }
+  50% {
+    border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%; /* 자연스러운 원으로 수축 */
+    filter: blur(3px); /* 중간 블러 적용 */
+  }
+  100% {
+    border-radius: 50%; /* 완전히 원형으로 사라지게 */
+    filter: blur(10px); /* 최대 블러 적용 */
+  }
+}
+
+
+/* [Correction 1] Reduced icon container size and margin to make space for longer titles */
+.funfact-card.is-active-fact .lottie-icon-container {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 0;
+  margin-right: 0.8rem; /* Slightly reduced margin */
+  flex-shrink: 0;
+}
+
+/* [Correction 2] Slightly reduced title font size to prevent overflow */
+.funfact-card.is-active-fact h3 {
+  flex-grow: 1;
+  font-size: 1.3rem; /* Slightly reduced font size */
+}
+
+.funfact-card.is-active-fact .fact-text-content {
+  flex-basis: 100%;
+  margin-top: 0.8rem;
+}

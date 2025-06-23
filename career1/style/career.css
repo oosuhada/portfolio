@@ -1,0 +1,300 @@
+/* career.css */
+/* General/Utility Styles and Root Variables */
+
+:root {
+    /* Color variables - These are placeholders and could be removed if not directly used */
+    --gray-main: #222;
+    --gray-sub: #444;
+    --gray-border: #e1e1e1;
+    --gray-bg: #fafafb;
+    --gray-card: #fff;
+    --gray-dot: #bbb;
+    --gray-tag: #f0f0f0;
+    --gray-tag-hover: #bbb;
+
+    /* Dark Theme Colors (Your Original Colors - Default) */
+    --dark-bg: #000000; /* Original black background */
+    --dark-text: #ffffff; /* Original white text */
+    --dark-accent: #007bff; /* Example accent color (can be adjusted) */
+    --dark-secondary: #333; /* Dark gray for secondary elements */
+    --dark-primary-color: #1a202c; /* Original primary color for header */
+    --dark-ctx-primary-fg-primary: #ffffff; /* Original marquee text color (white) */
+    --dark-ctx-primary-fg-secondary: #c0c0c0; /* Original lighter gray for secondary marquee text */
+    --dark-section-title-inactive-bg: #1a202c; /* Original inactive title background */
+    --dark-section-title-inactive-text: #c0c0c0; /* Original inactive title text color */
+    --dark-section-title-active-bg: #000000; /* Original active title background */
+    --dark-section-title-active-text: #ffffff; /* Original active title text color */
+    --dark-timeline-content-bg: #111; /* Original timeline content background */
+    --dark-timeline-content-text: #fff; /* Original timeline content text */
+    --dark-item-subtitle-text: #9ca3af; /* Original subtitle text */
+    --dark-item-period-text: #6b7280; /* Original period text */
+    --dark-item-border: #d1d5db; /* Original item border (light gray, appears on dark background) */
+    --dark-item-hover-bg: rgba(30, 30, 30, 0.68); /* Original item hover background */
+    --dark-marquee-item-hover-bg: #555; /* Adjusted for contrast on dark bg */
+    --dark-marquee-item-hover-color: #eee; /* Adjusted for contrast on dark bg */
+    --dark-marquee-fade-bg: #000000; /* Original marquee fade background */
+    --dark-list-item-inactive-text: #333333; /* Original inactive list item text */
+
+
+    /* Light Theme Colors (Inverted from your original Dark Mode) */
+    --light-bg: #ffffff; /* Inverted background */
+    --light-text: #000000; /* Inverted text */
+    --light-accent: #007bff; /* Can keep same or adjust */
+    --light-secondary: #cccccc; /* Lighter gray for secondary elements */
+    --light-primary-color: #e5dfd3; /* Lighter primary for header */
+    --light-ctx-primary-fg-primary: #000000; /* Dark text for light marquee */
+    --light-ctx-primary-fg-secondary: #404040; /* Darker gray for secondary marquee text */
+    --light-section-title-inactive-bg: #ffffff; /* Inverted inactive title background */
+    --light-section-title-inactive-text: #212121; /* Inverted inactive title text color */
+    --light-section-title-active-bg: #e0e0e0; /* Inverted active title background */
+    --light-section-title-active-text: #000000; /* Inverted active title text color */
+    --light-timeline-content-bg: #f8f8f8; /* Inverted timeline content background */
+    --light-timeline-content-text: #222; /* Inverted timeline content text */
+    --light-item-subtitle-text: #666666; /* Inverted subtitle text */
+    --light-item-period-text: #777777; /* Inverted period text */
+    --light-item-border: #2e2e2e; /* Inverted item border (dark gray, appears on light background) */
+    --light-item-hover-bg: rgba(220, 220, 220, 0.68); /* Inverted item hover background */
+    --light-marquee-item-hover-bg: #aaa; /* Adjusted for contrast on light bg */
+    --light-marquee-item-hover-color: #333; /* Adjusted for contrast on light bg */
+    --light-marquee-fade-bg: #ffffff; /* Inverted marquee fade background */
+    --light-list-item-inactive-text: #cccccc; /* Inverted inactive list item text */
+
+    /* Sizing variables */
+    --nav-header-height: 0px;
+    --diagonal-handle-thickness: 15px;
+    --glass-blur: 8px;
+    --glass-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    --glass-radius: 8px;
+
+    /* Highlight and accent colors (these might remain consistent or be themed) */
+    --main-highlight-color: #000000;
+    --main-accent-color: #00000081;
+
+    /* Experience Header Theme Variables (now based on global theme) */
+    --primary-color: var(--dark-primary-color); /* Default to dark theme's primary color */
+    --primary-content-color: var(--dark-text); /* Default to dark theme's content color */
+    --primary-opacity-25: rgba(26, 32, 44, 0.25); /* Default to dark theme's opacity */
+    --transition-duration: 0.3s;
+}
+
+/* Apply Dark Theme by default using data-theme="dark" */
+body[data-theme='dark'] {
+    /* These variables are already defined in :root as dark-*, so this block
+       primarily serves to explicitly set them if there were overrides */
+    --primary-color: var(--dark-primary-color);
+    --primary-content-color: var(--dark-text);
+    --primary-opacity-25: rgba(26, 32, 44, 0.25);
+
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+}
+
+/* Override with Light Theme when data-theme="light" */
+body[data-theme='light'] {
+    --primary-color: var(--light-primary-color);
+    --primary-content-color: var(--light-text);
+    --primary-opacity-25: rgba(255, 255, 255, 0.25); /* Adjusted for light theme */
+
+    background-color: var(--light-bg);
+    color: var(--light-text);
+}
+
+
+/* Ensure body has no margin/padding for full-screen elements */
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth theme transition */
+}
+
+#top-sentinel {
+    height: 0px;
+    width: 100%;
+    pointer-events: none;
+    visibility: hidden;
+}
+
+.header-section-container{
+    z-index: 10000;
+}
+
+.nav-header.experience-header-hidden-override {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    background-color: transparent;
+}
+
+.experience-content-wrapper {
+    position: relative;
+    z-index: 3;
+}
+
+.experience-main {
+    /* margin-bottom: 8rem; */
+    max-width: 100%;
+}
+
+.section-top-gap {
+    height: 4.5rem;
+    background-color: transparent;
+}
+body[data-theme="light"] .section-top-gap {
+    background-color: transparent; /* Apply light theme */
+}
+
+.section-bottom-gap {
+    height: 8rem;
+    background-color: var(--dark-bg); /* Default to dark theme */
+}
+body[data-theme="light"] .section-bottom-gap {
+    background-color: var(--light-bg); /* Apply light theme */
+}
+
+.section-bottom-gap2 {
+    height: 4rem;
+    background-color: var(--dark-bg); /* Default to dark theme */
+}
+body[data-theme="light"] .section-bottom-gap2 {
+    background-color: var(--light-bg); /* Apply light theme */
+}
+
+/* Utility for hover effects on text */
+.meaning-chunk {
+    cursor: var(--cursor-grab2);
+    transition: text-decoration 0.15s;
+    display: inline;
+    white-space: normal;
+}
+
+.meaning-chunk:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.22em;
+    text-decoration-thickness: 2px;
+}
+
+/* New Experience Header Styles */
+.experience-header {
+    position: fixed;
+    top: 10px;
+    z-index: 50;
+    width: 100%;
+    background-color: transparent;
+    transition: transform var(--transition-duration) ease, opacity var(--transition-duration) ease, visibility var(--transition-duration) ease;
+}
+
+.experience-header.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-100%);
+    background-color: transparent;
+}
+
+.experience-header:not(.hidden) {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    background-color: transparent;
+}
+
+.header-inner {
+    /* max-width: 1200px; */
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: transparent;
+}
+
+.button-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-right: 1rem;
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    color: var(--primary-content-color);
+    background: transparent;
+    border: 1px solid var(--primary-content-color);
+    border-radius: 0.375rem;
+    text-decoration: none;
+    cursor: var(--cursor-grab2);
+    transition: background-color var(--transition-duration), color var(--transition-duration);
+}
+
+.button:hover {
+    background-color: var(--primary-content-color);
+    color: var(--primary-color);
+}
+
+.theme-toggle {
+    padding: 0.5rem;
+    border: none;
+    background: none;
+    cursor: var(--cursor-grab2);
+    position: relative;
+    width: 2rem;
+    height: 2rem;
+}
+
+.theme-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    stroke: var(--primary-content-color);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform var(--transition-duration), opacity var(--transition-duration);
+}
+
+.theme-icon.hidden {
+    transform: translate(-50%, -50%) rotate(-90deg);
+    opacity: 0;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+#full-screen-bg-section {
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--dark-bg); /* Default to dark theme */
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+body[data-theme="light"] #full-screen-bg-section {
+    background-color: var(--light-bg); /* Apply light theme */
+}
+
+/* Ensure foreground content is positioned relative and has a higher z-index */
+#main-content-wrapper {
+    position: relative;
+    z-index: 1;
+    background-color: transparent;
+}
+
+/* Ensure the black background is maintained for the top sections */
+header, .hero-section-winery, #skills-showcase-section {
+    position: relative;
+    z-index: 2;
+}

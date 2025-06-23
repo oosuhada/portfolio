@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Career | Oosu Portfolio</title>
+    <link rel="icon" type="image/png" href="../apple-touch-icon.png" />
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+    <link rel="stylesheet" href="../common/common.css" />
+    <link rel="stylesheet" href="style/career.css" />
+    <link rel="stylesheet" href="style/hero.css" />
+    <link rel="stylesheet" href="style/texthero.css" />
+    <link rel="stylesheet" href="style/timeline.css">
+    <link rel="stylesheet" href="style/marquee.css">
+    <link rel="stylesheet" href="style/grapefooter.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&family=LXGW+WenKai+Mono+TC&family=Noto+Serif+TC:wght@200..900&family=Noto+Serif+TC:wght@200..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet" />
+    <span style="position:absolute; left:-9999px; font-family:'Noto Serif TC',serif;">測試志才愛求導</span>
+    <span style="position:absolute; left:-9999px; font-family:'East Sea Dokdo',cursive;">가나다라마바사</span>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+</head>
+<body data-theme="dark">
+    <div id="preloader">
+        <div class="loading-text" id="loadingText">Oosu</div>
+    </div>
+
+    <div id="top-sentinel"></div>
+
+    <div class="header-section-container">
+        <header class="nav-header" aria-label="Main Navigation">
+            <div class="nav-top-row">
+                <button class="nav-toggle-btn" aria-label="Toggle navigation menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="nav-title">Oosu Portfolio</div>
+            </div>
+            <nav class="nav-menu nav-center" id="accordionNavMenu">
+                <a href="../portfolioMain/portfolio.html" data-nav="portfolio" aria-current="page">
+                    <span class="nav-text-wrapper">✧</span>
+                    <span class="visually-hidden">Portfolio</span>
+                </a>
+                <a href="../about/about.html" data-nav="about">
+                    <span class="nav-text-wrapper">?</span>
+                    <span class="visually-hidden">About</span>
+                </a>
+                <a href="../career/career.html" data-nav="career">
+                    <span class="nav-text-wrapper">⌗</span>
+                    <span class="visually-hidden">career</span>
+                </a>
+                <a href="../lab/lab.html" data-nav="lab">
+                    <span class="nav-text-wrapper">:</span>
+                    <span class="visually-hidden">Lab</span>
+                </a>
+                <a href="../connect/connect.html" data-nav="connect">
+                    <span class="nav-text-wrapper">⌲</span>
+                    <span class="visually-hidden">Connect</span>
+                </a>
+            </nav>
+        </header>
+    
+        <header class="experience-header normal" id="experience-header">
+            <div class="header-inner">
+                <div class="button-group">
+                    <a href="/path/to/resume.pdf" download class="button">
+                        Resume
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </a>
+                    <a href="/path/to/portfolio.pdf" download class="button">
+                        Portfolio
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </a>
+                    <button class="theme-toggle" aria-label="Toggle theme">
+                        <svg id="sun-icon" class="theme-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg id="moon-icon" class="theme-icon hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                        <span class="sr-only">Toggle theme</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+    </div>
+    <div id="main-content-wrapper">
+        <main class="experience-main">
+            <section class="hero-section-winery" id="hero-section">
+                <div class="hero-winery-bg">
+                    <video autoplay loop muted playsinline id="heroVideo" poster="./asset/career.jpg">
+                        <source src="./asset/career.mp4" type="video/mp4">
+                        <source src="./asset/career.webm" type="video/webm">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="hero-content">
+                    <h2 class="hero-text-overlay">
+                        <span class="line-1">From Vine to Wine,</span>
+                        <span class="line-2">Concept to Creation</span>
+                    </h2>
+                    <a href="#" class="scroll-down-btn" aria-label="Scroll down">
+                        <i class="fas fa-chevron-down"></i>
+                    </a>
+                </div>
+            </section>
+
+            <section id="skills-showcase-section">
+                <div class="skills-3d-container"></div>
+                <div class="color-overlay"></div>
+                
+                <div class="work-experience-intro center" style="margin-bottom: 20px;">
+                    <strong>
+                        <div class="section-top-gap" id="first-gap"></div>
+                        <span class="meaning-chunk" data-highlight-id="exp-intro1">Multidisciplinary UX/UI designer</span><br>
+                        <span class="meaning-chunk" data-highlight-id="exp-intro2">with end-to-end experience</span><br>
+                        <span class="meaning-chunk" data-highlight-id="exp-intro3">from planning to technical execution.</span><br>
+                    </strong>
+                </div>
+                <ul id="list-item-wrapper">
+                    <li class="list-item ux-ui-design-icon timeline-chunk" data-highlight-id="skill-ux-ui-design">UX/UI Design</li>
+                    <li class="list-item user-experience-icon timeline-chunk" data-highlight-id="skill-user-experience">User Experience</li><br>
+                    <li class="list-item user-interface-icon timeline-chunk" data-highlight-id="skill-user-interface">User Interface</li>
+                    <li class="list-item business-strategy-icon timeline-chunk" data-highlight-id="skill-business-strategy">Business Strategy</li><br>
+                    <li class="list-item data-analysis-icon timeline-chunk" data-highlight-id="skill-data-analysis">Data Analysis</li>
+                    <li class="list-item market-research-icon timeline-chunk" data-highlight-id="skill-market-research">Market Research</li><br>
+                    <li class="list-item consumer-insights-icon timeline-chunk" data-highlight-id="skill-consumer-insights">Consumer Insights</li>
+                    <li class="list-item customer-journey-icon timeline-chunk" data-highlight-id="skill-customer-journey">Customer Journey</li><br>
+                    <li class="list-item branding-icon timeline-chunk" data-highlight-id="skill-branding">Branding</li>
+                    <li class="list-item marketing-strategy-icon timeline-chunk" data-highlight-id="skill-marketing-strategy">Marketing Strategy</li><br>
+                    <li class="list-item digital-transformation-icon timeline-chunk" data-highlight-id="skill-digital-transformation">Digital Transformation</li>
+                    <li class="list-item app-development-icon timeline-chunk" data-highlight-id="skill-app-development">App Development</li><br>
+                    <li class="list-item flutter-icon timeline-chunk" data-highlight-id="skill-flutter">Flutter</li>
+                    <li class="list-item frontend-development-icon timeline-chunk" data-highlight-id="skill-frontend-development">Frontend Development</li><br>
+                    <li class="list-item project-management-icon timeline-chunk" data-highlight-id="skill-project-management">Project Management</li>
+                    <li class="list-item leadership-icon timeline-chunk" data-highlight-id="skill-leadership">Leadership</li><br>
+                    <li class="list-item entrepreneurship-icon timeline-chunk" data-highlight-id="skill-entrepreneurship">Entrepreneurship</li>
+                    <li class="list-item client-management-icon timeline-chunk" data-highlight-id="skill-client-management">Client Management</li><br>
+                    <li class="list-item problem-solving-icon timeline-chunk" data-highlight-id="skill-problem-solving">Problem Solving</li>
+                    <li class="list-item user-centered-icon timeline-chunk" data-highlight-id="skill-user-centered">User-Centered</li><br>
+                    <li class="list-item omnichannel-icon timeline-chunk" data-highlight-id="skill-omnichannel">Omnichannel</li>
+                    <li class="list-item design-thinking-icon timeline-chunk" data-highlight-id="skill-design-thinking">Design Thinking</li><br>
+                    <li class="list-item prototyping-icon timeline-chunk" data-highlight-id="skill-prototyping">Prototyping</li>
+                    <li class="list-item user-testing-icon timeline-chunk" data-highlight-id="skill-user-testing">User Testing</li><br>
+                    <li class="list-item communication-icon timeline-chunk" data-highlight-id="skill-communication">Communication</li>
+                    <li class="list-item hospitality-icon timeline-chunk" data-highlight-id="skill-hospitality">Hospitality</li><br>
+                    <li class="list-item retail-icon timeline-chunk" data-highlight-id="skill-retail">Retail</li>
+                    <li class="list-item startup-icon timeline-chunk" data-highlight-id="skill-startup">Startup</li>
+                </ul>
+                <main>
+                    <section id="panel1-img">
+                        </section>
+                </main>
+            </section>
+
+            <div class="experience-content-wrapper" id="timeline-wrapper">
+                <!-- <div class="section-top-gap"></div> -->
+                <div class="timeline-section-container">
+                    <div class="section-row" id="sectionRow">
+                        <div class="section-title active" data-idx="0">
+                            <span class="section-title-text">Work Work Work Work Work Work Work Work Work Work</span>
+                        </div>
+                        <div class="section-title" data-idx="1">
+                            <span class="section-title-text">Education Education Education Education Education Education</span>
+                        </div>
+                        <div class="section-title" data-idx="2">
+                            <span class="section-title-text">Awards Awards Awards Awards Awards Awards Awards Awards</span>
+                        </div>
+
+                        <div class="section-content-area active-content" id="work-experience-content">
+                            <section id="work-experience" class="flex-col-center">
+                                <div class="main-section-header">
+                                    <h1 class="main-title">
+                                        <span class="phrase"><span><span>Transforming</span></span><span><span>business</span></span><span><span>challenges</span></span><span><span>into</span></span><span><span>innovative</span></span><span><span>solutions</span></span><span><span>through</span></span><span><span>design-driven</span></span><span><span>experiences.</span></span></span>
+                                    </h1>
+                                    <p class="sub-description">
+                                        <span class="meaning-chunk" data-highlight-id="work-desc-1">My professional journey spans entrepreneurship,</span>
+                                        <span class="meaning-chunk" data-highlight-id="work-desc-2">data analytics, and consumer experience design,</span>
+                                        <span class="meaning-chunk" data-highlight-id="work-desc-3">consistently focusing on creating meaningful connections</span>
+                                        <span class="meaning-chunk" data-highlight-id="work-desc-4">between brands and their audiences</span>
+                                        <span class="meaning-chunk" data-highlight-id="work-desc-5">through strategic thinking and creative execution.</span>
+                                    </p>
+                                </div>
+                                <div class="items-list-container">
+                                    <div class="item-container timeline-card">
+                                        <div class="item-column-left">
+                                            <h2 class="item-heading">Founder & CEO</h2>
+                                            <p class="item-subtitle">OOSU SALON YEONNAM</p>
+                                        </div>
+                                        <div class="item-column-right">
+                                            <p class="item-description-text">
+                                                <span class="meaning-chunk" data-highlight-id="oosu-desc-1">Led comprehensive business strategy,</span>
+                                                <span class="meaning-chunk" data-highlight-id="oosu-desc-2">spatial design, and customer experience optimization</span>
+                                                <span class="meaning-chunk" data-highlight-id="oosu-desc-3">for a Seoul wine bar,</span>
+                                                <span class="meaning-chunk" data-highlight-id="oosu-desc-4">achieving sustainable operational success</span>
+                                                <span class="meaning-chunk" data-highlight-id="oosu-desc-5">through customer-centric service innovation.</span>
+                                            </p>
+                                            <p class="item-period-text">Feb 2020 - Jan 2025</p>
+                                        </div>
+                                    </div>
+                                    <div class="item-container timeline-card">
+                                        <div class="item-column-left">
+                                            <h2 class="item-heading">Global Key Account Manager</h2>
+                                            <p class="item-subtitle">GfK Retail and Technology Korea</p>
+                                        </div>
+                                        <div class="item-column-right">
+                                            <p class="item-description-text">
+                                                <span class="meaning-chunk" data-highlight-id="gfk-desc-1">Managed Samsung global accounts,</span>
+                                                <span class="meaning-chunk" data-highlight-id="gfk-desc-2">delivering strategic business insights</span>
+                                                <span class="meaning-chunk" data-highlight-id="gfk-desc-3">through consumer behavior data analysis and market research</span>
+                                                <span class="meaning-chunk" data-highlight-id="gfk-desc-4">to drive data-driven decision making.</span>
+                                            </p>
+                                            <p class="item-period-text">Apr 2018 - Mar 2019</p>
+                                        </div>
+                                    </div>
+                                    <div class="item-container timeline-card">
+                                        <div class="item-column-left">
+                                            <h2 class="item-heading">Marketing / MD Intern</h2>
+                                            <p class="item-subtitle">Ermenegildo Zegna Korea</p>
+                                        </div>
+                                        <div class="item-column-right">
+                                            <p class="item-description-text">
+                                                <span class="meaning-chunk" data-highlight-id="zegna-desc-1">Analyzed luxury fashion customer journeys</span>
+                                                <span class="meaning-chunk" data-highlight-id="zegna-desc-2">and omnichannel touchpoints,</span>
+                                                <span class="meaning-chunk" data-highlight-id="zegna-desc-3">developing targeted marketing strategies</span>
+                                                <span class="meaning-chunk" data-highlight-id="zegna-desc-4">based on high-value customer behavior insights.</span>
+                                            </p>
+                                            <p class="item-period-text">Dec 2017 - Feb 2018</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="section-content-area" id="education-content" style="display: none;">
+                            <section id="education" class="flex-col-center">
+                                <div class="main-section-header">
+                                    <h1 class="main-title">
+                                        <span class="phrase"><span><span>Building</span></span><span><span>expertise</span></span><span><span>through</span></span><span><span>continuous</span></span><span><span>learning</span></span><span><span>and</span></span><span><span>practical</span></span><span><span>application.</span></span></span>
+                                    </h1>
+                                    <p class="sub-description">
+                                        <span class="meaning-chunk" data-highlight-id="edu-desc-1">My educational foundation combines theoretical business knowledge</span>
+                                        <span class="meaning-chunk" data-highlight-id="edu-desc-2">with hands-on design and technical skills,</span>
+                                        <span class="meaning-chunk" data-highlight-id="edu-desc-3">creating a unique perspective that bridges strategic thinking</span>
+                                        <span class="meaning-chunk" data-highlight-id="edu-desc-4">with creative execution and technical implementation.</span>
+                                    </p>
+                                </div>
+                                <div class="items-list-container">
+                                    <div class="item-container timeline-card">
+                                        <div class="item-column-left">
+                                            <h2 class="item-heading">UX/UI Design Course</h2>
+                                            <p class="item-subtitle">Seoul City Digital Training Program</p>
+                                        </div>
+                                        <div class="item-column-right">
+                                            <p class="item-description-text">
+                                                <span class="meaning-chunk" data-highlight-id="uxui-course-desc-1">Comprehensive UX/UI design training covering user research,</span>
+                                                <span class="meaning-chunk" data-highlight-id="uxui-course-desc-2">prototyping, and design thinking methodologies</span>
+                                                <span class="meaning-chunk" data-highlight-id="uxui-course-desc-3">through systematic project-based learning.</span>
+                                            </p>
+                                            <p class="item-period-text">Apr 2025 - Jul 2025</p>
+                                        </div>
+                                    </div>
+                                    <div class="item-container timeline-card">
+                                        <div class="item-column-left">
+                                            <h2 class="item-heading">Programming Course</h2>
+                                            <p class="item-subtitle">Korea Digital Training Bootcamp by Team Sparta</p>
+                                        </div>
+                                        <div class="item-column-right">
+                                            <p class="item-description-text">
+                                                <span class="meaning-chunk" data-highlight-id="programming-course-desc-1">Intensive Flutter app development bootcamp focusing on bridging design and development,</span>
+                                                <span class="meaning-chunk" data-highlight-id="programming-course-desc-2">enhancing technical implementation skills</span>
+                                                <span class="meaning-chunk" data-highlight-id="programming-course-desc-3">for UX/UI design.</span>
+                                            </p>
+                                            <p class="item-period-text">Oct 2024 - Feb 2025</p>
+                                        </div>
+                                    </div>
+                                    <div class="item-container timeline-card">
+                                        <div class="item-column-left">
+                                            <h2 class="item-heading">Business Administration / Media Communication</h2>
+                                            <p class="item-subtitle">Hankuk University Of Foreign Studies</p>
+                                        </div>
+                                        <div class="item-column-right">
+                                            <p class="item-description-text">
+                                                <span class="meaning-chunk" data-highlight-id="hufs-desc-1">Double major providing comprehensive foundation in business strategy,</span>
+                                                <span class="meaning-chunk" data-highlight-id="hufs-desc-2">marketing, consumer behavior, and communication theory</span>
+                                                <span class="meaning-chunk" data-highlight-id="hufs-desc-3">for user-centered design approach.</span>
+                                            </p>
+                                            <p class="item-period-text">Mar 2012 - Dec 2017</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="section-content-area" id="awards-content" style="display: none;">
+                            <section id="awards" class="flex-col-center">
+                                <div class="main-section-header">
+                                    <h1 class="main-title">
+                                        <span class="phrase"><span><span>Recognition</span></span><span><span>for</span></span><span><span>innovation,</span></span><span><span>creativity,</span></span><span><span>and</span></span><span><span>strategic</span></span><span><span>excellence.</span></span></span>
+                                    </h1>
+                                    <p class="sub-description">
+                                        <span class="meaning-chunk" data-highlight-id="awards-desc-1">Throughout my academic and early professional journey,</span>
+                                        <span class="meaning-chunk" data-highlight-id="awards-desc-2">I've been recognized for creative problem-solving,</span>
+                                        <span class="meaning-chunk" data-highlight-id="awards-desc-3">strategic thinking, and innovative approach</span>
+                                        <span class="meaning-chunk" data-highlight-id="awards-desc-4">to business challenges across various industries and platforms.</span>
+                                    </p>
+                                </div>
+                                <div class="items-list-container">
+                                    <div class="item-container timeline-card">
+                                        <div class="item-column-left">
+                                            <h2 class="item-heading">Excellence Award</h2>
+                                            <p class="item-subtitle">SK Better World - 4th Industrial Revolution Ideas Competition</p>
+                                        </div>
+                                        <div class="item-column-right">
+                                            <p class="item-description-text">
+                                                <span class="meaning-chunk" data-highlight-id="sk-award-desc-1">Recognized for innovative fourth industrial revolution concept,</span>
+                                                <span class="meaning-chunk" data-highlight-id="sk-award-desc-2">demonstrating forward-thinking approach</span>
+                                                <span class="meaning-chunk" data-highlight-id="sk-award-desc-3">to emerging technologies and their societal impact.</span>
+                                            </p>
+                                            <p class="item-period-text">2017.07</p>
+                                        </div>
+                                    </div>
+                                    <div class="item-container timeline-card">
+                                        <div class="item-column-left">
+                                            <h2 class="item-heading">Grand Prize</h2>
+                                            <p class="item-subtitle">LG Electronics Styler IMC Competition</p>
+                                        </div>
+                                        <div class="item-column-right">
+                                            <p class="item-description-text">
+                                                <span class="meaning-chunk" data-highlight-id="lg-award-desc-1">Awarded highest recognition for integrated marketing communication strategy,</span>
+                                                <span class="meaning-chunk" data-highlight-id="lg-award-desc-2">showcasing exceptional brand positioning</span>
+                                                <span class="meaning-chunk" data-highlight-id="lg-award-desc-3">and consumer engagement expertise.</span>
+                                            </p>
+                                            <p class="item-period-text">2013.11</p>
+                                        </div>
+                                    </div>
+                                    <div class="item-container timeline-card">
+                                        <div class="item-column-left">
+                                            <h2 class="item-heading">Project Planning & Execution</h2>
+                                            <p class="item-subtitle">Korea Tourism Organization – Hanul Project</p>
+                                        </div>
+                                        <div class="item-column-right">
+                                            <p class="item-description-text">
+                                                <span class="meaning-chunk" data-highlight-id="kto-award-desc-1">Successfully planned and executed tourism promotion project</span>
+                                                <span class="meaning-chunk" data-highlight-id="kto-award-desc-2">in collaboration with Korea Tourism Organization,</span>
+                                                <span class="meaning-chunk" data-highlight-id="kto-award-desc-3">demonstrating project management and cultural marketing expertise.</span>
+                                            </p>
+                                            <p class="item-period-text">2013.06</p>
+                                        </div>
+                                    </div>
+                                    <div class="item-container timeline-card">
+                                        <div class="item-column-left">
+                                            <h2 class="item-heading">Best Promotion Team Selection</h2>
+                                            <p class="item-subtitle">Bausch & Lomb Korea Promotion</p>
+                                        </div>
+                                        <div class="item-column-right">
+                                            <p class="item-description-text">
+                                                <span class="meaning-chunk" data-highlight-id="bausch-award-desc-1">Selected as top promotional team</span>
+                                                <span class="meaning-chunk" data-highlight-id="bausch-award-desc-2">for innovative marketing execution,</span>
+                                                <span class="meaning-chunk" data-highlight-id="bausch-award-desc-3">demonstrating excellence in campaign development and brand activation.</span>
+                                            </p>
+                                            <p class="item-period-text">2013.02</p>
+                                        </div>
+                                    </div>
+                                    <div class="item-container timeline-card">
+                                        <div class="item-column-left">
+                                            <h2 class="item-heading">Finalist</h2>
+                                            <p class="item-subtitle">Korea Economic Daily-Lanxess Better Future English Presentation Contest</p>
+                                        </div>
+                                        <div class="item-column-right">
+                                            <p class="item-description-text">
+                                                <span class="meaning-chunk" data-highlight-id="ked-award-desc-1">Finalist recognition for English presentation</span>
+                                                <span class="meaning-chunk" data-highlight-id="ked-award-desc-2">on future sustainability topics,</span>
+                                                <span class="meaning-chunk" data-highlight-id="ked-award-desc-3">highlighting communication skills and global perspective</span>
+                                                <span class="meaning-chunk" data-highlight-id="ked-award-desc-4">on business challenges.</span>
+                                            </p>
+                                            <p class="item-period-text">2012.08</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-bottom-gap2"></div>
+                <div class="marquee-container" aria-hidden="true">
+                   </div>
+            </div>
+            <div id="full-screen-bg-section"></div>
+        </main>
+    </div>
+
+ <div class="grape-footer-quote-section" id="grape-footer-section">
+   <svg style="display: none;">
+    <filter id="noiseFilter">
+        <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.65"
+            numOctaves="3"
+            stitchTiles="stitch"
+            result="noise"
+        />
+        <feColorMatrix
+            in="noise"
+            type="matrix"
+            values="1 0 0 0 0
+                    0 1 0 0 0
+                    0 0 1 0 0
+                    0 0 0 1 0"
+        />
+        <feComponentTransfer>
+            <feFuncR type="linear" slope="2" intercept="-0.5" />
+            <feFuncG type="linear" slope="2" intercept="-0.5" />
+            <feFuncB type="linear" slope="2" intercept="-0.5" />
+        </feComponentTransfer>
+    </filter>
+
+    <filter id="rgbSplitFilter">
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" in="SourceGraphic" result="colorMatrix"/>
+        <feOffset in="colorMatrix" dx="-2" dy="0" result="red" />
+        <feOffset in="colorMatrix" dx="2" dy="0" result="cyan" />
+        <feColorMatrix in="red" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="redOnly" />
+        <feColorMatrix in="cyan" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" result="cyanOnly" />
+        <feBlend in="redOnly" in2="cyanOnly" mode="screen" />
+    </filter>
+
+    <filter id="chromaticAberrationFilter">
+        <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" result="colorMatrix"/>
+        <feComponentTransfer in="colorMatrix" result="redComp">
+            <feFuncR type="linear" slope="1" intercept="0"/>
+            <feFuncG type="linear" slope="0" intercept="0"/>
+            <feFuncB type="linear" slope="0" intercept="0"/>
+        </feComponentTransfer>
+        <feComponentTransfer in="colorMatrix" result="greenComp">
+            <feFuncR type="linear" slope="0" intercept="0"/>
+            <feFuncG type="linear" slope="1" intercept="0"/>
+            <feFuncB type="linear" slope="0" intercept="0"/>
+        </feComponentTransfer>
+        <feComponentTransfer in="colorMatrix" result="blueComp">
+            <feFuncR type="linear" slope="0" intercept="0"/>
+            <feFuncG type="linear" slope="0" intercept="0"/>
+            <feFuncB type="linear" slope="1" intercept="0"/>
+        </feComponentTransfer>
+        <feOffset in="redComp" dx="2" dy="0" result="offsetRed"/>
+        <feOffset in="greenComp" dx="-2" dy="0" result="offsetGreen"/>
+        <feOffset in="blueComp" dx="0" dy="0" result="offsetBlue"/>
+        <feBlend in="offsetRed" in2="offsetGreen" mode="screen" result="blendRG"/>
+        <feBlend in="blendRG" in2="offsetBlue" mode="screen"/>
+    </filter>
+</svg>
+    <div class="tv-container" id="tvContainer">
+        <div class="tv-screen-area" id="tvScreen">
+            <div class="screen-container">
+                <div class="screen-wrapper">
+                    <div class="screen-wrapper">
+                        <div class="screen-wrapper">
+                            <div class="video-content" id="videoContent">
+                                <div class="footer-image-container">
+                                    <img id="grapeFooterImg" src="images/footer1.png" alt="grape to wine" class="grape-footer-img"/>
+                                </div>
+                            </div>
+                            <canvas id="vcrNoiseCanvas" class="vcr"></canvas>
+                             <div class="grape-footer-text" id="grapeFooterText">Now,</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="static-effect" id="staticEffect">
+                <div class="noise-layer noise-layer-1"></div>
+                <div class="noise-layer noise-layer-2"></div>
+                <div class="noise-layer noise-layer-3"></div>
+            </div>
+            <div class="tv-turnon" id="tvTurnon"></div>
+            <div class="color-bars" id="colorBars"></div>
+
+            <div class="scanlines" id="scanlines"></div>
+            <div class="screen-glow" id="screenGlow"></div>
+            
+         <div class="settings-overlay" id="settingsOverlay">
+    <div class="settings-header">
+        <h2>Settings</h2>
+        <button id="closeSettingsBtn">X</button>
+    </div>
+    <div class="settings-content">
+        <div class="setting-item">
+            <label for="effectToggle_static">Static Effect:</label>
+            <input type="checkbox" id="effectToggle_static" checked>
+        </div>
+        <div class="setting-item">
+            <label for="effectToggle_vcr">VCR Noise:</label>
+            <input type="checkbox" id="effectToggle_vcr" checked>
+        </div>
+        <div class="setting-item">
+            <label for="effectToggle_scanlines">Scanlines:</label>
+            <input type="checkbox" id="effectToggle_scanlines" checked>
+        </div>
+        <div class="setting-item">
+            <label for="effectToggle_glow">Screen Glow:</label>
+            <input type="checkbox" id="effectToggle_glow" checked>
+        </div>
+        <div class="setting-item">
+            <label for="effectToggle_rgbSplit">RGB Split:</label>
+            <input type="checkbox" id="effectToggle_rgbSplit" checked> </div>
+        <div class="setting-item">
+            <label for="effectToggle_chromatic">Chromatic Aberration:</label>
+            <input type="checkbox" id="effectToggle_chromatic" checked> </div>
+        </div>
+</div>
+        </div>
+        <div class="tv-controls-panel">
+            <div class="tv-button channel-button" id="channelUpButton">CH+</div>
+            <div class="tv-button channel-button" id="channelDownButton">CH-</div>
+            <div class="tv-button settings-button" id="settingsButton">SET</div>
+            <div class="tv-dial" id="tvDial"></div>
+        </div>
+    </div>
+</div>
+
+<div id="closeBtn">×</div>
+               <div class="section-bottom-gap2"></div>
+    <footer>
+        <div class="footer-row">
+            <div class="footer-content">
+                <p>
+                    You've hit the footer,<br>
+                    thanks for stopping by.<br>
+                    Still curious?<br>
+                    → <a href="mailto:oosu.salon@gmail.com">oosu.salon@gmail.com</a>
+                </p>
+                <span class="footer-copyright">© Oosu Jang 2025</span>
+            </div>
+            <div id="lottie-container" style="width:200px; height:300px; position:relative; overflow:hidden;">
+                <div id="lottie-inner-section" style="
+                    position: absolute;
+                    left: 50%; top: 50%;
+                    width: 200px; height: 300px;
+                    transform: translate(-50%, -50%);
+                    pointer-events: none;
+                "></div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <script src="../common/common.js"></script>
+
+    <script type="module" src="./lib/three-module-min.js"></script>
+    <script type="module" src="./lib/GLTFLoader.js"></script>
+    
+    <script type="module" src="script/texthero.js"></script>
+
+    <script src="script/timeline.js"></script>
+    <script src="script/grapefooter.js"></script> 
+    <script src="script/career.js"></script>
+    <script src="script/marquee.js"></script>
+    
+    <script>
+        lottie.loadAnimation({
+            container: document.getElementById('lottie-inner-section'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'https://gist.githubusercontent.com/oosuhada/edf622d12dd2d57d22d625455daeef60/raw/a7b8e50648e223720ee86dffc57300d7e49ad7cd/footer_experience.json',
+            rendererSettings: {preserveAspectRatio: 'none'},
+        });
+    </script>
+</body>
+</html>

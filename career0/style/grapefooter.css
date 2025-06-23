@@ -1,0 +1,495 @@
+/* 섹션: TV 컨테이너를 페이지 중앙에 배치하는 역할 */
+.grape-footer-quote-section {
+    position: relative;
+    height: 70vh;
+    width: 100%;
+    padding: 100px 0 0px 0;
+    background-color: transparent;
+    overflow: hidden;
+}
+
+/* ========================================================== */
+/* NEW: z-index를 관리하기 위한 상태 클래스 추가 */
+/* ========================================================== */
+.tv-container.tv-on-top {
+    z-index: 9998; /* 다른 모든 요소를 덮을 수 있는 매우 높은 z-index */
+}
+
+/* TV 컨테이너: 기본 상태 */
+.tv-container {
+    position: relative;
+    z-index: 1;
+    width: 400px;
+    height: 365px;
+    margin: 0 auto;
+    background: linear-gradient(145deg, #333, #222);
+    border-radius: 12px;
+    border: 2px solid #1a1a1a;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.7), inset 0 4px 8px rgba(255,255,255,0.08), inset 0 -4px 8px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 25px;
+    cursor: var(--cursor-grab2);
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.5s, visibility 0.5s;
+    transform: translate3d(0, 0, 0);
+    z-index: 999;
+}
+
+/* TV 컨테이너: 전체 화면 상태 */
+.tv-container.fullscreen {
+    position: fixed;
+    top: 5%;
+    left: 5%;
+    width: 90%;
+    height: 90%;
+    border-radius: 0;
+    border-width: 0;
+    padding-top: 0;
+    justify-content: center;
+    cursor: default;
+    margin-top: 1rem;
+}
+
+/* TV 스크린 영역 */
+.tv-screen-area {
+    position: relative;
+    width: 86.67%;
+    height: 76.8%;
+    background: #111;
+    border-radius: 8px;
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+    overflow: hidden;
+    transition: width 1s, height 1s, border-radius 1s, margin-bottom 1s;
+    z-index: 1; /* Ensure this is lower than settings-overlay's z-index */
+}
+
+/* 전체 화면일 때의 스크린 스타일 */
+.tv-container.fullscreen .tv-screen-area {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    margin-bottom: 0;
+}
+
+/* TV가 전체화면일 때 섹션을 그대로 유지 */
+.tv-container.fullscreen ~ footer {
+    padding-top: 400px;
+    transition: padding-top 1s ease;
+}
+
+/* 기존 TV 효과들 (Static, Glow, TurnOn 등) */
+/* video-content의 opacity는 js에서 관리하므로 제거 */
+.static-effect,
+.scanlines,
+.screen-glow,
+.color-bars,
+.tv-turnon {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.tv-turnon {
+    width: 0;
+    height: 2px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.color-bars {
+    background: linear-gradient(90deg, #fff 14.28%, #ff0 28.56%, #0ff 42.84%, #0f0 57.12%, #f0f 71.4%, #f00 85.68%, #00f 100%);
+}
+
+.scanlines {
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.2) 2px, rgba(0, 0, 0, 0.2) 3px);
+    z-index: 10; /* 비디오 콘텐츠 및 VCR 노이즈 위에 위치 */
+}
+
+.screen-glow {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120%;
+    height: 120%;
+    background: radial-gradient(circle, rgba(100, 180, 255, 0.15) 0%, transparent 70%);
+    z-index: 9; /* 스캔라인 아래, 비디오 콘텐츠 위에 위치 */
+}
+
+.static-effect {
+    overflow: hidden;
+    z-index: 4; /* VCR 노이즈 위에 있지만, scanlines, glow, settings-overlay 아래 */
+}
+
+.noise-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    mix-blend-mode: screen;
+}
+
+.noise-layer-1 { background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="noise1"><feTurbulence baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0"/></filter></defs><rect width="100%" height="100%" filter="url(%23noise1)" opacity="0.8"/></svg>'); background-size: 100px 100px; animation: staticMove1 0.1s infinite; }
+.noise-layer-2 { background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><defs><filter id="noise2"><feTurbulence baseFrequency="1.2" numOctaves="3" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0.2 0 0 0 0 0.2 0 0 0 0 0.2 0 0 0 1 0"/></filter></defs><rect width="100%" height="100%" filter="url(%23noise2)" opacity="0.6"/></svg>'); background-size: 80px 80px; animation: staticMove2 0.07s infinite; }
+.noise-layer-3 { background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><filter id="noise3"><feTurbulence baseFrequency="0.7" numOctaves="5" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 1 0"/></filter></defs><rect width="100%" height="100%" filter="url(%23noise3)" opacity="0.4"/></svg>'); background-size: 120px 120px; animation: staticMove3 0.13s infinite; }
+
+@keyframes staticMove1 { from { transform: translate(0, 0); } to { transform: translate(-5px, 5px); } }
+@keyframes staticMove2 { from { transform: translate(0, 0); } to { transform: translate(5px, -5px); } }
+@keyframes staticMove3 { from { transform: translate(0, 0); } to { transform: translate(3px, 3px); } }
+
+/* ========================================================== */
+/* NEW: 두 번째 코드에서 가져온 필터 효과 관련 CSS */
+/* ========================================================== */
+.screen-container {
+    width: 100%; /* 부모 tv-screen-area에 맞게 100%로 설정 */
+    height: 100%; /* 부모 tv-screen-area에 맞게 100%로 설정 */
+    overflow: hidden;
+    position: relative;
+    /* background-color: transparent; */ /* 기본 배경 제거 */
+    z-index: 1; /* 비디오 콘텐츠가 보이도록 z-index 설정 */
+}
+
+.screen-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.video-content { /* 기존 video-content를 screen-wrapper 내부에 재배치 */
+    position: relative; /* 자식 요소 포지셔닝을 위해 추가 */
+    width: 100%;
+    height: 100%;
+    background: transparent; /* 기존 background 스타일 제거. 자식 요소가 관리 */
+    z-index: 2; /* VCR 노이즈 아래에 위치 */
+    opacity: 0; /* JS에서 제어 */
+    display: flex; /* 내부 이미지/텍스트 중앙 정렬 유지 */
+    justify-content: center;
+    align-items: center;
+}
+
+.vcr { /* VCR 노이즈 캔버스 */
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3; /* video-content 위에 위치 */
+    opacity: 0.6; /* 기본 투명도. JS에서 제어 가능 */
+    pointer-events: none; /* 클릭 이벤트 방지 */
+}
+
+/* Update .video-content or its child if you apply filters to the image/text */
+.video-content .footer-image-container { /* or use .video-content directly if that's where the image is */
+    position: relative; /* Essential for filter to apply correctly */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Initial filters, will be overridden by JS for effects */
+    filter: saturate(1.5) hue-rotate(0deg) contrast(1.2) sepia(0.1); /* Base look */
+    transition: filter 0.3s ease; /* Smooth transition for filter changes */
+}
+
+/* ========================================================== */
+/* NEW: 설정 화면 오버레이 스타일 */
+/* ========================================================== */
+.settings-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%; /* Stays on the left side */
+    height: 100%;
+    background-color: rgba(0, 0, 128, 0.85); /* Slightly transparent blue */
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    z-index: 11; /* 스캔라인 및 다른 효과들 위에 위치 */
+}
+
+.settings-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.settings-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.settings-header h2 {
+    margin: 0;
+    font-size: 1.8em;
+    color: #fff;
+    text-shadow: 2px 2px #000;
+}
+
+#closeSettingsBtn {
+    background: none;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 1.5em;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+#closeSettingsBtn:hover {
+    background-color: #fff;
+    color: #000080;
+}
+
+.settings-content {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1em;
+    padding: 8px 0;
+    border-bottom: 1px dashed rgba(255,255,255,0.5);
+}
+
+.setting-item:last-child {
+    border-bottom: none;
+}
+
+.setting-item label {
+    flex-grow: 1;
+    cursor: pointer;
+}
+
+.setting-item input[type="checkbox"] {
+    transform: scale(1.5);
+    cursor: pointer;
+}
+
+/* 컨트롤 패널 및 버튼 */
+.tv-controls-panel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 90%;
+    gap: 15px;
+    margin-right: 25px;
+    margin-top: 15px;
+    margin-bottom: 30px;
+    cursor: var(--cursor-grab2);
+}
+
+.tv-dial {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #666, #333);
+    border: 2px solid #222;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.1);
+    position: relative;
+    cursor: var(--cursor-grab2); /* 커서 효과 추가 */
+    transition: transform 0.3s ease, background 0.3s ease; /* 호버 트랜지션 추가 */
+}
+
+.tv-dial::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 8px;
+    background: #ccc;
+    border-radius: 1px;
+}
+
+.tv-dial:hover {
+    transform: scale(1.15); /* 호버 시 약간 확대 */
+    background: linear-gradient(145deg, #777, #444); /* 호버 시 색상 변화 */
+}
+
+.tv-button {
+    width: 45px; /* 버튼 크기 키움 */
+    height: 25px; /* 버튼 크기 키움 */
+    border-radius: 5px; /* 둥근 사각형으로 변경 */
+    background: radial-gradient(circle at 40% 40%, #999, #444);
+    border: 1px solid #111;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1);
+    cursor: var(--cursor-grab2);
+    transition: transform 0.3s ease, background 0.3s ease;
+    display: flex; /* 텍스트 중앙 정렬 */
+    justify-content: center;
+    align-items: center;
+    color: #eee; /* 텍스트 색상 */
+    font-size: 0.9em; /* 텍스트 크기 */
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.tv-button:hover {
+    transform: scale(1.1); /* 호버 시 약간 확대 */
+    background: radial-gradient(circle at 40% 40%, #aaa, #555); /* 호버 시 색상 변화 */
+}
+
+.channel-button {
+    /* 채널 버튼에 대한 추가 스타일 (필요시) */
+}
+
+.settings-button {
+    /* 설정 버튼에 대한 추가 스타일 (필요시) */
+}
+
+/* 닫기 버튼 */
+#closeBtn {
+    position: fixed;
+    top: 70px;
+    right: 80px;
+    font-size: 2.5rem;
+    color: white;
+    background-color: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: var(--cursor-grab2);
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s, background-color 0.3s, transform 0.3s;
+}
+
+#closeBtn:hover {
+    background-color: rgba(255, 0, 0, 0.7);
+    transform: scale(1.1);
+}
+
+/* 포도 이미지 및 텍스트 */
+.footer-image-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.grape-footer-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.grape-footer-text {
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    text-align: center;
+    font-size: 1.2rem;
+    line-height: 1.4;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 6px;
+    padding: 0.8rem 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+    pointer-events: none;
+    font-weight: 500;
+    white-space: normal;
+}
+
+/* staticEffect의 z-index는 VCR 노이즈보다 낮게, TV 켜짐/컬러바보다는 높게 조정 */
+#staticEffect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    pointer-events: none;
+    opacity: 0; /* Default to hidden, controlled by GSAP */
+}
+
+/* Noise effect using SVG filter */
+@supports (filter: url(#noiseFilter)) {
+    #staticEffect.noise-active {
+        background: rgba(255, 255, 255, 0.1);
+        filter: url(#noiseFilter);
+    }
+}
+
+/* Optional: Add subtle scanlines */
+#staticEffect.noise-active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        transparent 0%,
+        transparent 2px,
+        rgba(0, 0, 0, 0.05) 2px,
+        rgba(0, 0, 0, 0.05) 4px
+    );
+    animation: scanline-flicker 0.1s infinite;
+}
+
+@keyframes scanline-flicker {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 0.4; }
+}
+
+@media (max-width: 700px) {
+    .grape-footer-quote-section {
+        padding: 2.0rem 0.6rem 4rem 0.6rem;
+        max-width: 96vw;
+    }
+    .grape-footer-text {
+        font-size: 1.05rem;
+    }
+    .grape-footer-img.zoomed-in {
+        width: 100%;
+        transform: scale(1);
+        max-width: 100%;
+    }
+    .tv-button { /* 모바일 환경에서 버튼 크기 조정 */
+        width: 35px;
+        height: 20px;
+        font-size: 0.8em;
+    }
+    .tv-dial { /* 모바일 환경에서 다이얼 크기 조정 */
+        width: 24px;
+        height: 24px;
+    }
+}
