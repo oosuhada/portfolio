@@ -10,7 +10,6 @@
 
 body, button, input, textarea, ::placeholder {
     font-family: "Roboto", sans-serif;
-    color: var(--text-color);
 }
 
 .intro-section {
@@ -35,7 +34,7 @@ body, button, input, textarea, ::placeholder {
     align-items: center;
     width: 100%;
     /* max-width: 1000px; */
-    padding: 3rem 2rem;
+    padding: 1rem 2rem;
 }
 
 .weather-section.hidden {

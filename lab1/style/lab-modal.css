@@ -1,90 +1,114 @@
-/* ======= Modal (Updated Version) ======= */
+/* Prevent background scroll when modal is open */
+body.modal-is-open {
+    overflow: hidden;
+}
+
+/* Fullscreen modal container */
 #card-modal {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     z-index: 2000;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: opacity 0.4s ease;
 }
 
-.modal-bg {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(40, 40, 40, 0.8);
-    z-index: 999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: background 0.5s, opacity 0.5s;
-}
-.modal-bg.active {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.modal-card {
-    width: 80vw;
-    max-width: 900px;
-    height: 80vh;
-    max-height: 600px;
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 8px 38px rgba(17, 17, 17, 0.1);
-    transform: scale(0.7);
-    opacity: 0;
-    transition: transform 0.65s cubic-bezier(.76,0,.24,1), opacity 0.4s;
-    display: flex;
-    flex-direction: column;
+/* Iframe container within the modal */
+.modal-iframe-container {
+    width: 100%;
+    height: 100%;
     position: relative;
-    will-change: transform, opacity;
-}
-.modal-bg.active .modal-card {
-    opacity: 1;
-    transform: scale(1);
+    background: #111; /* Fallback color while iframe loads */
 }
 
-.modal-content {
-    flex: 1;
-    overflow: hidden;
-    border-radius: 12px;
-    margin: 10px;
-}
-
-.modal-iframe {
+.modal-iframe-container iframe {
     width: 100%;
     height: 100%;
     border: none;
-    display: block;
+    background: #fff; /* White background for projects */
 }
 
-.modal-x {
-    font-family: Arial, sans-serif;
-    position: absolute;
-    right: 20px;
+/* Close button for the modal */
+.modal-close-btn {
+    position: fixed;
     top: 20px;
-    font-size: 2.1rem;
+    right: 25px;
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.5);
     color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    font-size: 24px;
     font-weight: bold;
-    cursor: var(--cursor-grab2);
-    opacity: 0.8;
-    transition: color 0.2s, transform 0.4s, opacity 0.3s;
-    z-index: 10;
-}
-.modal-x:hover {
-    color: #ffe1e1;
-    opacity: 1;
+    line-height: 38px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 2020; /* Highest z-index */
+    transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
-.modal-bg.zoom-out {
-    animation: zoomOutModal 0.45s cubic-bezier(.68,-0.55,.27,1.55) forwards;
+.modal-close-btn:hover {
+    transform: scale(1.1);
+    background: rgba(255, 0, 0, 0.7);
 }
-@keyframes zoomOutModal {
-    0% { opacity: 1; transform: scale(1); }
-    100% { opacity: 0; transform: scale(0.4); }
+
+/* START OF CHANGE: New styles for navigation and index */
+
+/* Common style for both navigation buttons */
+.modal-nav-btn {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    background: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    font-size: 28px;
+    font-weight: 300;
+    line-height: 42px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 2010; /* Below close button, above iframe */
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    user-select: none;
 }
+.modal-nav-btn:hover {
+    background: rgba(0, 0, 0, 0.7);
+    transform: translateY(-50%) scale(1.05);
+}
+
+/* Individual position for prev/next buttons */
+.modal-nav-btn.prev {
+    left: 25px;
+}
+.modal-nav-btn.next {
+    right: 25px;
+}
+
+/* Style for the index counter at the bottom */
+.modal-index-counter {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 2010;
+    pointer-events: none; /* Make it non-interactive */
+}
+/* END OF CHANGE */

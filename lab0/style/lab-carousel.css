@@ -1,406 +1,396 @@
-/* lab-carousel.css */
-
 .carousel-main.initial-carousel-space {
-    padding-top: 100vh;
-    box-sizing: border-box; /* 패딩이 전체 크기에 영향을 주도록 설정 */
+padding-top: 100vh;
+box-sizing: border-box; 
 }
 
-/* --- Hero 영역 --- */
 .carousel-hero {
-    position: absolute;
-    top: 8rem;
-    left: 0;
-    width: 100vw;
-    z-index: 900;
-    text-align: center;
-    opacity: 0; /* 초기엔 숨김 */
-    pointer-events: none; /* 초기엔 비활성화 */
+position: absolute;
+top: 8rem;
+left: 0;
+width: 100vw;
+z-index: 900;
+text-align: center;
+opacity: 0; 
+pointer-events: none; 
 }
 .big-hero-desc {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--poster-text-color); /* Theme-aware */
-    letter-spacing: -0.01em;
-    line-height: 1.3;
-    margin-bottom: 1.8rem;
+font-size: 1.6rem;
+font-weight: 700;
+color: var(--poster-text-color); 
+letter-spacing: -0.01em;
+line-height: 1.3;
+margin-bottom: 1.8rem;
 }
 .carousel-category-jump {
-    display: flex;
-    gap: 1.7rem;
-    justify-content: center;
-    margin-bottom: 0.2rem;
+display: flex;
+gap: 1.7rem;
+justify-content: center;
+margin-bottom: 0.2rem;
 }
 .category-jump-btn {
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
-    border: none;
-    background: #fff;
-    font-size: 1.65rem;
-    cursor: var(--cursor-grab2);
-    box-shadow: 0 2px 18px #ffd16644;
-    transition: background 0.18s, color 0.16s, transform 0.14s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+width: 2.5rem;
+height: 2.5rem;
+border-radius: 50%;
+border: none;
+background: #fff;
+font-size: 1.65rem;
+cursor: var(--cursor-grab2);
+box-shadow: 0 2px 18px #ffd16644;
+transition: background 0.18s, color 0.16s, transform 0.14s;
+display: flex;
+align-items: center;
+justify-content: center;
 }
 .category-jump-btn:hover,
 .category-jump-btn.active {
-    background: #ffd166;
-    color: #24243e;
-    transform: scale(1.12);
+background: #ffd166;
+color: #24243e;
+transform: scale(1.12);
 }
 
-/* === 메인 === */
 .carousel-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 90vh; /* 캐러셀이 차지할 최소 높이 */
-    justify-content: flex-end;
+display: flex;
+flex-direction: column;
+align-items: center;
+min-height: 90vh; 
+justify-content: flex-end;
 }
 
-/* 캐러셀 영역 확보를 위한 클래스 (carousel-main에 적용) */
 .initial-carousel-space {
-    /* carousel-hero + carousel의 대략적인 높이 */
-    min-height: calc(160px + 340px + 50px + 20px); /* top + carousel height + poster top + labels margin-top */
-    display: flex; /* 내부 요소 정렬을 위해 flex 사용 */
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end; /* carousel-section과 동일하게 하단 정렬 */
-    width: 100vw; /* 너비도 100% 확보 */
-    position: relative; /* carousel-hero의 absolute 포지셔닝 기준점 */
+min-height: calc(160px + 340px + 50px + 20px); 
+display: flex; 
+flex-direction: column;
+align-items: center;
+justify-content: flex-end; 
+width: 100vw; 
+position: relative; 
 }
 
 .carousel {
-    position: relative;
-    width: 98vw;
-    height: 340px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    pointer-events: auto;
-    z-index: 1;
+position: relative;
+width: 98vw;
+height: 340px;
+display: flex;
+align-items: flex-end;
+justify-content: center;
+pointer-events: auto;
+z-index: 1;
 }
 .poster {
-    opacity: 0;
-    width: 200px;
-    height: 280px;
-    margin: 0 -50px;
-    background-color: #eee; /* This will act as a base color behind the cover and texture */
-    color: var(--poster-text-color); /* Theme-aware text color */
-    font-size: 1.5rem;
-    font-family: 'Georgia', serif;
-    font-weight: bold;
-    box-shadow: var(--poster-box-shadow); /* Theme-aware shadow */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-start;
-    padding: 2.5rem 1.3rem 1.2rem 1.5rem;
-    cursor: var(--cursor-grabbing2);
-    transition: box-shadow 0.18s;
-    user-select: none;
-    position: absolute;
-    top: 50px;
-    will-change: transform, opacity, filter;
-    perspective: 1000px;
-    transform-style: preserve-3d;
-    border-radius: 7px;
-    /* text-shadow for readability on light/dark images */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+opacity: 0;
+width: 200px;
+height: 280px;
+margin: 0 -50px;
+background-color: #eee; 
+color: var(--poster-text-color); 
+font-size: 1.5rem;
+font-family: 'Georgia', serif;
+font-weight: bold;
+box-shadow: var(--poster-box-shadow); 
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+align-items: flex-start;
+padding: 2.5rem 1.3rem 1.2rem 1.5rem;
+cursor: var(--cursor-grabbing2);
+transition: box-shadow 0.18s;
+user-select: none;
+position: absolute;
+top: 50px;
+will-change: transform, opacity, filter;
+perspective: 1000px;
+transform-style: preserve-3d;
+border-radius: 7px;
+text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* Light Mode Specific Poster Styles */
 body[data-theme='light'] .poster {
-    filter: sepia(20%); /* Apply sepia filter only in light mode */
-    background-image: url('../papertexture.png'); /* Paper texture only in light mode */
-    background-size: cover;
-    background-position: center;
-    background-repeat: repeat;
-    background-blend-mode: multiply; /* Blends base color with texture */
+filter: sepia(20%); 
+background-image: url('../papertexture.png'); 
+background-size: cover;
+background-position: center;
+background-repeat: repeat;
+background-blend-mode: multiply; 
 }
 
-/* Dark Mode Specific Poster Styles */
 body[data-theme='dark'] .poster {
-    filter: none; /* Remove sepia filter in dark mode */
-    background-image: none; /* Remove paper texture in dark mode */
+filter: none; 
+background-image: none; 
 }
 
-
-/* Poster before/after elements (borders/shadows) */
 .poster::before {
-    content: '';
-    position: absolute;
-    top: -3px;
-    left: -6px;
-    width: 6px;
-    border-radius: 7px;
-    height: 100%;
-    transform: translateZ(-10px);
+content: '';
+position: absolute;
+top: -3px;
+left: -6px;
+width: 6px;
+border-radius: 7px;
+height: 100%;
+transform: translateZ(-10px);
 }
 .poster::after {
-    content: '';
-    position: absolute;
-    top: -6px;
-    left: -3px;
-    width: 100%;
-    border-radius: 7px;
-    height: 6px;
-    transform: translateZ(-10px);
+content: '';
+position: absolute;
+top: -6px;
+left: -3px;
+width: 100%;
+border-radius: 7px;
+height: 6px;
+transform: translateZ(-10px);
 }
 
-/* Theme-specific gradients for ::before and ::after */
 body[data-theme='light'] .poster::before {
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2));
+background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2));
 }
 body[data-theme='light'] .poster::after {
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2));
+background: linear-gradient(to right, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2));
 }
 
 body[data-theme='dark'] .poster::before,
 body[data-theme='dark'] .poster::after {
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
+background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
 }
 
+.poster-animation-art {
+background-image: url('../images/poster-animation-art.png'); 
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+background-color: rgba(0, 150, 199, 0.5); 
+background-blend-mode: overlay;
+}
+.poster-button-effect {
+background-image: url('../images/poster-button-effect.png');
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+background-color: rgba(244, 100, 48, 0.5); 
+background-blend-mode: overlay;
+}
+.poster-interactive-art {
+background-image: url('../images/poster-interactive-art.png');
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+background-color: rgba(120, 81, 169, 0.5); 
+background-blend-mode: overlay;
+}
+.poster-loading-effect {
+background-image: url('../images/poster-loading-effect.png');
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+background-color: rgba(255, 190, 11, 0.5); 
+background-blend-mode: overlay;
+}
+.poster-screensaver {
+background-image: url('../images/poster-screensaver.png');
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+background-color: rgba(27, 38, 59, 0.6); 
+background-blend-mode: overlay;
+}
+.poster-text-effect {
+background-image: url('../images/poster-text-effect.png');
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+background-color: rgba(217, 65, 129, 0.5); 
+background-blend-mode: overlay;
+}
 
-/* Specific poster types now define their primary background (cover image + color overlay) */
-.poster-creative {
-    background-image: url('../images/poster1cover.png'); /* Only the cover image */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: rgba(0, 161, 129, 0.5); /* Color overlay */
-    background-blend-mode: overlay; /* Use overlay blend to mix color with image */
-}
-.poster-sensory {
-    background-image: url('../images/poster2cover.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: rgba(255, 170, 43, 0.5);
-    background-blend-mode: overlay;
-}
-.poster-sports {
-    background-image: url('../images/poster3cover.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: rgba(139, 186, 230, 0.5);
-    background-blend-mode: overlay;
-}
-.poster-writing {
-    background-image: url('../images/poster4cover.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: rgba(255, 164, 211, 0.5);
-    background-blend-mode: overlay;
-}
-
-
-/* Book Binding and Binding Line Styles (Request 1 - Light Mode Only) */
 .book-binding {
-    position: absolute;
-    left: 10px;
-    top: 4px;
-    height: calc(100% - 8px);
-    width: 12px;
-    z-index: 5;
-    /* Transition for display property is not possible directly, but can fade */
-    transition: opacity 0.3s ease;
+position: absolute;
+left: 10px;
+top: 4px;
+height: calc(100% - 8px);
+width: 12px;
+z-index: 5;
+transition: opacity 0.3s ease;
 }
 body[data-theme='light'] .book-binding {
-    opacity: 1; /* Fully visible in light mode */
-    display: block; /* Ensure it's displayed */
+opacity: 1; 
+display: block; 
 }
 body[data-theme='dark'] .book-binding {
-    opacity: 0; /* Fully transparent in dark mode */
-    pointer-events: none; /* Make it unclickable in dark mode */
+opacity: 0; 
+pointer-events: none; 
 }
-/* This rule must come AFTER the .book-binding opacity rules */
 body[data-theme='dark'] .book-binding {
-    display: none; /* Hide the entire book binding structure in dark mode */
+display: none; 
 }
-
 
 .binding-line {
-    position: absolute;
-    filter: url(#yarnFilter); /* Apply SVG filter for yarn-like distortion */
-    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNCIgaGVpZ2h0PSI0IiB2aWV3Qm94PSIwIDAgNCA0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMCI+CiAgPHBhdGggZD0iTTAgMCBMNCA0IE00IDAgTDAgNCIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zIi8+CiA8L2h2Zz4=');
-    background-repeat: repeat;
-    background-blend-mode: multiply; /* Blends texture with background-color */
-    box-shadow: 0 0 1px rgba(0, 0, 0, 0.1); /* Very subtle shadow for depth */
+position: absolute;
+filter: url(#yarnFilter); 
+background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNCIgaGVpZ2h0PSI0IiB2aWV3Qm94PSIwIDAgNCA0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMCI+CiAgPHBhdGggZD0iTTAgMCBMNCA0IE00IDAgTDAgNCIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zIi8+CiA8L2h2Zz4=');
+background-repeat: repeat;
+background-blend-mode: multiply; 
+box-shadow: 0 0 1px rgba(0, 0, 0, 0.1); 
 }
 
 .binding-line.binding-main {
-    position: absolute;
-    left: 5px;
-    top: 0;
-    width: 2px;
-    height: 100%;
-    background: var(--book-binding-color); /* Theme-aware */
+position: absolute; left: 5px; top: 0; width: 2px; height: 100%; background: var(--book-binding-color); 
 }
 .binding-line.binding-top {
-    position: absolute;
-    left: 0;
-    top: -6px;
-    width: 12px;
-    height: 2px;
-    background: var(--book-binding-color); /* Theme-aware */
-    transform: translateZ(-10px);
-    opacity: 0;
+position: absolute; left: 0; top: -6px; width: 12px; height: 2px; background: var(--book-binding-color); transform: translateZ(-10px); opacity: 0;
 }
 .binding-line.binding-front-1 {
-    position: absolute;
-    filter: url(#roughYarnFilter);
-    left: -10px;
-    top: calc((280px / 3) * 3 + 0px);
-    width: 16px;
-    height: 2px;
-    background: var(--book-binding-color); /* Theme-aware */
+position: absolute; filter: url(#roughYarnFilter); left: -10px; top: calc((280px / 3) * 3 + 0px); width: 16px; height: 2px; background: var(--book-binding-color); 
 }
 .binding-line.binding-front-2 {
-    position: absolute;
-    filter: url(#roughYarnFilter);
-    left: -10px;
-    top: calc((280px / 3) * 2 - 20px);
-    width: 16px;
-    height: 2px;
-    background: var(--book-binding-color); /* Theme-aware */
+position: absolute; filter: url(#roughYarnFilter); left: -10px; top: calc((280px / 3) * 2 - 20px); width: 16px; height: 2px; background: var(--book-binding-color); 
 }
 .binding-line.binding-front-3 {
-    position: absolute;
-    filter: url(#roughYarnFilter);
-    left: -10px;
-    top: calc((280px / 3) * 1 - 40px);
-    width: 16px;
-    height: 2px;
-    background: var(--book-binding-color); /* Theme-aware */
+position: absolute; filter: url(#roughYarnFilter); left: -10px; top: calc((280px / 3) * 1 - 40px); width: 16px; height: 2px; background: var(--book-binding-color); 
 }
 .binding-line.binding-side-1 {
-    position: absolute;
-    left: -10px;
-    top: calc(280px / 4 - 5px);
-    width: 6px;
-    height: 2px;
-    background: var(--book-binding-color); /* Theme-aware */
-    transform: translateZ(-10px);
-    opacity: 0;
+position: absolute; left: -10px; top: calc(280px / 4 - 5px); width: 6px; height: 2px; background: var(--book-binding-color); transform: translateZ(-10px); opacity: 0;
 }
 .binding-line.binding-side-2 {
-    position: absolute;
-    left: -10px;
-    top: calc(280px / 2);
-    width: 6px;
-    height: 2px;
-    background: var(--book-binding-color); /* Theme-aware */
-    transform: translateZ(-10px);
-    opacity: 0;
+position: absolute; left: -10px; top: calc(280px / 2); width: 6px; height: 2px; background: var(--book-binding-color); transform: translateZ(-10px); opacity: 0;
 }
 .binding-line.binding-side-3 {
-    position: absolute;
-    left: -10px;
-    top: calc(3 * 280px / 4 + 5px);
-    width: 6px;
-    height: 2px;
-    background: var(--book-binding-color); /* Theme-aware */
-    transform: translateZ(-10px);
-    opacity: 0;
+position: absolute; left: -10px; top: calc(3 * 280px / 4 + 5px); width: 6px; height: 2px; background: var(--book-binding-color); transform: translateZ(-10px); opacity: 0;
 }
 .poster:hover {
-    box-shadow: var(--poster-hover-box-shadow); /* Theme-aware shadow */
+box-shadow: var(--poster-hover-box-shadow); 
 }
-
 
 .carousel-labels {
-    pointer-events: none;
-    width: 100vw;
-    text-align: center;
-    height: 0em;
-    margin-top: 20px;
-    position: relative;
+pointer-events: none; width: 100vw; text-align: center; height: 0em; margin-top: 20px; position: relative;
 }
 .carousel-labels .label {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    color: var(--gray-dark); /* This should probably be theme-aware too if used */
-    font-size: 1.05em;
-    font-family: 'Georgia', serif;
-    opacity: 0.7;
-    transform-origin: bottom center;
-    pointer-events: none;
+position: absolute; left: 50%; top: 0; color: var(--gray-dark); font-size: 1.05em; font-family: 'Georgia', serif; opacity: 0.7; transform-origin: bottom center; pointer-events: none;
 }
 
 .footer {
-    text-align: center;
-    color: var(--poster-text-color); /* Theme-aware */
-    font-size: 1.08rem;
-    margin: 2.2rem 0 1.1rem 0;
+text-align: center; color: var(--poster-text-color); font-size: 1.08rem; margin: 2.2rem 0 1.1rem 0;
 }
 
-/* Spacer DIV between main content and the standard footer on the hobby page */
 .footer-spacer-hobby {
-    height: 21rem;
-    width: 100%;
+height: 21rem; width: 100%;
 }
 
-/* Increase the height and adjust padding for the hobby page's standard footer */
 #hobbyPageStandardFooter {
-    min-height: 350px;
-    padding-top: 3rem;
-    padding-bottom: 4rem;
+min-height: 350px; padding-top: 3rem; padding-bottom: 4rem;
 }
 
-/* Optional: If you want to ensure the content within the footer is vertically centered */
 #hobbyPageStandardFooter .footer-row {
-    /* align-items: center; */
 }
 
-/* === Background Slideshow CSS (still for main content, not intro video) === */
 #background-slideshow {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 100vw;
-    height: 100vh;
-    z-index: -10; /* Keep it behind the main carousel */
-    background-color: var(--bg-slideshow-color); /* Theme-aware background color */
-    /* opacity is handled by JS for image fade, not container directly */
-    transform: translateZ(0) !important; /* GPU 가속 강제 적용 */
-    -webkit-transform: translateZ(0); /* 웹킷 브라우저용 */
-    backface-visibility: hidden; /* 일부 브라우저에서 깜빡임 방지 */
-    transition: background-color 0.3s ease; /* Smooth transition for background color */
+position: absolute; top: 0px; left: 0px; width: 100vw; height: 100vh; z-index: -10; background-color: var(--bg-slideshow-color); transform: translateZ(0) !important; -webkit-transform: translateZ(0); backface-visibility: hidden; transition: background-color 0.3s ease; 
 }
 
 #background-slideshow img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0; /* JS controls this opacity */
-    /* Add these for potential GPU acceleration benefits on the images themselves */
-    will-change: opacity, transform; /* Hint to the browser for upcoming changes */
-    transform: translateZ(0); /* Force GPU acceleration for the image */
-    -webkit-transform: translateZ(0);
-    /* Set the new background image path here */
+position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; will-change: opacity, transform; transform: translateZ(0); -webkit-transform: translateZ(0); 
 }
 
-/* Explicitly targeting bgImageA and bgImageB for reinforced positioning */
 #bgImageA,
 #bgImageB {
-    position: absolute; /* Essential for precise positioning within the fixed parent */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* Reinforce GPU acceleration, though inherited from #background-slideshow img */
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    /* Ensure they don't block pointer events */
-    pointer-events: none;
-    transition: opacity 0.5s ease; /* Smooth transition for image opacity changes */
+position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: translateZ(0); -webkit-transform: translateZ(0); pointer-events: none; transition: opacity 0.5s ease; 
+}
+
+#card-modal {
+position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center;
+}
+
+.modal-bg {
+position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(20, 20, 20, 0.6); z-index: 999; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: background 0.5s, opacity 0.5s; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.modal-bg.active {
+opacity: 1; pointer-events: auto;
+}
+
+.modal-card {
+width: 90vw; 
+height: 85vh; 
+max-width: 1400px; 
+background: #fdfdfd; 
+border-radius: 16px; 
+box-shadow: 0 12px 50px rgba(0, 0, 0, 0.3);
+transform: scale(0.7);
+opacity: 0;
+transition: transform 0.5s cubic-bezier(.76,0,.24,1), opacity 0.4s;
+display: flex; 
+flex-direction: column; 
+align-items: stretch; 
+justify-content: flex-start; 
+padding: 0; 
+color: #333;
+position: relative;
+will-change: transform, opacity;
+overflow: hidden; 
+}
+.modal-bg.active .modal-card {
+opacity: 1; transform: scale(1);
+}
+
+.modal-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 10px 20px;
+background-color: #f1f1f1;
+border-bottom: 1px solid #ddd;
+font-size: 1rem;
+font-family: "Pretendard", sans-serif;
+font-weight: 600;
+flex-shrink: 0; 
+}
+
+body[data-theme='dark'] .modal-card {
+background: #2d3748;
+color: #e2e8f0;
+}
+body[data-theme='dark'] .modal-header {
+background-color: #1a202c;
+border-bottom-color: #4a5568;
+}
+
+.modal-x {
+font-family: Arial, sans-serif;
+font-size: 1.5rem;
+color: #888;
+font-weight: bold;
+cursor: pointer;
+opacity: 0.8;
+transition: color 0.2s, transform 0.2s;
+padding: 5px;
+line-height: 1;
+}
+.modal-x:hover {
+color: #e53e3e; 
+transform: scale(1.1);
+}
+body[data-theme='dark'] .modal-x {
+color: #a0aec0;
+}
+body[data-theme='dark'] .modal-x:hover {
+color: #f56565;
+}
+
+.modal-content {
+flex-grow: 1; 
+overflow: auto; 
+background-color: #fff;
+}
+body[data-theme='dark'] .modal-content {
+background-color: #2d3748;
+}
+
+.modal-content iframe {
+width: 100%;
+height: 100%;
+border: none;
+}
+
+.modal-bg.zoom-out {
+animation: zoomOutModal 0.45s cubic-bezier(.68,-0.55,.27,1.55) forwards;
+}
+@keyframes zoomOutModal {
+0% { opacity: 1; transform: scale(1); }
+100% { opacity: 0; transform: scale(0.4); }
 }

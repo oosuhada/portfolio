@@ -1,3 +1,121 @@
+// common.js (수정된 최종본)
+
+// --- 전역 데이터 관리 함수 ---
+// 다른 JS 파일 (highlight-hub.js 등)에서 접근할 수 있도록 DOMContentLoaded 이벤트 리스너 밖으로 이동시켰습니다.
+
+/**
+ * localStorage에서 하이라이트 데이터를 가져옵니다.
+ * @returns {object} 하이라이트 데이터 객체
+ */
+function getHighlightData() {
+    const data = localStorage.getItem('userHighlights');
+    return data ? JSON.parse(data) : {};
+}
+
+/**
+ * 하이라이트 데이터를 localStorage에 저장합니다.
+ * @param {object} data - 저장할 하이라이트 데이터 객체
+ */
+function saveHighlightData(data) {
+    localStorage.setItem('userHighlights', JSON.stringify(data));
+}
+
+/**
+ * localStorage에서 보관된(unhighlighted) 데이터를 가져옵니다.
+ * @returns {object} 보관된 하이라이트 데이터 객체
+ */
+function getUnhighlightData() {
+    const data = localStorage.getItem('userUnhighlights');
+    return data ? JSON.parse(data) : {};
+}
+
+/**
+ * 보관된(unhighlighted) 데이터를 localStorage에 저장합니다.
+ * @param {object} data - 저장할 보관된 하이라이트 데이터 객체
+ */
+function saveUnhighlightData(data) {
+    localStorage.setItem('userUnhighlights', JSON.stringify(data));
+}
+
+/**
+ * 요소에 하이라이트를 적용하고 데이터를 저장합니다.
+ * @param {HTMLElement} element - 하이라이트를 적용할 DOM 요소
+ * @param {string} color - 적용할 색상
+ */
+function applyHighlight(element, color) {
+    const id = element.dataset.highlightId;
+    if (!id) return;
+    const highlightColors = ['gray', 'pink', 'orange', 'yellow', 'green', 'blue'];
+    highlightColors.forEach(c => element.classList.remove(`highlight-${c}`));
+    element.classList.add(`highlight-${color}`);
+    const highlights = getHighlightData();
+    highlights[id] = {
+        color: color,
+        text: element.textContent.trim(),
+        page: document.title || location.pathname
+    };
+    saveHighlightData(highlights);
+}
+
+/**
+ * 하이라이트를 비활성화하고 '보관함(unhighlights)'으로 옮깁니다. (휴지통 기능)
+ * @param {HTMLElement|null} element - DOM 요소 (없을 경우 null)
+ * @param {string} highlightId - 하이라이트 ID
+ */
+function unHighlightElement(element, highlightId) {
+    const id = highlightId || (element ? element.dataset.highlightId : null);
+    if (!id) return;
+
+    // DOM 요소가 실제로 페이지에 존재하면 스타일을 제거합니다.
+    if (element) {
+        const highlightColors = ['gray', 'pink', 'orange', 'yellow', 'green', 'blue'];
+        highlightColors.forEach(c => element.classList.remove(`highlight-${c}`));
+    }
+
+    const highlights = getHighlightData();
+    const unhighlights = getUnhighlightData();
+
+    // 활성 하이라이트 목록에 해당 ID가 있으면 보관함으로 이동시킵니다.
+    if (highlights[id]) {
+        unhighlights[id] = highlights[id];
+        delete highlights[id];
+
+        saveHighlightData(highlights);
+        saveUnhighlightData(unhighlights);
+    }
+}
+
+/**
+ * 보관된 하이라이트를 다시 활성화(복구)합니다.
+ * @param {string} id - 복구할 하이라이트의 ID
+ */
+function restoreHighlight(id) {
+    const highlights = getHighlightData();
+    const unhighlights = getUnhighlightData();
+
+    if (unhighlights[id]) {
+        highlights[id] = unhighlights[id]; // 활성 목록으로 데이터 복원
+        delete unhighlights[id]; // 보관함에서 데이터 삭제
+
+        saveHighlightData(highlights);
+        saveUnhighlightData(unhighlights);
+    }
+}
+
+/**
+ * 보관된 하이라이트를 영구적으로 삭제합니다.
+ * @param {string} id - 영구 삭제할 하이라이트의 ID
+ */
+function deleteUnhighlightPermanently(id) {
+    const unhighlights = getUnhighlightData();
+    if (unhighlights[id]) {
+        delete unhighlights[id];
+        saveUnhighlightData(unhighlights);
+    }
+}
+
+
+// --- 페이지 로드 후 실행되는 UI 및 이벤트 초기화 로직 ---
 document.addEventListener('DOMContentLoaded', function() {
     // --- Existing Preloader Logic ---
     const preloader = document.getElementById("preloader");
@@ -72,47 +190,47 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- Language Maps and Navigation Logic ---
    const languageMaps = [
-   {
-       name: 'hanja',
-       portfolio: '作品',
-       about: '紹介',
-       career: '經歷',
-       lab: '實驗室',
-       connect: '連結'
-   },
-   {
-       name: 'korean',
-       portfolio: '포트폴리오',
-       about: '소개',
-       career: '경력',
-       lab: '실험실',
-       connect: '연결'
-   },
-   {
-       name: 'french',
-       portfolio: 'Portefeuille',
-       about: 'À propos',
-       career: 'Parcours', // 경력/이력의 뉘앙스
-       lab: 'Laboratoire',
-       connect: 'Connexion'
-   },
-   {
-       name: 'japanese',
-       portfolio: 'ポートフォリオ',
-       about: '紹介',
-       career: 'キャリア', // 또는 '経歴'
-       lab: 'ラボ',
-       connect: '接続'
-   }
-];
+       {
+           name: 'hanja',
+           portfolio: '作品',
+           about: '紹介',
+           career: '經歷',
+           lab: '實驗室',
+           connect: '連結'
+       },
+       {
+           name: 'korean',
+           portfolio: '포트폴리오',
+           about: '소개',
+           career: '경력',
+           lab: '실험실',
+           connect: '연결'
+       },
+       {
+           name: 'french',
+           portfolio: 'Portefeuille',
+           about: 'À propos',
+           career: 'Parcours',
+           lab: 'Laboratoire',
+           connect: 'Connexion'
+       },
+       {
+           name: 'japanese',
+           portfolio: 'ポートフォリオ',
+           about: '紹介',
+           career: 'キャリア',
+           lab: 'ラボ',
+           connect: '接続'
+       }
+    ];
 
-const englishMap = {
-   portfolio: 'Portfolio',
-   about: 'About',
-   career: 'Career', // 또는 'Experience'
-   lab: 'Lab',
-   connect: 'Connect'
-};
+    const englishMap = {
+       portfolio: 'Portfolio',
+       about: 'About',
+       career: 'Career',
+       lab: 'Lab',
+       connect: 'Connect'
+    };
 
     let headerEntryCount = 0;
     let currentLanguageIndex = 0;
@@ -230,17 +348,7 @@ const englishMap = {
         internalSplash.style.width = `${splashSize}px`;
         internalSplash.style.height = `${splashSize}px`;
 
-        const borderRadii = [
-            "47% 53% 50% 40% / 60% 37% 53% 40%",
-            "65% 42% 70% 55% / 70% 68% 46% 51%",
-            "60% 60% 45% 55% / 55% 60% 50% 60%",
-            "59% 58% 65% 62% / 52% 68% 37% 59%",
-            "60% 45% 46% 62% / 95% 62% 62% 58%",
-            "55% 66% 33% 55% / 66% 68% 66% 62%",
-            "54% 61% 67% 63% / 59% 27% 66% 65%",
-            "30% 65% 60% 62% / 60% 39% 60% 68%",
-            "61% 63% 35% 57% / 65% 26% 55% 62%"
-        ];
+        const borderRadii = [ "47% 53% 50% 40% / 60% 37% 53% 40%", "65% 42% 70% 55% / 70% 68% 46% 51%", "60% 60% 45% 55% / 55% 60% 50% 60%", "59% 58% 65% 62% / 52% 68% 37% 59%", "60% 45% 46% 62% / 95% 62% 62% 58%", "55% 66% 33% 55% / 66% 68% 66% 62%", "54% 61% 67% 63% / 59% 27% 66% 65%", "30% 65% 60% 62% / 60% 39% 60% 68%", "61% 63% 35% 57% / 65% 26% 55% 62%" ];
         const randomRadius = borderRadii[Math.floor(Math.random() * borderRadii.length)];
         internalSplash.style.borderRadius = randomRadius;
 
@@ -256,31 +364,16 @@ const englishMap = {
     // --- createExternalInkParticles for Mousedown Effect ---
     function createExternalInkParticles(originX, originY, confettiColors) {
         const particleCount = 5;
-        const irregularBorderRadii = [
-            '45% 58% 62% 37% / 52% 38% 67% 49%',
-            '62% 64% 58% 60% / 70% 50% 70% 50%',
-            '54% 42% 62% 57% / 54% 42% 62% 47%',
-            '62% 68% 60% 56% / 70% 60% 70% 50%',
-            '63% 38% 70% 33% / 53% 62% 39% 46%',
-            '65% 70% 65% 68% / 75% 54% 74% 50%',
-            '48% 56% 35% 38% / 54% 42% 62% 47%',
-            '66% 75% 65% 70% / 66% 55% 66% 60%',
-            '30% 70% 70% 30% / 30% 30% 70% 70%',
-            '50% 50% 30% 70% / 60% 40% 60% 40%',
-            '35% 65% 45% 55% / 60% 30% 70% 40%',
-            '70% 30% 80% 20% / 65% 35% 75% 25%'
-        ];
+        const irregularBorderRadii = [ '45% 58% 62% 37% / 52% 38% 67% 49%', '62% 64% 58% 60% / 70% 50% 70% 50%', '54% 42% 62% 57% / 54% 42% 62% 47%', '62% 68% 60% 56% / 70% 60% 70% 50%', '63% 38% 70% 33% / 53% 62% 39% 46%', '65% 70% 65% 68% / 75% 54% 74% 50%', '48% 56% 35% 38% / 54% 42% 62% 47%', '66% 75% 65% 70% / 66% 55% 66% 60%', '30% 70% 70% 30% / 30% 30% 70% 70%', '50% 50% 30% 70% / 60% 40% 60% 40%', '35% 65% 45% 55% / 60% 30% 70% 40%', '70% 30% 80% 20% / 65% 35% 75% 25%' ];
 
         for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('div');
             particle.classList.add('confetti-particle-effect');
             particle.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
             particle.style.filter = 'url(#inkParticleSurface)';
-
             let width, height;
             const sizeMultiplier = 4;
             const randomFactor = Math.random();
-
             if (randomFactor < 0.6) {
                 const baseSize = (Math.random() * 10 + 8) * sizeMultiplier;
                 width = baseSize * (0.8 + Math.random() * 0.4);
@@ -291,17 +384,13 @@ const englishMap = {
                 width = baseWidth;
                 height = baseHeight;
             }
-
             particle.style.width = `${width}px`;
             particle.style.height = `${height}px`;
             particle.style.borderRadius = irregularBorderRadii[Math.floor(Math.random() * irregularBorderRadii.length)];
-
             if (width < 15 && height < 15) {
                 particle.style.opacity = (Math.random() * 0.2 + 0.7).toString();
             }
-
             document.body.appendChild(particle);
-
             const angle = Math.random() * Math.PI * 2;
             const distance = Math.random() * 60 + 40;
             const duration = Math.random() * 1.5 + 2.5;
@@ -309,31 +398,11 @@ const englishMap = {
             const finalRotation = initialRotation + (Math.random() * 30 - 90);
             const initialOpacity = parseFloat(particle.style.opacity || '0.6');
             const maxBlur = 5 + Math.random() * 5;
-
             particle.style.left = `${originX}px`;
             particle.style.top = `${originY}px`;
             particle.style.transform = `translate(-50%, -50%) scale(1) rotate(${initialRotation}deg)`;
-
-            particle.animate([
-                {
-                    transform: `translate(-50%, -50%) scale(1) rotate(${initialRotation}deg)`,
-                    opacity: initialOpacity,
-                    filter: 'blur(0.5px)'
-                },
-                {
-                    transform: `translate(-50%, -50%) translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px) scale(0.05) rotate(${finalRotation}deg)`,
-                    opacity: 0,
-                    filter: `blur(${maxBlur}px)`
-                }
-            ], {
-                duration: duration * 1000,
-                easing: 'cubic-bezier(0.1, 0.7, 0.3, 1)',
-                fill: 'forwards'
-            });
-
-            setTimeout(() => {
-                particle.remove();
-            }, duration * 1000);
+            particle.animate([ { transform: `translate(-50%, -50%) scale(1) rotate(${initialRotation}deg)`, opacity: initialOpacity, filter: 'blur(0.5px)' }, { transform: `translate(-50%, -50%) translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px) scale(0.05) rotate(${finalRotation}deg)`, opacity: 0, filter: `blur(${maxBlur}px)` } ], { duration: duration * 1000, easing: 'cubic-bezier(0.1, 0.7, 0.3, 1)', fill: 'forwards' });
+            setTimeout(() => { particle.remove(); }, duration * 1000);
         }
     }
 
@@ -526,15 +595,7 @@ const englishMap = {
     let startY = 0;
     const DRAG_THRESHOLD = 5;
 
-    function getHighlightData() {
-        const data = localStorage.getItem('userHighlights');
-        return data ? JSON.parse(data) : {};
-    }
-
-    function saveHighlightData(data) {
-        localStorage.setItem('userHighlights', JSON.stringify(data));
-    }
-
+    // 데이터 관리 함수는 전역으로 이동했으므로 여기서는 UI 관련 함수만 남깁니다.
     function createHighlightMenu() {
         if (document.getElementById('highlight-menu')) return;
         const menu = document.createElement('div');
@@ -551,6 +612,7 @@ const englishMap = {
             const swatch = e.target.closest('.color-swatch');
             if (swatch && currentlyAssociatedMenuElement) {
                 const newColor = swatch.dataset.color;
+                // 이제 전역 함수를 호출합니다.
                 applyHighlight(currentlyAssociatedMenuElement, newColor);
                 updateActiveColor(currentlyAssociatedMenuElement);
             }
@@ -600,31 +662,6 @@ const englishMap = {
         }
     }
 
-    function applyHighlight(element, color) {
-        const id = element.dataset.highlightId;
-        if (!id) return;
-        highlightColors.forEach(c => element.classList.remove(`highlight-${c}`));
-        element.classList.add(`highlight-${color}`);
-        const highlights = getHighlightData();
-        highlights[id] = {
-            color: color,
-            text: element.textContent.trim(),
-            page: document.title || location.pathname
-        };
-        saveHighlightData(highlights);
-    }
-
-    function unHighlightElement(element) {
-        const id = element.dataset.highlightId;
-        if (!element) return;
-        highlightColors.forEach(c => element.classList.remove(`highlight-${c}`));
-        if (id) {
-            const highlights = getHighlightData();
-            delete highlights[id];
-            saveHighlightData(highlights);
-        }
-    }
-
     function hideMenu() {
         if (highlightMenu) {
             highlightMenu.style.display = 'none';
@@ -661,6 +698,7 @@ const englishMap = {
     }
 
     function applySavedHighlights() {
+        // 이제 전역 함수를 호출합니다.
         const highlights = getHighlightData();
         for (const id in highlights) {
             const element = document.querySelector(`[data-highlight-id="${id}"]`);
@@ -709,19 +747,19 @@ const englishMap = {
                 if (currentlyAssociatedMenuElement !== highlightableTarget) {
                     currentlyAssociatedMenuElement = highlightableTarget;
                     if (!isAlreadyHighlighted) {
-                        applyHighlight(highlightableTarget, 'yellow');
+                        applyHighlight(highlightableTarget, 'yellow'); // 전역 함수 사용
                     }
                     showMenu(highlightableTarget, e);
                     return;
                 }
                 if (isAlreadyHighlighted) {
-                    unHighlightElement(highlightableTarget);
+                    unHighlightElement(highlightableTarget); // 전역 함수 사용
                     if (highlightableTarget === currentlyAssociatedMenuElement) {
                         hideMenu();
                         currentlyAssociatedMenuElement = null;
                     }
                 } else {
-                    applyHighlight(highlightableTarget, 'yellow');
+                    applyHighlight(highlightableTarget, 'yellow'); // 전역 함수 사용
                     currentlyAssociatedMenuElement = highlightableTarget;
                     showMenu(highlightableTarget, e);
                 }
@@ -938,12 +976,11 @@ const englishMap = {
         stopConfettiEffect();
     });
 
-    // ▼▼▼ [추가] 다크 모드 및 커스텀 커서 토글 로직 ▼▼▼
+    // --- 다크 모드 초기화 로직 ---
     const initializeDarkMode = () => {
-        const darkModeToggle = document.getElementById('darkModeToggleContainer'); // HTML에 추가할 토글 버튼 컨테이너
+        const darkModeToggle = document.getElementById('darkModeToggleContainer');
         const htmlElement = document.documentElement;
 
-        // 현재 테마를 적용하는 함수
         const applyTheme = (theme) => {
             if (theme === 'dark') {
                 htmlElement.classList.add('dark');
@@ -952,7 +989,6 @@ const englishMap = {
             }
         };
 
-        // 토글 버튼 클릭 이벤트
         if (darkModeToggle) {
             darkModeToggle.addEventListener('click', () => {
                 const isDarkMode = htmlElement.classList.contains('dark');
@@ -966,7 +1002,6 @@ const englishMap = {
             });
         }
 
-        // 페이지 로드 시 테마 결정
         const savedTheme = localStorage.getItem('theme');
         const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
@@ -979,7 +1014,7 @@ const englishMap = {
         }
     };
     
-    // --- Initialize Features ---
+    // --- Initialize All Features ---
     initSentinelObserver();
     headerScrollLogic.init();
     if (document.querySelector('.nav-menu')) {
@@ -991,8 +1026,6 @@ const englishMap = {
     }
     initializeHighlighter();
     initializeAccordionMenu();
-    
-    // ▼▼▼ [추가] 다크 모드 초기화 함수 호출 ▼▼▼
     initializeDarkMode();
 
     // --- Click Handler for Short Clicks ---

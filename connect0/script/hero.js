@@ -1,3 +1,4 @@
+// hero.js
 "use strict";
 const CURRENTUSER_KEY = "currentUser";
 const HIDDEN_CLASSNAME = "hidden";

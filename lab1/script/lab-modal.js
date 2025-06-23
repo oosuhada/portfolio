@@ -1,113 +1,127 @@
 (function() {
-    // Mapping of poster data-num to pure-css index.html files
-    const posterToFileMap = {
-        '01': 'pure-css/animation-art/024-waves/index.html',
-        '02': 'pure-css/animation-art/036-solar-eclipse/index.html',
-        '03': 'pure-css/animation-art/050-newtons-cradle/index.html',
-        '04': 'pure-css/animation-art/083-a-ball-climbing-the-stairs/index.html',
-        '05': 'pure-css/animation-art/093-lightning-cable/index.html',
-        '06': 'pure-css/animation-art/094-polaroid-camera/index.html',
-        '07': 'pure-css/animation-art/119-draught-beer/index.html',
-        '08': 'pure-css/animation-art/122-apple-photos-icon/index.html',
-        '09': 'pure-css/animation-art/124-origami-cranes/index.html',
-        '10': 'pure-css/button-effect/001-button-text-staggered-sliding-effects/index.html',
-        '11': 'pure-css/button-effect/009-aimed-button-effects/index.html',
-        '12': 'pure-css/button-effect/037-stroke-animation-button-effect/index.html',
-        '13': 'pure-css/interactive-art/041-pencil/index.html',
-        '14': 'pure-css/interactive-art/076-hey-take-it-easy/index.html',
-        '15': 'pure-css/loading-effect/065-swaying-loader/index.html'
-    };
+    const modalElement = document.getElementById('card-modal');
+    // Module-scoped variables to manage state and event handlers
+    let currentModalIndex = -1;
+    let eventHandlers = {};
 
-    // Function to show the modal, now global
-    window.appShowModal = function(poster, carouselInstance) {
-        const idx = carouselInstance.posters.indexOf(poster);
-        const bgColor = getComputedStyle(poster).backgroundColor;
-        const num = poster.dataset.num || '??';
-
-        // Get the file path from the mapping
-        const filePath = posterToFileMap[num] || 'pure-css/pure-css-index.html'; // Fallback to a default page
-
-        carouselInstance.posters.forEach((p, i) => {
-            if (i !== idx) {
-                gsap.to(p, {
-                    opacity: 0, scale: 0.7, duration: 0.28 + i * 0.05,
-                    delay: i * 0.04, x: (i < idx ? -70 : 70), ease: "power2.in"
-                });
-            }
-        });
-
-        const carouselSection = document.querySelector('.carousel-section');
-        if (carouselSection) {
-            gsap.to(carouselSection, { backgroundColor: bgColor, duration: 0.38, delay: 0.1, ease: "power2.inOut" });
+    /**
+     * Navigates to a new project within the modal.
+     * @param {number} newIndex - The index of the new project to display.
+     */
+    function navigateToProjectInModal(newIndex) {
+        // Ensure projectList is available
+        if (!window.projectList || window.projectList.length === 0) {
+            console.error("[Modal] projectList is not available.");
+            return;
         }
 
-        gsap.to(poster, {
-            scale: 1.18, rotate: -5, duration: 0.22, delay: 0.18, ease: "power1.inOut",
+        const totalProjects = window.projectList.length;
+        // Wrap around the index if it goes out of bounds
+        currentModalIndex = (newIndex + totalProjects) % totalProjects;
+
+        const project = window.projectList[currentModalIndex];
+        if (!project) {
+            console.error(`[Modal] Project not found at index: ${currentModalIndex}`);
+            return;
+        }
+
+        console.log(`[Modal] Navigating to index ${currentModalIndex}: ${project.path}`);
+
+        // Update the iframe src and the index counter text
+        const iframe = modalElement.querySelector('iframe');
+        const indexCounter = modalElement.querySelector('.modal-index-counter');
+
+        if (iframe) {
+            iframe.src = project.path;
+        }
+        if (indexCounter) {
+            indexCounter.textContent = `${currentModalIndex + 1} / ${totalProjects}`;
+        }
+    }
+
+    /**
+     * Shows the fullscreen modal for a given poster.
+     * @param {HTMLElement} poster - The clicked poster element.
+     * @param {number} index - The index of the clicked poster in the projectList.
+     */
+    window.appShowModal = function(poster, index) {
+        if (!modalElement) {
+            console.error("Modal element #card-modal not found.");
+            return;
+        }
+
+        const path = poster.dataset.path;
+        if (!path) {
+            console.error("Project path (data-path) not found on poster element.");
+            return;
+        }
+        
+        currentModalIndex = index; // Set the initial index
+        const totalProjects = window.projectList.length;
+
+        console.log(`[Modal] Showing modal for index ${currentModalIndex}: ${path}`);
+        
+        // Build the inner HTML for the fullscreen modal with new UI elements
+        modalElement.innerHTML = `
+            <div class="modal-iframe-container">
+                <iframe src="${path}" title="${poster.dataset.title}" frameborder="0"></iframe>
+            </div>
+            <div class="modal-close-btn" title="Close">×</div>
+            <div class="modal-nav-btn prev" title="Previous Project">&lt;</div>
+            <div class="modal-nav-btn next" title="Next Project">&gt;</div>
+            <div class="modal-index-counter">${currentModalIndex + 1} / ${totalProjects}</div>
+        `;
+
+        document.body.classList.add('modal-is-open');
+        modalElement.style.display = 'flex';
+        gsap.to(modalElement, { opacity: 1, duration: 0.4, ease: 'power2.out' });
+
+        // --- Setup Event Listeners ---
+        eventHandlers.close = () => window.appCloseModal();
+        eventHandlers.key = (e) => {
+            if (e.key === 'Escape') window.appCloseModal();
+            if (e.key === 'ArrowLeft') navigateToProjectInModal(currentModalIndex - 1);
+            if (e.key === 'ArrowRight') navigateToProjectInModal(currentModalIndex + 1);
+        };
+        eventHandlers.prev = () => navigateToProjectInModal(currentModalIndex - 1);
+        eventHandlers.next = () => navigateToProjectInModal(currentModalIndex + 1);
+
+        modalElement.querySelector('.modal-close-btn').addEventListener('click', eventHandlers.close);
+        modalElement.querySelector('.modal-nav-btn.prev').addEventListener('click', eventHandlers.prev);
+        modalElement.querySelector('.modal-nav-btn.next').addEventListener('click', eventHandlers.next);
+        document.addEventListener('keydown', eventHandlers.key);
+    };
+
+    /**
+     * Closes the fullscreen modal.
+     */
+    window.appCloseModal = function() {
+        if (!modalElement) return;
+
+        console.log("[Modal] Closing modal.");
+
+        // --- Remove Event Listeners ---
+        const closeBtn = modalElement.querySelector('.modal-close-btn');
+        const prevBtn = modalElement.querySelector('.modal-nav-btn.prev');
+        const nextBtn = modalElement.querySelector('.modal-nav-btn.next');
+
+        if (closeBtn) closeBtn.removeEventListener('click', eventHandlers.close);
+        if (prevBtn) prevBtn.removeEventListener('click', eventHandlers.prev);
+        if (nextBtn) nextBtn.removeEventListener('click', eventHandlers.next);
+        document.removeEventListener('keydown', eventHandlers.key);
+        eventHandlers = {}; // Clear handlers
+
+        // Animate out and hide
+        gsap.to(modalElement, {
+            opacity: 0,
+            duration: 0.3,
+            ease: 'power2.in',
             onComplete: () => {
-                gsap.to(poster, {
-                    scale: 1.26, rotate: 5, duration: 0.19, ease: "power1.inOut", yoyo: true, repeat: 1,
-                    onComplete: () => {
-                        gsap.to(poster, {
-                            x: "-64vw", opacity: 0, duration: 0.46, delay: 0.05, ease: "power2.in",
-                            onComplete: () => {
-                                const modal = document.getElementById('card-modal');
-                                const modalCard = modal.querySelector('.modal-card');
-                                const modalBg = modal.querySelector('.modal-bg');
-                                const modalIframe = modal.querySelector('.modal-iframe');
-                                if (modal && modalCard && modalBg && modalIframe) {
-                                    // Set the iframe source
-                                    modalIframe.src = filePath;
-                                    modalCard.style.background = '#fff'; // Ensure a neutral background
-                                    modal.style.display = 'flex';
-                                    modalBg.classList.add('active');
-
-                                    const closeHandler = (e) => {
-                                        if (e.target.classList.contains('modal-x') || e.target.classList.contains('modal-bg')) {
-                                            e.stopPropagation();
-                                            window.appCloseModal(carouselInstance);
-                                        }
-                                    };
-                                    const keyHandler = (e) => { if (e.key === 'Escape') window.appCloseModal(carouselInstance); };
-
-                                    modal.addEventListener('click', closeHandler);
-                                    document.addEventListener('keydown', keyHandler);
-                                    // Store handlers for later removal
-                                    modal._closeHandler = closeHandler;
-                                    modal._keyHandler = keyHandler;
-                                }
-                            }
-                        });
-                    }
-                });
+                modalElement.style.display = 'none';
+                modalElement.innerHTML = ''; // Clear content to stop iframe
+                document.body.classList.remove('modal-is-open');
+                currentModalIndex = -1; // Reset index
             }
         });
-    };
-
-    // Function to close the modal, now global
-    window.appCloseModal = function(carouselInstance) {
-        const modal = document.getElementById('card-modal');
-        const modalBg = modal.querySelector('.modal-bg');
-        const modalIframe = modal.querySelector('.modal-iframe');
-        if (modal && modalBg && modalBg.classList.contains('active')) {
-            // Remove event listeners using the stored references
-            if (modal._closeHandler) modal.removeEventListener('click', modal._closeHandler);
-            if (modal._keyHandler) document.removeEventListener('keydown', modal._keyHandler);
-            delete modal._closeHandler;
-            delete modal._keyHandler;
-
-            // Clear the iframe src to stop loading content
-            if (modalIframe) modalIframe.src = '';
-
-            modalBg.classList.remove('active');
-            setTimeout(() => {
-                modal.style.display = 'none';
-                // Call restoreCarousel on the provided carousel instance
-                if (carouselInstance && typeof carouselInstance.restoreCarousel === 'function') {
-                    carouselInstance.restoreCarousel();
-                } else {
-                    console.error("Carousel instance or restoreCarousel method not found for modal close!");
-                }
-            }, 650);
-        }
     };
 })();
