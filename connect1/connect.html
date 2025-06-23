@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="../common/common.css">
 <link rel="stylesheet" href="style/hero.css">
 <link rel="stylesheet" href="style/connect.css">
-<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style/highlight-hub.css"> <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Caveat&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css">
@@ -21,38 +21,36 @@
 <div id="preloader">
 <div class="loading-text" id="loadingText">Oosu</div>
 </div>
-
 <header class="nav-header" aria-label="Main Navigation">
-    <div class="nav-top-row">
-        <button class="nav-toggle-btn" aria-label="Toggle navigation menu">
-            <i class="fas fa-bars"></i>
-        </button>
-        <div class="nav-title">Oosu Portfolio</div>
-    </div>
-    <nav class="nav-menu nav-center" id="accordionNavMenu">
-        <a href="../portfolioMain/portfolio.html" data-nav="portfolio" aria-current="page">
-            <span class="nav-text-wrapper">✧</span>
-            <span class="visually-hidden">Portfolio</span>
-        </a>
-        <a href="../about/about.html" data-nav="about">
-            <span class="nav-text-wrapper">?</span>
-            <span class="visually-hidden">About</span>
-        </a>
-        <a href="../career/career.html" data-nav="career">
-            <span class="nav-text-wrapper">⌗</span>
-            <span class="visually-hidden">career</span>
-        </a>
-        <a href="../lab/lab.html" data-nav="lab">
-            <span class="nav-text-wrapper">:</span>
-            <span class="visually-hidden">Lab</span>
-        </a>
-        <a href="../connect/connect.html" data-nav="connect">
-            <span class="nav-text-wrapper">⌲</span>
-            <span class="visually-hidden">Connect</span>
-        </a>
-    </nav>
+<div class="nav-top-row">
+<button class="nav-toggle-btn" aria-label="Toggle navigation menu">
+<i class="fas fa-bars"></i>
+</button>
+<div class="nav-title">Oosu Portfolio</div>
+</div>
+<nav class="nav-menu nav-center" id="accordionNavMenu">
+<a href="../portfolioMain/portfolio.html" data-nav="portfolio" aria-current="page">
+<span class="nav-text-wrapper">✧</span>
+<span class="visually-hidden">Portfolio</span>
+</a>
+<a href="../about/about.html" data-nav="about">
+<span class="nav-text-wrapper">?</span>
+<span class="visually-hidden">About</span>
+</a>
+<a href="../career/career.html" data-nav="career">
+<span class="nav-text-wrapper">⌗</span>
+<span class="visually-hidden">career</span>
+</a>
+<a href="../lab/lab.html" data-nav="lab">
+<span class="nav-text-wrapper">:</span>
+<span class="visually-hidden">Lab</span>
+</a>
+<a href="../connect/connect.html" data-nav="connect">
+<span class="nav-text-wrapper">⌲</span>
+<span class="visually-hidden">Connect</span>
+</a>
+</nav>
 </header>
-
 <main class="main">
 <section class="intro-section">
 <div class="weather-section js-weather-section hidden">
@@ -92,38 +90,76 @@ What name should I remember?
 <img src="img/arrow_down.svg" alt="Scroll Down" class="custom-scroll-arrow">
 </div>
 </section>
-
 <div id="top-sentinel"></div>
 <section class="connect-main">
-<section class="highlight-sections-container">
-<div class="highlight-summary-section active">
-<h2>You've Highlighted</h2>
-<div class="highlight-list"></div>
+<section id="highlight-hub-section">
+<header class="hub-header">
+<h1 id="hub-greeting">Your Journey with Oosu's Portfolio</h1>
+<p id="hub-sub-greeting">It seems you were particularly interested in <strong id="top-interest-placeholder">UX Design and Frontend technologies</strong>. Let's craft a message together.</p>
+</header>
+<main class="hub-container">
+<div class="highlights-panel">
+<div class="panel-header">
+<h2><i class="fas fa-highlighter"></i> Your Highlight Collection</h2>
+<div class="hub-tabs">
+<button class="hub-tab-btn active" data-view="timeline">Journey</button>
+<button class="hub-tab-btn" data-view="active">Active</button>
+<button class="hub-tab-btn" data-view="archived">Archived</button>
 </div>
-<div class="unhighlight-summary-section">
-<h2>You've Unhighlighted</h2>
-<ul class="unhighlight-list"></ul>
+</div>
+<div id="highlight-cards-container" class="cards-container">
+</div>
+<div id="timeline-container" class="timeline-container hidden">
+</div>
+</div>
+<div class="actions-panel">
+<div class="ai-assistant-section">
+<h2><i class="fas fa-robot"></i> Smart Assistant</h2>
+<div id="ai-insights-section" class="ai-module">
+<h3><i class="fas fa-chart-pie"></i> Your Interest Insights</h3>
+<div id="ai-insights-output" class="ai-output-box">Your key interests will appear here.</div>
+</div>
+<div id="ai-template-section" class="ai-module">
+<h3><i class="fas fa-pen-nib"></i> 1. Choose Inquiry Type</h3>
+<div class="ai-buttons-grid">
+<button class="ai-template-btn" data-template="collaboration">Project Collaboration</button>
+<button class="ai-template-btn" data-template="technical">Technical Question</button>
+<button class="ai-template-btn" data-template="recruiting">Recruiting Inquiry</button>
+<button class="ai-template-btn" data-template="general">General Comment</button>
+</div>
+<h3><i class="fas fa-smile"></i> 2. Select Tone & Manner</h3>
+<div class="ai-buttons-grid">
+<button class="ai-tone-btn" data-tone="professional">Professional</button>
+<button class="ai-tone-btn" data-tone="friendly">Friendly</button>
+<button class="ai-tone-btn" data-tone="direct">Direct</button>
+</div>
+</div>
+<div id="ai-drafting-section" class="ai-module">
+<h3><i class="fas fa-magic-wand-sparkles"></i> 3. Draft with AI</h3>
+<button id="ai-draft-postcard-btn"><i class="fas fa-pen-alt"></i> Generate Postcard Draft</button>
+<div id="ai-output" class="ai-output-box" placeholder="AI-generated content will appear here..."></div>
+</div>
+</div>
+<div class="postcard-draft-section">
+<h2><i class="fas fa-envelope"></i> Your Message Draft</h2>
+<textarea id="postcard-draft-textarea" placeholder="Drag highlights here, use the AI assistant, or write your own message..."></textarea>
+<button id="go-to-postcard-btn">Write on Postcard <i class="fas fa-arrow-down"></i></button>
+</div>
+</div>
+</main>
+<div class="farewell-message">
+<i class="fas fa-star" style="color: #ffc107;"></i>
+<p>Every highlight you've collected is a star that lights up our conversation.</p>
 </div>
 </section>
-
 <section class="postcard-section">
 <div class="floating-menu1">
-<button id="pen-theme-btn" title="Western Theme">
-<i class="fa-solid fa-landmark"></i> <span class="theme-style-text">Western</span>
-</button>
-<button id="brush-theme-btn" title="Eastern Theme">
-<i class="fa-solid fa-torii-gate"></i> <span class="theme-style-text">Eastern</span>
-</button>
+<button id="pen-theme-btn" title="Western Theme"><i class="fa-solid fa-landmark"></i> <span class="theme-style-text">Western</span></button>
+<button id="brush-theme-btn" title="Eastern Theme"><i class="fa-solid fa-torii-gate"></i> <span class="theme-style-text">Eastern</span></button>
 </div>
 <div class="floating-menu2">
-<button id="pen-style-indicator-btn" title="Pen Style">
-<i class="fa-solid fa-pen-fancy"></i>
-<span class="theme-style-text">Pen</span>
-</button>
-<button id="brush-style-indicator-btn" title="Brush Style">
-<i class="fa-solid fa-brush"></i>
-<span class="theme-style-text">Brush</span>
-</button>
+<button id="pen-style-indicator-btn" title="Pen Style"><i class="fa-solid fa-pen-fancy"></i><span class="theme-style-text">Pen</span></button>
+<button id="brush-style-indicator-btn" title="Brush Style"><i class="fa-solid fa-brush"></i><span class="theme-style-text">Brush</span></button>
 <div class="language-controls-inline">
 <button id="lang-en-btn" title="Switch to English">English</button>
 <button id="lang-ko-btn" title="한국어로 변경">한국어</button>
@@ -135,89 +171,56 @@ What name should I remember?
 </div>
 </div>
 <div class="postcard-front western-theme">
-<div class="postcard-image-container">
-<img src="img/western/ezgif-frame-001.jpg" alt="Western Postcard Theme" class="postcard-cover-img" id="western-front-img">
-</div>
+<div class="postcard-image-container"><img src="img/western/ezgif-frame-001.jpg" alt="Western Postcard Theme" class="postcard-cover-img" id="western-front-img"></div>
 <div class="postcard-info">
 <img src="img/qr-code.png" alt="QR Code" class="qr-code">
 <p class="info-text western-text" data-lang-en="Scan for more info or send a message!" data-lang-ko="QR코드를 스캔하시거나 메시지를 보내주세요!">Scan for more info or send a message!</p>
 </div>
 </div>
 <div class="postcard-front eastern-theme hidden">
-<div class="postcard-image-container">
-<img src="img/eastern/ezgif-frame-001.jpg" alt="Eastern Postcard Theme" class="postcard-cover-img" id="eastern-front-img">
-</div>
+<div class="postcard-image-container"><img src="img/eastern/ezgif-frame-001.jpg" alt="Eastern Postcard Theme" class="postcard-cover-img" id="eastern-front-img"></div>
 <div class="postcard-info">
 <img src="img/qr-code.png" alt="QR Code" class="qr-code">
 <p class="info-text eastern-text" data-lang-en="Scan for more info or send a message!" data-lang-ko="QR코드를 스캔하시거나 메시지를 보내주세요!">Scan for more info or send a message!</p>
 </div>
 </div>
 <div class="postcard-back western-theme" id="main-postcard-back">
-<div class="stamp-area">
-<div class="stamp western-stamp" id="main-stamp" data-lang-en="oosu hada" data-lang-ko="우수하다">oosu hada</div>
-</div>
+<div class="stamp-area"><div class="stamp western-stamp" id="main-stamp" data-lang-en="oosu hada" data-lang-ko="우수하다">oosu hada</div></div>
 <div class="form-container">
 <h3 class="western-text" data-lang-en="Inquiries" data-lang-ko="문의사항">Inquiries</h3>
 <form id="inquiry-form" novalidate>
-<div class="form-group">
-<label for="name" class="western-text" data-lang-en="Name:" data-lang-ko="이름:">Name:</label>
-<input type="text" id="name" name="name" required class="western-text">
-<span class="error-message"></span>
-</div>
-<div class="form-group">
-<label for="email" class="western-text" data-lang-en="Email:" data-lang-ko="이메일:">Email:</label>
-<input type="email" id="email" name="email" required class="western-text">
-<span class="error-message"></span>
-</div>
-<div class="form-group">
-<label for="message" class="western-text" data-lang-en="Message:" data-lang-ko="메시지:">Message:</label>
-<textarea id="message" name="message" rows="4" required class="western-text"></textarea>
-<span class="error-message"></span>
-</div>
+<div class="form-group"><label for="name" class="western-text" data-lang-en="Name:" data-lang-ko="이름:">Name:</label><input type="text" id="name" name="name" required class="western-text"><span class="error-message"></span></div>
+<div class="form-group"><label for="email" class="western-text" data-lang-en="Email:" data-lang-ko="이메일:">Email:</label><input type="email" id="email" name="email" required class="western-text"><span class="error-message"></span></div>
+<div class="form-group"><label for="message" class="western-text" data-lang-en="Message:" data-lang-ko="메시지:">Message:</label><textarea id="message" name="message" rows="4" required class="western-text"></textarea><span class="error-message"></span></div>
 <button type="submit" class="send-button western-text" data-lang-en="Send" data-lang-ko="보내기">Send</button>
 </form>
 </div>
 </div>
 </section>
 <div class="connect-social-links">
-<a href="https://www.linkedin.com/in/oosujang/" target="_blank" aria-label="LinkedIn">
-<i class="fab fa-linkedin"></i>
-</a>
-<a href="https://www.instagram.com/oosu.hada/" target="_blank" aria-label="Instagram">
-<i class="fab fa-instagram"></i>
-</a>
-<a href="mailto:oosu.salon@gmail.com" aria-label="Email">
-<i class="fa-solid fa-envelope"></i>
-</a>
+<a href="https://www.linkedin.com/in/oosujang/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+<a href="https://www.instagram.com/oosu.hada/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+<a href="mailto:oosu.salon@gmail.com" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
 </div>
 </section>
 </main>
-
 <footer>
 <div class="footer-row">
 <div class="footer-content">
 <p data-lang-en="You've hit the footer,<br>thanks for stopping by.<br>Still curious?<br>→ <a href='mailto:oosu.salon@gmail.com'>oosu.salon@gmail.com</a>"
 data-lang-ko="푸터에 도달하셨네요,<br>들러주셔서 감사합니다.<br>여전히 궁금한 점이 있으신가요?<br>→ <a href='mailto:oosu.salon@gmail.com'>oosu.salon@gmail.com</a>">
-You've hit the footer,<br>thanks for stopping by.<br>Still curious?<br>→ <a href='mailto:oosu.salon@gmail.com'>oosu.salon@gmail.com</a>
-</p>
+You've hit the footer,<br>thanks for stopping by.<br>Still curious?<br>→ <a href='mailto:oosu.salon@gmail.com'>oosu.salon@gmail.com</a></p>
 <span class="footer-copyright">© Oosu Jang 2025</span>
 </div>
 <div id="lottie-container" style="width:200px; height:300px; position:relative; overflow:hidden;">
-<div id="lottie-inner-section" style="
-position: absolute;
-left: 50%; top: 60%;
-width: 250px; height: 300px;
-transform: translate(-50%, -50%);
-pointer-events: none;">
-</div>
+<div id="lottie-inner-section" style="position: absolute; left: 50%; top: 60%; width: 250px; height: 300px; transform: translate(-50%, -50%); pointer-events: none;"></div>
 </div>
 </div>
 </footer>
-
 <script src="../common/common.js"></script>
 <script src="script/hero.js"></script>
 <script src="script/connect.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+<script src="script/highlight-hub.js"></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <script>
 lottie.loadAnimation({
 container: document.getElementById('lottie-inner-section'),
