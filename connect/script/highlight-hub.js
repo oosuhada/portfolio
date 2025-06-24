@@ -1,3 +1,4 @@
+// highlight-hub.js
 document.addEventListener('DOMContentLoaded', () => {
 // --- 1. ELEMENT SELECTORS ---
 const hubGreeting = document.getElementById('hub-greeting');

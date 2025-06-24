@@ -1,7 +1,6 @@
 // common.js
 
 // --- 전역 데이터 관리 함수 ---
-// 다른 JS 파일 (highlight-hub.js 등)에서 접근할 수 있도록 DOMContentLoaded 이벤트 리스너 밖으로 이동시켰습니다.
 /**
 * localStorage에서 하이라이트 데이터를 가져옵니다.
 * @returns {object} 하이라이트 데이터 객체
@@ -16,7 +15,6 @@ return data ? JSON.parse(data) : {};
 */
 function saveHighlightData(data) {
 localStorage.setItem('userHighlights', JSON.stringify(data));
-// 데이터 변경 시 허브를 다시 렌더링하기 위한 커스텀 이벤트
 document.dispatchEvent(new Event('highlightDataChanged'));
 }
 /**
@@ -47,9 +45,8 @@ const highlightColors = ['gray', 'pink', 'orange', 'yellow', 'green', 'blue'];
 highlightColors.forEach(c => element.classList.remove(`highlight-${c}`));
 element.classList.add(`highlight-${color}`);
 const highlights = getHighlightData();
-const timestamp = Date.now(); // 타임스탬프 생성
+const timestamp = Date.now();
 
-// 콘솔 로그 추가: 생성된 타임스탬프 확인
 console.log(`[applyHighlight] ID: ${id}, Timestamp: ${timestamp} (Type: ${typeof timestamp})`);
 
 highlights[id] = {
@@ -68,14 +65,12 @@ saveHighlightData(highlights);
 function unHighlightElement(element, highlightId) {
 const id = highlightId || (element ? element.dataset.highlightId : null);
 if (!id) return;
-// DOM 요소가 실제로 페이지에 존재하면 스타일을 제거합니다.
 if (element) {
 const highlightColors = ['gray', 'pink', 'orange', 'yellow', 'green', 'blue'];
 highlightColors.forEach(c => element.classList.remove(`highlight-${c}`));
 }
 const highlights = getHighlightData();
 const unhighlights = getUnhighlightData();
-// 활성 하이라이트 목록에 해당 ID가 있으면 보관함으로 이동시킵니다.
 if (highlights[id]) {
 unhighlights[id] = highlights[id];
 delete highlights[id];
@@ -91,8 +86,8 @@ function restoreHighlight(id) {
 const highlights = getHighlightData();
 const unhighlights = getUnhighlightData();
 if (unhighlights[id]) {
-highlights[id] = unhighlights[id]; // 활성 목록으로 데이터 복원
-delete unhighlights[id]; // 보관함에서 데이터 삭제
+highlights[id] = unhighlights[id];
+delete unhighlights[id];
 saveHighlightData(highlights);
 saveUnhighlightData(unhighlights);
 }
@@ -112,7 +107,6 @@ window.validateField = (field) => {
 field.reportValidity();
 const isValid = !field.validity.valueMissing && !field.validity.typeMismatch;
 field.classList.toggle('invalid', !isValid);
-// 폼 내부의 에러 메시지 표시 로직 추가
 const errorMessageElement = field.nextElementSibling;
 if(errorMessageElement && errorMessageElement.classList.contains('error-message')) {
 if(!isValid) {
@@ -125,7 +119,6 @@ errorMessageElement.classList.remove('visible');
 return isValid;
 };
 
-// ✨ ===== [추가] 커서 테마 동기화 함수 ===== ✨
 /**
  * 현재 테마에 맞춰 CSS 커서 변수를 동적으로 업데이트합니다.
  */
@@ -133,7 +126,6 @@ function updateCursorVarsByTheme() {
     const root = document.documentElement;
     const isDark = root.classList.contains('dark');
 
-    // isDark가 true이면 'dark' 문자열을, false이면 'light' 문자열을 사용
     const themeSuffix = isDark ? 'dark' : 'light';
 
     root.style.setProperty('--cursor-default', `var(--cursor-pointer-${themeSuffix})`);
@@ -145,6 +137,20 @@ function updateCursorVarsByTheme() {
     console.log(`[Cursor] 테마에 맞춰 커서 업데이트: ${themeSuffix}`);
 }
 
+/**
+ * AI Assistant FAB 내의 'Ask AI' 이미지의 src를 현재 테마에 맞게 업데이트합니다.
+ */
+function updateAIAssistantAskImage() {
+    const askImage = document.getElementById('ai-assistant-ask-image');
+    if (askImage) {
+        const isDark = document.documentElement.classList.contains('dark');
+        // Assuming img folder is at the project root level.
+        // If common.js is in /js/common/, then ../../img/ is needed to go up two levels.
+        askImage.src = isDark ? '../../img/askdarkmode.png' : '../../img/asklightmode.png';
+        console.log(`[AI FAB] 'Ask AI' image updated to: ${askImage.src}`);
+    }
+}
+
 
 /**
 * AI 어시스턴트 플로팅 버튼을 초기화하고 스크롤 이벤트를 설정합니다.
@@ -152,108 +158,115 @@ function updateCursorVarsByTheme() {
 * 마우스 호버 시 커스텀 커서(작은 원 및 ask ai 이미지)를 표시합니다.
 */
 function initializeAIAssistantButton() {
-console.log('initializeAIAssistantButton 함수 시작'); // 함수 시작 로그 추가
+    console.log('initializeAIAssistantButton 함수 시작');
 
-const assistantButton = document.getElementById('ai-assistant-FAB');
-const footer = document.querySelector('footer');
+    const assistantButton = document.getElementById('ai-assistant-FAB');
+    const footer = document.querySelector('footer');
 
-// 필수 요소가 없으면 함수를 종료합니다.
-if (!assistantButton || !footer) {
-console.warn('AI Assistant button or footer element not found. Button functionality disabled.');
-return;
-}
+    if (!assistantButton || !footer) {
+        console.warn('AI Assistant button or footer element not found. Button functionality disabled.');
+        return;
+    }
 
-// Lottie 애니메이션 로드
-if (typeof lottie !== 'undefined') {
-lottie.loadAnimation({
-container: assistantButton,
-renderer: 'svg',
-loop: true,
-autoplay: true,
-path: 'https://gist.githubusercontent.com/oosuhada/10350c165ecf9363a48efa8f67aaa401/raw/ea144b564bea1a65faffe4b6c52f8cc1275576de/ai-assistant-logo.json'
+    if (typeof lottie !== 'undefined') {
+        lottie.loadAnimation({
+            container: assistantButton,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'https://gist.githubusercontent.com/oosuhada/10350c165ecf9363a48efa8f67aaa401/raw/ea144b564bea1a65faffe4b6c52f8cc1275576de/ai-assistant-logo.json'
+        });
+    } else {
+        console.error('Lottie-web library is not loaded.');
+        assistantButton.innerText = 'AI';
+    }
+
+    let customCursorDot = document.getElementById('custom-cursor-dot');
+    if (!customCursorDot) {
+        customCursorDot = document.createElement('div');
+        customCursorDot.id = 'custom-cursor-dot';
+        document.body.appendChild(customCursorDot);
+        console.log('customCursorDot 요소 생성 및 body에 추가됨');
+    }
+
+    let askImage = document.getElementById('ai-assistant-ask-image');
+    if (!askImage) {
+        askImage = document.createElement('img');
+        askImage.id = 'ai-assistant-ask-image';
+        askImage.src = document.documentElement.classList.contains('dark')
+            ? '../../img/askdarkmode.png'
+            : '../../img/asklightmode.png';
+        askImage.alt = 'Ask';
+        assistantButton.appendChild(askImage);
+        console.log('askImage 요소 생성 및 AI FAB에 추가됨');
+    }
+
+    // MODIFIED: AI Assistant button click event
+    assistantButton.addEventListener('click', () => {
+        console.log('AI Assistant button clicked! Opening AI portfolio chat modal.');
+        // AI 포트폴리오 챗 모달을 열기 위한 커스텀 이벤트 디스패치
+        document.dispatchEvent(new Event('openAIPortfolioChatModal'));
+    });
+
+// MODIFIED: mouseenter/mouseleave events for FAB to manage its filter and custom cursor
+// 온보딩 중이 아닐 때의 일반적인 FAB 호버 동작을 정의합니다.
+assistantButton.addEventListener('mouseenter', function() {
+    // 온보딩 중이고 특정 단계(예: 7단계)가 활성화되어 있다면,
+    // portfolio.js의 mousemove가 제어하므로 여기서는 이벤트를 처리하지 않습니다.
+    if (window.onboardingActive && window.guideIndex === 6) return; 
+
+    document.body.style.cursor = 'none'; // 기본 커서 숨기기
+    customCursorDot.style.opacity = '1'; // 커스텀 원 커서 보이기
+    askImage.style.opacity = '1'; // ask ai 이미지 보이기
+    this.classList.add('no-filter'); // FAB에 no-filter 클래스 추가 (흑백 필터 제거)
+    console.log('AI FAB mouseenter: Custom cursors visible, filter removed.');
 });
-} else {
-console.error('Lottie-web library is not loaded.');
-assistantButton.innerText = 'AI'; // Lottie 실패 시 대체 텍스트
-}
 
-// --- 커스텀 커서 요소 생성 및 추가 ---
-let customCursorDot = document.getElementById('custom-cursor-dot');
-if (!customCursorDot) {
-customCursorDot = document.createElement('div');
-customCursorDot.id = 'custom-cursor-dot';
-document.body.appendChild(customCursorDot);
-console.log('customCursorDot 요소 생성 및 body에 추가됨');
-}
+assistantButton.addEventListener('mouseleave', function() {
+    // 온보딩 중이고 특정 단계(예: 7단계)가 활성화되어 있다면,
+    // portfolio.js의 mousemove가 제어하므로 여기서는 이벤트를 처리하지 않습니다.
+    if (window.onboardingActive && window.guideIndex === 6) return;
 
-let askImage = document.getElementById('ai-assistant-ask-image');
-if (!askImage) {
-  askImage = document.createElement('img');
-  askImage.id = 'ai-assistant-ask-image';
-  // 💡 여기가 src 기본값을 넣어주는 부분!
-  askImage.src = document.documentElement.classList.contains('dark')
-    ? '../img/askdarkmode.png'
-    : '../img/asklightmode.png';
-  askImage.alt = 'Ask AI';
-  assistantButton.appendChild(askImage); // FAB 내부에 추가
-  console.log('askImage 요소 생성 및 AI FAB에 추가됨');
-}
-// ------------------------------------
-
-// 버튼 클릭 이벤트 리스너 (기능 구현 필요)
-assistantButton.addEventListener('click', () => {
-// TODO: AI 어시스턴트 창을 여는 로직을 여기에 구현하세요.
-console.log('AI Assistant button clicked!');
-alert('AI 어시스턴트 기능이 실행됩니다.');
+    document.body.style.cursor = ''; // 기본 커서 다시 보이기
+    customCursorDot.style.opacity = '0'; // 커스텀 원 커서 숨기기
+    askImage.style.opacity = '0'; // ask ai 이미지 숨기기
+    this.classList.remove('no-filter'); // FAB에서 no-filter 클래스 제거 (흑백 필터 다시 적용)
+    console.log('AI FAB mouseleave: Custom cursors hidden, filter re-applied.');
 });
 
-// --- 마우스 이벤트 리스너 추가 ---
-assistantButton.addEventListener('mouseenter', () => {
-document.body.style.cursor = 'none'; // body의 기본 커서 숨기기
-customCursorDot.style.opacity = '1'; // 커스텀 원 커서 보이기
-askImage.style.opacity = '1'; // ask ai 이미지 보이기
-console.log('AI FAB mouseenter: Custom cursors visible.');
-});
-
-assistantButton.addEventListener('mouseleave', () => {
-document.body.style.cursor = ''; // body의 기본 커서 다시 보이기
-customCursorDot.style.opacity = '0'; // 커스텀 원 커서 숨기기
-askImage.style.opacity = '0'; // ask ai 이미지 숨기기
-console.log('AI FAB mouseleave: Custom cursors hidden.');
-});
 
 document.addEventListener('mousemove', (e) => {
-// AI Assistant 버튼 위에 마우스가 있을 때만 커스텀 커서 업데이트
-// assistantButton.contains(e.target) 대신, 더 정확하게 FAB 영역 내에서만 작동하도록 조건 강화
 const fabRect = assistantButton.getBoundingClientRect();
+// 온보딩 중이고 7단계가 아닐 때는 common.js의 mousemove는 커스텀 커서 위치만 업데이트합니다.
+// 온보딩 7단계일 때는 portfolio.js가 제어하므로 여기서는 FAB 영역을 벗어나도 커스텀 커서를 숨기지 않습니다.
 if (e.clientX >= fabRect.left && e.clientX <= fabRect.right &&
-e.clientY >= fabRect.top && e.clientY <= fabRect.bottom) {
+    e.clientY >= fabRect.top && e.clientY <= fabRect.bottom &&
+    !window.onboardingActive // 온보딩 중이 아닐 때만 여기 로직이 커서 표시 제어
+) {
 customCursorDot.style.left = `${e.clientX}px`;
 customCursorDot.style.top = `${e.clientY}px`;
+} else if (!window.onboardingActive) { // 온보딩 중이 아니면서 FAB 영역을 벗어났을 때
+    customCursorDot.style.opacity = '0';
+    askImage.style.opacity = '0';
 }
 });
-// ------------------------------------
 
-// IntersectionObserver를 사용하여 푸터가 보이는지 감지 (성능에 더 효율적)
 const observerOptions = {
-root: null, // 뷰포트를 기준으로 함
+root: null,
 rootMargin: '0px',
-threshold: 0.01 // 푸터가 1%라도 보이면 콜백 실행
+threshold: 0.01
 };
 
 const observerCallback = (entries) => {
 entries.forEach(entry => {
 if (entry.isIntersecting) {
 assistantButton.classList.add('hidden');
-// 푸터 진입 시 커스텀 커서도 숨김
 customCursorDot.style.opacity = '0';
 askImage.style.opacity = '0';
-document.body.style.cursor = ''; // 기본 커서 복구
+document.body.style.cursor = '';
 console.log('Footer intersecting: AI FAB and custom cursors hidden.');
 } else {
 assistantButton.classList.remove('hidden');
-// 푸터에서 벗어났을 때, 마우스가 버튼 위에 있다면 다시 커스텀 커서 활성화 로직 필요 (선택 사항)
-// 현재는 mouseenter/leave로 처리되므로 추가 로직 없이 FAB만 보이면 됨.
 console.log('Footer not intersecting: AI FAB visible.');
 }
 });
@@ -261,23 +274,19 @@ console.log('Footer not intersecting: AI FAB visible.');
 
 const footerObserver = new IntersectionObserver(observerCallback, observerOptions);
 
-// 푸터 요소 관찰 시작
 footerObserver.observe(footer);
 console.log('Footer observer 시작됨');
 }
 
-// --- 페이지 로드 후 실행되는 UI 및 이벤트 초기화 로직 ---
+// --- Page load and UI/Event initialization logic ---
 document.addEventListener('DOMContentLoaded', function() {
 console.log('DOMContentLoaded 이벤트 발생: 페이지 초기화 시작');
 
-// ✨ [수정] 표준 초기화 순서에 커서 업데이트 함수 명시적으로 추가
 if (window.themeManager) window.themeManager.initialize();
-// 초기화 함수들이 순서대로 호출되도록 정리
 initializeAIAssistantButton();
 updateAIAssistantAskImage();
 updateCursorVarsByTheme();
 
-// --- Existing Preloader Logic ---
 const preloader = document.getElementById("preloader");
 const loadingText = document.getElementById("loadingText");
 const words = ["Oosu", "우수", "佑守", "優秀", "憂愁"];
@@ -342,7 +351,6 @@ heroVideo.addEventListener('error', onVideoReady, { once: true });
 hidePreloader();
 }
 });
-// --- Language Maps and Navigation Logic ---
 const languageMaps = [
 {
 name: 'hanja',
@@ -424,7 +432,6 @@ document.querySelectorAll('.footer-image').forEach(img => {
 if (!img.classList.contains('shake-x')) img.classList.add('shake-x');
 });
 }
-// --- Original createScreenInkSplash (for Short Clicks and Navigation) ---
 function createScreenInkSplash(clickX, clickY, targetElement = document.body, scaleFactor = 1.0) {
 const splash = document.createElement('div');
 splash.classList.add('screen-click-splash-blob');
@@ -435,7 +442,7 @@ const borderRadii = [
 "59% 58% 65% 62% / 52% 68% 37% 59%",
 "60% 45% 46% 62% / 95% 62% 62% 58%",
 "55% 66% 33% 55% / 66% 68% 66% 62%",
-"54% 61% 67% 63% / 59% 27% 66% 65%",
+"60% 45% 46% 62% / 95% 62% 62% 58%",
 "30% 65% 60% 62% / 60% 39% 60% 68%",
 "61% 63% 35% 57% / 65% 26% 55% 62%"
 ];
@@ -459,7 +466,6 @@ setTimeout(() => {
 if (splash.parentElement) splash.remove();
 }, 700);
 }
-// --- Slide Colors from Portfolio ---
 const slideColors = [
 { confetti: ['#000000', '#181818', '#282828', '#0A0A0A', '#111111', '#202020'] },
 { confetti: ['#ff8c42', '#ffaa6e', '#e07b39', '#d2691e', '#ffbf80'] },
@@ -472,7 +478,6 @@ const slideColors = [
 { confetti: ['#a16bfe', '#7b1fa2', '#deb0df', '#8e24aa', '#ab47bc'] },
 { confetti: ['#bc3d2f', '#a16bfe', '#d32f2f', '#c2185b', '#ab47bc'] }
 ];
-// --- createConfettiInkSplash for Mousedown Effect ---
 function createConfettiInkSplash(targetElement, event, confettiColors) {
 const existingSplash = targetElement.querySelector('.confetti-ink-splash');
 if (existingSplash) existingSplash.remove();
@@ -489,7 +494,7 @@ internalSplash.style.top = `${event.clientY - rect.top - splashSize / 2}px`;
 }
 internalSplash.style.width = `${splashSize}px`;
 internalSplash.style.height = `${splashSize}px`;
-const borderRadii = [ "47% 53% 50% 40% / 60% 37% 53% 40%", "65% 42% 70% 55% / 70% 68% 46% 51%", "60% 60% 45% 55% / 55% 60% 50% 60%", "59% 58% 65% 62% / 52% 68% 37% 59%", "60% 45% 46% 62% / 95% 62% 62% 58%", "55% 66% 33% 55% / 66% 68% 66% 62%", "54% 61% 67% 63% / 59% 27% 66% 65%", "30% 65% 60% 62% / 60% 39% 60% 68%", "61% 63% 35% 57% / 65% 26% 55% 62%" ];
+const borderRadii = [ "47% 53% 50% 40% / 60% 37% 53% 40%", "65% 42% 70% 55% / 70% 68% 46% 51%", "60% 60% 45% 55% / 55% 60% 50% 60%", "59% 58% 65% 62% / 52% 68% 37% 59%", "60% 45% 46% 62% / 95% 62% 62% 58%", "55% 66% 33% 55% / 66% 68% 66% 62%", "60% 45% 46% 62% / 95% 62% 62% 58%", "30% 65% 60% 62% / 60% 39% 60% 68%", "61% 63% 35% 57% / 65% 26% 55% 62%" ];
 const randomRadius = borderRadii[Math.floor(Math.random() * borderRadii.length)];
 internalSplash.style.borderRadius = randomRadius;
 const color = confettiColors[Math.floor(Math.random() * confettiColors.length)];
@@ -499,7 +504,6 @@ setTimeout(() => {
 if (internalSplash.parentElement) internalSplash.remove();
 }, 700);
 }
-// --- createExternalInkParticles for Mousedown Effect ---
 function createExternalInkParticles(originX, originY, confettiColors) {
 const particleCount = 5;
 const irregularBorderRadii = [ '45% 58% 62% 37% / 52% 38% 67% 49%', '62% 64% 58% 60% / 70% 50% 70% 50%', '54% 42% 62% 57% / 54% 42% 62% 47%', '62% 68% 60% 56% / 70% 60% 70% 50%', '63% 38% 70% 33% / 53% 62% 39% 46%', '65% 70% 65% 68% / 75% 54% 74% 50%', '48% 56% 35% 38% / 54% 42% 62% 47%', '66% 75% 65% 70% / 66% 55% 66% 60%', '30% 70% 70% 30% / 30% 30% 70% 70%', '50% 50% 30% 70% / 60% 40% 60% 40%', '35% 65% 45% 55% / 60% 30% 70% 40%', '70% 30% 80% 20% / 65% 35% 75% 25%' ];
@@ -542,7 +546,6 @@ particle.animate([ { transform: `translate(-50%, -50%) scale(1) rotate(${initial
 setTimeout(() => { particle.remove(); }, duration * 1000);
 }
 }
-// --- Navigation Logic ---
 function navActiveHoverControl() {
 const navMenuLinks = document.querySelectorAll('.nav-menu a');
 const navMenuContainer = document.querySelector('.nav-menu.nav-center');
@@ -825,28 +828,39 @@ element.classList.add(`highlight-${savedColor}`);
 }
 }
 }
+// MODIFIED: setHighlighterCursorStyle - ONLY for general (non-onboarding) highlighter cursor
+// common.js에서는 온보딩이 아닌 일반 화면에서의 하이라이터 커서 스타일을 정의합니다.
 function setHighlighterCursorStyle() {
-if (document.getElementById('highlighter-cursor-style')) return;
-const targetSelector = `
-.meaning-chunk[data-highlight-id]:hover,
-.timeline-chunk[data-highlight-id]:hover,
-.skill-chunk[data-highlight-id]:hover,
-.timeline-tag-chunk1[data-highlight-id]:hover,
-.timeline-tag-chunk2[data-highlight-id]:hover
-`;
-const style = document.createElement('style');
-style.id = 'highlighter-cursor-style';
-style.textContent = `
-${targetSelector} {
-cursor: url('../img/highlighter.png') 20 20, auto;
+    if (document.getElementById('highlighter-cursor-style')) return;
+    const style = document.createElement('style');
+    style.id = 'highlighter-cursor-style';
+    style.textContent = `
+        /* General highlighter cursor for clickable meaning-chunks */
+        .meaning-chunk[data-highlight-id]:hover,
+        .timeline-chunk[data-highlight-id]:hover,
+        .skill-chunk[data-highlight-id]:hover,
+        .timeline-tag-chunk1[data-highlight-id]:hover,
+        .timeline-tag-chunk2[data-highlight-id]:hover {
+            /* Assuming common.js is in js/common/ and img is in project root */
+            cursor: url('../img/highlighter.png') 20 20, auto !important;
+        }
+
+        /* FAB Lottie filter control - General */
+        #ai-assistant-FAB {
+            filter: grayscale(100%); /* Default to grayscale */
+            transition: filter 0.3s ease-in-out;
+        }
+        #ai-assistant-FAB.no-filter { /* Class to remove grayscale for general hover */
+            filter: grayscale(0%);
+        }
+    `;
+    document.head.appendChild(style);
 }
-`;
-document.head.appendChild(style);
-}
+
 function initializeHighlighter() {
 createHighlightMenu();
 applySavedHighlights();
-setHighlighterCursorStyle();
+setHighlighterCursorStyle(); // This now sets up a conditional cursor
 const targetSelector = '.meaning-chunk[data-highlight-id], .timeline-chunk[data-highlight-id], .skill-chunk[data-highlight-id], .timeline-tag-chunk1[data-highlight-id], .timeline-tag-chunk2[data-highlight-id]';
 document.body.addEventListener('click', (e) => {
 if (isDragging || e.target.closest('.drag-handle')) {
@@ -1011,7 +1025,6 @@ transition: none !important;
 `;
 document.head.appendChild(style);
 }
-// --- Mousedown Confetti Effect Logic ---
 let isMouseDown = false;
 let confettiInterval = null;
 let currentMousedownEvent = null;
@@ -1020,7 +1033,7 @@ let mousedownTimeout = null;
 const MOUSEDOWN_DELAY = 300;
 const CONFETTI_INTERVAL = 100;
 function startConfettiEffect(event) {
-if (event.target.closest('a, button, input, .no-general-splash, #highlight-menu, .meaning-chunk, .timeline-chunk, .skill-chunk, .balloon, .fast-text-balloon, .slide-title, .nav-button, .welcome-banner-link, #inboxIconContainer, #darkModeToggleContainer')) {
+if (event.target.closest('a, button, input, .no-general-splash, #highlight-menu, .meaning-chunk, .timeline-chunk, .skill-chunk, .balloon, .fast-text-balloon, .slide-title, .nav-button, .welcome-banner-link, #inboxIconContainer, #darkModeToggleContainer, #ai-assistant-FAB')) {
 return;
 }
 isMouseDown = true;
@@ -1067,7 +1080,6 @@ document.addEventListener('mouseleave', () => {
 stopConfettiEffect();
 });
 
-// --- Initialize All Features ---
 initSentinelObserver();
 headerScrollLogic.init();
 if (document.querySelector('.nav-menu')) {
@@ -1079,13 +1091,9 @@ footerImgShake();
 }
 initializeHighlighter();
 initializeAccordionMenu();
-// initializeAIAssistantButton(); // 상단에서 이미 호출됨
 
-// 기존 테마 초기화 로직은 삭제, 각 페이지의 main script에서 호출
-
-// --- Click Handler for Short Clicks ---
 document.addEventListener('click', function(event) {
-if (isDragging || event.target.closest('a, button, input, .no-general-splash, #highlight-menu, .meaning-chunk, .timeline-chunk, .skill-chunk')) {
+if (isDragging || event.target.closest('a, button, input, .no-general-splash, #highlight-menu, .meaning-chunk, .timeline-chunk, .skill-chunk, #ai-assistant-FAB')) {
 return;
 }
 if (!isMouseDown) {
@@ -1094,25 +1102,4 @@ createScreenInkSplash(event.clientX, event.clientY, document.body, 0.1);
 });
 });
 
-
-// ✨ [추가] 테마가 변경될 때마다 커서도 함께 업데이트되도록 이벤트 리스너 추가
 document.addEventListener('themeChanged', updateCursorVarsByTheme);
-
-// To do: common 파일 분리
-// common.js
-// : 프리로더, AI Assistant, 기본 유틸리티만 남김
-// header-nav.js
-// : 내비게이션(헤더), 메뉴 확장/축소, 언어 변경, 헤더 스크롤 숨김/보임 등 헤더 관련 전용
-// highlighter.js
-// : 하이라이트, 색상 메뉴, 저장/복원, 메뉴 드래그 등 모든 하이라이터 전용
-// theme-manager.js
-// :다크모드 라이트모드 테마관리
-
-// common.css
-// : 프리로더, AI Assistant 버튼, 커스텀 커서, footer 등 기본/공통 스타일만
-// theme.css
-// :다크모드 라이트모드 테마 전역
-// header-nav.css
-// : .nav-header, .nav-menu, .nav-toggle-btn, .nav-center a, 헤더 전용
-// highlighter.css
-// : .meaning-chunk, .highlight-*, #highlight-menu, .color-swatch 등 하이라이터 관련 전용

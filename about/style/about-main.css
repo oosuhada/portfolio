@@ -157,3 +157,8 @@ body {
 body.about-page .nav-header.hidden {
   transform: translateY(-100%) !important;
 } */
+
+/* 다크모드가 아직 없으므로 일단 filter:none 처리 */
+/* body[data-theme='dark'] #lottie-container #lottie-inner-section {
+    filter: none;
+} */

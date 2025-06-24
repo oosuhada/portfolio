@@ -107,10 +107,8 @@ function initHeaderObserver() {
         return;
     }
 
-    labHeader.classList.remove('hidden');
-    labHeader.style.opacity = '1';
-    labHeader.style.visibility = 'visible';
-    labHeader.style.zIndex = '99';
+    // `labHeader`의 초기 상태를 `opacity: 0`과 `visibility: hidden`으로 설정합니다.
+    gsap.set(labHeader, { opacity: 0, visibility: 'hidden', zIndex: 99 }); // z-index 유지
 
     const sentinel = document.getElementById('top-sentinel');
     if (sentinel) {
@@ -164,11 +162,9 @@ function initBackgroundSlideshow() {
 
     const generateIntroImagePaths = (allImagePaths) => {
         let introPaths = [];
-        // Add images from 15 down to 1
         for (let i = 15; i >= 1; i--) {
             if (allImagePaths[i-1]) introPaths.push(allImagePaths[i - 1]);
         }
-        // Add images from 1 up to 15 again
         for (let i = 1; i <= 15; i++) {
             if (allImagePaths[i-1]) introPaths.push(allImagePaths[i - 1]);
         }
@@ -202,16 +198,15 @@ function initBackgroundSlideshow() {
     let currentBgVisualIndexForCarousel = 0;
 
     const getTransitionDelay = (index) => {
-        // Delay logic for intro animation
-        if (index < 15) { // First half
+        if (index < 15) {
             const startDelay = 100;
             const endDelay = 100;
-            const progress = index / 14; // Normalize progress to 0-1
+            const progress = index / 14;
             return startDelay - (startDelay - endDelay) * progress;
-        } else { // Second half
+        } else {
             const startDelay = 100;
             const endDelay = 100;
-            const progress = (index - 15) / 14; // Normalize progress to 0-1 for second half
+            const progress = (index - 15) / 14;
             return startDelay - (startDelay - endDelay) * progress;
         }
     };
@@ -317,7 +312,6 @@ function initBackgroundSlideshow() {
             return;
         }
 
-        // Clear any ongoing initial animation
         if (initialAnimationTimeoutId) {
             clearTimeout(initialAnimationTimeoutId);
             initialAnimationTimeoutId = null;
@@ -346,7 +340,7 @@ function initBackgroundSlideshow() {
 
     function initializeCarouselModeBg(posterIndexOfCarouselCenter) {
         currentBgVisualIndexForCarousel = posterIndexOfCarouselCenter % totalImages;
-        _setSingleBackgroundImageForCarousel(currentBgVisualIndexForCarousel, 0); // Set instantly for initialization
+        _setSingleBackgroundImageForCarousel(currentBgVisualIndexForCarousel, 0);
     }
 
     window.appBackgroundChanger = {
@@ -357,7 +351,7 @@ function initBackgroundSlideshow() {
         refreshImagePaths: (theme) => {
             const themePrefix = theme === 'dark' ? 'bgdark' : 'bglight';
             currentImagePaths = generateImagePaths(themePrefix);
-            currentIntroImagePaths = generateIntroImagePaths(currentImagePaths); // Also refresh intro paths
+            currentIntroImagePaths = generateIntroImagePaths(currentImagePaths);
             preloadAllImages();
             console.log(`[BackgroundChanger] Image paths refreshed for ${theme} theme.`);
         }
@@ -409,36 +403,50 @@ window.startApplicationVisuals = () => {
         return;
     }
 
-    // New flag to ensure entrance animation is triggered only once
-    let entranceAnimationTriggered = false;
+    if (window.appBackgroundChanger && typeof window.appBackgroundChanger.playVisualIntroAnimation === 'function') {
+        let isCarouselStartTriggered = false;
+        window.appBackgroundChanger.playVisualIntroAnimation(() => {
+            if (isCarouselStartTriggered) return;
+            isCarouselStartTriggered = true;
 
-    // Function to start the carousel and background in carousel mode
-    const triggerCarouselAndBackground = () => {
-        if (entranceAnimationTriggered) return;
-        entranceAnimationTriggered = true;
+            if (window.appBackgroundChanger && typeof window.appBackgroundChanger.initializeCarouselModeBackground === 'function') {
+                const initialCenterIndex = window.modernCarouselInstanceForHobby ? window.modernCarouselInstanceForHobby.center : 0;
+                window.appBackgroundChanger.initializeCarouselModeBackground(initialCenterIndex);
+            }
 
-        if (window.appBackgroundChanger && typeof window.appBackgroundChanger.initializeCarouselModeBackground === 'function') {
-            const initialCenterIndex = window.modernCarouselInstanceForHobby ? window.modernCarouselInstanceForHobby.center : 0;
-            window.appBackgroundChanger.initializeCarouselModeBackground(initialCenterIndex);
-        }
-
+            if (window.modernCarouselInstanceForHobby && typeof window.modernCarouselInstanceForHobby.runCarousel === 'function') {
+                window.modernCarouselInstanceForHobby.runCarousel(true);
+                // Carousel 애니메이션 시작 후 labHeader 나타나게 함
+                gsap.to(labHeader, {
+                    opacity: 1,
+                    visibility: 'visible',
+                    duration: 2,
+                    ease: "power2.out",
+                    delay: 1 // 캐러셀 시작 후 0.5초 지연 (조정 가능)
+                });
+            } else {
+                console.error("ModernCarousel instance or runCarousel method not found!");
+            }
+        });
+    } else {
+        console.warn("appBackgroundChanger.playVisualIntroAnimation not found. Falling back to direct carousel start.");
         if (window.modernCarouselInstanceForHobby && typeof window.modernCarouselInstanceForHobby.runCarousel === 'function') {
-            // Ensure runCarousel is called with 'true' to trigger entrance animation
+            if (window.appBackgroundChanger && typeof window.appBackgroundChanger.initializeCarouselModeBackground === 'function') {
+                const initialCenterIndex = window.modernCarouselInstanceForHobby.center;
+                window.appBackgroundChanger.initializeCarouselModeBackground(initialCenterIndex);
+            }
             window.modernCarouselInstanceForHobby.runCarousel(true);
+            // Carousel 애니메이션 시작 후 labHeader 나타나게 함 (fallback에서도 동일하게 적용)
+            gsap.to(labHeader, {
+                opacity: 1,
+                visibility: 'visible',
+                duration: 0.5,
+                ease: "power2.out",
+                delay: 0.5 // 캐러셀 시작 후 0.5초 지연 (조정 가능)
+            });
         } else {
             console.error("ModernCarousel instance or runCarousel method not found for fallback!");
         }
-    };
-
-    if (window.appBackgroundChanger && typeof window.appBackgroundChanger.playVisualIntroAnimation === 'function') {
-        window.appBackgroundChanger.playVisualIntroAnimation(() => {
-            // This callback runs when the background intro animation finishes
-            triggerCarouselAndBackground();
-        });
-    } else {
-        console.warn("appBackgroundChanger.playVisualIntroAnimation not found. Directly triggering carousel start.");
-        // If background intro is skipped, trigger directly
-        triggerCarouselAndBackground();
     }
 };
 
@@ -471,15 +479,13 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`[Lab Core] Theme changed to ${newTheme}. Syncing visuals.`);
 
         if (window.appBackgroundChanger && window.modernCarouselInstanceForHobby) {
-            // Immediately refresh image paths to prepare for the new theme background
-            window.appBackgroundChanger.refreshImagePaths(newTheme);
-
-            // Animate carousel and hero opacity to 0
             gsap.to(['.carousel', '.carousel-hero'], {
                 opacity: 0,
                 duration: 0.4,
                 ease: 'power2.in',
                 onComplete: () => {
+                    window.appBackgroundChanger.refreshImagePaths(newTheme);
+
                     const bgSlideshow = document.getElementById('background-slideshow');
                     if (bgSlideshow) {
                         gsap.to(bgSlideshow, {
@@ -487,32 +493,13 @@ document.addEventListener('DOMContentLoaded', () => {
                             duration: 0.5
                         });
                     }
+                    const centerIndex = window.modernCarouselInstanceForHobby.center;
+                    window.appBackgroundChanger._setSingleBackgroundImageForCarousel(centerIndex, 0.8);
 
-                    // Re-run the background intro animation if it hasn't completed yet,
-                    // or simply update the background to the current carousel center.
-                    // This ensures the background transitions correctly with the theme.
-                    if (!window.modernCarouselInstanceForHobby.isEntranceAnimationComplete) {
-                        console.log("[Lab Core] Theme changed before entrance anim complete. Re-triggering background intro or direct update.");
-                         window.appBackgroundChanger.playVisualIntroAnimation(() => {
-                             // This ensures the background eventually catches up and the carousel runs if not already.
-                             if (!window.modernCarouselInstanceForHobby.isEntranceAnimationComplete) {
-                                 window.modernCarouselInstanceForHobby.runCarousel(true); // Re-trigger entrance if needed
-                             } else {
-                                 const centerIndex = window.modernCarouselInstanceForHobby.center;
-                                 window.appBackgroundChanger._setSingleBackgroundImageForCarousel(centerIndex, 0.8);
-                             }
-                         });
-                    } else {
-                        // If entrance animation is complete, just update the background based on current carousel
-                        const centerIndex = window.modernCarouselInstanceForHobby.center;
-                        window.appBackgroundChanger._setSingleBackgroundImageForCarousel(centerIndex, 0.8);
-                    }
-
-                    // Animate carousel and hero back to 1 opacity
                     gsap.to(['.carousel', '.carousel-hero'], {
                         opacity: 1,
                         duration: 0.6,
-                        delay: 0.2, // Small delay after background update
+                        delay: 0.2,
                         ease: 'power2.out'
                     });
                 }
@@ -520,14 +507,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Add a small delay before starting visuals after preloader hides
     document.addEventListener('preloaderHidden', () => {
-        gsap.to(document.body, { opacity: 1, duration: 0.5, ease: "power2.out" });
-        setTimeout(() => {
-            if (typeof window.startApplicationVisuals === 'function') {
-                window.startApplicationVisuals();
-            }
-        }, 100); // 100ms delay
+        gsap.to(document.body, { opacity: 1, duration: 0.5, ease: "power2.out", onComplete: () => {} });
     });
 
     window.addEventListener('load', () => {});

@@ -1,8 +1,40 @@
 /* hero.css */
+:root {
+--cursor-highlighter: url('../highlighter.png') 20 20, auto;
+}
 
-/* Ticker Section */
+/* NEW: guide-click-area에 대한 스타일 (이 요소가 실제 커스텀 커서 영역이 됩니다) */
+.guide-click-area {
+    position: fixed; /* 중요: 뷰포트 기준으로 고정 위치 */
+    z-index: 999999 !important; /* 모든 온보딩 요소 및 다른 UI 위에 오도록 극도로 높은 z-index 강제 */
+    pointer-events: auto; /* 마우스 이벤트를 받도록 설정 */
+    background: transparent; /* 투명하게 설정 */
+    /* background: rgba(0, 255, 0, 0.2) !important; /* 디버깅용: 초록색 반투명 배경 (확인 후 제거) */
+    /* border: 2px solid green !important; /* 디버깅용: 초록색 테두리 (확인 후 제거) */
+    box-sizing: border-box; /* 패딩이나 보더가 너비/높이에 영향을 주지 않도록 */
+    opacity: 1 !important; /* 혹시 모를 투명도 문제 방지 */
+    visibility: visible !important; /* 혹시 모를 가시성 문제 방지 */
+    cursor: var(--cursor-highlighter) !important; /* 기본적으로 auto로 두고 JS에서 hover 시 변경 */
+}
 
-/* --- End Ticker Sections --- */
+/* Onboarding 중 임시 하이라이트 효과를 위한 클래스 */
+/* 마우스 호버 시 적용 (투명도) */
+.onboarding-highlight-temp {
+    background-color: rgba(255, 255, 0, 0.5) !important; /* 노란색 반투명 */
+    transition: background-color 0.15s ease-out; /* 부드러운 전환 효과 */
+}
+
+/* Onboarding 중 6단계 클릭 시 적용 (영구 저장되지 않는 하이라이트) */
+.onboarding-highlight-once { /* NEW: 새로운 클래스 */
+    background-color: rgba(255, 255, 0, 0.5) !important; /* 더 진한 노란색 (클릭됨) */
+    transition: background-color 0.15s ease-out;
+}
+
+/* 기존 onboarding-highlight-permanent는 사용하지 않습니다. */
+/* .onboarding-highlight-permanent {
+    background-color: rgba(255, 255, 0, 0.8) !important;
+    transition: background-color 0.15s ease-out;
+} */
 
 /* Hero Section (from original portfolio.css) */
 .hero {
@@ -414,7 +446,7 @@
 }
 
 .horizontal-gauge {
-    width: 180px;
+    width: 180px; /* 이 부분을 모바일에서 100%로 변경할 겁니다 */
     height: 10px;
     background: rgba(243, 243, 243, 0.5);
     border-radius: 5px;
@@ -433,7 +465,7 @@
 }
 
 .hover-img {
-    width: 200px;
+    width: 200px; /* 이 부분을 모바일에서 유동적으로 변경할 겁니다 */
     max-width: 100%;
     transition: transform 0.2s ease-out;
     vertical-align: bottom;
@@ -475,5 +507,79 @@
     .item {
         padding: 0 0.4rem;
         font-size: 0.8rem;
+    }
+
+    /* NEW: Mobile-specific adjustments for hero-grid for natural scaling */
+    .hero-grid {
+        grid-template-columns: 1fr; /* 모바일에서는 1단으로 쌓기 */
+        grid-template-rows: auto auto auto auto; /* 각 영역이 세로로 쌓이도록 행 정의 */
+        gap: 2rem 0; /* 세로 간격 추가, 가로 간격 제거 */
+        width: 100%;
+        margin-top: 10vh; /* 모바일에서 상단 여백 줄이기 */
+        /* margin-left와 margin-right는 padding으로 대체 */
+        margin-left: 0;
+        margin-right: 0;
+        padding: 0 var(--main-left-gap); /* 좌우 여백을 패딩으로 */
+        box-sizing: border-box;
+        overflow-x: hidden; /* 가로 스크롤 방지 */
+    }
+
+    /* 각 그리드 아이템의 배치 순서 및 스타일 조정 */
+    .hero-text-area {
+        grid-row: 1 / 2;
+        grid-column: 1 / 2;
+        min-height: auto; /* 최소 높이 제한 제거 */
+        padding-right: 0;
+        padding-left: 0; /* 패딩은 grid에 설정했으므로 내부 패딩 제거 */
+        align-items: center; /* 텍스트 가운데 정렬 (선택 사항) */
+        text-align: center; /* 텍스트 가운데 정렬 (선택 사항) */
+    }
+
+    .hero-img-area {
+        grid-row: 2 / 3;
+        grid-column: 1 / 2;
+        transform: translateY(0); /* 모바일에서는 이미지 위치 조정 해제 */
+        margin-bottom: 0; /* 하단 마진 제거 */
+    }
+
+    .hero-slider-dots-area {
+        grid-row: 3 / 4;
+        grid-column: 1 / 2;
+        margin-left: 0;
+        justify-content: center; /* 슬라이더 점 가운데 정렬 */
+    }
+
+    .hero-gauge-area {
+        grid-row: 4 / 5;
+        grid-column: 1 / 2;
+        margin-left: 0;
+        justify-content: center; /* 게이지 가운데 정렬 */
+    }
+
+    /* 텍스트 크기 조정 */
+    .hero-text {
+        font-size: 1.5rem; /* 기본 텍스트 크기 조정 */
+    }
+
+    .hero-text .slider-text {
+        font-size: 1.2rem; /* 슬라이더 텍스트 크기 조정 */
+    }
+
+    .hover-name {
+        font-size: 1.8rem; /* 이름 텍스트 크기 조정 */
+    }
+
+    /* 이미지 크기 조정 */
+    .hover-img {
+        width: 100%; /* 부모 요소에 맞춰 100%로 축소 */
+        max-width: 250px; /* 이미지가 너무 커지지 않도록 최대 너비 설정 (선택 사항) */
+        height: auto; /* 비율 유지 */
+    }
+
+    /* 게이지 크기 조정 */
+    .horizontal-gauge {
+        width: 100%; /* 부모 요소에 맞춰 100%로 축소 */
+        max-width: 150px; /* 게이지가 너무 커지지 않도록 최대 너비 설정 (선택 사항) */
+        height: 8px; /* 게이지 높이도 줄이기 */
     }
 }

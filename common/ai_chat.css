@@ -1,0 +1,498 @@
+/* common/ai_chat.css */
+
+
+:root {
+    /* 기본 라이트 모드 변수 (기존 값 유지) */
+    --wht: #ffffff;
+    --blk: #1a1a1a;
+    --gray50: #f7f7f7;
+    --gray100: #ededed;
+    --gray200: #dcdcdc;
+    --gray300: #c1c1c1;
+    --gray400: #a6a6a6;
+    --gray500: #8b8b8b;
+    --gray600: #707070;
+    --gray700: #555555;
+    --gray800: #3a3a3a;
+    --gray900: #2a2a2a;
+    --primary: #1987fa;
+    --secondary: #2186eb;
+    --gradient-blue-green: linear-gradient(90deg, #1987fa, #00c6ff);
+
+    /* --- AI Chat Modal Content Backgrounds --- */
+    /* 라이트 모드 시 AI 모달 콘텐츠 배경 (기존 .ai-portfolio-chat-modal-content에 설정된 배경색) */
+    --ai-modal-content-bg: var(--wht);
+}
+
+/* 다크 모드 테마 변수 (theme-manager.js가 .dark-theme 클래스를 추가할 때 활성화) */
+body.dark-theme {
+    --wht: #1a1a1a; /* 다크 모드에서는 배경이 어두워야 하므로 기존 blk 값을 wht로 */
+    --blk: #ffffff; /* 다크 모드에서는 텍스트가 밝아야 하므로 기존 wht 값을 blk로 */
+    --gray50: #2a2a2a;
+    --gray100: #3a3a3a;
+    --gray200: #555555;
+    --gray300: #707070;
+    --gray400: #8b8b8b;
+    --gray500: #a6a6a6;
+    --gray600: #c1c1c1;
+    --gray700: #dcdcdc;
+    --gray800: #ededed;
+    --gray900: #f7f7f7;
+    --primary: #1987fa; /* Primary 색상은 유지 또는 다크 모드에 맞게 조정 */
+    --secondary: #2186eb; /* Secondary 색상도 유지 또는 조정 */
+    --gradient-blue-green: linear-gradient(90deg, #1987fa, #00c6ff); /* 그라디언트 유지 */
+
+    /* --- AI Chat Modal Content Backgrounds (Dark Mode) --- */
+    /* 다크 모드 시 AI 모달 콘텐츠 배경 - 좀 더 어두운 색상 */
+    --ai-modal-content-bg: var(--gray900); /* 다크 모드에 맞는 배경색 */
+}
+
+/* --- AI Portfolio Chat Modal General Styles --- */
+.ai-portfolio-chat-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000; /* 기존 모달보다 위에 오도록 */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0); /* 초기 투명 */
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.5s cubic-bezier(0.32, 0.72, 0.33, 1.5);
+}
+
+.ai-portfolio-chat-modal.show {
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.6); /* 모달 열릴 때 배경 */
+}
+
+.ai-portfolio-chat-modal-content {
+    background-color: var(--ai-modal-content-bg); /* <-- 이 부분을 수정했습니다! */
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    max-width: 650px; /* 포트폴리오 채팅 모달의 적절한 너비 */
+    width: 90%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 92vh;
+    overflow-y: hidden; /* 내부 스크롤 관리 */
+    transform: scale(0.95);
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.32, 0.72, 0.33, 1.5), opacity 0.4s ease, background-color 0.3s ease; /* background-color transition 추가 */
+}
+
+.ai-portfolio-chat-modal.show .ai-portfolio-chat-modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* 나머지 CSS 코드는 동일하게 유지 */
+
+/*
+기존 .ai-portfolio-chat-modal-content 내부의 background-color: var(--wht);
+이것을 background-color: var(--ai-modal-content-bg); 로 변경하면 됩니다.
+
+그리고 부드러운 테마 전환을 위해 .ai-portfolio-chat-modal-content의 transition 속성에
+`background-color 0.3s ease`를 추가하는 것이 좋습니다.
+*/
+
+.ai-portfolio-chat-modal-content .close-button {
+    color: var(--gray500);
+    font-size: 26px;
+    font-weight: bold;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.ai-portfolio-chat-modal-content .close-button:hover,
+.ai-portfolio-chat-modal-content .close-button:focus {
+    color: var(--blk);
+    transform: rotate(90deg);
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--gray100);
+    margin-bottom: 15px;
+}
+
+.chat-header .ai-badge {
+    background: var(--gradient-blue-green);
+    color: var(--wht);
+    font-size: 12px;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+}
+
+.chat-header strong {
+    font-size: 18px;
+    color: var(--blk);
+}
+
+.chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 8px; /* 스크롤바 공간 확보 */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* Custom Scrollbar for Chat Messages */
+.chat-messages::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: var(--gray50);
+    border-radius: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: var(--gray300);
+    border-radius: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: var(--gray500);
+}
+
+.chat-message {
+    padding: 10px 15px;
+    border-radius: 18px;
+    max-width: 80%;
+    word-break: break-word;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.user-message {
+    background-color: var(--primary);
+    color: var(--wht);
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+}
+
+.bot-message {
+    background-color: var(--gray50); /* #f0f2f5 대신 변수 사용 */
+    color: var(--blk);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+}
+
+.chat-input-area {
+    display: flex;
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--gray100);
+}
+
+#aiPortfolioChatInput {
+    flex-grow: 1;
+    padding: 12px 18px;
+    border: 1px solid var(--gray200);
+    border-radius: 25px;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: var(--wht); /* Input 배경색도 변수 사용 */
+    color: var(--blk); /* Input 텍스트 색상도 변수 사용 */
+}
+
+#aiPortfolioChatInput:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(25, 135, 250, 0.1);
+}
+
+.ai-chat-send-btn {
+    background-color: var(--primary);
+    color: var(--wht);
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.ai-chat-send-btn:hover {
+    background-color: #1565c0;
+    transform: translateY(-1px);
+}
+
+/* Initial suggestion buttons */
+.chat-message.initial-suggestion {
+    background: transparent; /* Remove background for prompt container */
+    color: var(--gray700);
+    align-self: flex-start;
+    border-radius: 0;
+    padding: 0;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.chat-message.initial-suggestion p {
+    font-size: 13px;
+    color: var(--gray600);
+    margin-bottom: 5px;
+}
+
+.chat-message .suggestion-btn {
+    background-color: var(--gray50); /* #eef6fc 대신 변수 사용 */
+    color: var(--primary);
+    border: 1px solid var(--gray100); /* #d4e9ff 대신 변수 사용 */
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s, border-color 0.2s;
+    align-self: flex-start; /* Align individual buttons to left */
+    max-width: fit-content;
+}
+
+.chat-message .suggestion-btn:hover {
+    background-color: var(--primary);
+    color: var(--wht);
+    transform: translateY(-2px);
+    border-color: var(--primary);
+}
+
+
+/* --- Loading Status Styles (Portfoliomodal specific IDs) --- */
+#portfolioLoadingStatus {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  color: var(--gray600);
+  font-size: 15px;
+  width: 100%;
+  min-height: 250px; /* Adjust height for chat context */
+  background: var(--gray50); /* #f8f9ff 대신 변수 사용 */
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+}
+
+#portfolioLoadingStatus .loading-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 20px;
+  background: var(--wht);
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#portfolioLoadingLottie {
+  width: 60px; /* Slightly smaller Lottie for chat context */
+  height: 60px;
+  margin-bottom: 8px;
+}
+
+#portfolioLoadingText {
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.5;
+  transition: opacity 0.3s ease-in-out;
+  text-align: center;
+}
+
+#portfolioLoadingStatus .ai-loading-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Adjust gap */
+  margin-top: 30px; /* Adjust margin */
+  width: 100%;
+  padding: 20px;
+  background: var(--gray50); /* #f5f7ff 대신 변수 사용 */
+  border-radius: 10px;
+  border: 1px solid var(--gray100);
+}
+
+/* 나머지 로딩 상태 스타일은 변경 없음 */
+
+/* --- AI Portfolio Results Container --- */
+.ai-portfolio-results {
+  width: 100%;
+  height: auto;
+  text-align: left;
+  font-style: normal;
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Adjust gap */
+  overflow-y: auto;
+  padding-right: 10px;
+  flex-grow: 1; /* Make it fill available space */
+}
+
+/* Custom Scrollbar for Result Cards */
+#portfolioResultCards::-webkit-scrollbar {
+  width: 8px;
+}
+#portfolioResultCards::-webkit-scrollbar-track {
+  background: var(--gray50);
+  border-radius: 4px;
+}
+#portfolioResultCards::-webkit-scrollbar-thumb {
+  background: var(--gray300);
+  border-radius: 4px;
+}
+#portfolioResultCards::-webkit-scrollbar-thumb:hover {
+  background: var(--gray500);
+}
+
+/* --- AI Insight (Portfolio specific) --- */
+.ai-insight {
+  background-color: var(--gray50); /* #e9f5ff 대신 변수 사용 (혹은 다른 강조색) */
+  padding: 14px;
+  border-left: 4px solid var(--primary);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-insight-badge {
+  background: var(--gradient-blue-green);
+  color: var(--wht);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+#portfolioInsightText {
+  font-size: 14px;
+  color: var(--gray700);
+  font-style: normal;
+  line-height: 1.6;
+}
+
+/* --- Portfolio Result Cards (e.g., project, skill) --- */
+#portfolioResultCards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Adjusted gap */
+    max-height: 400px; /* Limit height and enable scroll */
+}
+
+.portfolio-card {
+    background-color: var(--wht);
+    border: 1px solid var(--gray100);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease; /* 배경색 전환 추가 */
+    cursor: pointer;
+}
+
+/* 나머지 포트폴리오 카드 스타일은 변경 없음 */
+
+
+/* --- AI Follow-up Actions (Portfolio specific IDs) --- */
+#portfolioFollowUpActions {
+  background: var(--gray50); /* #f7fbff 대신 변수 사용 */
+  border-radius: 8px;
+  padding: 14px;
+  margin-top: 10px;
+  box-shadow: 0 2px 6px rgba(33, 134, 235, 0.05); /* box-shadow는 그대로 유지 */
+}
+
+#portfolioFollowUpActions .ai-chat-bubble {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--gray50); /* #e9f5ff 대신 변수 사용 */
+  padding: 8px 14px;
+  border-radius: 18px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+#portfolioFollowUpButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#portfolioFollowUpButtons .ai-action-btn {
+  border: none;
+  background: var(--gray50); /* #eef6fc 대신 변수 사용 */
+  color: var(--primary);
+  padding: 8px 14px;
+  border-radius: 18px;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s, transform 0.2s;
+}
+
+/* 나머지 팔로우업 버튼 스타일은 변경 없음 */
+
+/* Confetti Container (Reused from existing CSS) */
+.confetti-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1001;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 767px) {
+    .ai-portfolio-chat-modal-content {
+        padding: 16px;
+        width: 95%;
+        max-height: 90vh;
+    }
+    .chat-header strong {
+        font-size: 16px;
+    }
+    .chat-message {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+    #aiPortfolioChatInput {
+        font-size: 13px;
+        padding: 10px 15px;
+    }
+    .ai-chat-send-btn {
+        font-size: 13px;
+        padding: 8px 15px;
+    }
+    #portfolioLoadingStatus {
+        min-height: 200px;
+    }
+    #portfolioLoadingStatus .ai-loading-progress .step {
+        font-size: 12px;
+    }
+}

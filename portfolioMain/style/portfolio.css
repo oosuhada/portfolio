@@ -33,6 +33,12 @@ h1 {
     font-weight: bold;
 }
 
+.main-content-wrapper {
+     display: flex;
+    flex-direction: column;
+    margin-bottom: clamp(2rem, calc(8rem - 6vw), 50rem);
+}
+
 /* Logo Section */
 .logo-fixed {
     position: fixed;
@@ -492,6 +498,14 @@ h1 {
     background: linear-gradient(to left, rgb(var(--ctx-primary)), transparent);
 }
 
+@keyframes marquee-scroll {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
 @keyframes marquee-scroll-rtl-fast {
     0% { transform: translateX(0%); }
     100% { transform: translateX(-100%); }
@@ -511,3 +525,8 @@ h1 {
     0% { transform: translateX(-100%); }
     100% { transform: translateX(0%); }
 }
+
+/* 다크모드가 아직 없으므로 일단 filter:none 처리 */
+/* body[data-theme='dark'] #lottie-container #lottie-inner-section {
+    filter: none;
+} */

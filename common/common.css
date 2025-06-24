@@ -91,7 +91,7 @@
     --cursor-grabbing2: var(--cursor-grabbing-single2);
     --cursor-ew-resize: var(--cursor-ew-resize-light);
     --cursor-ew-resize2: var(--cursor-ew-resize-light2);
-     --cursor-ask: var(--cursor-ask-light);
+    --cursor-ask: var(--cursor-ask-light);
 }
 
 html.dark {
@@ -452,7 +452,8 @@ footer a {
     transition: color 0.3s ease;
 }
 
-body[data-theme='dark'] #lottie-container #lottie-inner-section {
+/* 다크모드가 없는 특정 페이지들을 위해 페이지에서 직접 관리하도록 함 */
+body[data-theme='dark']:not(#portfolio-page):not(#about-page) #lottie-container #lottie-inner-section {
     filter: invert(75%);
 }
 
