@@ -123,69 +123,127 @@ errorMessageElement.classList.remove('visible');
 return isValid;
 };
 
-// ▼▼▼ [추가됨] AI 어시스턴트 버튼 초기화 함수 ▼▼▼
 /**
- * AI 어시스턴트 플로팅 버튼을 초기화하고 스크롤 이벤트를 설정합니다.
- * Lottie 애니메이션을 로드하고, 푸터 영역에 진입 시 버튼을 숨깁니다.
- */
+* AI 어시스턴트 플로팅 버튼을 초기화하고 스크롤 이벤트를 설정합니다.
+* Lottie 애니메이션을 로드하고, 푸터 영역에 진입 시 버튼을 숨깁니다.
+* 마우스 호버 시 커스텀 커서(작은 원 및 ask ai 이미지)를 표시합니다.
+*/
 function initializeAIAssistantButton() {
-    const assistantButton = document.getElementById('ai-assistant-FAB');
-    const footer = document.querySelector('footer');
+console.log('initializeAIAssistantButton 함수 시작'); // 함수 시작 로그 추가
 
-    // 필수 요소가 없으면 함수를 종료합니다.
-    if (!assistantButton || !footer) {
-        console.warn('AI Assistant button or footer element not found. Button functionality disabled.');
-        return;
-    }
+const assistantButton = document.getElementById('ai-assistant-FAB');
+const footer = document.querySelector('footer');
 
-    // Lottie 애니메이션 로드
-    // typeof lottie는 Lottie 라이브러리가 로드되었는지 확인합니다.
-    if (typeof lottie !== 'undefined') {
-        lottie.loadAnimation({
-            container: assistantButton,
-            renderer: 'svg',
-            loop: true,
-            autoplay: true,
-            path: 'https://gist.githubusercontent.com/oosuhada/10350c165ecf9363a48efa8f67aaa401/raw/ea144b564bea1a65faffe4b6c52f8cc1275576de/ai-assistant-logo.json'
-        });
-    } else {
-        console.error('Lottie-web library is not loaded.');
-        assistantButton.innerText = 'AI'; // Lottie 실패 시 대체 텍스트
-    }
+// 필수 요소가 없으면 함수를 종료합니다.
+if (!assistantButton || !footer) {
+console.warn('AI Assistant button or footer element not found. Button functionality disabled.');
+return;
+}
 
-    // 버튼 클릭 이벤트 리스너 (기능 구현 필요)
-    assistantButton.addEventListener('click', () => {
-        // TODO: AI 어시스턴트 창을 여는 로직을 여기에 구현하세요.
-        console.log('AI Assistant button clicked!');
-        alert('AI 어시스턴트 기능이 실행됩니다.');
-    });
+// Lottie 애니메이션 로드
+if (typeof lottie !== 'undefined') {
+lottie.loadAnimation({
+container: assistantButton,
+renderer: 'svg',
+loop: true,
+autoplay: true,
+path: 'https://gist.githubusercontent.com/oosuhada/10350c165ecf9363a48efa8f67aaa401/raw/ea144b564bea1a65faffe4b6c52f8cc1275576de/ai-assistant-logo.json'
+});
+} else {
+console.error('Lottie-web library is not loaded.');
+assistantButton.innerText = 'AI'; // Lottie 실패 시 대체 텍스트
+}
 
-    // IntersectionObserver를 사용하여 푸터가 보이는지 감지 (성능에 더 효율적)
-    const observerOptions = {
-        root: null, // 뷰포트를 기준으로 함
-        rootMargin: '0px',
-        threshold: 0.01 // 푸터가 1%라도 보이면 콜백 실행
-    };
+// --- 커스텀 커서 요소 생성 및 추가 ---
+let customCursorDot = document.getElementById('custom-cursor-dot');
+if (!customCursorDot) {
+customCursorDot = document.createElement('div');
+customCursorDot.id = 'custom-cursor-dot';
+document.body.appendChild(customCursorDot);
+console.log('customCursorDot 요소 생성 및 body에 추가됨');
+}
 
-    const observerCallback = (entries) => {
-        entries.forEach(entry => {
-            // entry.isIntersecting이 true이면 푸터가 화면에 보인다는 의미
-            if (entry.isIntersecting) {
-                assistantButton.classList.add('hidden');
-            } else {
-                assistantButton.classList.remove('hidden');
-            }
-        });
-    };
+let askImage = document.getElementById('ai-assistant-ask-image');
+if (!askImage) {
+askImage = document.createElement('img');
+askImage.id = 'ai-assistant-ask-image';
+// askImage.src는 이제 CSS 또는 themeManager에 의해 관리되므로 여기서 설정하지 않습니다.
+askImage.alt = 'Ask AI';
+assistantButton.appendChild(askImage); // FAB 내부에 추가
+console.log('askImage 요소 생성 및 AI FAB에 추가됨');
+}
+// ------------------------------------
 
-    const footerObserver = new IntersectionObserver(observerCallback, observerOptions);
-    
-    // 푸터 요소 관찰 시작
-    footerObserver.observe(footer);
+// 버튼 클릭 이벤트 리스너 (기능 구현 필요)
+assistantButton.addEventListener('click', () => {
+// TODO: AI 어시스턴트 창을 여는 로직을 여기에 구현하세요.
+console.log('AI Assistant button clicked!');
+alert('AI 어시스턴트 기능이 실행됩니다.');
+});
+
+// --- 마우스 이벤트 리스너 추가 ---
+assistantButton.addEventListener('mouseenter', () => {
+document.body.style.cursor = 'none'; // body의 기본 커서 숨기기
+customCursorDot.style.opacity = '1'; // 커스텀 원 커서 보이기
+askImage.style.opacity = '1'; // ask ai 이미지 보이기
+console.log('AI FAB mouseenter: Custom cursors visible.');
+});
+
+assistantButton.addEventListener('mouseleave', () => {
+document.body.style.cursor = ''; // body의 기본 커서 다시 보이기
+customCursorDot.style.opacity = '0'; // 커스텀 원 커서 숨기기
+askImage.style.opacity = '0'; // ask ai 이미지 숨기기
+console.log('AI FAB mouseleave: Custom cursors hidden.');
+});
+
+document.addEventListener('mousemove', (e) => {
+// AI Assistant 버튼 위에 마우스가 있을 때만 커스텀 커서 업데이트
+// assistantButton.contains(e.target) 대신, 더 정확하게 FAB 영역 내에서만 작동하도록 조건 강화
+const fabRect = assistantButton.getBoundingClientRect();
+if (e.clientX >= fabRect.left && e.clientX <= fabRect.right &&
+e.clientY >= fabRect.top && e.clientY <= fabRect.bottom) {
+customCursorDot.style.left = `${e.clientX}px`;
+customCursorDot.style.top = `${e.clientY}px`;
+}
+});
+// ------------------------------------
+
+// IntersectionObserver를 사용하여 푸터가 보이는지 감지 (성능에 더 효율적)
+const observerOptions = {
+root: null, // 뷰포트를 기준으로 함
+rootMargin: '0px',
+threshold: 0.01 // 푸터가 1%라도 보이면 콜백 실행
+};
+
+const observerCallback = (entries) => {
+entries.forEach(entry => {
+if (entry.isIntersecting) {
+assistantButton.classList.add('hidden');
+// 푸터 진입 시 커스텀 커서도 숨김
+customCursorDot.style.opacity = '0';
+askImage.style.opacity = '0';
+document.body.style.cursor = ''; // 기본 커서 복구
+console.log('Footer intersecting: AI FAB and custom cursors hidden.');
+} else {
+assistantButton.classList.remove('hidden');
+// 푸터에서 벗어났을 때, 마우스가 버튼 위에 있다면 다시 커스텀 커서 활성화 로직 필요 (선택 사항)
+// 현재는 mouseenter/leave로 처리되므로 추가 로직 없이 FAB만 보이면 됨.
+console.log('Footer not intersecting: AI FAB visible.');
+}
+});
+};
+
+const footerObserver = new IntersectionObserver(observerCallback, observerOptions);
+
+// 푸터 요소 관찰 시작
+footerObserver.observe(footer);
+console.log('Footer observer 시작됨');
 }
 
 // --- 페이지 로드 후 실행되는 UI 및 이벤트 초기화 로직 ---
 document.addEventListener('DOMContentLoaded', function() {
+console.log('DOMContentLoaded 이벤트 발생: 페이지 초기화 시작');
+
 // --- Existing Preloader Logic ---
 const preloader = document.getElementById("preloader");
 const loadingText = document.getElementById("loadingText");
@@ -975,39 +1033,7 @@ stopConfettiEffect();
 document.addEventListener('mouseleave', () => {
 stopConfettiEffect();
 });
-// --- 다크 모드 초기화 로직 ---
-const initializeDarkMode = () => {
-const darkModeToggle = document.getElementById('darkModeToggleContainer');
-const htmlElement = document.documentElement;
-const applyTheme = (theme) => {
-if (theme === 'dark') {
-htmlElement.classList.add('dark');
-} else {
-htmlElement.classList.remove('dark');
-}
-};
-if (darkModeToggle) {
-darkModeToggle.addEventListener('click', () => {
-const isDarkMode = htmlElement.classList.contains('dark');
-if (isDarkMode) {
-localStorage.setItem('theme', 'light');
-applyTheme('light');
-} else {
-localStorage.setItem('theme', 'dark');
-applyTheme('dark');
-}
-});
-}
-const savedTheme = localStorage.getItem('theme');
-const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-if (savedTheme) {
-applyTheme(savedTheme);
-} else if (prefersDark) {
-applyTheme('dark');
-} else {
-applyTheme('light');
-}
-};
+
 // --- Initialize All Features ---
 initSentinelObserver();
 headerScrollLogic.init();
@@ -1020,10 +1046,16 @@ footerImgShake();
 }
 initializeHighlighter();
 initializeAccordionMenu();
-initializeDarkMode();
-
-// ▼▼▼ [추가됨] AI 어시스턴트 버튼 기능 초기화 ▼▼▼
 initializeAIAssistantButton();
+
+// ▼▼▼ [수정됨] 통합 테마 관리자 호출 ▼▼▼
+// 기존 initializeDarkMode() 함수는 삭제하고 아래 코드로 대체합니다.
+// 이 코드는 theme-manager.js가 먼저 로드되었다고 가정합니다.
+if (window.themeManager) {
+    window.themeManager.initialize();
+} else {
+    console.error("Theme Manager가 로드되지 않았습니다.");
+}
 
 // --- Click Handler for Short Clicks ---
 document.addEventListener('click', function(event) {
@@ -1035,3 +1067,23 @@ createScreenInkSplash(event.clientX, event.clientY, document.body, 0.1);
 }
 });
 });
+
+
+// To do: common 파일 분리
+// common.js
+// : 프리로더, AI Assistant, 기본 유틸리티만 남김
+// header-nav.js
+// : 내비게이션(헤더), 메뉴 확장/축소, 언어 변경, 헤더 스크롤 숨김/보임 등 헤더 관련 전용
+// highlighter.js
+// : 하이라이트, 색상 메뉴, 저장/복원, 메뉴 드래그 등 모든 하이라이터 전용
+// theme-manager.js
+// :다크모드 라이트모드 테마관리
+
+// common.css
+// : 프리로더, AI Assistant 버튼, 커스텀 커서, footer 등 기본/공통 스타일만
+// theme.css
+// :다크모드 라이트모드 테마 전역
+// header-nav.css
+// : .nav-header, .nav-menu, .nav-toggle-btn, .nav-center a, 헤더 전용
+// highlighter.css
+// : .meaning-chunk, .highlight-*, #highlight-menu, .color-swatch 등 하이라이터 관련 전용
