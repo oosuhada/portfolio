@@ -3,7 +3,10 @@
     constructor() {
       this.carousel = null; this.posters = []; this.labels = null;
       this.n = 0; this.center = 0; this.lastCenter = 0;
-      this.maxVisible = 6; this.isEntranceAnimation = false; this.visualsStarted = false;
+      this.maxVisible = 6;
+      this.isEntranceAnimation = false;
+      this.isEntranceAnimationComplete = false; // Add this new property to track completion
+      this.visualsStarted = false;
       this.isMoving = false; this.pendingMoveQueue = []; this.isDragging = false;
       this.startX = 0; this.startTouchX = 0; this.dragThreshold = 50;
       this.animParams = {
@@ -23,9 +26,7 @@
       } else { this.center = 0; this.lastCenter = 0; }
     }
 
-    // START OF CHANGE: Logic to handle overlay fade-out on iframe load.
     tryFadeOverlay(poster) {
-      // This function checks if both conditions are met to fade out the paper overlay.
       if (poster.classList.contains('entrance-complete') && poster.dataset.iframeLoaded === 'true') {
         const overlay = poster.querySelector('.poster-paper-overlay');
         if (overlay && overlay.style.opacity !== '0') {
@@ -34,7 +35,7 @@
             duration: 1.0,
             ease: "power2.inOut",
             onComplete: () => {
-              overlay.style.pointerEvents = 'none'; // Disable after fading
+              overlay.style.pointerEvents = 'none';
             }
           });
         }
@@ -48,24 +49,22 @@
       const path = poster.dataset.path;
       const previewContainer = poster.querySelector('.poster-preview-container');
       if (!path || !previewContainer) return;
-      
+
       console.log(`[Carousel] Creating iframe for poster: ${path}`);
-      
+
       const iframe = document.createElement('iframe');
       iframe.className = 'poster-iframe';
-      
+
       iframe.onload = () => {
         console.log(`[Carousel] Iframe loaded: ${path}. Starting fade in.`);
         poster.dataset.iframeLoaded = 'true';
-        
-        // 1. Fade in the iframe content.
+
         gsap.to(iframe, {
           opacity: 1,
           duration: 0.8,
           ease: 'power2.out'
         });
-        
-        // 2. Check if the overlay can be faded out now.
+
         this.tryFadeOverlay(poster);
       };
 
@@ -74,13 +73,11 @@
         const overlay = poster.querySelector('.poster-paper-overlay');
         if (overlay) gsap.to(overlay, { opacity: 0.5, duration: 0.5 });
       };
-      
+
       iframe.src = path;
       iframe.setAttribute('scrolling', 'no');
       previewContainer.appendChild(iframe);
-      // Note: We don't set iframeLoaded to 'true' here anymore. It's set inside onload.
     }
-    // END OF CHANGE
 
     checkAndLoadVisibleIframes(centerIdx) {
       const halfVisible = Math.floor(this.maxVisible / 2);
@@ -113,7 +110,8 @@
 
     renderCarousel(centerIdx = this.center, animate = true) {
       const { R, verticalOffset, cardAngle, scaleStep } = this.animParams;
-      if (!this.isEntranceAnimation) {
+      // Only check and load iframes during normal operation or if entrance is complete
+      if (!this.isEntranceAnimation || this.isEntranceAnimationComplete) {
         this.checkAndLoadVisibleIframes(centerIdx);
       }
       this.posters.forEach((poster, i) => {
@@ -145,16 +143,32 @@
 
     runCarousel(isFirst = false) {
       if (!this || typeof this.playEntranceAnimation !== 'function') { return; }
-      this.isEntranceAnimation = isFirst;
-      if (isFirst) {
-        this.playEntranceAnimation();
+
+      // Only set to true if it's genuinely the first time to trigger the full entrance
+      if (isFirst && !this.isEntranceAnimationComplete) {
+          this.isEntranceAnimation = true;
+          this.playEntranceAnimation();
       } else {
-        this.renderCarousel(this.center, false);
-        this.setupEvents();
+          // If already complete or not the first call, just render normally
+          this.isEntranceAnimation = false; // Ensure this is false for normal rendering
+          this.renderCarousel(this.center, false);
+          if (!this.isEntranceAnimationComplete) {
+              // If for some reason it wasn't marked complete, ensure it is now
+              this.isEntranceAnimationComplete = true;
+              this.posters.forEach(poster => {
+                  poster.classList.add('entrance-complete');
+                  this.tryFadeOverlay(poster);
+              });
+              this.setupEvents(); // Set up events only once
+          }
       }
     }
 
     playEntranceAnimation() {
+      if (this.isEntranceAnimationComplete) {
+          console.warn("[Carousel] Entrance animation already completed. Skipping re-run.");
+          return;
+      }
       if (this.n === 0 || !this.carousel) { return; }
       this.carousel.style.opacity = '0';
       const entranceOffset = Math.min(6, Math.max(0, Math.floor(this.n / 2) - 1));
@@ -173,14 +187,13 @@
         const totalSteps = (this.center - startCenter + this.n) % this.n;
         if (totalSteps === 0) {
           this.isEntranceAnimation = false;
+          this.isEntranceAnimationComplete = true; // Mark as complete
           this.lastCenter = this.center;
           this.renderCarousel(this.center, false);
-          // START OF CHANGE: Mark posters as complete after animation.
           this.posters.forEach(poster => {
               poster.classList.add('entrance-complete');
-              this.tryFadeOverlay(poster); // Check if any pre-loaded iframes can now show
+              this.tryFadeOverlay(poster);
           });
-          // END OF CHANGE
           this.setupEvents();
           this.checkAndLoadVisibleIframes(this.center);
           if (window.appBackgroundChanger) window.appBackgroundChanger.initializeCarouselModeBackground(this.center);
@@ -204,13 +217,12 @@
               this.renderCarousel(this.center, true);
               setTimeout(() => {
                 this.isEntranceAnimation = false;
+                this.isEntranceAnimationComplete = true; // Mark as complete
                 this.lastCenter = this.center;
-                // START OF CHANGE: Mark posters as complete after animation.
                 this.posters.forEach(poster => {
                     poster.classList.add('entrance-complete');
-                    this.tryFadeOverlay(poster); // Check if any pre-loaded iframes can now show
+                    this.tryFadeOverlay(poster);
                 });
-                // END OF CHANGE
                 this.setupEvents();
                 this.checkAndLoadVisibleIframes(this.center);
                 if (window.appBackgroundChanger) window.appBackgroundChanger.initializeCarouselModeBackground(this.center);
@@ -250,18 +262,26 @@
       }, 900);
     }
     setupEvents() {
-      if (!this.carousel) { return; }
-      const newCarousel = this.carousel.cloneNode(true);
-      if (this.carousel.parentNode) {
-        this.carousel.parentNode.replaceChild(newCarousel, this.carousel);
-      }
-      this.carousel = newCarousel;
-      this.posters = Array.from(this.carousel.querySelectorAll('.poster'));
-      this.carousel.addEventListener('wheel', (e) => { e.preventDefault(); if (this.isMoving) return; if (e.deltaY > 0) this.moveTo(this.center + 1, 1); else this.moveTo(this.center - 1, -1); }, { passive: false });
-      this.carousel.addEventListener('mousedown', (e) => { e.preventDefault(); this.isDragging = true; this.startX = e.pageX; this.carousel.style.cursor = 'grabbing'; });
+      // Remove previous listeners to prevent duplicates
+      if (this._wheelHandler) this.carousel.removeEventListener('wheel', this._wheelHandler);
+      if (this._mouseDownHandler) this.carousel.removeEventListener('mousedown', this._mouseDownHandler);
       if (this._mouseMoveHandler) document.removeEventListener('mousemove', this._mouseMoveHandler);
       if (this._mouseUpHandler) document.removeEventListener('mouseup', this._mouseUpHandler);
+      if (this._touchStartHandler) this.carousel.removeEventListener('touchstart', this._touchStartHandler);
+      if (this._touchEndHandler) this.carousel.removeEventListener('touchend', this._touchEndHandler);
+
+      // Re-query posters as they might have been replaced
+      this.posters = Array.from(this.carousel.querySelectorAll('.poster'));
+
+      this._wheelHandler = (e) => { e.preventDefault(); if (this.isMoving) return; if (e.deltaY > 0) this.moveTo(this.center + 1, 1); else this.moveTo(this.center - 1, -1); };
+      this.carousel.addEventListener('wheel', this._wheelHandler, { passive: false });
+
+      this._mouseDownHandler = (e) => { e.preventDefault(); this.isDragging = true; this.startX = e.pageX; this.carousel.style.cursor = 'grabbing'; };
+      this.carousel.addEventListener('mousedown', this._mouseDownHandler);
+
       this._mouseMoveHandler = (e) => { if (!this.isDragging) return; e.preventDefault(); };
+      document.addEventListener('mousemove', this._mouseMoveHandler);
+
       this._mouseUpHandler = (e) => {
         if (!this.isDragging) return;
         const deltaX = e.pageX - this.startX;
@@ -269,16 +289,22 @@
         this.isDragging = false;
         if (Math.abs(deltaX) > this.dragThreshold) { if (deltaX > 0) this.moveTo(this.center - 1, -1); else this.moveTo(this.center + 1, 1); }
       };
-      document.addEventListener('mousemove', this._mouseMoveHandler);
       document.addEventListener('mouseup', this._mouseUpHandler);
-      this.carousel.addEventListener('touchstart', (e) => { this.startTouchX = e.touches[0].pageX; }, { passive: true });
-      this.carousel.addEventListener('touchend', (e) => {
+
+      this._touchStartHandler = (e) => { this.startTouchX = e.touches[0].pageX; };
+      this.carousel.addEventListener('touchstart', this._touchStartHandler, { passive: true });
+
+      this._touchEndHandler = (e) => {
         const endTouchX = e.changedTouches[0].pageX;
         const deltaX = endTouchX - this.startTouchX;
         if (Math.abs(deltaX) > this.dragThreshold) { if (deltaX > 0) this.moveTo(this.center - 1, -1); else this.moveTo(this.center + 1, 1); }
-      }, { passive: true });
+      };
+      this.carousel.addEventListener('touchend', this._touchEndHandler, { passive: true });
+
+      // Ensure click listeners are also properly managed to prevent duplicates if setupEvents is called multiple times
       this.posters.forEach((poster, idx) => {
-        poster.addEventListener('click', () => {
+        // Use a named function or check if listener already exists to prevent duplicates
+        const clickHandler = () => {
           if (this.isMoving) return;
           if (idx === this.center) {
             if (typeof window.appShowModal === 'function') {
@@ -290,7 +316,11 @@
           } else {
             this.performFastScroll(idx);
           }
-        });
+        };
+        // Remove existing handler if it was added before
+        poster.removeEventListener('click', poster._carouselClickHandler); // Use a custom property to store the handler
+        poster._carouselClickHandler = clickHandler; // Store the handler
+        poster.addEventListener('click', poster._carouselClickHandler); // Add the new handler
       });
       this.carousel.style.cursor = 'grab';
     }

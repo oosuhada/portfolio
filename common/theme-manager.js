@@ -10,6 +10,18 @@
 const THEME_KEY = 'user-theme'; // 1. 일관된 localStorage 키 정의
 
 /**
+ * AI 어시스턴트 ask 이미지의 src를 테마에 따라 동적으로 갱신합니다.
+ */
+function updateAIAssistantAskImage() {
+  const askImage = document.getElementById('ai-assistant-ask-image');
+  if (askImage) {
+    askImage.src = document.documentElement.classList.contains('dark')
+      ? '../img/askdarkmode.png'   // ← 실제 경로로 맞춰주세요!
+      : '../img/asklightmode.png';
+  }
+}
+
+/**
  * 지정된 테마를 페이지에 적용하고, localStorage에 저장합니다.
  * @param {('light'|'dark')} theme - 적용할 테마
  */
@@ -38,6 +50,9 @@ function applyTheme(theme) {
         moonIcon.classList.toggle('hidden', theme !== 'dark');
     }
   });
+
+  // ===== [추가] AI ask 이미지 src 동기화 =====
+  updateAIAssistantAskImage();
 
   // 다른 컴포넌트들이 테마 변경을 감지할 수 있도록 커스텀 이벤트 발생
   document.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme } }));
@@ -91,6 +106,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 참고: 실제 테마 초기화는 각 페이지의 메인 JS 파일에서 initializeTheme()을 호출하여 실행합니다.
 });
+
+// [추가] themeChanged 이벤트 발생 시에도 이미지 갱신 (중복 방지 안전장치)
+document.addEventListener('themeChanged', updateAIAssistantAskImage);
 
 // 전역에서 접근할 수 있도록 window 객체에 함수 할당
 window.themeManager = {

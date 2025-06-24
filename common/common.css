@@ -1,3 +1,4 @@
+/* common.css */
 :root {
   /* 라이트 모드 변수 */
   --light-bg: #ffffff;      /* 라이트 모드 배경색 (흰색) */
@@ -61,17 +62,17 @@
 
     /* ▼▼▼ [추가] 커스텀 커서 변수 정의 ▼▼▼ */
     /* 라이트 모드 커서 */
-    --cursor-pointer-light: url('../img/pointer-light.png'), auto;
-    --cursor-pointer-light2: url('../../img/pointer-light.png'), auto;
-    --cursor-ew-resize-light: url('../img/ew-resize-light.png') 40 20, auto;
-    --cursor-ew-resize-light2: url('../../img/ew-resize-light.png') 40 20, auto;
+    --cursor-pointer-light: url('../img/pointer-dark.png'), auto;
+    --cursor-pointer-light2: url('../../img/pointer-dark.png'), auto;
+    --cursor-ew-resize-light: url('../img/ew-resize-dark.png') 40 20, auto;
+    --cursor-ew-resize-light2: url('../../img/ew-resize-dark.png') 40 20, auto;
     --cursor-ask-light: url('../img/asklightmode.png') 25 25, auto;
 
     /* 다크 모드 커서 */
-    --cursor-pointer-dark: url('../img/pointer-dark.png'), auto;
-    --cursor-pointer-dark2: url('../../img/pointer-dark.png'), auto;
-    --cursor-ew-resize-dark: url('../img/ew-resize-dark.png') 40 20, auto;
-    --cursor-ew-resize-dark2: url('../../img/ew-resize-dark.png') 40 20, auto;
+    --cursor-pointer-dark: url('../img/pointer-light.png'), auto;
+    --cursor-pointer-dark2: url('../../img/pointer-light.png'), auto;
+    --cursor-ew-resize-dark: url('../img/ew-resize-light.png') 40 20, auto;
+    --cursor-ew-resize-dark2: url('../../img/ew-resize-light.png') 40 20, auto;
     --cursor-ask-dark: url('../img/askdarkmode.png') 25 25, auto;
 
     /* 단일 이미지 커서 (모드 공통) */

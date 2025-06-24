@@ -1,3 +1,5 @@
+// common.js
+
 // --- 전역 데이터 관리 함수 ---
 // 다른 JS 파일 (highlight-hub.js 등)에서 접근할 수 있도록 DOMContentLoaded 이벤트 리스너 밖으로 이동시켰습니다.
 /**
@@ -123,6 +125,27 @@ errorMessageElement.classList.remove('visible');
 return isValid;
 };
 
+// ✨ ===== [추가] 커서 테마 동기화 함수 ===== ✨
+/**
+ * 현재 테마에 맞춰 CSS 커서 변수를 동적으로 업데이트합니다.
+ */
+function updateCursorVarsByTheme() {
+    const root = document.documentElement;
+    const isDark = root.classList.contains('dark');
+
+    // isDark가 true이면 'dark' 문자열을, false이면 'light' 문자열을 사용
+    const themeSuffix = isDark ? 'dark' : 'light';
+
+    root.style.setProperty('--cursor-default', `var(--cursor-pointer-${themeSuffix})`);
+    root.style.setProperty('--cursor-default2', `var(--cursor-pointer-${themeSuffix}2)`);
+    root.style.setProperty('--cursor-ew-resize', `var(--cursor-ew-resize-${themeSuffix})`);
+    root.style.setProperty('--cursor-ew-resize2', `var(--cursor-ew-resize-${themeSuffix}2)`);
+    root.style.setProperty('--cursor-ask', `var(--cursor-ask-${themeSuffix})`);
+    
+    console.log(`[Cursor] 테마에 맞춰 커서 업데이트: ${themeSuffix}`);
+}
+
+
 /**
 * AI 어시스턴트 플로팅 버튼을 초기화하고 스크롤 이벤트를 설정합니다.
 * Lottie 애니메이션을 로드하고, 푸터 영역에 진입 시 버튼을 숨깁니다.
@@ -165,12 +188,15 @@ console.log('customCursorDot 요소 생성 및 body에 추가됨');
 
 let askImage = document.getElementById('ai-assistant-ask-image');
 if (!askImage) {
-askImage = document.createElement('img');
-askImage.id = 'ai-assistant-ask-image';
-// askImage.src는 이제 CSS 또는 themeManager에 의해 관리되므로 여기서 설정하지 않습니다.
-askImage.alt = 'Ask AI';
-assistantButton.appendChild(askImage); // FAB 내부에 추가
-console.log('askImage 요소 생성 및 AI FAB에 추가됨');
+  askImage = document.createElement('img');
+  askImage.id = 'ai-assistant-ask-image';
+  // 💡 여기가 src 기본값을 넣어주는 부분!
+  askImage.src = document.documentElement.classList.contains('dark')
+    ? '../img/askdarkmode.png'
+    : '../img/asklightmode.png';
+  askImage.alt = 'Ask AI';
+  assistantButton.appendChild(askImage); // FAB 내부에 추가
+  console.log('askImage 요소 생성 및 AI FAB에 추가됨');
 }
 // ------------------------------------
 
@@ -243,6 +269,13 @@ console.log('Footer observer 시작됨');
 // --- 페이지 로드 후 실행되는 UI 및 이벤트 초기화 로직 ---
 document.addEventListener('DOMContentLoaded', function() {
 console.log('DOMContentLoaded 이벤트 발생: 페이지 초기화 시작');
+
+// ✨ [수정] 표준 초기화 순서에 커서 업데이트 함수 명시적으로 추가
+if (window.themeManager) window.themeManager.initialize();
+// 초기화 함수들이 순서대로 호출되도록 정리
+initializeAIAssistantButton();
+updateAIAssistantAskImage();
+updateCursorVarsByTheme();
 
 // --- Existing Preloader Logic ---
 const preloader = document.getElementById("preloader");
@@ -1046,16 +1079,9 @@ footerImgShake();
 }
 initializeHighlighter();
 initializeAccordionMenu();
-initializeAIAssistantButton();
+// initializeAIAssistantButton(); // 상단에서 이미 호출됨
 
-// ▼▼▼ [수정됨] 통합 테마 관리자 호출 ▼▼▼
-// 기존 initializeDarkMode() 함수는 삭제하고 아래 코드로 대체합니다.
-// 이 코드는 theme-manager.js가 먼저 로드되었다고 가정합니다.
-if (window.themeManager) {
-    window.themeManager.initialize();
-} else {
-    console.error("Theme Manager가 로드되지 않았습니다.");
-}
+// 기존 테마 초기화 로직은 삭제, 각 페이지의 main script에서 호출
 
 // --- Click Handler for Short Clicks ---
 document.addEventListener('click', function(event) {
@@ -1068,6 +1094,9 @@ createScreenInkSplash(event.clientX, event.clientY, document.body, 0.1);
 });
 });
 
+
+// ✨ [추가] 테마가 변경될 때마다 커서도 함께 업데이트되도록 이벤트 리스너 추가
+document.addEventListener('themeChanged', updateCursorVarsByTheme);
 
 // To do: common 파일 분리
 // common.js
