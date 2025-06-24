@@ -1,35 +1,62 @@
-/* highlight-hub.css */
-
 /* :root 변수는 connect.css에 정의된 것을 상속받아 사용합니다. */
-
 #highlight-hub-section {
     width: 100%;
-    background-color: var(--hub-bg, #f4f5f7);
+    background-color: transparent;
+    color: var(--text-primary);
     padding: 60px 20px;
     border-bottom: 1px solid var(--border-color, #e0e0e0);
     box-sizing: border-box;
+    position: relative;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: color 0.3s, border-color 0.3s;
+}
+
+.hub-header {
+    max-width: 1200px;
+    margin: 0 auto 30px auto;
+    text-align: center;
+}
+
+.hub-header h1 {
+    font-size: 2.5em;
+    color: var(--text-primary, #172b4d);
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.hub-header p {
+    font-size: 1.2em;
+    color: var(--text-secondary, #5e6c84);
+}
+
+.hub-header strong {
+    color: var(--accent-color, #0052cc);
+    font-weight: 600;
 }
 
 .hub-container {
     display: flex;
     max-width: 1200px;
     margin: 0 auto;
-    background: var(--hub-bg, #f4f5f7);
+    background: transparent;
     min-height: 90vh;
 }
 
-/* 좌측 하이라이트 패널 */
 .highlights-panel {
-    flex: 3;
+    flex: 2;
     padding: 20px;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .panel-header {
     margin-bottom: 25px;
 }
-.panel-header h1 {
-    font-size: 2em;
+
+.panel-header h2 {
+    font-size: 1.5em;
     color: var(--text-primary, #172b4d);
     margin-bottom: 5px;
 }
@@ -64,11 +91,16 @@
     left: 0;
     width: 100%;
     height: 3px;
-    background-color: #0052cc;
+    background-color: var(--accent-color, #0052cc);
     border-radius: 2px;
 }
 
+.timeline-container {
+    flex-grow: 1;
+}
+
 .cards-container {
+    /* REMOVED flex-grow: 1; to fix card height issue */
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
@@ -76,11 +108,15 @@
 }
 
 .no-highlights {
-    font-size: 1em;
+    font-size: 1.1em;
+    font-weight: 500;
     color: var(--text-secondary, #5e6c84);
     text-align: center;
-    grid-column: 1 / -1; /* 전체 컬럼을 차지하도록 설정 */
+    grid-column: 1 / -1;
     padding: 40px 20px;
+    background-color: var(--card-bg, #fff);
+    border-radius: 8px;
+    border: 2px dashed var(--border-color, #e0e0e0);
 }
 
 .highlight-card {
@@ -88,13 +124,16 @@
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     padding: 15px;
-    border-left: 5px solid; /* JS에서 색상 적용 */
+    border-left: 5px solid;
     cursor: grab;
-    transition: box-shadow 0.2s, transform 0.2s, opacity 0.3s;
+    transition: box-shadow 0.3s, transform 0.3s, opacity 0.3s, background-color 0.3s, border-color 0.3s;
     position: relative;
     display: flex;
     flex-direction: column;
+    opacity: 0;
+    transform: translateY(30px);
 }
+
 .highlight-card:active {
     cursor: grabbing;
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
@@ -107,28 +146,34 @@
     align-items: center;
     margin-bottom: 10px;
 }
+
 .card-page-source {
     font-size: 0.8em;
     font-weight: 600;
     color: var(--text-secondary, #5e6c84);
-    background-color: #f0f0f0;
+    background-color: var(--tag-bg, #f0f0f0);
     padding: 3px 8px;
     border-radius: 10px;
 }
+
 .unhighlight-card-btn {
     background: none;
     border: none;
-    font-size: 1.1em;
-    color: #aaa;
+    font-size: 1.2em;
+    color: #ccc;
     cursor: pointer;
     padding: 5px;
     border-radius: 50%;
     line-height: 1;
+    transition: color 0.2s, background-color 0.2s, transform 0.2s;
 }
+
 .unhighlight-card-btn:hover {
     color: #e74c3c;
     background-color: #fbecec;
+    transform: scale(1.1);
 }
+
 .card-text {
     font-size: 0.95em;
     color: var(--text-primary, #172b4d);
@@ -137,21 +182,26 @@
 }
 
 .card-actions {
-    margin-top: 10px;
+    margin-top: 15px;
     display: flex;
     gap: 10px;
     justify-content: flex-end;
 }
 
 .card-actions button {
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
+    background-color: var(--tag-bg, #f0f0f0);
+    border: 1px solid var(--border-color);
     border-radius: 5px;
-    padding: 6px 10px;
+    padding: 6px 12px;
     font-size: 0.85em;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s ease-in-out;
+    color: var(--text-secondary);
+}
+.card-actions button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .card-actions button.restore-btn {
@@ -159,114 +209,242 @@
     border-color: #91d5ff;
     color: #0052cc;
 }
-.card-actions button.restore-btn:hover {
-    background-color: #d9f0ff;
-}
+.card-actions button.restore-btn:hover { background-color: #d9f0ff; }
 
-.card-actions button.delete-btn:hover {
-    background-color: #ffdddd;
-    color: #d32f2f;
+.card-actions button.delete-btn {
+    background-color: #ffeded;
     border-color: #ffb8b8;
+    color: #d32f2f;
+}
+.card-actions button.delete-btn:hover { background-color: #ffdddd; }
+
+.timeline-container {
+    position: relative;
+    padding: 20px 0;
+    list-style: none;
+}
+.timeline-container.hidden { display: none; }
+.timeline-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20px;
+    height: 100%;
+    width: 4px;
+    background: var(--border-color);
+    border-radius: 2px;
+    transition: background-color 0.3s;
+}
+.timeline-item {
+    margin: 20px 0;
+    padding-left: 50px;
+    position: relative;
+    opacity: 0;
+    transform: translateX(-20px);
+}
+.timeline-dot {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 5px;
+    height: 20px;
+    width: 20px;
+    background: var(--card-bg);
+    border: 4px solid;
+    border-radius: 50%;
+    z-index: 1;
+    transition: background-color 0.3s;
+}
+.timeline-content {
+    /* background: var(--card-bg, #fff); */
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: box-shadow 0.2s, background-color 0.3s;
+}
+.timeline-content:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.timeline-date {
+    display: block;
+    font-weight: 600;
+    color: var(--text-secondary, #5e6c84);
+    margin-bottom: 5px;
+    font-size: 0.9em;
+}
+.timeline-page {
+    font-weight: bold;
+    color: var(--text-primary, #172b4d);
+    margin-bottom: 10px;
+}
+.timeline-text {
+    font-size: 0.95em;
+    line-height: 1.5;
 }
 
-
-/* 우측 액션 패널 */
 .actions-panel {
     flex: 2;
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 20px;
     border-left: 1px solid var(--border-color, #e0e0e0);
+    transition: border-color 0.3s;
 }
 
-.postcard-draft-section, .ai-assistant-section {
-    background: var(--panel-bg, #fff);
+.ai-assistant-section {
+    background: var(--panel-bg, transparent);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: background-color 0.3s;
 }
-.actions-panel h2 {
-    font-size: 1.3em;
+
+.actions-panel h2, .actions-panel h3 {
     color: var(--text-primary, #172b4d);
     margin-bottom: 15px;
-    border-bottom: 1px solid var(--border-color, #e0e0e0);
     padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color, #e0e0e0);
 }
+.actions-panel h2 { font-size: 1.4em; }
+.actions-panel h3 { font-size: 1.1em; font-weight: 600; margin-top: 20px; }
+.actions-panel h3:first-child { margin-top: 0; }
 
-#postcard-draft-textarea {
-    width: 100%;
-    min-height: 150px;
-    resize: vertical;
-    border: 1px solid var(--border-color, #e0e0e0);
-    border-radius: 5px;
+.ai-module { margin-bottom: 20px; }
+.ai-buttons-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.ai-buttons-grid button {
     padding: 10px;
-    font-size: 1em;
-    box-sizing: border-box;
-    transition: border-color 0.2s, background-color 0.2s;
-}
-#postcard-draft-textarea.drag-over {
-    border-color: #4c9aff;
-    background-color: #f0f6ff;
-}
-
-#go-to-postcard-btn {
-    width: 100%;
-    padding: 12px;
-    background-color: #0052cc;
-    color: white;
-    border: none;
+    /* border: 1px solid var(--border-color, #ccc);
+    background-color: var(--tag-bg, #f5f5f5); */
+    color: var(--text-secondary);
     border-radius: 5px;
-    font-size: 1em;
-    font-weight: 600;
     cursor: pointer;
-    margin-top: 15px;
-    transition: background-color 0.2s;
+    font-size: 0.9em;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.2s ease-out;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
 }
-#go-to-postcard-btn:hover {
-    background-color: #0065ff;
-}
-
-.ai-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-.ai-buttons button {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    background-color: #f5f5f5;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.95em;
-    text-align: left;
-    display: flex;
-    align-items: center;
-}
-.ai-buttons button:hover {
-    background-color: #e9e9e9;
-}
-.ai-buttons i {
-    margin-right: 8px;
-    width: 16px;
-    text-align: center;
+.ai-buttons-grid button.active {
+    background-color: var(--accent-color, #0052cc);
+    color: white;
+    border-color: var(--accent-color, #0052cc);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 82, 204, 0.2);
 }
 
 .ai-output-box {
     margin-top: 15px;
     padding: 15px;
-    background: var(--ai-output-bg, #fafafb);
+    /* background: var(--ai-output-bg, #fafafb); */
+    /* border: 1px solid var(--border-color, #e0e0e0); */
     border-radius: 5px;
     min-height: 100px;
     font-size: 0.9em;
     color: var(--text-secondary, #5e6c84);
     white-space: pre-wrap;
     line-height: 1.6;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.ai-output-box strong { color: var(--text-primary, #172b4d); }
+.ai-output-box ul { padding-left: 20px; margin-top: 10px; }
+.ai-output-box .keyword-tag {
+    display: inline-block;
+    background-color: var(--accent-color-light-bg, #e6f7ff);
+    color: var(--accent-color, #0052cc);
+    padding: 3px 8px;
+    border-radius: 12px;
+    margin: 3px;
+    font-weight: 500;
+}
+
+.farewell-message {
+    text-align: center;
+    padding: 20px;
+}
+.farewell-message p {
+    font-size: 1.2em;
+    color: var(--text-secondary, #5e6c84);
+    font-style: italic;
+    margin: 0;
+}
+.farewell-message i {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    animation: star-twinkle 2s infinite ease-in-out;
+}
+.timeline-item.farewell-timeline-item .timeline-dot {
+    display: none;
+}
+.timeline-item.farewell-timeline-item {
+    padding-left: 25px;
+}
+
+@keyframes star-twinkle {
+    0%, 100% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.2); opacity: 1; }
+}
+
+#ai-generate-btn, 
+#ai-regenerate-btn,
+#ai-go-to-postcard-btn {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    transition: all 0.2s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+#ai-generate-btn {
+    background-color: var(--accent-color-dark, #2684ff);
+    color: white;
+    border-color: var(--accent-color-dark, #2684ff);
+}
+
+#ai-generate-btn:hover {
+    background-color: var(--accent-color-hover, #0065ff);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 82, 204, 0.2);
+}
+
+#ai-post-generate-controls {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+#ai-post-generate-controls.hidden {
+    display: none;
+}
+
+#ai-regenerate-btn {
+    flex: 1;
+    background-color: var(--tag-bg, #f5f5f5);
+    color: var(--text-secondary);
+}
+
+#ai-go-to-postcard-btn {
+    flex: 2;
+    background-color: var(--accent-color, #0052cc);
+    color: white;
+    border-color: var(--accent-color, #0052cc);
 }
 
 @media (max-width: 900px) {
@@ -277,4 +455,10 @@
         border-left: none;
         border-top: 1px solid var(--border-color, #e0e0e0);
     }
+    .hub-header h1 { font-size: 2em; }
+    .hub-header p { font-size: 1em; }
+}
+
+@media (max-width: 600px) {
+    .ai-buttons-grid { grid-template-columns: 1fr; }
 }

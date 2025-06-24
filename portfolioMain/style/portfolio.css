@@ -293,7 +293,7 @@ h1 {
 .project-social-fixed {
     position: fixed;
     left: calc(var(--main-left-gap) - 4px);
-    bottom: 2vw;
+    bottom: 3vw;
     display: flex;
     flex-direction: row;
     gap: 0.8rem;
