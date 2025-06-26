@@ -1,10 +1,9 @@
-// js/ai_chat_logic.js
 /*
-* AI Portfolio Chat - Core Logic (Lazy Loaded)
-* This script contains the core AI logic for processing user queries,
-* searching the knowledge base, and generating structured responses.
-* It does NOT interact with the DOM directly.
-*/
+ * AI Portfolio Chat - Core Logic (Lazy Loaded)
+ * This script contains the core AI logic for processing user queries,
+ * searching the knowledge base, and generating structured responses.
+ * It does NOT interact with the DOM directly.
+ */
 
 // Dynamically import pipeline and cos_sim from Transformers.js as this is a module script.
 // This ensures these functions are available within this module's scope before its code executes.
@@ -30,7 +29,7 @@ window.AIPortfolioLogic = (() => {
     let fuse; // Instance of Fuse.js
     let extractor; // Transformers.js model for feature extraction
     let dbEmbeddings; // Stored embeddings of our knowledge base documents
-    let documents; // Reference to the search_documents from the knowledge base
+    let searchDocuments = []; // Renamed from 'documents' to avoid confusion and ensure it's always an array
 
     // Track if the knowledge base has been loaded and initialized
     let isKnowledgeBaseLoaded = false;
@@ -46,9 +45,10 @@ window.AIPortfolioLogic = (() => {
             console.error("[AIPortfolioLogic] Fuse.js is not loaded.");
             throw new Error("Required library Fuse.js not available.");
         }
-        if (typeof nlp === 'undefined') {
-            console.warn("[AIPortfolioLogic] Compromise.js (nlp) is not loaded. English NLP might be limited.");
-        }
+        // Compromise.js (nlp) is optional for English NLP. No error if not found.
+        // if (typeof nlp === 'undefined') {
+        //     console.warn("[AIPortfolioLogic] Compromise.js (nlp) is not loaded. English NLP might be limited.");
+        // }
     }
 
     /**
@@ -72,24 +72,25 @@ window.AIPortfolioLogic = (() => {
             const response = await fetch('../common/ai_chat_data.json');
             if (!response.ok) throw new Error(`Knowledge base file not found or failed to fetch: ${response.status}`);
             knowledgeBase = await response.json();
-            documents = knowledgeBase.search_documents; // Array of documents for Fuse.js and Transformers.js
+            // Assign searchDocuments from the knowledge base, ensuring it's an array
+            searchDocuments = knowledgeBase.search_documents && Array.isArray(knowledgeBase.search_documents) ?
+                              knowledgeBase.search_documents : [];
 
-            if (!documents || !Array.isArray(documents) || documents.length === 0) {
+            if (searchDocuments.length === 0) {
                 console.warn("[AIPortfolioLogic] No search documents found in knowledgeBase. Fuse.js and Transformers.js will have limited functionality.");
-                documents = []; // Ensure it's an empty array to prevent errors
             }
 
             // Initialize Fuse.js
-            fuse = new Fuse(documents, {
+            fuse = new Fuse(searchDocuments, {
                 keys: ['query_phrases'],
-                threshold: 0.6, // Adjust for stricter/looser matching
+                threshold: 0.3, // Adjust for stricter/looser matching
                 includeScore: true // Include score for filtering
             });
             console.log("[AIPortfolioLogic] Fuse.js initialized.");
 
             // Create embeddings for Transformers.js if pipeline is available
             if (typeof pipeline === 'function' && pipeline !== null) {
-                const itemsToEmbed = documents.map(doc => {
+                const itemsToEmbed = searchDocuments.map(doc => {
                     const text = doc.text_for_embedding && typeof doc.text_for_embedding === 'object' ?
                         doc.text_for_embedding[currentLanguage] || doc.text_for_embedding['en'] :
                         doc.text_for_embedding;
@@ -102,7 +103,7 @@ window.AIPortfolioLogic = (() => {
                      console.log("[AIPortfolioLogic] Document embeddings created.");
                 } else {
                      console.warn("[AIPortfolioLogic] No valid text to create embeddings from. Semantic search may not work.");
-                     dbEmbeddings = null;
+                     dbEmbeddings = null; // Ensure it's null if no embeddings created
                 }
             } else {
                 console.warn("[AIPortfolioLogic] Transformers.js pipeline is not available. Semantic search will be disabled.");
@@ -117,6 +118,7 @@ window.AIPortfolioLogic = (() => {
             fuse = null;
             extractor = null;
             dbEmbeddings = null;
+            searchDocuments = []; // Reset
             isKnowledgeBaseLoaded = false; // Mark as failed
             throw error; // Re-throw to propagate the error
         }
@@ -169,7 +171,7 @@ window.AIPortfolioLogic = (() => {
 
     // 1. Fuse.js search logic (keyword/phrase matching)
     function runFuseSearch(query) {
-        if (!fuse || !documents || documents.length === 0) {
+        if (!fuse || !searchDocuments || searchDocuments.length === 0) {
             console.warn("[AIPortfolioLogic] Fuse.js not initialized or no documents to search.");
             return null;
         }
@@ -200,7 +202,7 @@ window.AIPortfolioLogic = (() => {
                 );
                 if (aiRelated.length > 0) {
                     // Return the first AI-related project as a specific item match
-                    return { category: 'projects', item: aiRelated[0].id, aiInsight: { en: `Here's a project related to AI or data analysis: ${aiRelated[0].title.en || aiRelated[0].title}` } };
+                    return { category: 'projects', item: aiRelated[0].id, aiInsight: { en: `Here's a project related to AI or data analysis: ${getLocalizedText(aiRelated[0].title)}` } };
                 }
                 return { category: 'no_ai_projects' }; // Specific response for no AI projects
             }
@@ -220,7 +222,14 @@ window.AIPortfolioLogic = (() => {
         }
         if (doc.has('(what if)')) {
             // Simple "what if" detection, further refinement would need specific scenario detection
-            return { category: 'what_if', item: 'example_scenario_id' }; // Example scenario
+            // Find a scenario that matches some keywords in the query
+            const matchedScenario = knowledgeBase.what_if_scenarios.scenarios.find(scenario =>
+                scenario.trigger_keywords && scenario.trigger_keywords.some(kw => query.toLowerCase().includes(kw.toLowerCase()))
+            );
+            if (matchedScenario) {
+                return { category: 'what_if', item: matchedScenario.id };
+            }
+            return { category: 'what_if', item: null }; // General 'what if' without specific scenario
         }
         if (doc.has('(thank you|thanks)')) {
             return { category: 'thank_you' };
@@ -237,8 +246,8 @@ window.AIPortfolioLogic = (() => {
 
     // 3. Transformers.js for semantic search
     async function runTransformers(query) {
-        if (!extractor || !dbEmbeddings || typeof cos_sim === 'undefined' || pipeline === null) { // Added pipeline check
-            console.warn("[AIPortfolioLogic] Transformers.js model, embeddings, or cos_sim not ready, or pipeline is null. Semantic search skipped.");
+        if (!extractor || !dbEmbeddings || typeof cos_sim === 'undefined' || pipeline === null || searchDocuments.length === 0) {
+            console.warn("[AIPortfolioLogic] Transformers.js model, embeddings, or cos_sim not ready, or pipeline is null, or no search documents. Semantic search skipped.");
             return null;
         }
 
@@ -256,8 +265,8 @@ window.AIPortfolioLogic = (() => {
 
             // Consider a match only if similarity score is high enough (e.g., > 0.75)
             if (bestMatch.score > 0.75) {
-                console.log(`[AIPortfolioLogic] Transformers.js matched: ${documents[bestMatch.index].id} with score ${bestMatch.score}`);
-                return documents[bestMatch.index].response; // Return response template
+                console.log(`[AIPortfolioLogic] Transformers.js matched: ${searchDocuments[bestMatch.index].id} with score ${bestMatch.score}`);
+                return searchDocuments[bestMatch.index].response; // Return response template
             }
         } catch (e) {
             console.error("[AIPortfolioLogic] Error during Transformers.js processing:", e);
@@ -276,11 +285,11 @@ window.AIPortfolioLogic = (() => {
         const normalizedQuery = query.toLowerCase();
         const synonymsMap = knowledgeBase.synonyms_map[currentLanguage] || knowledgeBase.synonyms_map['en'];
 
-        if (matchesKeyword(normalizedQuery, ["프로젝트", "작품", "포트폴리오"], synonymsMap)) {
-            if (matchesKeyword(normalizedQuery, ["ai", "인공지능", "머신러닝"], synonymsMap)) {
+        if (matchesKeyword(normalizedQuery, ["프로젝트", "작품", "포트폴리오"], synonymsMap.project)) {
+            if (matchesKeyword(normalizedQuery, ["ai", "인공지능", "머신러닝"], synonymsMap.ai)) { // Added specific AI synonym category for clarity
                 const aiRelated = knowledgeBase.response_categories.projects.items.filter(p =>
-                    (p.tags && p.tags.some(tag => matchesKeyword(tag.toLowerCase(), ["ai", "인공지능"], synonymsMap))) ||
-                    (p.keywords && p.keywords.some(kw => matchesKeyword(kw.toLowerCase(), ["ai", "인공지능"], synonymsMap)))
+                    (p.tags && p.tags.some(tag => matchesKeyword(tag.toLowerCase(), ["ai", "인공지능"], synonymsMap.ai))) ||
+                    (p.keywords && p.keywords.some(kw => matchesKeyword(kw.toLowerCase(), ["ai", "인공지능"], synonymsMap.ai)))
                 );
                 if (aiRelated.length > 0) {
                     return { category: 'projects', item: aiRelated[0].id };
@@ -289,30 +298,96 @@ window.AIPortfolioLogic = (() => {
             }
             return { category: 'projects', item: null };
         }
-        if (matchesKeyword(normalizedQuery, ["스킬", "기술", "기술 스택", "능력"], synonymsMap)) {
+        if (matchesKeyword(normalizedQuery, ["스킬", "기술", "기술 스택", "능력"], synonymsMap.skill)) {
             return { category: 'skills', item: null };
         }
-        if (matchesKeyword(normalizedQuery, ["경력", "경험", "직무", "이력"], synonymsMap)) {
+        if (matchesKeyword(normalizedQuery, ["경력", "경험", "직무", "이력"], synonymsMap.career)) {
+            // Check for specific subsections in career
+            if (matchesKeyword(normalizedQuery, ["업무", "회사"], synonymsMap.work_experience)) {
+                return { category: 'career', subSection: 'work_experience' };
+            }
+            if (matchesKeyword(normalizedQuery, ["학력", "교육"], synonymsMap.education)) {
+                return { category: 'career', subSection: 'education' };
+            }
+            if (matchesKeyword(normalizedQuery, ["수상", "표창"], synonymsMap.awards)) {
+                return { category: 'career', subSection: 'awards' };
+            }
             return { category: 'career', item: null };
         }
-        if (matchesKeyword(normalizedQuery, ["연락", "컨택", "문의", "이메일"], synonymsMap)) {
+        if (matchesKeyword(normalizedQuery, ["연락", "문의", "이메일", "소셜링크"], synonymsMap.connect)) {
             return { category: 'connect', item: null };
         }
-        if (matchesKeyword(normalizedQuery, ["오수", "oosu", "오수에 대해", "누구", "자기소개"], synonymsMap)) {
+        if (matchesKeyword(normalizedQuery, ["오수", "oosu", "오수에 대해", "누구", "자기소개"], synonymsMap.profile_info)) {
             return { category: 'about_me_deep_dive', item: null };
         }
-        if (matchesKeyword(normalizedQuery, ["감사합니다", "고마워", "수고했어"], synonymsMap)) {
+        if (matchesKeyword(normalizedQuery, ["감사합니다", "고마워", "수고했어"], synonymsMap.thank_you)) {
             return { category: 'thank_you' };
         }
-        if (matchesKeyword(normalizedQuery, ["안녕", "안녕하세요", "헬로"], synonymsMap)) {
+        if (matchesKeyword(normalizedQuery, ["안녕", "안녕하세요", "헬로"], synonymsMap.greeting)) {
             return { category: 'greeting' };
         }
-        if (matchesKeyword(normalizedQuery, ["죄송", "미안", "실수"], synonymsMap)) {
+        if (matchesKeyword(normalizedQuery, ["죄송", "미안", "실수"], synonymsMap.sorry)) {
             return { category: 'empathetic', trigger_keywords: ["죄송", "미안", "실수"] };
         }
-        if (matchesKeyword(normalizedQuery, ["만약", "가정", "만약에"], synonymsMap)) {
-            return { category: 'what_if', item: 'example_scenario_id' };
+        if (matchesKeyword(normalizedQuery, ["만약", "가정", "만약에"], synonymsMap.what_if)) {
+            const matchedScenario = knowledgeBase.what_if_scenarios.scenarios.find(scenario =>
+                scenario.trigger_keywords && scenario.trigger_keywords.some(kw => normalizedQuery.includes(getLocalizedText(kw).toLowerCase()))
+            );
+            if (matchedScenario) {
+                return { category: 'what_if', item: matchedScenario.id };
+            }
+            return { category: 'what_if', item: null };
         }
+        if (matchesKeyword(normalizedQuery, ["가치관", "철학", "신념"], synonymsMap.values)) {
+            return { category: 'values', item: null };
+        }
+        if (matchesKeyword(normalizedQuery, ["프로세스", "작업방식"], synonymsMap.process)) {
+            return { category: 'process', item: null };
+        }
+        if (matchesKeyword(normalizedQuery, ["재미있는 사실", "취미", "이야기"], synonymsMap.fun_facts)) {
+            return { category: 'fun_facts', item: null };
+        }
+        if (matchesKeyword(normalizedQuery, ["랩", "실험실", "코딩"], synonymsMap.lab)) {
+            return { category: 'lab', item: null };
+        }
+        if (matchesKeyword(normalizedQuery, ["채용", "가용성", "면접"], synonymsMap.career_availability)) {
+            return { category: 'career_availability', item: null };
+        }
+        if (matchesKeyword(normalizedQuery, ["포트폴리오 팁", "포트폴리오 조언"], synonymsMap.portfolio_tips)) {
+            return { category: 'portfolio_building_tips', item: null };
+        }
+        if (matchesKeyword(normalizedQuery, ["사이트 구조", "페이지 구성"], synonymsMap.site_structure)) {
+            return { category: 'site_structure_overview', item: null };
+        }
+        if (matchesKeyword(normalizedQuery, ["ai 어시스턴트", "너는 누구니"], synonymsMap.about_ai_assistant)) {
+            return { category: 'about_ai_assistant', item: null };
+        }
+
+
+        // Fallback for specific item requests within categories (e.g., "nomad market challenges")
+        // This relies on keywords_map and parsing the query for sub_keywords and intent_keywords
+        for (const catKey in knowledgeBase.keywords_map) {
+            const categoryMap = knowledgeBase.keywords_map[catKey];
+            if (categoryMap.sub_keywords) {
+                for (const subKey in categoryMap.sub_keywords) {
+                    const subItem = categoryMap.sub_keywords[subKey];
+                    const subKeywords = [getLocalizedText(subItem).toLowerCase(), ...(subItem.variations || []).map(v => v.toLowerCase())];
+                    if (matchesKeyword(normalizedQuery, subKeywords, synonymsMap)) {
+                        // Found a specific item, now check for intent
+                        if (categoryMap.intent_keywords) {
+                            for (const intentKey in categoryMap.intent_keywords) {
+                                const intentKeywords = (categoryMap.intent_keywords[intentKey] || []).map(kw => kw.toLowerCase());
+                                if (matchesKeyword(normalizedQuery, intentKeywords, synonymsMap)) {
+                                    return { category: catKey, item: subKey, intent: intentKey };
+                                }
+                            }
+                        }
+                        return { category: catKey, item: subKey }; // No specific intent, just the item
+                    }
+                }
+            }
+        }
+
 
         return null; // No matching intent
     }
@@ -324,8 +399,8 @@ window.AIPortfolioLogic = (() => {
             const payload = {
                 contents: [{ role: "user", parts: [{ text: query }] }],
                 generationConfig: {
-                    // You might add a responseSchema here if you expect structured JSON from the LLM
-                    // For now, let's assume it returns a general text response or simple JSON.
+                    temperature: 0.7, // Adjust creativity
+                    maxOutputTokens: 500 // Limit response length
                 }
             };
             const apiKey = ""; // Canvas will automatically provide this at runtime
@@ -434,7 +509,7 @@ window.AIPortfolioLogic = (() => {
         };
 
         // If the match already contains a full structured response (e.g., from API proxy), use it directly.
-        if (match.aiInsight !== undefined || match.results.length > 0 || match.followUpActions.length > 0) {
+        if (match.aiInsight !== undefined || match.results?.length > 0 || match.followUpActions?.length > 0) {
             response.aiInsight = getLocalizedText(match.aiInsight);
             response.results = match.results || [];
             response.followUpActions = (match.followUpActions || []).map(action => ({
@@ -456,7 +531,8 @@ window.AIPortfolioLogic = (() => {
             if (prompts) {
                 let selectedPrompt;
                 if (match.category === 'empathetic' && match.trigger_keywords) {
-                    selectedPrompt = prompts.find(p => p.trigger_keywords && p.trigger_keywords.some(kw => rawQuery.toLowerCase().includes(getLocalizedText(kw).toLowerCase())));
+                    // Find an empathetic prompt whose trigger keywords match the original query
+                    selectedPrompt = prompts.find(p => p.trigger_keywords && p.trigger_keywords.some(kw => rawQuery.toLowerCase().includes(kw.toLowerCase())));
                 }
                 if (!selectedPrompt) {
                     selectedPrompt = prompts[Math.floor(Math.random() * prompts.length)];
@@ -472,9 +548,9 @@ window.AIPortfolioLogic = (() => {
                     }
                 } else if (match.category === 'empathetic' || match.category === 'thank_you') {
                     // Provide some general follow-ups for empathetic/thank you responses
-                    response.followUpActions = knowledgeBase.interactive_phrases.no_results_follow_up.prompts.slice(0, 2).map(s => ({
-                        label: getLocalizedText(s),
-                        query: getLocalizedText(s)
+                    response.followUpActions = knowledgeBase.default_response.followUpActions.actions.slice(0, 3).map(s => ({ // Use default follow-up actions
+                        label: getLocalizedText(s.label),
+                        query: getLocalizedText(s.query)
                     }));
                 }
             }
@@ -482,7 +558,7 @@ window.AIPortfolioLogic = (() => {
         }
 
         // --- 'What If' scenario handling ---
-        if (match.category === 'what_if' && match.item) {
+        if (match.category === 'what_if') {
             const scenario = knowledgeBase.what_if_scenarios.scenarios.find(s => s.id === match.item);
             if (scenario) {
                 response.aiInsight = getLocalizedText(scenario.response);
@@ -496,6 +572,20 @@ window.AIPortfolioLogic = (() => {
                     target_page: action.target_page,
                     url_fragment: action.url_fragment
                 }));
+            } else {
+                // If specific 'what if' item not found, but 'what_if' category was matched
+                response.aiInsight = getLocalizedText({
+                    en: "That's an interesting 'what if' scenario! Could you specify what kind of situation you're curious about related to Oosu's experience?",
+                    ko: "흥미로운 '만약 ~라면?' 시나리오네요! Oosu님의 경험과 관련하여 어떤 종류의 상황이 궁금하신지 구체적으로 알려주시겠어요?"
+                });
+                response.followUpActions = knowledgeBase.what_if_scenarios.scenarios.map(s => ({
+                    label: getLocalizedText(s.response).substring(0, 30) + '...', // Show a snippet
+                    query: getLocalizedText(s.trigger_keywords[0]), // Use first trigger keyword as query
+                    action: 'show_specific_item_details', // Treat as showing specific detail
+                    target_id: s.id,
+                    category: 'what_if'
+                }));
+                response.response_type = 'text_and_follow_ups';
             }
             return response;
         }
@@ -507,7 +597,8 @@ window.AIPortfolioLogic = (() => {
                 response.aiInsight = getLocalizedText(knowledgeBase.interactive_phrases.navigation_confirmations.navigating).replace('{page_name}', getLocalizedText(pageData.name));
                 response.action = 'navigate';
                 response.target_page = match.target_page;
-                response.url_fragment = pageData.page.split('#')[1] || null; // Extract fragment if exists
+                // Ensure url_fragment from match takes precedence if specified, otherwise use pageData's fragment
+                response.url_fragment = match.url_fragment || pageData.page.split('#')[1] || null;
                 response.response_type = 'text_only';
             } else {
                 return getDefaultResponse();
@@ -551,41 +642,54 @@ window.AIPortfolioLogic = (() => {
                 // If a specific item ID is matched within a category
                 const specificItem = categoryBaseData.items.find(i => i.id === match.item);
                 if (specificItem) {
-                    let itemInsight = `<h4>${getLocalizedText(specificItem.title || specificItem.name)}</h4><p>${getLocalizedText(specificItem.description)}</p>`;
-                    if (match.intent && specificItem.details && specificItem.details.narrative_qna) {
+                    let itemContent = '';
+                    if (match.intent && specificItem.details && specificItem.details.narrative_qna && specificItem.details.narrative_qna[match.intent]) {
+                        // If specific intent for a narrative Q&A item
                         const qnaAnswer = specificItem.details.narrative_qna[match.intent];
-                        if (qnaAnswer) {
-                            itemInsight += `<p><strong>${formatIntentLabel(match.intent)}:</strong> ${getLocalizedText(qnaAnswer)}</p>`;
-                        }
+                        itemContent += `<h4>${getLocalizedText(specificItem.title || specificItem.name)}</h4>`;
+                        itemContent += `<p><strong>${formatIntentLabel(match.intent)}:</strong> ${getLocalizedText(qnaAnswer)}</p>`;
+                        response.aiInsight = itemContent; // Overwrite initial aiInsight with specific item detail
+                        response.response_type = 'text_only'; // Specific detail is text_only
                     } else if (match.category === 'skills' && specificItem.details) {
-                        itemInsight += `<ul>`;
+                        // Special handling for skill details
+                        itemContent += `<h4>${getLocalizedText(specificItem.name)}</h4><p>${getLocalizedText(specificItem.description)}</p><ul>`;
                         specificItem.details.forEach(detail => {
-                            itemInsight += `<li><strong>${detail.name}</strong>: ${detail.level} (${detail.experience_years} experience)`;
+                            itemContent += `<li><strong>${detail.name}</strong>: ${detail.level} (${detail.experience_years} experience)`;
                             if (detail.projects_used_in && detail.projects_used_in.length > 0) {
                                 const projectsUsed = detail.projects_used_in.map(pId => {
                                     const proj = knowledgeBase.response_categories.projects.items.find(pi => pi.id === pId);
                                     return proj ? getLocalizedText(proj.title) : pId;
                                 }).join(', ');
-                                itemInsight += ` - Used in: ${projectsUsed}`;
+                                itemContent += `<br> - Used in: ${projectsUsed}`;
                             }
                             if (detail.narrative_qna && detail.narrative_qna.advice) {
-                                itemInsight += `<br><em>💡 ${getLocalizedText(detail.narrative_qna.advice)}</em>`;
+                                itemContent += `<br><em>💡 ${getLocalizedText(detail.narrative_qna.advice)}</em>`;
                             }
-                            itemInsight += `</li>`;
+                            itemContent += `</li>`;
                         });
-                        itemInsight += `</ul>`;
+                        itemContent += `</ul>`;
+                        response.aiInsight = itemContent;
+                        response.response_type = 'text_and_link'; // Can link to skills section
+                    } else if (match.category === 'lab' && specificItem.demonstration_link) {
+                        // Special handling for lab items with demonstration links
+                        itemContent += `<h4>${getLocalizedText(specificItem.name)}</h4><p>${getLocalizedText(specificItem.description)}</p>`;
+                        itemContent += `<p><strong>Technologies Used:</strong> ${(specificItem.technologies_used || []).join(', ')}</p>`;
+                        itemContent += `<p><a href="${specificItem.demonstration_link}" target="_blank">${currentLanguage === 'ko' ? '데모 보기' : 'View Demo'}</a></p>`;
+                        response.aiInsight = itemContent;
+                        response.response_type = 'text_and_link';
+                    } else {
+                        // General specific item overview
+                        response.results = [{
+                            type: match.category.slice(0, -1),
+                            title: getLocalizedText(specificItem.title || specificItem.name),
+                            description: getLocalizedText(specificItem.description),
+                            tags: specificItem.tags || specificItem.keywords || [],
+                            link: specificItem.link,
+                            keywords: specificItem.keywords || [],
+                            id: specificItem.id
+                        }];
+                        response.response_type = 'cards_and_link';
                     }
-                    response.aiInsight = itemInsight;
-                    response.results = [{
-                        type: match.category.slice(0, -1), // e.g., 'projects' -> 'project'
-                        title: getLocalizedText(specificItem.title || specificItem.name),
-                        description: getLocalizedText(specificItem.description),
-                        tags: specificItem.tags || specificItem.keywords || [],
-                        link: specificItem.link,
-                        keywords: specificItem.keywords || [],
-                        id: specificItem.id // Include ID for project modal
-                    }];
-                    response.response_type = 'cards_and_link';
                 } else {
                     // Fallback if specific item not found but category has items
                     console.warn(`[AIPortfolioLogic] Specific item '${match.item}' not found in category '${match.category}'. Listing all items in category.`);
@@ -621,7 +725,7 @@ window.AIPortfolioLogic = (() => {
                     sectionHtml += `<li><strong>${getLocalizedText(item.title)}</strong> (${getLocalizedText(item.description)})`;
                     if (match.intent && item.narrative_qna && item.narrative_qna[match.intent]) {
                         sectionHtml += `<br><em>${formatIntentLabel(match.intent)}: ${getLocalizedText(item.narrative_qna[match.intent])}</em>`;
-                    } else if (match.intent === 'general_info' && item.achievements) {
+                    } else if (match.intent === 'general_info' && item.achievements && Array.isArray(item.achievements)) {
                         sectionHtml += `<br><em>${formatIntentLabel('achievements')}: ${getLocalizedText(item.achievements.join(', '))}</em>`;
                     }
                     sectionHtml += `</li>`;
@@ -641,6 +745,7 @@ window.AIPortfolioLogic = (() => {
             }
             response.aiInsight += aboutMeText;
             response.response_type = 'text_and_link';
+            response.url_fragment = categoryBaseData.url_fragment;
         } else if (match.category === 'portfolio_building_tips') {
             // Tips for building a portfolio
             let tipsHtml = '';
@@ -665,13 +770,14 @@ window.AIPortfolioLogic = (() => {
             // Contact information
             response.aiInsight += `<p>${getLocalizedText(categoryBaseData.contact_details)}</p>`;
             response.response_type = 'text_and_link';
+            response.url_fragment = categoryBaseData.url_fragment;
         } else {
             // Default handling for categories with just an insight (e.g., career_availability, about_ai_assistant)
             response.aiInsight = getLocalizedText(categoryBaseData.aiInsight);
             response.response_type = categoryBaseData.response_type;
         }
 
-        // Add follow-up actions from the base category data
+        // Add general category follow-up actions
         if (categoryBaseData && categoryBaseData.followUpActions && categoryBaseData.followUpActions.length > 0) {
             response.followUpActions = [...response.followUpActions, ...categoryBaseData.followUpActions.map(action => ({
                 label: getLocalizedText(action.label),
@@ -680,34 +786,39 @@ window.AIPortfolioLogic = (() => {
                 target_id: action.target_id,
                 category: action.category,
                 target_page: action.target_page,
-                url_fragment: action.url_fragment
+                url_fragment: action.url_fragment,
+                intent: action.intent
             }))];
         }
 
         // Add specific item's narrative Q&A as follow-up actions (if not already the intent)
+        // This should be done only if we have a specific item match AND it has narrative Q&A
         if (match.item && categoryBaseData && categoryBaseData.items) {
             const specificItem = categoryBaseData.items.find(i => i.id === match.item);
             if (specificItem && specificItem.details && specificItem.details.narrative_qna) {
                 const narrativeQna = specificItem.details.narrative_qna;
                 for (const qnaKey in narrativeQna) {
-                    // Add as follow-up if it's a valid Q&A key and not the current intent
+                    // Add as follow-up if it's a valid Q&A key and not the current intent or '_label'
                     if (qnaKey !== '_label' && qnaKey !== match.intent && typeof narrativeQna[qnaKey] === 'object' && (narrativeQna[qnaKey][currentLanguage] || narrativeQna[qnaKey]['en'])) {
                         const queryLabel = formatIntentLabel(qnaKey);
+                        const itemTitle = getLocalizedText(specificItem.title || specificItem.name);
                         response.followUpActions.push({
-                            label: `${queryLabel} (${getLocalizedText(specificItem.title || specificItem.name)})`,
-                            query: `${qnaKey} ${getLocalizedText(specificItem.title || specificItem.name).toLowerCase()}`,
+                            label: `${queryLabel} (${itemTitle})`,
+                            // Construct query that will directly trigger the narrative Q&A for this item
+                            query: `${itemTitle.toLowerCase()} ${getLocalizedText(knowledgeBase.keywords_map[match.category].intent_keywords[qnaKey][0]).toLowerCase()}`,
                             action: 'show_specific_item_details',
                             target_id: specificItem.id,
                             category: match.category,
-                            intent: qnaKey
+                            intent: qnaKey // Crucial for directing to specific Q&A
                         });
                     }
                 }
-                // Remove duplicates in follow-up actions
-                response.followUpActions = Array.from(new Set(response.followUpActions.map(a => JSON.stringify(a))))
-                    .map(s => JSON.parse(s));
             }
         }
+
+        // Remove duplicates in follow-up actions
+        response.followUpActions = Array.from(new Set(response.followUpActions.map(a => JSON.stringify(a))))
+            .map(s => JSON.parse(s));
 
         return response;
     }
@@ -757,7 +868,9 @@ window.AIPortfolioLogic = (() => {
          * @returns {Promise<void>}
          */
         loadKnowledgeBase: async function() {
-            await loadKnowledgeBase();
+            if (!isKnowledgeBaseLoaded) {
+                await loadKnowledgeBase();
+            }
         },
 
         /**
@@ -831,7 +944,8 @@ window.AIPortfolioLogic = (() => {
 
             // Layer 3: Semantic search (Transformers.js)
             console.log("[AIPortfolioLogic] Attempting Level 3: Transformers.js semantic search...");
-            responseTemplate = await runTransformers(query); // Use original query for embedding
+            // Use original query for embedding as the model might benefit from case/punctuation
+            responseTemplate = await runTransformers(query);
             if (responseTemplate) {
                 console.log("[AIPortfolioLogic] Level 3 (Transformers.js) successful.");
                 return generateFinalResponse(responseTemplate, query);

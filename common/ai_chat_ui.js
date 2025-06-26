@@ -1,21 +1,23 @@
-// js/ai_chat_ui.js
 /*
-* AI Portfolio Chat - UI Controller (Lazy Loaded)
-* This script handles all client-side UI logic for the AI chat modal,
-* including state transitions, event handling, DOM manipulation,
-* and content rendering. It's designed to be loaded dynamically.
-*/
+ * AI Portfolio Chat - UI Controller (Lazy Loaded)
+ * This script handles all client-side UI logic for the AI chat modal,
+ * including state transitions, event handling, DOM manipulation,
+ * and content rendering. It's designed to be loaded dynamically.
+ */
 
 // Ensure Lottie is available globally before this script runs, as it's loaded in HTML.
 // If Lottie were also lazy-loaded, its loading would need to be coordinated in common.js.
 
-window.initializeAiChatModalUI = function() {
-    console.log("[AI_Chat_UI] initializeAiChatModalUI called. Initializing UI components.");
+// Wrap the module content in an IIFE to ensure proper scoping and prevent direct global variable pollution,
+// while still exposing the necessary initialization function.
+(async () => { // Make the whole module async to allow top-level await for imports if needed, though not strictly required here.
+
+    console.log("[AI_Chat_UI] ai_chat_ui.js loaded.");
 
     // --- DOM Element References ---
     const aiPortfolioChatModal = document.getElementById('ai-portfolio-chat-modal');
     const aiAssistantFAB = document.getElementById('ai-assistant-FAB');
-    const closePortfolioChatModalBtn = aiPortfolioChatModal.querySelector('.close-button');
+    const closePortfolioChatModalBtn = aiPortfolioChatModal ? aiPortfolioChatModal.querySelector('.close-button') : null;
     const portfolioChatMessagesContainer = document.getElementById('portfolioChatMessages');
     const aiPortfolioChatInput = document.getElementById('aiPortfolioChatInput');
     const aiPortfolioChatSendBtn = document.getElementById('aiPortfolioChatSendBtn');
@@ -27,7 +29,6 @@ window.initializeAiChatModalUI = function() {
     const portfolioResultCardsContainer = document.getElementById('portfolioResultCards'); // Not directly used but kept for consistency
     const portfolioFollowUpActions = document.getElementById('portfolioFollowUpActions'); // Not directly used but kept for consistency
     const portfolioFollowUpButtons = document.getElementById('portfolioFollowUpButtons'); // Not directly used but kept for consistency
-    // FIX: Add missing DOM element reference for aiAssistantHeaderLottieContainer
     const aiAssistantHeaderLottieContainer = document.getElementById('aiAssistantHeaderLottie');
 
 
@@ -55,6 +56,14 @@ window.initializeAiChatModalUI = function() {
      * Retries if AIPortfolioLogic is not immediately available (due to async loading).
      */
     async function initializeAILogicAndUI() {
+        // Wait for AIPortfolioLogic to be available globally
+        let attempts = 0;
+        const maxAttempts = 100; // Try for up to 5 seconds (100 * 50ms)
+        while (typeof window.AIPortfolioLogic === 'undefined' && attempts < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, 50));
+            attempts++;
+        }
+
         if (typeof window.AIPortfolioLogic?.loadKnowledgeBase === 'function') {
             window.AIPortfolioLogic.setLanguage(currentLanguage);
             try {
@@ -62,18 +71,18 @@ window.initializeAiChatModalUI = function() {
                 await window.AIPortfolioLogic.loadKnowledgeBase();
                 console.log("[AI_Chat_UI] AI logic data ready. Restoring chat state.");
                 loadChatState(); // Now it's safe to load chat state which might use AIPortfolioLogic
-                aiPortfolioChatInput.placeholder = currentLanguage === 'ko' ?
-                    "궁금한 점을 입력해주세요" :
-                    "Ask me anything";
+                if (aiPortfolioChatInput) {
+                    aiPortfolioChatInput.placeholder = currentLanguage === 'ko' ?
+                        "궁금한 점을 입력해주세요" :
+                        "Ask me anything";
+                }
             } catch (error) {
                 console.error("[AI_Chat_UI] Failed to load AI data for logic:", error);
                 addPortfolioChatMessage(currentLanguage === 'ko' ? "AI 어시스턴트 데이터 로딩에 실패했습니다." : "Failed to load AI assistant data.", 'bot');
             }
         } else {
-            // If AIPortfolioLogic isn't ready yet, it means ai_chat_logic.js is still loading.
-            // Set a small timeout to re-check.
-            console.log("[AI_Chat_UI] AIPortfolioLogic object not yet available, retrying UI init...");
-            setTimeout(initializeAILogicAndUI, 50);
+            console.error("[AI_Chat_UI] AIPortfolioLogic object not available after multiple retries. AI features may not work.");
+            addPortfolioChatMessage(currentLanguage === 'ko' ? "AI 어시스턴트 초기화에 실패했습니다." : "Failed to initialize AI assistant.", 'bot');
         }
     }
 
@@ -81,8 +90,13 @@ window.initializeAiChatModalUI = function() {
      * Initializes Lottie animations for various UI elements.
      */
     function initializeLottieAnimations() {
+        if (typeof lottie === 'undefined') {
+            console.warn("[AI_Chat_UI] Lottie library not available. Skipping Lottie animations initialization.");
+            return;
+        }
+
         // Lottie for loading status inside the modal
-        if (portfolioLoadingLottieContainer && typeof lottie !== 'undefined' && !portfolioLottieAnimation) {
+        if (portfolioLoadingLottieContainer && !portfolioLottieAnimation) {
             portfolioLottieAnimation = lottie.loadAnimation({
                 container: portfolioLoadingLottieContainer,
                 renderer: 'svg',
@@ -92,14 +106,15 @@ window.initializeAiChatModalUI = function() {
             });
             // Play a specific segment when loaded
             portfolioLottieAnimation.addEventListener('DOMLoaded', () => {
-                if (portfolioLoadingLottieContainer.offsetParent !== null) { // Check if visible
+                // Ensure the animation only plays if its container is visible (modal is open/loading)
+                if (portfolioLoadingLottieContainer.offsetParent !== null) {
                     portfolioLottieAnimation.playSegments([61, 89], true);
                 }
             });
         }
 
         // Lottie for header icon in modal
-        if (aiAssistantHeaderLottieContainer && typeof lottie !== 'undefined' && !aiAssistantHeaderLottieAnimation) {
+        if (aiAssistantHeaderLottieContainer && !aiAssistantHeaderLottieAnimation) {
             aiAssistantHeaderLottieAnimation = lottie.loadAnimation({
                 container: aiAssistantHeaderLottieContainer,
                 renderer: 'svg',
@@ -110,7 +125,7 @@ window.initializeAiChatModalUI = function() {
         }
 
         // Lottie for send button
-        if (aiPortfolioChatSendBtn && typeof lottie !== 'undefined' && !sendButtonLottieAnimation) {
+        if (aiPortfolioChatSendBtn && !sendButtonLottieAnimation) {
             const lottieDiv = document.createElement('div');
             lottieDiv.classList.add('lottie-animation');
             // Remove existing content to prevent duplicates if init is called multiple times
@@ -123,11 +138,16 @@ window.initializeAiChatModalUI = function() {
                 autoplay: true, // Auto play on load
                 path: 'https://gist.githubusercontent.com/oosuhada/10350c165ecf9363a48efa8f67aaa401/raw/ea144b564bea1a65faffe4b6c52f8cc1275576de/ai-assistant-logo.json'
             });
-            sendButtonLottieAnimation.addEventListener('DOMLoaded', () => sendButtonLottieAnimation.playSegments([61, 89], true));
+            sendButtonLottieAnimation.addEventListener('DOMLoaded', () => {
+                if (!isLoading) { // Only play if not in loading state
+                    sendButtonLottieAnimation.playSegments([61, 89], true);
+                }
+            });
         }
 
         // Lottie for overlay loading screen (controlled by common.js, but available here)
-        if (aiLoadingLottieOverlay && typeof lottie !== 'undefined' && !window.aiOverlayLottieAnimation) { // Use a window property to track global Lottie for overlay
+        // This part is typically managed by common.js, so we just ensure it's loaded if not already.
+        if (aiLoadingLottieOverlay && !window.aiOverlayLottieAnimation) {
             window.aiOverlayLottieAnimation = lottie.loadAnimation({
                 container: aiLoadingLottieOverlay,
                 renderer: 'svg',
@@ -162,7 +182,7 @@ window.initializeAiChatModalUI = function() {
     /**
      * Loads the chat state from sessionStorage and restores the UI.
      */
-    async function loadChatState() { // Made async to await AIPortfolioLogic.loadKnowledgeBase
+    async function loadChatState() {
         if (!portfolioChatMessagesContainer || !aiPortfolioChatModal) return;
 
         const savedHistory = sessionStorage.getItem(CHAT_HISTORY_KEY);
@@ -178,7 +198,10 @@ window.initializeAiChatModalUI = function() {
                 resetPortfolioChatModal();
                 return;
             }
+        } else {
+            console.warn("[AI_Chat_UI] AIPortfolioLogic is not available for initial suggestions during loadChatState.");
         }
+
 
         if (savedHistory) {
             portfolioChatMessagesContainer.innerHTML = savedHistory;
@@ -190,7 +213,12 @@ window.initializeAiChatModalUI = function() {
 
         if (savedStage) {
             aiPortfolioChatModal.classList.add(savedStage);
+            aiPortfolioChatModal.classList.remove(savedStage === 'stage-1' ? 'stage-2' : 'stage-1');
             console.log(`[AI_Chat_UI] Modal stage restored to: ${savedStage}`);
+        } else {
+            // Default to stage-1 if no saved stage
+            aiPortfolioChatModal.classList.add('stage-1');
+            aiPortfolioChatModal.classList.remove('stage-2');
         }
         // Ensure scroll to bottom after restoring
         portfolioChatMessagesContainer.scrollTop = portfolioChatMessagesContainer.scrollHeight;
@@ -202,6 +230,11 @@ window.initializeAiChatModalUI = function() {
      * This function is globally exposed via `window.openPortfolioChatModal`.
      */
     window.openPortfolioChatModal = function() {
+        if (!aiPortfolioChatModal) {
+            console.error("[AI_Chat_UI] Modal element not found. Cannot open.");
+            return;
+        }
+
         if (aiAssistantFAB) {
             aiAssistantFAB.classList.add('hidden');
         }
@@ -228,6 +261,8 @@ window.initializeAiChatModalUI = function() {
      * This function is globally exposed via `window.closePortfolioChatModal`.
      */
     window.closePortfolioChatModal = function() {
+        if (!aiPortfolioChatModal) return;
+
         aiPortfolioChatModal.classList.remove('show', 'stage-1', 'stage-2');
         if (aiAssistantFAB) {
             aiAssistantFAB.classList.remove('hidden');
@@ -245,45 +280,47 @@ window.initializeAiChatModalUI = function() {
      * Resets the chat modal to its initial empty state with default messages.
      * Used when no session history is found or explicitly needed.
      */
-    async function resetPortfolioChatModal() { // Made async to await AIPortfolioLogic.loadKnowledgeBase
+    async function resetPortfolioChatModal() {
+        if (!portfolioChatMessagesContainer || !aiPortfolioChatModal) {
+            console.warn("[AI_Chat_UI] Required elements for resetPortfolioChatModal not found.");
+            return;
+        }
+
         // Ensure the loading status element is hidden and not appended to messages
         if (portfolioLoadingStatus && portfolioLoadingStatus.parentNode) {
-            portfolioLoadingStatus.parentNode.removeChild(portfolioLoadingStatus);
+            portfolioLoadingStatus.style.display = 'none'; // Hide it first
+            // portfolioLoadingStatus.parentNode.removeChild(portfolioLoadingStatus); // Removed as it will be re-appended by setLoadingState
         }
         if (aiPortfolioResults) aiPortfolioResults.classList.remove('show');
         if (portfolioFollowUpActions) portfolioFollowUpActions.classList.remove('show');
 
         // Ensure AIPortfolioLogic's knowledge base is loaded before getting initial suggestions
         let initialSuggestions = [];
-        if (typeof window.AIPortfolioLogic?.loadKnowledgeBase === 'function') {
+        if (typeof window.AIPortfolioLogic?.getInitialSuggestions === 'function') {
             try {
-                await window.AIPortfolioLogic.loadKnowledgeBase(); // Await to ensure readiness
-                initialSuggestions = window.AIPortfolioLogic?.getInitialSuggestions() || [];
+                // Ensure knowledge base is loaded before attempting to get suggestions
+                await window.AIPortfolioLogic.loadKnowledgeBase();
+                initialSuggestions = window.AIPortfolioLogic.getInitialSuggestions() || [];
             } catch (error) {
                 console.error("[AI_Chat_UI] Failed to load AIPortfolioLogic knowledge base during resetPortfolioChatModal:", error);
-                initialSuggestions = [{label: "Error loading suggestions.", query: "Error"}];
+                initialSuggestions = [{label: currentLanguage === 'ko' ? "제안 로딩 오류" : "Error loading suggestions.", query: "Error"}];
             }
         } else {
             console.warn("[AI_Chat_UI] AIPortfolioLogic is not available for initial suggestions during reset.");
             initialSuggestions = [{label: currentLanguage === 'ko' ? "AI 어시스턴트 로딩 중..." : "AI Assistant loading...", query: ""}];
         }
 
-
         let suggestionButtonsHtml = initialSuggestions.map(s => `<button class="ai-action-btn suggestion-btn" data-query="${s.query}">${s.label}</button>`).join('');
 
-        if (portfolioChatMessagesContainer) {
-            portfolioChatMessagesContainer.innerHTML = `
-                <div class="chat-message bot-message">
-                    ${currentLanguage === 'ko' ? "안녕하세요! Oosu님의 AI 포트폴리오 어시스턴트입니다. 무엇을 도와드릴까요?" : "Hello! I'm Oosu's AI Portfolio Assistant. How can I help you today?"}
-                </div>
-                <div class="chat-message bot-message initial-suggestion">
-                    <p>${currentLanguage === 'ko' ? "예시 질문:" : "Example questions:"}</p>
-                    ${suggestionButtonsHtml}
-                </div>
-            `;
-        } else {
-            console.warn("[AI_Chat_UI] portfolioChatMessagesContainer not found during reset. Initial messages might not appear.");
-        }
+        portfolioChatMessagesContainer.innerHTML = `
+            <div class="chat-message bot-message">
+                ${currentLanguage === 'ko' ? "안녕하세요! Oosu님의 AI 포트폴리오 어시스턴트입니다. 무엇을 도와드릴까요?" : "Hello! I'm Oosu's AI Portfolio Assistant. How can I help you today?"}
+            </div>
+            <div class="chat-message bot-message initial-suggestion">
+                <p>${currentLanguage === 'ko' ? "예시 질문:" : "Example questions:"}</p>
+                ${suggestionButtonsHtml}
+            </div>
+        `;
         if (aiPortfolioChatInput) aiPortfolioChatInput.value = '';
         // Reset loading progress bar steps
         document.querySelectorAll('#portfolioLoadingStatus .ai-loading-progress .step').forEach(step => step.setAttribute('data-status', ''));
@@ -351,10 +388,9 @@ window.initializeAiChatModalUI = function() {
         }
         // Move loading status into the chat message area if it's not already there
         if (loading) {
-            if (portfolioLoadingStatus && portfolioLoadingStatus.parentNode !== portfolioChatMessagesContainer) { // Check parent node
+            if (portfolioLoadingStatus && portfolioChatMessagesContainer && portfolioLoadingStatus.parentNode !== portfolioChatMessagesContainer) { // Check parent node
                 portfolioChatMessagesContainer.appendChild(portfolioLoadingStatus);
-                // Ensure it's displayed when appended
-                portfolioLoadingStatus.style.display = 'block';
+                portfolioLoadingStatus.style.display = 'block'; // Ensure it's displayed
             }
             if (portfolioLoadingStatus) {
                 portfolioLoadingStatus.classList.add('active');
@@ -363,10 +399,8 @@ window.initializeAiChatModalUI = function() {
             if (portfolioLottieAnimation) portfolioLottieAnimation.play(); // Play modal Lottie
         } else {
             if (portfolioLoadingStatus && portfolioLoadingStatus.parentNode) {
-                // Hide it first
-                portfolioLoadingStatus.style.display = 'none';
-                // Then remove it from its parent
-                portfolioLoadingStatus.parentNode.removeChild(portfolioLoadingStatus);
+                portfolioLoadingStatus.style.display = 'none'; // Hide it first
+                // portfolioLoadingStatus.parentNode.removeChild(portfolioLoadingStatus); // No longer remove, just hide
             }
             if (portfolioLoadingStatus) portfolioLoadingStatus.classList.remove('active');
             if (portfolioLottieAnimation) portfolioLottieAnimation.stop(); // Stop modal Lottie
@@ -429,7 +463,10 @@ window.initializeAiChatModalUI = function() {
         const steps = document.querySelectorAll('#portfolioLoadingStatus .ai-loading-progress .step');
         if (steps[index]) {
             steps[index].setAttribute('data-status', status);
-            gsap.fromTo(steps[index], { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out' });
+            // Only animate if the status is changing to active/done
+            if (status === 'active' || status === 'done') {
+                gsap.fromTo(steps[index], { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out' });
+            }
         }
     }
 
@@ -489,7 +526,10 @@ window.initializeAiChatModalUI = function() {
                 }
                 setTimeout(() => confettiContainer.remove(), 3000);
             }
-        } else if (!['text_only', 'list_and_text', 'text_and_link'].includes(data.response_type)) {
+        } else if (data.response_type === 'text_only' || data.response_type === 'list_and_text' || data.response_type === 'text_and_link') {
+            // Do nothing if it's purely text based and no results were expected or provided.
+            // Avoid showing "No relevant information found" for purely textual responses.
+        } else {
             // Only show "No info" if response type isn't text-only but results array is empty
             addPortfolioChatMessage(currentLanguage === 'ko' ? '관련 정보를 찾지 못했습니다.' : 'No relevant information found.', 'bot');
         }
@@ -516,9 +556,10 @@ window.initializeAiChatModalUI = function() {
             const pageData = window.AIPortfolioLogic.knowledgeBase.navigation_map[data.target_page];
             if (pageData?.page) {
                 let targetUrl = data.url_fragment ? `${pageData.page.split('#')[0] || ''}#${data.url_fragment}` : pageData.page;
-                setTimeout(() => { window.location.href = targetUrl; closePortfolioChatModal(); }, 1000);
+                setTimeout(() => { window.location.href = targetUrl; window.closePortfolioChatModal(); }, 1000);
             }
         }
+        portfolioChatMessagesContainer.scrollTop = portfolioChatMessagesContainer.scrollHeight;
     }
 
 
@@ -581,9 +622,22 @@ window.initializeAiChatModalUI = function() {
 
         // FIX: Consolidate and improve outside-click-to-close logic
         // This listener covers clicks anywhere outside the modal content to close it.
+        // Use a flag to prevent immediate re-closing if the modal was just opened via FAB.
+        let isModalOpening = false;
+        if (aiAssistantFAB) {
+            aiAssistantFAB.addEventListener('click', (event) => {
+                isModalOpening = true;
+                setTimeout(() => { isModalOpening = false; }, 300); // Reset flag after a short delay (longer than modal opening animation)
+            });
+        }
+
         document.addEventListener('click', (event) => {
-            // If the modal is not shown, or if the click is on the FAB itself, do nothing.
-            if (!aiPortfolioChatModal.classList.contains('show') || (aiAssistantFAB && aiAssistantFAB.contains(event.target))) {
+            if (!aiPortfolioChatModal || !aiPortfolioChatModal.classList.contains('show') || isModalOpening) {
+                return;
+            }
+
+            // Check if the click originated from within the FAB itself
+            if (aiAssistantFAB && aiAssistantFAB.contains(event.target)) {
                 return;
             }
 
@@ -616,32 +670,48 @@ window.initializeAiChatModalUI = function() {
         // Event delegation for suggestion and action buttons within chat messages
         if (portfolioChatMessagesContainer) {
             portfolioChatMessagesContainer.addEventListener('click', (e) => {
-                const targetBtn = e.target.closest('.suggestion-btn, .view-project-via-modal, .follow-up-suggestion-message .ai-action-btn');
+                const targetBtn = e.target.closest('.suggestion-btn, .view-project-via-modal, .follow-up-buttons .ai-action-btn'); // More specific selector
                 if (!targetBtn) return;
 
+                const query = targetBtn.dataset.query;
+                if (!query) {
+                    console.warn("[AI_Chat_UI] Clicked button has no data-query attribute.", targetBtn);
+                    return;
+                }
+
                 if (targetBtn.matches('.suggestion-btn')) {
-                    // Initial suggestions
-                    handlePortfolioChatSend(targetBtn.dataset.query);
+                    // Initial suggestions or general action buttons
+                    handlePortfolioChatSend(query);
                 } else if (targetBtn.matches('.view-project-via-modal')) {
                     // Open project modal (assuming this is handled globally)
                     document.dispatchEvent(new CustomEvent('openProjectModalFromChat', { detail: { projectId: targetBtn.dataset.projectId } }));
                     window.closePortfolioChatModal(); // Close chat modal when project modal opens
-                } else if (targetBtn.matches('.follow-up-suggestion-message .ai-action-btn')) {
+                } else if (targetBtn.matches('.follow-up-buttons .ai-action-btn')) {
                     // Follow-up actions
-                    const { query, action, targetPage, urlFragment, targetId, category, intent } = targetBtn.dataset;
+                    const { action, targetPage, urlFragment, targetId, category, intent } = targetBtn.dataset;
 
                     if (action === 'navigate') {
                         // Handle navigation to another page/section
                         const pageData = window.AIPortfolioLogic?.knowledgeBase?.navigation_map?.[targetPage];
                         if (pageData?.page) {
-                            let targetUrl = urlFragment ? `${pageData.page.split('#')[0] || ''}#${urlFragment}` : pageData.page;
+                            let actualUrl = pageData.page;
+                            if (urlFragment && !actualUrl.includes('#')) {
+                                actualUrl += `#${urlFragment}`; // Append fragment if not already present
+                            } else if (urlFragment) {
+                                actualUrl = actualUrl.split('#')[0] + `#${urlFragment}`; // Replace existing fragment
+                            }
                             window.closePortfolioChatModal();
-                            setTimeout(() => { window.location.href = targetUrl; }, 300); // Small delay for visual continuity
+                            setTimeout(() => { window.location.href = actualUrl; }, 300); // Small delay for visual continuity
+                        } else {
+                            console.warn(`[AI_Chat_UI] Navigation target page '${targetPage}' not found in knowledge base.`);
+                            handlePortfolioChatSend(query); // Fallback to asking AI
                         }
-                    } else if (action === 'show_specific_item_details' && query) {
+                    } else if (action === 'show_specific_item_details' && targetId && category) {
                         // Re-query AI with more specific intent (e.g., 'challenges of Project X')
+                        // Construct a query that AIPortfolioLogic can understand for specific item details.
+                        // The `query` from dataset should already be formatted for this (e.g., "nomad market project details")
                         handlePortfolioChatSend(query);
-                    } else if (query) {
+                    } else {
                         // Generic follow-up query
                         handlePortfolioChatSend(query);
                     }
@@ -653,9 +723,13 @@ window.initializeAiChatModalUI = function() {
 
     // --- Initialization Sequence for ai_chat_ui.js ---
     // This is the function called by common.js after all AI scripts are loaded.
-    initializeAILogicAndUI(); // Kick off the AI logic and initial UI setup
-    attachEventListeners(); // Attach all event listeners
-    initializeLottieAnimations(); // Initialize Lottie animations
+    // Expose the initialization function globally.
+    window.initializeAiChatModalUI = async function() {
+        console.log("[AI_Chat_UI] initializeAiChatModalUI called. Initializing UI components.");
+        initializeLottieAnimations(); // Initialize Lottie animations early
+        attachEventListeners(); // Attach all event listeners
+        await initializeAILogicAndUI(); // Kick off the AI logic and initial UI setup
+        console.log("[AI_Chat_UI] AI Chat UI initialized and ready.");
+    };
 
-    console.log("[AI_Chat_UI] AI Chat UI initialized and ready.");
-}; // End of window.initializeAiChatModalUI
+})(); // End of IIFE

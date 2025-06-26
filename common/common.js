@@ -1,5 +1,3 @@
-// common/common.js
-
 // Global flag to track if AI scripts have been loaded
 let aiScriptsLoaded = false;
 let aiLoadingOverlayTimeout = null;
@@ -82,35 +80,62 @@ window.disableAllTransitions = disableAllTransitions;
 function loadScript(url, isModule = false) {
     return new Promise((resolve, reject) => {
         // Check if the script is already in the DOM
-        const existingScript = document.head.querySelector(`script[src="${url}"]`);
+        let existingScript = document.head.querySelector(`script[src="${url}"]`);
+
         if (existingScript) {
-            // If already loaded or loading, resolve if it's successfully loaded, otherwise wait for its state.
-            // For simplicity, if it exists, we assume it will eventually load successfully or has already.
-            // In a more complex scenario, you might want to check its `readyState` or use a loading cache.
-            console.log(`[CommonJS] Script already present, skipping duplicate load: ${url}`);
-            existingScript.onload = resolve; // Ensure we still wait for it to be fully loaded
-            existingScript.onerror = reject;
-            return;
+            // If it's a module and already has the correct type, just ensure we wait for it to load
+            if (isModule && existingScript.type === 'module' && existingScript.dataset.loaded === 'true') {
+                console.log(`[CommonJS] Module script already loaded: ${url}`);
+                resolve();
+                return;
+            } else if (existingScript.dataset.loading === 'true') {
+                 // If it's still loading, attach new listeners and wait
+                 console.log(`[CommonJS] Script already loading, attaching to existing promise: ${url}`);
+                 const onLoadWrapper = () => {
+                     existingScript.removeEventListener('load', onLoadWrapper);
+                     existingScript.removeEventListener('error', onErrorWrapper);
+                     resolve();
+                 };
+                 const onErrorWrapper = (e) => {
+                     existingScript.removeEventListener('load', onLoadWrapper);
+                     existingScript.removeEventListener('error', onErrorWrapper);
+                     reject(new Error(`Failed to load script (already existed): ${url}, ${e.message}`));
+                 };
+                 existingScript.addEventListener('load', onLoadWrapper);
+                 existingScript.addEventListener('error', onErrorWrapper);
+                 return;
+            } else if (!isModule || existingScript.type !== 'module') {
+                // If it exists but isn't a module when it should be, or vice-versa, re-add (might be an error case)
+                console.warn(`[CommonJS] Script present but type mismatch or not fully loaded: ${url}. Re-adding.`);
+                existingScript.remove(); // Remove existing to add correctly
+                existingScript = null;
+            }
         }
 
-        const script = document.createElement('script');
-        script.src = url;
-        if (isModule) {
-            script.type = 'module';
+        if (!existingScript) {
+            const script = document.createElement('script');
+            script.src = url;
+            if (isModule) {
+                script.type = 'module';
+            }
+            script.async = true; // Load asynchronously to not block parsing
+            script.dataset.loading = 'true'; // Mark as currently loading
+
+            script.onload = () => {
+                console.log(`[CommonJS] Script loaded successfully: ${url}`);
+                script.dataset.loaded = 'true'; // Mark as loaded
+                script.dataset.loading = 'false'; // Mark as not loading
+                resolve();
+            };
+
+            script.onerror = (e) => {
+                console.error(`[CommonJS] Error loading script: ${url}`, e);
+                script.dataset.loading = 'false'; // Mark as not loading
+                reject(new Error(`Failed to load script: ${url}, ${e.message}`));
+            };
+
+            document.head.appendChild(script);
         }
-        script.async = true; // Load asynchronously to not block parsing
-
-        script.onload = () => {
-            console.log(`[CommonJS] Script loaded successfully: ${url}`);
-            resolve();
-        };
-
-        script.onerror = (e) => {
-            console.error(`[CommonJS] Error loading script: ${url}`, e);
-            reject(new Error(`Failed to load script: ${url}`));
-        };
-
-        document.head.appendChild(script);
     });
 }
 
@@ -144,8 +169,8 @@ function showAiLoadingOverlay() {
             step.setAttribute('data-status', '');
             // Update text based on initial message and current language
             const messages = [
-                { text_en: "Analyzing your question", text_ko: "질문 분석 중" },
-                { text_en: "Searching portfolio data", text_ko: "포트폴리오 탐색 중" },
+                { text_en: "Loading AI libraries", text_ko: "AI 라이브러리 로드 중" },
+                { text_en: "Initializing AI models", text_ko: "AI 모델 초기화 중" },
                 { text_en: "Generating a tailored response", text_ko: "맞춤형 답변 생성 중" }
             ];
             const currentLang = navigator.language.startsWith('ko') ? 'ko' : 'en';
@@ -165,21 +190,27 @@ function showAiLoadingOverlay() {
             { text_en: "Almost ready...", text_ko: "거의 준비 완료...", delay: 1000 }
         ];
 
+        // Clear existing timeouts to prevent interference from previous calls
+        if (aiLoadingOverlayTimeout) {
+            clearTimeout(aiLoadingOverlayTimeout);
+        }
+        loadingTimeouts = []; // Reset array for the overlay
+
         let cumulativeDelay = 0;
         overlayMessages.forEach((msg, index) => {
             cumulativeDelay += msg.delay;
-            aiLoadingOverlayTimeout = setTimeout(() => {
+            const timeoutId = setTimeout(() => {
                 if (textElement) {
                     textElement.textContent = msg[`text_${navigator.language.startsWith('ko') ? 'ko' : 'en'}`];
                 }
-                if (steps[currentStep]) {
-                    steps[currentStep].setAttribute('data-status', 'done');
+                if (steps[index]) { // Use index directly for updating steps
+                    steps[index].setAttribute('data-status', 'done');
                 }
-                currentStep++;
-                if (steps[currentStep]) {
-                    steps[currentStep].setAttribute('data-status', 'active');
+                if (steps[index + 1]) {
+                    steps[index + 1].setAttribute('data-status', 'active');
                 }
             }, cumulativeDelay);
+            loadingTimeouts.push(timeoutId); // Store timeout IDs for clearing
         });
     }
 }
@@ -195,7 +226,8 @@ function hideAiLoadingOverlay() {
             window.aiOverlayLottieAnimation.stop();
         }
         // Clear any pending timeouts for the overlay messages
-        clearTimeout(aiLoadingOverlayTimeout);
+        loadingTimeouts.forEach(clearTimeout);
+        loadingTimeouts = []; // Reset the array
     }
 }
 
@@ -222,19 +254,17 @@ async function backgroundLoadAiChatAssets() {
             await loadScript('https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js');
             await loadScript('https://unpkg.com/compromise');
             // Transformers.js needs to be loaded as a module to make `pipeline` available.
-            // It exposes `Xenova` object globally.
             await loadScript('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.1', true);
 
-            // Load local AI scripts
-            // IMPORTANT: ai_chat_logic.js and ai_chat_ui.js must be modules for top-level await imports/proper module behavior
+            // Load local AI scripts as modules
             await loadScript('../common/ai_chat_logic.js', true); // ai_chat_logic.js is a module
-            await loadScript('../common/ai_chat_ui.js', true); // FIX: ai_chat_ui.js also as a module
+            await loadScript('../common/ai_chat_ui.js', true); // ai_chat_ui.js is also a module
 
 
             // After all scripts are loaded, initialize UI
             // The `window.initializeAiChatModalUI` will now be safely available if ai_chat_ui.js loaded as module.
             if (typeof window.initializeAiChatModalUI === 'function') {
-                window.initializeAiChatModalUI(); // Call the main initialization function from ai_chat_ui.js
+                await window.initializeAiChatModalUI(); // Call the main initialization function from ai_chat_ui.js and await its completion
             } else {
                 console.error("[CommonJS] window.initializeAiChatModalUI is not defined after loading ai_chat_ui.js.");
                 throw new Error("AI Chat UI initialization function missing.");
@@ -279,7 +309,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // AI Assistant FAB click listener
     const aiAssistantFAB = document.getElementById('ai-assistant-FAB');
     if (aiAssistantFAB) {
-        aiAssistantFAB.addEventListener('click', async () => {
+        aiAssistantFAB.addEventListener('click', async (event) => {
+            event.stopPropagation(); // Prevent immediate bubbling to document click listener
             console.log("[CommonJS] AI Assistant FAB clicked. Triggering lazy load.");
             try {
                 // Await backgroundLoadAiChatAssets() ensures only one load process
