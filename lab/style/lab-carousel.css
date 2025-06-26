@@ -4,7 +4,7 @@
 }
 .carousel-hero {
   position: absolute;
-  top: 8rem;
+  top: 6rem;
   left: 0;
   width: 100vw;
   z-index: 900;
@@ -13,8 +13,8 @@
   pointer-events: none;
 }
 .big-hero-desc {
-  font-size: 1.6rem;
-  font-weight: 700;
+  font-size: 1.4rem;
+  font-weight: 600;
   color: var(--poster-text-color);
   letter-spacing: -0.01em;
   line-height: 1.3;
@@ -22,7 +22,7 @@
 }
 .carousel-category-jump {
   display: flex;
-  gap: 3rem;
+  gap: 3.5rem;
   justify-content: center;
   margin-bottom: 0.2rem;
   align-items: flex-start;
@@ -34,6 +34,7 @@
   flex-direction: column;
   align-items: center;
   transition: transform 0.3s ease-out;
+  filter: grayscale(80%);
 }
 .category-jump-btn {
   width: 2.8rem;
@@ -41,7 +42,7 @@
   border-radius: 50%;
   border: none;
   background: #fff;
-  cursor: pointer;
+  cursor: var(--cursor-grab-bottom2) !important;
   box-shadow: 0 2px 18px #ffd16644;
   transition: background 0.18s, color 0.16s, transform 0.14s;
   display: flex;
@@ -72,7 +73,7 @@
   top: 100%;
   margin-top: 13px;
   color: var(--poster-text-color);
-  font-size: 0.8rem;
+  font-size: 15px;
   font-weight: 600;
   white-space: nowrap;
   text-align: center;
@@ -83,19 +84,39 @@
   /* 부드러운 전환 효과를 위해 transition 속성 수정 */
   transition: opacity 0.2s ease-out;
 }
+.category-jump-item:hover {
+  filter: grayscale(0%); /* Full color on hover */
+}
+
+/* If you have an active state that should also be full color */
+.category-jump-item.active {
+  filter: grayscale(0%); /* Full color when active */
+  /* transform: scale(1.12); */
+}
+
 .category-jump-item:hover .category-jump-btn {
   transform: scale(1.12);
   background: #ffd166;
   color: #24243e;
+  transform: translateY(0px);
 }
+
 .category-jump-item:hover .category-jump-label {
   opacity: 1;
-  transform: translateY(0);
+  /* transform: translateY(-4px); */
 }
+
 .category-jump-btn.active {
   background: #ffd166;
   color: #24243e;
-  transform: scale(1.12);
+  transform: scale(1.12) translateY(-4px); /* Apply translateY for active button */
+}
+
+/* Corrected typo: changed '.category-jump-item:actic' to '.category-jump-item.active' */
+.category-jump-item.active .category-jump-label {
+  opacity: 1;
+  transform: translateY(-4px); /* Apply translateY for active label */
+  color: var(--primary-color); /* Set active label color to --primary-color */
 }
 .carousel-section {
   display: flex;
@@ -134,7 +155,7 @@
   flex-direction: column;
   justify-content: flex-end;
   align-items: flex-start;
-  cursor: pointer;
+  cursor: var(--cursor-grabbing-single2);
   transition: box-shadow 0.18s;
   user-select: none;
   position: absolute;
@@ -344,4 +365,5 @@ body[data-theme='dark'] .book-binding {
   -webkit-transform: translateZ(0);
   pointer-events: none;
   transition: opacity 0.5s ease;
+  filter: blur(1px);
 }

@@ -179,6 +179,7 @@ window.AIPortfolioLogic = (() => {
             if (query.includes(keyword)) {
                 return true;
             }
+            // FIX: Ensure synonymsMap[keyword] is defined and an array before iterating
             if (synonymsMap && synonymsMap[keyword] && Array.isArray(synonymsMap[keyword])) {
                 if (synonymsMap[keyword].some(s => query.includes(s.toLowerCase()))) {
                     return true;
@@ -199,7 +200,7 @@ window.AIPortfolioLogic = (() => {
         let bestMatch = null;
         let bestScore = 0;
 
-        // Check for direct intent/phrase matches first (greetings, thanks, empathetic)
+        // Priority 1: Direct intent/phrase matches (greetings, thanks, empathetic)
         if (matchesKeyword(normalizedQuery, ["hello", "hi", "hey", "안녕", "안녕하세요", "헬로"], synonymsMap)) {
             return { category: 'greeting' };
         }
@@ -210,7 +211,7 @@ window.AIPortfolioLogic = (() => {
             return { category: 'empathetic', trigger_keywords: ["sorry", "죄송"] };
         }
 
-        // Check for 'what if' scenarios with specific triggers
+        // Priority 2: 'What if' scenarios with specific triggers
         for (const scenario of knowledgeBase.what_if_scenarios.scenarios) {
             const localizedTriggerKeywords = getLocalizedText(scenario.trigger_keywords);
             if (Array.isArray(localizedTriggerKeywords)) {
@@ -225,25 +226,9 @@ window.AIPortfolioLogic = (() => {
         if (matchesKeyword(normalizedQuery, ["what if", "만약", "만약에", "가정"], synonymsMap)) {
              return { category: 'what_if', item: null };
         }
-
-        // Check for direct navigation keywords
-        // IMPORTANT: Here, we don't return an "action: 'navigate'" directly.
-        // We only return the 'navigation' category and its target page.
-        // The generateFinalResponse function will then decide to ask for confirmation.
-        for (const navKey in knowledgeBase.navigation_map) {
-            const navData = knowledgeBase.navigation_map[navKey];
-            const navKeywords = (navData.keywords || []).map(kw => kw.toLowerCase());
-            if (matchesKeyword(normalizedQuery, navKeywords, synonymsMap)) {
-                let navMatch = { category: 'navigation', target_page: navKey };
-                const urlFragMatch = normalizedQuery.match(/#([a-zA-Z0-9_-]+)/);
-                if (urlFragMatch) {
-                    navMatch.url_fragment = urlFragMatch[1];
-                }
-                return navMatch; // High priority for navigation intent
-            }
-        }
-
-        // Iterate through high-level content categories
+        
+        // Priority 3: Content-based categories (Projects, Skills, Career, etc.) - Most common inquiries
+        // This loop comes before navigation to prioritize content over page jumps for content-focused queries.
         for (const catKey in keywordsMap) {
             const categoryMap = keywordsMap[catKey];
             const mainKeywords = (Array.isArray(categoryMap.main_keywords) ? categoryMap.main_keywords : [])
@@ -297,6 +282,34 @@ window.AIPortfolioLogic = (() => {
                 }
             }
         }
+
+        // Priority 4: Direct navigation keywords (should ONLY match explicit "go to X" commands)
+        // This ensures content-focused queries like "main projects" are handled by Priority 3.
+        // It should only be considered if a strong content match (bestScore > 0) has NOT been found yet,
+        // or if the navigation intent is extremely explicit and high-confidence.
+        // For example, "go to portfolio" is navigation, "main projects" is content.
+        if (!bestMatch || bestMatch.category === 'default' || bestScore < 2.0) { // If no strong match or only a very general one
+            for (const navKey in knowledgeBase.navigation_map) {
+                const navData = knowledgeBase.navigation_map[navKey];
+                // Refine navigation keywords to specifically include action words like "go to", "move to"
+                const explicitNavKeywords = (navData.keywords || [])
+                                            .filter(kw => kw.includes('go to') || kw.includes('이동') || kw.includes('move to') || kw.includes('페이지로'))
+                                            .map(kw => kw.toLowerCase());
+                
+                if (matchesKeyword(normalizedQuery, explicitNavKeywords, synonymsMap)) {
+                    let navMatch = { category: 'navigation', target_page: navKey };
+                    const urlFragMatch = normalizedQuery.match(/#([a-zA-Z0-9_-]+)/);
+                    if (urlFragMatch) {
+                        navMatch.url_fragment = urlFragMatch[1];
+                    }
+                    // Since this is an explicit navigation, give it a very high score if no better content match was found
+                    if (!bestMatch || bestScore < 3.0) { // Give explicit nav high priority if previous match was not super specific
+                         return navMatch;
+                    }
+                }
+            }
+        }
+
         return bestMatch;
     }
 
@@ -468,7 +481,7 @@ window.AIPortfolioLogic = (() => {
             followUpActions: [],
             additionalInfo: '',
             response_type: 'text_only',
-            action: null, // Actions for UI (navigate, show_specific_item_details etc.)
+            action: null,
             target_page: null,
             url_fragment: null
         };
@@ -557,28 +570,83 @@ window.AIPortfolioLogic = (() => {
             return response;
         }
 
-        // --- NEW LOGIC FOR NAVIGATION CONFIRMATION ---
+        // --- Logic for NAVIGATION CONFIRMATION WITH SUMMARY ---
         if (match.category === 'navigation') {
             const pageData = knowledgeBase.navigation_map[match.target_page];
             if (pageData) {
                 const pageName = getLocalizedText(pageData.name);
-                response.aiInsight = getLocalizedText(knowledgeBase.interactive_phrases.navigation_confirmations.confirm_before_navigate)
-                                    .replace('{page_name}', pageName);
+                let pageSummary = '';
+                let targetCategoryKey = null;
+
+                // Determine the correct category key to fetch aiInsight for the summary
+                switch (match.target_page) {
+                    case 'portfolio':
+                        targetCategoryKey = 'projects';
+                        break;
+                    case 'about':
+                        targetCategoryKey = 'about_me_deep_dive';
+                        break;
+                    case 'career':
+                        targetCategoryKey = 'career';
+                        break;
+                    case 'lab':
+                        targetCategoryKey = 'lab';
+                        break;
+                    case 'connect':
+                        targetCategoryKey = 'connect';
+                        break;
+                    default:
+                        pageSummary = getLocalizedText({
+                            en: `This is the ${pageName}.`,
+                            ko: `${pageName}입니다.`
+                        });
+                }
+
+                // If a specific category key was found, try to get its aiInsight
+                if (targetCategoryKey && knowledgeBase.response_categories[targetCategoryKey] && knowledgeBase.response_categories[targetCategoryKey].aiInsight) {
+                    pageSummary = getLocalizedText(knowledgeBase.response_categories[targetCategoryKey].aiInsight);
+                } else if (!pageSummary) { // If still no summary, use a generic one
+                     pageSummary = getLocalizedText({
+                        en: `This section is about ${pageName}.`,
+                        ko: `이 섹션은 ${pageName}에 대한 내용을 다룹니다.`
+                    });
+                }
+                
+                const confirmationQuestion = getLocalizedText(knowledgeBase.interactive_phrases.navigation_confirmations.confirm_before_navigate)
+                                            .replace('{page_name}', pageName);
+                
+                response.aiInsight = `${pageSummary}<br><br>${confirmationQuestion}`;
                 response.response_type = 'text_and_follow_ups';
+                
                 response.followUpActions.push({
                     label: getLocalizedText({en: "Yes, move me!", ko: "네, 이동할게요!"}),
-                    query: `Maps to ${pageName}`, // This query is just for tracking/display
-                    action: 'navigate_direct', // A new action to directly tell UI to navigate
+                    query: `Maps to ${pageName}`,
+                    action: 'navigate_direct',
                     target_page: match.target_page,
                     url_fragment: match.url_fragment
                 });
                 response.followUpActions.push({
                     label: getLocalizedText({en: "No, stay here.", ko: "아니요, 여기에 있을게요."}),
-                    query: `stay on current page`, // For UI to cancel navigation
+                    query: `stay on current page`,
                     action: 'cancel_navigation'
                 });
+
+                // Also add other relevant follow-up actions for the *summarized page's content*
+                if (targetCategoryKey && knowledgeBase.response_categories[targetCategoryKey] && knowledgeBase.response_categories[targetCategoryKey].followUpActions) {
+                     response.followUpActions = response.followUpActions.concat(
+                         knowledgeBase.response_categories[targetCategoryKey].followUpActions.map(action => ({
+                             label: getLocalizedText(action.label),
+                             query: getLocalizedText(action.query),
+                             action: action.action || null,
+                             target_id: action.target_id || null,
+                             category: action.category || targetCategoryKey // Default category if not specified
+                         }))
+                     );
+                     response.followUpActions = Array.from(new Set(response.followUpActions.map(a => JSON.stringify(a)))).map(s => JSON.parse(s));
+                }
+
             } else {
-                return getDefaultResponse(); // Page not found in navigation_map
+                return getDefaultResponse();
             }
             return response;
         }
@@ -611,74 +679,62 @@ window.AIPortfolioLogic = (() => {
             return getDefaultResponse();
         }
 
+        // Use a random positive start phrase for a more natural feel
         const positiveStarts = knowledgeBase.interactive_phrases.positive_start.prompts;
         const randomPositiveStart = positiveStarts[Math.floor(Math.random() * positiveStarts.length)];
-        response.aiInsight = getLocalizedText(randomPositiveStart) + " " + getLocalizedText(categoryBaseData.aiInsight);
+        response.aiInsight = getLocalizedText(randomPositiveStart) + " "; // Start with a positive phrase
 
-        response.response_type = categoryBaseData.response_type;
-
-        if (categoryBaseData.items) {
-            if (match.item) {
-                const specificItem = categoryBaseData.items.find(i => i.id === match.item);
-                if (specificItem) {
-                    let itemContent = '';
-                    if (match.intent && specificItem.details && specificItem.details.narrative_qna && specificItem.details.narrative_qna[match.intent]) {
-                        const qnaAnswer = specificItem.details.narrative_qna[match.intent];
-                        itemContent += `<h4>${getLocalizedText(specificItem.title || specificItem.name)}</h4>`;
-                        itemContent += `<p><strong>${formatIntentLabel(match.intent)}:</strong> ${getLocalizedText(qnaAnswer)}</p>`;
-                        response.aiInsight += itemContent;
-                        response.response_type = 'text_only';
-                    } else if (match.category === 'skills' && specificItem.details) {
-                        itemContent += `<h4>${getLocalizedText(specificItem.name)}</h4><p>${getLocalizedText(specificItem.description)}</p><ul>`;
-                        specificItem.details.forEach(detail => {
-                            itemContent += `<li><strong>${detail.name}</strong>: ${detail.level} (${detail.experience_years} experience)`;
-                            if (detail.projects_used_in && detail.projects_used_in.length > 0) {
-                                const projectsUsed = detail.projects_used_in.map(pId => {
-                                    const proj = knowledgeBase.response_categories.projects.items.find(pi => pi.id === pId);
-                                    return proj ? getLocalizedText(proj.title) : pId;
-                                }).join(', ');
-                                itemContent += `<br> - Used in: ${projectsUsed}`;
-                            }
-                            if (detail.narrative_qna && detail.narrative_qna.advice) {
-                                itemContent += `<br><em>💡 ${getLocalizedText(detail.narrative_qna.advice)}</em>`;
-                            }
-                            itemContent += `</li>`;
-                        });
-                        itemContent += `</ul>`;
-                        response.aiInsight += itemContent;
-                        response.response_type = 'text_and_link';
-                    } else if (match.category === 'lab' && specificItem.demonstration_link) {
-                        itemContent += `<h4>${getLocalizedText(specificItem.name)}</h4><p>${getLocalizedText(specificItem.description)}</p>`;
-                        itemContent += `<p><strong>Technologies Used:</strong> ${(specificItem.technologies_used || []).join(', ')}</p>`;
-                        itemContent += `<p><a href="${specificItem.demonstration_link}" target="_blank">${currentLanguage === 'ko' ? '데모 보기' : 'View Demo'}</a></p>`;
-                        response.aiInsight += itemContent;
-                        response.response_type = 'text_and_link';
-                    } else {
-                        response.results = [{
-                            type: match.category.slice(0, -1),
-                            title: getLocalizedText(specificItem.title || specificItem.name),
-                            description: getLocalizedText(specificItem.description),
-                            tags: specificItem.tags || specificItem.keywords || [],
-                            link: specificItem.link,
-                            keywords: specificItem.keywords || [],
-                            id: specificItem.id
-                        }];
-                        response.response_type = 'cards_and_link';
-                    }
+        // Determine main insight based on match details
+        // FIX: This section now directly sets response.aiInsight and response.response_type
+        if (match.item) {
+            const specificItem = categoryBaseData.items.find(i => i.id === match.item);
+            if (specificItem) {
+                if (match.intent && specificItem.details && specificItem.details.narrative_qna && specificItem.details.narrative_qna[match.intent]) {
+                    // Scenario 1: Specific item AND specific intent (narrative Q&A)
+                    const qnaAnswer = specificItem.details.narrative_qna[match.intent];
+                    response.aiInsight += `<h4>${getLocalizedText(specificItem.title || specificItem.name)}</h4>`;
+                    response.aiInsight += `<p><strong>${formatIntentLabel(match.intent)}:</strong> ${getLocalizedText(qnaAnswer)}</p>`;
+                    response.response_type = 'text_only';
+                } else if (match.category === 'skills' && specificItem.details) {
+                    // Scenario 2a: Specific skill item
+                    response.aiInsight += `<h4>${getLocalizedText(specificItem.name)}</h4><p>${getLocalizedText(specificItem.description)}</p><ul>`;
+                    specificItem.details.forEach(detail => {
+                        response.aiInsight += `<li><strong>${detail.name}</strong>: ${detail.level} (${detail.experience_years} experience)`;
+                        if (detail.projects_used_in && detail.projects_used_in.length > 0) {
+                            const projectsUsed = detail.projects_used_in.map(pId => {
+                                const proj = knowledgeBase.response_categories.projects.items.find(pi => pi.id === pId);
+                                return proj ? getLocalizedText(proj.title) : pId;
+                            }).join(', ');
+                            response.aiInsight += `<br> - Used in: ${projectsUsed}`;
+                        }
+                        if (detail.narrative_qna && detail.narrative_qna.advice) {
+                            response.aiInsight += `<br><em>💡 ${getLocalizedText(detail.narrative_qna.advice)}</em>`;
+                        }
+                        response.aiInsight += `</li>`;
+                    });
+                    response.aiInsight += `</ul>`;
+                    response.response_type = 'text_and_link';
+                } else if (match.category === 'lab' && specificItem.demonstration_link) {
+                    // Scenario 2b: Specific lab item
+                    response.aiInsight += `<h4>${getLocalizedText(specificItem.name)}</h4><p>${getLocalizedText(specificItem.description)}</p>`;
+                    response.aiInsight += `<p><strong>Technologies Used:</strong> ${(specificItem.technologies_used || []).join(', ')}</p>`;
+                    response.aiInsight += `<p><a href="${specificItem.demonstration_link}" target="_blank">${currentLanguage === 'ko' ? '데모 보기' : 'View Demo'}</a></p>`;
+                    response.response_type = 'text_and_link';
                 } else {
-                    console.warn(`[AIPortfolioLogic] Specific item '${match.item}' not found in category '${match.category}'. Listing all items in category.`);
-                    response.results = categoryBaseData.items.map(item => ({
+                    // Scenario 2c: Specific item (e.g., "Tell me about Nomad Market") - show just its card
+                    response.results = [{
                         type: match.category.slice(0, -1),
-                        title: getLocalizedText(item.title || item.name),
-                        description: getLocalizedText(item.description),
-                        tags: item.tags || item.keywords || [],
-                        link: item.link,
-                        keywords: item.keywords || [],
-                        id: item.id
-                    }));
+                        title: getLocalizedText(specificItem.title || specificItem.name),
+                        description: getLocalizedText(specificItem.description),
+                        tags: specificItem.tags || specificItem.keywords || [],
+                        link: specificItem.link,
+                        keywords: specificItem.keywords || [],
+                        id: specificItem.id
+                    }];
                     response.response_type = 'cards_and_link';
                 }
             } else {
+                console.warn(`[AIPortfolioLogic] Specific item '${match.item}' not found in category '${match.category}'. Listing all items in category.`);
                 response.results = categoryBaseData.items.map(item => ({
                     type: match.category.slice(0, -1),
                     title: getLocalizedText(item.title || item.name),
@@ -707,9 +763,22 @@ window.AIPortfolioLogic = (() => {
                 response.aiInsight += sectionHtml;
                 response.response_type = 'text_and_link';
                 response.url_fragment = subSectionData.url_fragment;
-            } else {
-                return getDefaultResponse();
             }
+        } else if (categoryBaseData.items) { // General request for a category that has items (e.g., "main projects")
+             // This case will now be handled by the outer if (categoryBaseData.items) block,
+             // which falls through to the 'cards_and_link' part.
+             // This `else if` for `categoryBaseData.items` can be removed or refined.
+             response.aiInsight += getLocalizedText(categoryBaseData.aiInsight); // This general insight is already added above
+             response.results = categoryBaseData.items.map(item => ({
+                type: match.category.slice(0, -1),
+                title: getLocalizedText(item.title || item.name),
+                description: getLocalizedText(item.description),
+                tags: item.tags || item.keywords || [],
+                link: item.link,
+                keywords: item.keywords || [],
+                id: item.id
+            }));
+            response.response_type = 'cards_and_link';
         } else if (match.category === 'about_me_deep_dive') {
             let aboutMeText = '';
             for (const key in categoryBaseData.content) {
@@ -741,12 +810,15 @@ window.AIPortfolioLogic = (() => {
             response.response_type = 'text_and_link';
             response.url_fragment = categoryBaseData.url_fragment;
         } else {
-            response.aiInsight += getLocalizedText(categoryBaseData.aiInsight);
+            // Default handling for categories with only aiInsight (e.g., career_availability, about_ai_assistant)
+            // FIX: Change += to = to prevent duplication if a positive start was already added
+            response.aiInsight = getLocalizedText(randomPositiveStart) + " " + getLocalizedText(categoryBaseData.aiInsight);
             response.response_type = categoryBaseData.response_type;
         }
 
-        // Add general category follow-up actions
-        if (categoryBaseData && categoryBaseData.followUpActions && categoryBaseData.followUpActions.length > 0) {
+
+        // Add follow-up actions (general category actions and specific item Q&A)
+        if (categoryBaseData.followUpActions && categoryBaseData.followUpActions.length > 0) {
             response.followUpActions = [...response.followUpActions, ...categoryBaseData.followUpActions.map(action => ({
                 label: getLocalizedText(action.label),
                 query: getLocalizedText(action.query),
@@ -932,7 +1004,7 @@ window.AIPortfolioLogic = (() => {
 
             console.log(`[AIPortfolioLogic] Processing query: "${query}" (Normalized: "${normalizedQuery}")`);
 
-            // Layer 1: Keyword-based intent detection (including greetings, what-if, navigation, and content categories)
+            // Layer 1: Keyword-based intent detection
             console.log("[AIPortfolioLogic] Attempting Level 1: Keyword-based intent detection...");
             let keywordMatch = findBestKeywordMatch(normalizedQuery, knowledgeBase.keywords_map, synonymsMap);
             
@@ -944,7 +1016,7 @@ window.AIPortfolioLogic = (() => {
                 console.log("[AIPortfolioLogic] Level 1 (Keyword Match) found no specific intent.");
             }
 
-            // Layer 2: Fuse.js (fuzzy keyword/phrase matching based on pre-defined search_documents)
+            // Layer 2: Fuse.js (fuzzy keyword/phrase matching)
             if (searchDocuments.length > 0) {
                 console.log("[AIPortfolioLogic] Attempting Level 2: Fuse.js search...");
                 const fuseResult = runFuseSearch(query);

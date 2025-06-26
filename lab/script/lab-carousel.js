@@ -340,6 +340,7 @@
     updateActiveCategoryButton(centerIdx) {
       const centerPoster = this.posters[centerIdx];
       if (!centerPoster) return;
+
       let currentCategory = '';
       for (const cls of centerPoster.classList) {
         if (cls.startsWith('poster-')) {
@@ -347,9 +348,27 @@
           break;
         }
       }
-      const jumpButtons = document.querySelectorAll('.category-jump-btn');
-      jumpButtons.forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.category === currentCategory);
+
+      const jumpItems = document.querySelectorAll('.category-jump-item');
+      jumpItems.forEach(item => {
+        const button = item.querySelector('.category-jump-btn');
+        const label = item.querySelector('.category-jump-label'); // 라벨 요소도 선택
+        
+        if (button && button.dataset.category === currentCategory) {
+          item.classList.add('active');
+          button.classList.add('active');
+          if (label) { // 라벨이 있다면 active 클래스 추가
+            label.classList.add('active');
+          }
+        } else {
+          item.classList.remove('active');
+          if (button) {
+            button.classList.remove('active');
+          }
+          if (label) { // 라벨이 있다면 active 클래스 제거
+            label.classList.remove('active');
+          }
+        }
       });
     }
     renderFastScrollFrame(currentCenterFloat) {
