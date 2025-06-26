@@ -50,6 +50,32 @@
     const CHAT_HISTORY_KEY = 'aiPortfolioChatHistory';
     const MODAL_STAGE_KEY = 'aiPortfolioModalStage';
 
+    // Session context object (for remembering conversation state)
+    let sessionContext = {
+        conversationHistory: [],
+        inferredRole: null, // e.g., 'recruiter', 'student'
+        currentPage: 'unknown', // Default, should be set by actual page logic
+        highlightedTopic: null // e.g., 'Nomad Market' if user lingers there
+    };
+
+    /**
+     * Helper function to get localized text from objects.
+     * This is crucial as it depends on AIPortfolioLogic being loaded.
+     * @param {string|object} field - Multi-language object or a single string.
+     * @returns {string} Text in the current language or fallback to English/empty string.
+     */
+    function getLocalizedText(field) {
+        // Check if AIPortfolioLogic and its getLocalizedText is available
+        if (typeof window.AIPortfolioLogic?.getLocalizedText === 'function') {
+            return window.AIPortfolioLogic.getLocalizedText(field);
+        }
+        // Fallback if AIPortfolioLogic is not yet loaded or getLocalizedText is missing
+        if (typeof field === 'object' && field !== null) {
+            return field[currentLanguage] || field['en'] || '';
+        }
+        return field || '';
+    }
+
 
     /**
      * Initializes AI logic, loads knowledge base, and sets up placeholder text.
@@ -72,17 +98,24 @@
                 console.log("[AI_Chat_UI] AI logic data ready. Restoring chat state.");
                 loadChatState(); // Now it's safe to load chat state which might use AIPortfolioLogic
                 if (aiPortfolioChatInput) {
-                    aiPortfolioChatInput.placeholder = currentLanguage === 'ko' ?
-                        "궁금한 점을 입력해주세요" :
-                        "Ask me anything";
+                    aiPortfolioChatInput.placeholder = getLocalizedText({
+                        ko: "궁금한 점을 입력해주세요",
+                        en: "Ask me anything"
+                    });
                 }
             } catch (error) {
                 console.error("[AI_Chat_UI] Failed to load AI data for logic:", error);
-                addPortfolioChatMessage(currentLanguage === 'ko' ? "AI 어시스턴트 데이터 로딩에 실패했습니다." : "Failed to load AI assistant data.", 'bot');
+                addPortfolioChatMessage(getLocalizedText({
+                    ko: "AI 어시스턴트 데이터 로딩에 실패했습니다. 다시 시도해 주세요.",
+                    en: "Failed to load AI assistant data. Please try again."
+                }), 'bot');
             }
         } else {
             console.error("[AI_Chat_UI] AIPortfolioLogic object not available after multiple retries. AI features may not work.");
-            addPortfolioChatMessage(currentLanguage === 'ko' ? "AI 어시스턴트 초기화에 실패했습니다." : "Failed to initialize AI assistant.", 'bot');
+            addPortfolioChatMessage(getLocalizedText({
+                ko: "AI 어시스턴트 초기화에 실패했습니다. 페이지를 새로고침해 주세요.",
+                en: "Failed to initialize AI assistant. Please refresh the page."
+            }), 'bot');
         }
     }
 
@@ -161,6 +194,7 @@
 
     /**
      * Saves the current chat state (messages and modal stage) to sessionStorage.
+     * Includes current sessionContext.
      */
     function saveChatState() {
         if (!portfolioChatMessagesContainer || !aiPortfolioChatModal) return;
@@ -176,17 +210,23 @@
             stage = 'stage-2';
         }
         sessionStorage.setItem(MODAL_STAGE_KEY, stage);
-        console.log(`[AI_Chat_UI] Chat state saved. Stage: ${stage}`);
+
+        // Save sessionContext
+        sessionStorage.setItem('aiPortfolioSessionContext', JSON.stringify(sessionContext));
+
+        console.log(`[AI_Chat_UI] Chat state saved. Stage: ${stage}, Context:`, sessionContext);
     }
 
     /**
      * Loads the chat state from sessionStorage and restores the UI.
+     * Restores sessionContext.
      */
     async function loadChatState() {
         if (!portfolioChatMessagesContainer || !aiPortfolioChatModal) return;
 
         const savedHistory = sessionStorage.getItem(CHAT_HISTORY_KEY);
         const savedStage = sessionStorage.getItem(MODAL_STAGE_KEY);
+        const savedContext = sessionStorage.getItem('aiPortfolioSessionContext');
 
         // Ensure AIPortfolioLogic's knowledge base is loaded before getting initial suggestions
         if (typeof window.AIPortfolioLogic?.loadKnowledgeBase === 'function') {
@@ -200,8 +240,20 @@
             }
         } else {
             console.warn("[AI_Chat_UI] AIPortfolioLogic is not available for initial suggestions during loadChatState.");
+            // Reset to initial state if logic not available, as we can't function correctly.
+            resetPortfolioChatModal();
+            return;
         }
 
+        if (savedContext) {
+            try {
+                sessionContext = JSON.parse(savedContext);
+                console.log("[AI_Chat_UI] Session context restored:", sessionContext);
+            } catch (e) {
+                console.error("[AI_Chat_UI] Failed to parse saved session context:", e);
+                sessionContext = { conversationHistory: [], inferredRole: null, currentPage: 'unknown', highlightedTopic: null }; // Reset to default
+            }
+        }
 
         if (savedHistory) {
             portfolioChatMessagesContainer.innerHTML = savedHistory;
@@ -286,10 +338,14 @@
             return;
         }
 
+        // Reset session context
+        sessionContext = { conversationHistory: [], inferredRole: null, currentPage: 'unknown', highlightedTopic: null };
+        sessionStorage.removeItem('aiPortfolioSessionContext');
+
+
         // Ensure the loading status element is hidden and not appended to messages
         if (portfolioLoadingStatus && portfolioLoadingStatus.parentNode) {
             portfolioLoadingStatus.style.display = 'none'; // Hide it first
-            // portfolioLoadingStatus.parentNode.removeChild(portfolioLoadingStatus); // Removed as it will be re-appended by setLoadingState
         }
         if (aiPortfolioResults) aiPortfolioResults.classList.remove('show');
         if (portfolioFollowUpActions) portfolioFollowUpActions.classList.remove('show');
@@ -303,21 +359,21 @@
                 initialSuggestions = window.AIPortfolioLogic.getInitialSuggestions() || [];
             } catch (error) {
                 console.error("[AI_Chat_UI] Failed to load AIPortfolioLogic knowledge base during resetPortfolioChatModal:", error);
-                initialSuggestions = [{label: currentLanguage === 'ko' ? "제안 로딩 오류" : "Error loading suggestions.", query: "Error"}];
+                initialSuggestions = [{label: getLocalizedText({ko: "제안 로딩 오류", en: "Error loading suggestions."}), query: "Error"}];
             }
         } else {
             console.warn("[AI_Chat_UI] AIPortfolioLogic is not available for initial suggestions during reset.");
-            initialSuggestions = [{label: currentLanguage === 'ko' ? "AI 어시스턴트 로딩 중..." : "AI Assistant loading...", query: ""}];
+            initialSuggestions = [{label: getLocalizedText({ko: "AI 어시스턴트 로딩 중...", en: "AI Assistant loading..."}), query: ""}];
         }
 
         let suggestionButtonsHtml = initialSuggestions.map(s => `<button class="ai-action-btn suggestion-btn" data-query="${s.query}">${s.label}</button>`).join('');
 
         portfolioChatMessagesContainer.innerHTML = `
             <div class="chat-message bot-message">
-                ${currentLanguage === 'ko' ? "안녕하세요! Oosu님의 AI 포트폴리오 어시스턴트입니다. 무엇을 도와드릴까요?" : "Hello! I'm Oosu's AI Portfolio Assistant. How can I help you today?"}
+                ${getLocalizedText(window.AIPortfolioLogic?.knowledgeBase?.assistant_info?.default_intro_message || {ko: "안녕하세요! Oosu님의 AI 포트폴리오 어시스턴트입니다. 무엇을 도와드릴까요?", en: "Hello! I'm Oosu's AI Portfolio Assistant. How can I help you today?"})}
             </div>
             <div class="chat-message bot-message initial-suggestion">
-                <p>${currentLanguage === 'ko' ? "예시 질문:" : "Example questions:"}</p>
+                <p>${getLocalizedText({ko: "예시 질문:", en: "Example questions:"})}</p>
                 ${suggestionButtonsHtml}
             </div>
         `;
@@ -350,6 +406,9 @@
         messageElement.innerHTML = message;
         portfolioChatMessagesContainer.appendChild(messageElement);
         portfolioChatMessagesContainer.scrollTop = portfolioChatMessagesContainer.scrollHeight;
+
+        // Add message to session context history
+        sessionContext.conversationHistory.push({ type: type, text: message });
     }
 
 
@@ -400,7 +459,6 @@
         } else {
             if (portfolioLoadingStatus && portfolioLoadingStatus.parentNode) {
                 portfolioLoadingStatus.style.display = 'none'; // Hide it first
-                // portfolioLoadingStatus.parentNode.removeChild(portfolioLoadingStatus); // No longer remove, just hide
             }
             if (portfolioLoadingStatus) portfolioLoadingStatus.classList.remove('active');
             if (portfolioLottieAnimation) portfolioLottieAnimation.stop(); // Stop modal Lottie
@@ -415,22 +473,39 @@
     function runLoadingSequence() {
         loadingTimeouts.forEach(clearTimeout);
         loadingTimeouts = [];
+
+        // Fetch messages from knowledgeBase
+        // Ensure knowledgeBase is loaded before accessing its properties
+        if (!window.AIPortfolioLogic || !window.AIPortfolioLogic.knowledgeBase || !window.AIPortfolioLogic.knowledgeBase.interactive_phrases || !window.AIPortfolioLogic.knowledgeBase.interactive_phrases.thinking || !window.AIPortfolioLogic.knowledgeBase.interactive_phrases.thinking.prompts) {
+            console.error("[AI_Chat_UI] Cannot run loading sequence: Missing interactive_phrases in knowledgeBase.");
+            const fallbackText = getLocalizedText({ko: "AI가 응답을 준비합니다...", en: "AI is preparing a response..."});
+            if (portfolioLoadingText) portfolioLoadingText.textContent = fallbackText;
+            return;
+        }
+
+        const thinkingPrompts = window.AIPortfolioLogic.knowledgeBase.interactive_phrases.thinking.prompts;
+        // Construct messages array, using only the first few for steps for brevity
+        // Ensure that thinkingPrompts array has enough elements or handle undefined access
         const messages = [
-            { text_en: "Analyzing your question...", text_ko: "질문 분석 중...", delay: 1500 },
-            { text_en: "Searching portfolio data...", text_ko: "포트폴리오 탐색 중...", delay: 2000 },
-            { text_en: "Generating a response...", text_ko: "답변 생성 중...", delay: 2000 }
+            { text: getLocalizedText(thinkingPrompts[0] || {en: "Analyzing...", ko: "분석 중..."}), delay: 1500 },
+            { text: getLocalizedText(thinkingPrompts[1] || {en: "Searching...", ko: "탐색 중..."}), delay: 2000 },
+            { text: getLocalizedText(thinkingPrompts[2] || {en: "Generating...", ko: "생성 중..."}), delay: 2000 }
         ];
+
         let cumulativeDelay = 0;
         const steps = document.querySelectorAll('#portfolioLoadingStatus .ai-loading-progress .step');
 
         // Set initial text for all steps
         steps.forEach((step, index) => {
-            step.innerHTML = `<span class="circle">${index + 1}</span> ${messages[index][`text_${currentLanguage}`]}`;
+            // Use fallback text if messages array is shorter than steps
+            const stepText = messages[index] ? messages[index].text : getLocalizedText({ko: `단계 ${index+1}`, en: `Step ${index+1}`});
+            step.innerHTML = `<span class="circle">${index + 1}</span> ${stepText}`;
             // Initially set all steps to pending
             step.setAttribute('data-status', '');
         });
 
-        updateLoadingStep(0, 'active'); // Set first step to active immediately
+        // The first step is active immediately
+        updateLoadingStep(0, 'active');
 
         const updateText = (text) => {
             if (portfolioLoadingText) {
@@ -441,12 +516,13 @@
             }
         };
 
-        updateText(currentLanguage === 'ko' ? "AI가 답변을 준비합니다..." : "AI is preparing a response...");
+        // Initial loading text (e.g., "AI is preparing its response...")
+        updateText(getLocalizedText({ko: "AI가 답변을 준비합니다...", en: "AI is preparing its response..."}));
 
         messages.forEach((message, index) => {
             cumulativeDelay += message.delay;
             const timeout = setTimeout(() => {
-                updateText(message[`text_${currentLanguage}`]);
+                updateText(message.text); // Use the pre-localized text
                 updateLoadingStep(index, 'done');
                 if (index < messages.length - 1) updateLoadingStep(index + 1, 'active');
             }, cumulativeDelay);
@@ -477,9 +553,10 @@
      * @returns {string} HTML string for the card.
      */
     function createPortfolioCardHTML(item) {
-        const title = item.title;
-        const description = item.description;
-        const buttonText = currentLanguage === 'ko' ? '자세히 보기' : 'View Details';
+        // Ensure item properties are localized
+        const title = getLocalizedText(item.title);
+        const description = getLocalizedText(item.description);
+        const buttonText = getLocalizedText({ko: '자세히 보기', en: 'View Details'});
         let linkHtml = '';
 
         if (item.type === 'project' && item.id) {
@@ -491,9 +568,35 @@
         if (item.type === 'project') {
             return `<div class="portfolio-card"><h4>${title}</h4><p>${description}</p><div class="tags">${(item.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('')}</div>${linkHtml}</div>`;
         } else if (item.type === 'skill') {
-            return `<div class="portfolio-card"><h4>${title}</h4><p>${description}</p><div class="tags">${(item.keywords || []).map(kw => `<span class="tag">${kw}</span>`).join('')}</div>${linkHtml}</div>`;
+            return `<div class="portfolio-card"><h4>${title}</h4><p>${description}</p><div class="tags">${(item.keywords || []).map(kw => `<span class="tag">${getLocalizedText(kw)}</span>`).join('')}</div>${linkHtml}</div>`;
         }
         return '';
+    }
+
+    /**
+     * Prompts the user before navigating to another page.
+     * @param {string} query - The original query that triggered navigation (used for logging or potential AI re-query).
+     * @param {string} targetPage - The target page key (e.g., 'portfolio').
+     * @param {string} urlFragment - Optional URL fragment (e.g., 'about-values').
+     * @param {string} pageName - Localized name of the target page to display in the prompt.
+     */
+    function promptAndNavigate(query, targetPage, urlFragment, pageName) {
+        const confirmationMessage = getLocalizedText({
+            en: `Would you like to move to the <strong>${pageName}</strong> page?`,
+            ko: `<strong>${pageName}</strong> 페이지로 이동하시겠어요?`
+        });
+
+        const yesLabel = getLocalizedText({en: "Yes, move me!", ko: "네, 이동할게요!"});
+        const noLabel = getLocalizedText({en: "No, stay here.", ko: "아니요, 여기에 있을게요."});
+
+        addPortfolioChatMessage(`
+            <div class="ai-chat-bubble">${confirmationMessage}</div>
+            <div class="follow-up-buttons navigation-confirmation-buttons">
+                <button class="ai-action-btn confirm-navigation-btn" data-action="confirm_navigate"
+                        data-target-page="${targetPage}" data-url-fragment="${urlFragment || ''}">${yesLabel}</button>
+                <button class="ai-action-btn cancel-navigation-btn">${noLabel}</button>
+            </div>
+        `, 'bot', 'navigation-prompt-message');
     }
 
 
@@ -531,18 +634,35 @@
             // Avoid showing "No relevant information found" for purely textual responses.
         } else {
             // Only show "No info" if response type isn't text-only but results array is empty
-            addPortfolioChatMessage(currentLanguage === 'ko' ? '관련 정보를 찾지 못했습니다.' : 'No relevant information found.', 'bot');
+            addPortfolioChatMessage(getLocalizedText({ko: '관련 정보를 찾지 못했습니다.', en: 'No relevant information found.'}), 'bot');
         }
 
         // Display follow-up actions
         if (data.followUpActions?.length > 0) {
-            const bubbleText = currentLanguage === 'ko' ? "💡 이런 것도 궁금하신가요?" : "💡 Curious about anything else?";
+            const bubbleText = getLocalizedText({ko: "💡 이런 것도 궁금하신가요?", en: "💡 Curious about anything else?"});
             let buttonsHtml = data.followUpActions.map(action => {
                 // Ensure labels and queries are localized correctly
-                const label = typeof action.label === 'object' ? (action.label[currentLanguage] || action.label['en'] || '') : action.label;
-                const query = typeof action.query === 'object' ? (action.query['en'] || '') : action.query; // Query should typically be in English for logic processing
+                const label = getLocalizedText(action.label);
+                // Query should typically be in English for logic processing, but data-query needs to be string
+                const query = typeof action.query === 'object' ? (action.query['en'] || action.query['ko'] || '') : action.query; 
+                if (!query) {
+                    console.warn("[AI_Chat_UI] Follow-up action has no valid query string:", action);
+                    return ''; // Skip invalid buttons
+                }
 
-                return `<button class="ai-action-btn" data-query="${query}" data-action="${action.action || ''}" data-target-page="${action.target_page || ''}" data-url-fragment="${action.url_fragment || ''}" data-target-id="${action.target_id || ''}" data-category="${action.category || ''}" data-intent="${action.intent || ''}"><span class="icon">🤔</span> ${label}</button>`;
+                // If the action is 'navigate_direct', convert it into a 'navigate_confirm_prompt' for UI
+                if (action.action === 'navigate_direct' && window.AIPortfolioLogic?.knowledgeBase?.navigation_map?.[action.target_page]) {
+                    const pageData = window.AIPortfolioLogic.knowledgeBase.navigation_map[action.target_page];
+                    return `<button class="ai-action-btn navigate-action-btn"
+                                data-action="navigate_confirm_prompt"
+                                data-target-page="${action.target_page}"
+                                data-url-fragment="${action.url_fragment || ''}"
+                                data-page-name="${getLocalizedText(pageData.name)}"
+                                data-query="${query}"
+                            ><span class="icon">🤔</span> ${label}</button>`;
+                } else {
+                    return `<button class="ai-action-btn" data-query="${query}" data-action="${action.action || ''}" data-target-page="${action.target_page || ''}" data-url-fragment="${action.url_fragment || ''}" data-target-id="${action.target_id || ''}" data-category="${action.category || ''}" data-intent="${action.intent || ''}" data-subsection="${action.subSection || ''}"><span class="icon">🤔</span> ${label}</button>`;
+                }
             }).join('');
             addPortfolioChatMessage(`<div class="ai-chat-bubble">${bubbleText}</div><div class="follow-up-buttons">${buttonsHtml}</div>`, 'bot', 'follow-up-suggestion-message');
         }
@@ -551,14 +671,8 @@
         const additionalInfoText = data.additionalInfo || '';
         if (additionalInfoText) addPortfolioChatMessage(additionalInfoText, 'bot');
 
-        // Handle navigation action if specified
-        if (data.action === 'navigate' && data.target_page && window.AIPortfolioLogic?.knowledgeBase?.navigation_map) {
-            const pageData = window.AIPortfolioLogic.knowledgeBase.navigation_map[data.target_page];
-            if (pageData?.page) {
-                let targetUrl = data.url_fragment ? `${pageData.page.split('#')[0] || ''}#${data.url_fragment}` : pageData.page;
-                setTimeout(() => { window.location.href = targetUrl; window.closePortfolioChatModal(); }, 1000);
-            }
-        }
+        // Note: The direct navigation from `data.action === 'navigate'` is removed from here.
+        // It's now handled by the promptAndNavigate function via button click.
         portfolioChatMessagesContainer.scrollTop = portfolioChatMessagesContainer.scrollHeight;
     }
 
@@ -577,11 +691,12 @@
             if (typeof window.AIPortfolioLogic?.getAIResponse !== 'function') {
                 throw new Error("AI Logic (window.AIPortfolioLogic) is not initialized.");
             }
-            const data = await window.AIPortfolioLogic.getAIResponse(query);
+            // Pass the current session context to the AI logic
+            const data = await window.AIPortfolioLogic.getAIResponse(query, sessionContext);
             renderPortfolioResults(data);
         } catch (error) {
             console.error("[AI_Chat_UI] Portfolio search error:", error);
-            addPortfolioChatMessage(currentLanguage === 'ko' ? "요청 처리 중 문제가 발생했습니다." : "An error occurred while processing your request.", 'bot');
+            addPortfolioChatMessage(getLocalizedText({ko: "요청 처리 중 심각한 문제가 발생했습니다. 개발자에게 문의하거나 페이지를 새로고침해 주세요.", en: "A critical error occurred while processing your request. Please contact the developer or refresh the page."}), 'bot');
             setLoadingState(false); // Hide loading on error
         } finally {
             loadingTimeouts.forEach(clearTimeout); // Clear any pending loading text timeouts
@@ -670,8 +785,39 @@
         // Event delegation for suggestion and action buttons within chat messages
         if (portfolioChatMessagesContainer) {
             portfolioChatMessagesContainer.addEventListener('click', (e) => {
-                const targetBtn = e.target.closest('.suggestion-btn, .view-project-via-modal, .follow-up-buttons .ai-action-btn'); // More specific selector
+                const targetBtn = e.target.closest('.suggestion-btn, .view-project-via-modal, .follow-up-buttons .ai-action-btn');
                 if (!targetBtn) return;
+
+                // Handle navigation confirmation buttons (Yes/No)
+                if (targetBtn.matches('.confirm-navigation-btn')) {
+                    const { targetPage, urlFragment } = targetBtn.dataset;
+                    const pageData = window.AIPortfolioLogic?.knowledgeBase?.navigation_map?.[targetPage];
+                    if (pageData?.page) {
+                        let actualUrl = pageData.page;
+                        if (urlFragment && !actualUrl.includes('#')) {
+                            actualUrl += `#${urlFragment}`;
+                        } else if (urlFragment) {
+                            actualUrl = actualUrl.split('#')[0] + `#${urlFragment}`;
+                        }
+                        addPortfolioChatMessage(getLocalizedText({en: "Alright! Heading there now.", ko: "알겠습니다! 지금 바로 이동할게요."}), 'user'); // User's 'Yes' confirmation
+                        window.closePortfolioChatModal();
+                        setTimeout(() => { window.location.href = actualUrl; }, 300);
+                    } else {
+                        addPortfolioChatMessage(getLocalizedText({en: "Sorry, I can't find that page.", ko: "죄송합니다, 해당 페이지를 찾을 수 없습니다."}), 'bot');
+                    }
+                    // Remove the navigation prompt buttons after interaction
+                    const parentButtonsDiv = targetBtn.closest('.navigation-confirmation-buttons');
+                    if(parentButtonsDiv) parentButtonsDiv.remove();
+                    return; // Stop further processing
+                }
+                if (targetBtn.matches('.cancel-navigation-btn')) {
+                    addPortfolioChatMessage(getLocalizedText({en: "Understood! Staying on this page then.", ko: "알겠습니다! 이 페이지에 머무를게요."}), 'user'); // User's 'No' confirmation
+                    // Remove the navigation prompt buttons
+                    const parentButtonsDiv = targetBtn.closest('.navigation-confirmation-buttons');
+                    if(parentButtonsDiv) parentButtonsDiv.remove();
+                    return; // Stop further processing
+                }
+
 
                 const query = targetBtn.dataset.query;
                 if (!query) {
@@ -679,40 +825,20 @@
                     return;
                 }
 
+                // Handle regular suggestion/action buttons
                 if (targetBtn.matches('.suggestion-btn')) {
-                    // Initial suggestions or general action buttons
                     handlePortfolioChatSend(query);
                 } else if (targetBtn.matches('.view-project-via-modal')) {
-                    // Open project modal (assuming this is handled globally)
                     document.dispatchEvent(new CustomEvent('openProjectModalFromChat', { detail: { projectId: targetBtn.dataset.projectId } }));
-                    window.closePortfolioChatModal(); // Close chat modal when project modal opens
+                    window.closePortfolioChatModal();
                 } else if (targetBtn.matches('.follow-up-buttons .ai-action-btn')) {
-                    // Follow-up actions
-                    const { action, targetPage, urlFragment, targetId, category, intent } = targetBtn.dataset;
+                    const { action, targetPage, urlFragment, pageName, targetId, category, intent, subsection } = targetBtn.dataset;
 
-                    if (action === 'navigate') {
-                        // Handle navigation to another page/section
-                        const pageData = window.AIPortfolioLogic?.knowledgeBase?.navigation_map?.[targetPage];
-                        if (pageData?.page) {
-                            let actualUrl = pageData.page;
-                            if (urlFragment && !actualUrl.includes('#')) {
-                                actualUrl += `#${urlFragment}`; // Append fragment if not already present
-                            } else if (urlFragment) {
-                                actualUrl = actualUrl.split('#')[0] + `#${urlFragment}`; // Replace existing fragment
-                            }
-                            window.closePortfolioChatModal();
-                            setTimeout(() => { window.location.href = actualUrl; }, 300); // Small delay for visual continuity
-                        } else {
-                            console.warn(`[AI_Chat_UI] Navigation target page '${targetPage}' not found in knowledge base.`);
-                            handlePortfolioChatSend(query); // Fallback to asking AI
-                        }
+                    if (action === 'navigate_confirm_prompt') { // New action to trigger confirmation
+                        promptAndNavigate(query, targetPage, urlFragment, pageName);
                     } else if (action === 'show_specific_item_details' && targetId && category) {
-                        // Re-query AI with more specific intent (e.g., 'challenges of Project X')
-                        // Construct a query that AIPortfolioLogic can understand for specific item details.
-                        // The `query` from dataset should already be formatted for this (e.g., "nomad market project details")
                         handlePortfolioChatSend(query);
                     } else {
-                        // Generic follow-up query
                         handlePortfolioChatSend(query);
                     }
                 }
@@ -722,13 +848,11 @@
     }
 
     // --- Initialization Sequence for ai_chat_ui.js ---
-    // This is the function called by common.js after all AI scripts are loaded.
-    // Expose the initialization function globally.
     window.initializeAiChatModalUI = async function() {
         console.log("[AI_Chat_UI] initializeAiChatModalUI called. Initializing UI components.");
-        initializeLottieAnimations(); // Initialize Lottie animations early
-        attachEventListeners(); // Attach all event listeners
-        await initializeAILogicAndUI(); // Kick off the AI logic and initial UI setup
+        initializeLottieAnimations();
+        attachEventListeners();
+        await initializeAILogicAndUI();
         console.log("[AI_Chat_UI] AI Chat UI initialized and ready.");
     };
 
