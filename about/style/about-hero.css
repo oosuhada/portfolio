@@ -1,4 +1,6 @@
-/* Main Layout */
+/* about-hero.css - Upgraded for Light/Dark Mode */
+
+/* --- Main Layout --- */
 .about-main {
   margin-top: 8rem;
   margin-bottom: 8rem;
@@ -9,7 +11,7 @@
   overflow-x: hidden;
 }
 
-/* Hero Section */
+/* --- Hero Section --- */
 .about-hero {
   display: flex;
   gap: 0;
@@ -34,52 +36,43 @@
   letter-spacing: -0.02em;
   word-break: keep-all;
   margin: 0;
-  color: #1a1a1a;
+  /* [수정] 기본 텍스트 색상 변수 사용으로 가독성 극대화 */
+  color: var(--text-tertiary-color); 
   transition: font-size 0.22s cubic-bezier(.51,1.22,.31,1);
-  /* about-purpose 내부에서 오른쪽 여백을 줄임 */
   padding-right: 1vw;
 }
 
 .purpose-section {
-  color: #9d9d9d;
   transition: color 0.2s;
   opacity: 1;
   cursor: var(--cursor-grab2);
   display: inline-block;
   position: relative;
   font-size: inherit;
-  margin: 0 0.9em;  /* 좌우 각각 0.33em 여백 */
+  margin: 0 0.9em;
+  padding-left: 2rem;
 }
 .purpose-section.hovered {
-  color: #222;
+  /* [수정] 호버 시 기본 텍스트 색상으로 변경하여 강조 */
+  color: var(--text-primary-color);
   font-weight: bold;
 }  
 
-.swap-hanja {
-  font-family: 'Noto Serif TC', serif;
-  font-weight: 900;
-  font-size: 0.9em;
-  color: #232323;
-  letter-spacing: 0.01em;
-  vertical-align: 0.08em;
-}
-.swap-hangul {
-  font-family: 'East Sea Dokdo', cursive;
-  font-weight: 900;
-  font-size: 1.1em;
-  color: #232323;
-  margin-left: 0.04em;
-  letter-spacing: 0.01em;
-  vertical-align: 0.15em;
-}
+
+.swap-hanja,
+.swap-hangul,
 .swap-roma {
-  font-family: 'Georgia', 'Times New Roman', serif;
-  font-size: 0.76em;
-  font-weight: 700;
-  color: #232323;
-  margin-left: 0.04em;
-  vertical-align: 0.1em;
+  font-family: inherit; /* 부모 폰트를 상속하도록 하여 일관성 유지 */
+  /* [수정] 기본 텍스트 색상 변수 사용 */
+  color: var(--text-primary-color); 
+  /* 개별 스타일은 유지 */
+  font-weight: 900;
+  letter-spacing: 0.01em;
 }
+.swap-hanja { font-size: 0.9em; vertical-align: 0.08em; font-family: 'Noto Serif TC', serif; }
+.swap-hangul { font-size: 1.1em; margin-left: 0.04em; vertical-align: 0.15em; font-family: 'East Sea Dokdo', cursive; }
+.swap-roma { font-size: 0.76em; font-weight: 700; margin-left: 0.04em; vertical-align: 0.1em; font-family: 'Georgia', 'Times New Roman', serif; }
+
 .swap-word {
   display: inline-block;
   cursor: var(--cursor-grab2);
@@ -89,7 +82,8 @@
 .about-divider {
   width: 3px;
   min-width: 3px;
-  background: linear-gradient(to bottom, #eee, #bbb 50%, #eee);
+  /* [수정] 테두리 색상 변수를 사용한 그라데이션으로 변경 */
+  background: linear-gradient(to bottom, var(--border-primary-color), var(--border-secondary-color) 50%, var(--border-primary-color));
   cursor: var(--cursor-ew-resize2);
   border-radius: 4px;
   margin: 0 2rem;
@@ -101,13 +95,13 @@
 }
 .about-divider-hitzone {
   position: absolute;
-  left: -35px; /* 좌측으로 넓히기 */
+  left: -35px;
   top: 0;
-  width: 70px; /* 전체 넓이: divider(3px)+좌우 각 33.5px */
+  width: 70px;
   height: 100%;
   cursor: var(--cursor-ew-resize2);
-  z-index: 2; /* drag-icon 보다 아래, divider보다 위 */
-  background: transparent; /* 완전 투명 */
+  z-index: 2;
+  background: transparent;
 }  
 .drag-icon {
   position: absolute;
@@ -116,9 +110,9 @@
   z-index: 3;
   pointer-events: none;
   opacity: 0.92;
-  color: #888;
+  /* [수정] 아이콘 색상에 3차 텍스트 변수 적용 */
+  color: var(--text-tertiary-color); 
   transition: color 0.18s, opacity 0.18s;
-  animation: icon-bounce 1.2s infinite alternate;
 }
 .drag-icon.left  { left: -35px; animation: icon-bounce-left 1.2s infinite alternate; }
 .drag-icon.right { left: 10px;  animation: icon-bounce-right 1.2s infinite alternate; }
@@ -133,10 +127,12 @@
 }
 .drag-icon.hide { opacity: 0; pointer-events: none; }
 
-.about-divider:hover .drag-icon { color: #111; }
+/* [수정] 호버 시 아이콘 색상을 기본 텍스트 색상으로 변경하여 강조 */
+.about-divider:hover .drag-icon { color: var(--text-primary-color); }
 
+/* [수정] 호버 및 드래그 시 더 어두운/밝은 테두리 색상 변수 그라데이션 사용 */
 .about-divider:hover, .about-divider.dragging {
-  background: linear-gradient(to bottom, #ddd, #888 50%, #ddd);
+  background: linear-gradient(to bottom, var(--border-secondary-color), var(--text-tertiary-color) 50%, var(--border-secondary-color));
 }
 
 .about-profile {
@@ -148,35 +144,38 @@
   padding-top: 10rem;
   transition: width 0.2s;
   max-width: 900px;
-  /* ← divider와 더 떨어지게 */
-  padding-left: 2.5rem;   /* 원하는 만큼(px, rem 등 단위 조절 가능) */
+  padding-left: 2.5rem;
 }
 
 .about-profile-desc {
   font-size: 1.1rem;
-  color: #333;
+  /* [수정] 설명 텍스트에 기본 텍스트 색상 변수 적용 */
+  color: var(--text-primary-color);
   line-height: 1.7;
-  padding-right: 2rem; /* 충분히 크게(원하면 더 크게) */
+  padding-right: 2rem;
   margin-right: 3rem;
-  word-break: normal;         /* 기본값: 단어 단위로 줄바꿈 */
-  overflow-wrap: break-word;  /* 아주 긴 단어/URL 등만 강제 줄바꿈 */
-  white-space: normal;        /* 기본값 */
-  hyphens: none;              /* 필요시 자동 하이픈 금지 */
-  
+  word-break: normal;
+  overflow-wrap: break-word;
+  white-space: normal;
+  hyphens: none;
+}
+
+ .about-profile-desc p {
+  margin-bottom: 1.2rem;
 }
 
 .about-profile-photo {
   width: 150px;
   height: 150px;
   border-radius: 1.5rem;
-  overflow: hidden;  /* 이미지를 넘치지 않게 자름 */
-  margin-left: -1rem; /* desc와 여백 동일하게 맞추기 */
+  overflow: hidden;
+  margin-left: -1rem;
   margin-bottom: -2rem;
   display: flex;
   align-items: left;
   justify-content: left;
-  cursor: var(--cursor-grab2); /* Add pointer cursor to indicate clickability */
-  transition: transform 0.3s ease-in-out; /* Add smooth transition for hover effect */
+  cursor: var(--cursor-grab2);
+  transition: transform 0.3s ease-in-out;
 }
 
 .about-profile-photo img {
@@ -187,16 +186,11 @@
   display: block;
 }
 
-/* Hover effect for the image */
 .about-profile-photo:hover {
-  transform: scale(1.05); /* Slightly enlarge the image on hover */
+  transform: scale(1.05);
 }
 
- .about-profile-desc p {
-  margin-bottom: 1.2rem;
-}
-
-/* Responsive Design */
+/* --- Responsive Design --- */
 @media (max-width: 1200px) {
   .about-main { 
     max-width: 100%; 
@@ -209,13 +203,6 @@
     padding: 0 4rem;
   }
   .about-hero {
-    gap: 4rem;
-  }
-  .about-skills-cols,
-  .about-funfacts-cols {
-    gap: 4rem;
-  }
-  .about-process-wrap {
     gap: 4rem;
   }
 }
@@ -238,7 +225,8 @@
     width: 3px !important;
     min-width: 3px !important;
     height: auto !important;
-    background: linear-gradient(to bottom, #eee, #bbb 50%, #eee) !important;
+    /* [수정] 반응형에서도 변수 사용 유지 */
+    background: linear-gradient(to bottom, var(--border-primary-color), var(--border-primary-color) 50%, var(--border-primary-color)) !important;
     margin: 0 2rem !important;
   }
   .about-profile {
@@ -270,7 +258,8 @@
     width: 3px !important;
     min-width: 3px !important;
     height: auto !important;
-    background: linear-gradient(to bottom, #eee, #bbb 50%, #eee) !important;
+    /* [수정] 반응형에서도 변수 사용 유지 */
+    background: linear-gradient(to bottom, var(--border-primary-color), var(--border-secondary-color) 50%, var(--border-secondary-color)) !important;
     margin: 0 2rem !important;
   }
 }

@@ -1,498 +1,1029 @@
-/* common/ai_chat.css */
+/*
+ * AI Portfolio Chat - CSS Final Upgrade (2025 Trend Edition - Full Glassmorphism & New Accent Gradient)
+ * This file now controls ALL styles related to the AI Assistant, including the FAB button and the modal.
+ */
 
+/* 1. FONT & ICON IMPORTS
+----------------------------------------------------------------*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0');
 
+/* 2. ROOT & THEME VARIABLES
+----------------------------------------------------------------*/
 :root {
-    /* 기본 라이트 모드 변수 (기존 값 유지) */
-    --wht: #ffffff;
-    --blk: #1a1a1a;
-    --gray50: #f7f7f7;
-    --gray100: #ededed;
-    --gray200: #dcdcdc;
-    --gray300: #c1c1c1;
-    --gray400: #a6a6a6;
-    --gray500: #8b8b8b;
-    --gray600: #707070;
-    --gray700: #555555;
-    --gray800: #3a3a3a;
-    --gray900: #2a2a2a;
-    --primary: #1987fa;
-    --secondary: #2186eb;
-    --gradient-blue-green: linear-gradient(90deg, #1987fa, #00c6ff);
+    /* --- Light Mode Palette (Glassmorphism Optimized) --- */
+    --text-color: #1A1A1A; /* Text is black for light mode */
+    --subheading-color: #7A7A7A;
+    --placeholder-color: #9A9A9A;
 
-    /* --- AI Chat Modal Content Backgrounds --- */
-    /* 라이트 모드 시 AI 모달 콘텐츠 배경 (기존 .ai-portfolio-chat-modal-content에 설정된 배경색) */
-    --ai-modal-content-bg: var(--wht);
+    --primary-bg: #F8FAFC; /* Main background for body, etc. (mostly for backdrop blur color) */
+    --primary-bg-opacity: #ffffffad; /* Main background for body, etc. (mostly for backdrop blur color) */
+    --secondary-bg: #E2E8F0; /* Background for elements like tags, lottie container (less glass) */
+    --secondary-hover-bg: #CBD5E1; /* Hover state for secondary background elements */
+
+    --primary-accent: #3B82F6; /* Primary accent color (for fallback or specific solid uses) */
+    --gradient-blue-red: linear-gradient(90deg, #3B82F6, #EF4444); /* Existing gradient (for insight badge) */
+
+    /* Point Gradient for emphasis (chat header, send button, user messages) */
+    --point-gradient: linear-gradient(90deg, #1987FA, #10C2A0);
+
+    --error-color: #F87171; /* Error messages */
+    --scrollbar-thumb: #A1A1A1;
+    --scrollbar-track: #F1F5F9;
+
+    /* Glassmorphism background transparencies for modals */
+    --stage1-modal-bg: rgba(255, 255, 255, 0.02); /* Modal 1: Very transparent for background to show well */
+    --stage2-modal-bg: rgba(255, 255, 255, 0.02); /* Adjusted to match stage1-modal-bg transparency */
+
+    --glass-border: rgba(255, 255, 255, 0.3); /* TRANSPARENT BORDER for glass elements */
+    --glass-blur: blur(15px); /* General blur for glass elements */
+    --glass-shadow: rgba(0, 0, 0, 0.1); /* Lighter shadow for light mode glassmorphism */
+
+    /* NEW: Modal overlay background color (for .ai-portfolio-chat-modal.show.stage-2) */
+    --modal-overlay-bg: rgba(255, 255, 255, 0.8); /* Light mode: Brighten the background */
+
+    /* NEW: Focus colors for input field - Light Mode */
+    --input-focus-bg: rgba(226, 232, 240, 0.5); /* secondary-bg with transparency */
+    --input-focus-border: rgba(203, 213, 225, 0.8); /* secondary-hover-bg with transparency */
+    --input-focus-shadow: rgba(0, 0, 0, 0.08); /* A soft grey shadow */
 }
 
-/* 다크 모드 테마 변수 (theme-manager.js가 .dark-theme 클래스를 추가할 때 활성화) */
-body.dark-theme {
-    --wht: #1a1a1a; /* 다크 모드에서는 배경이 어두워야 하므로 기존 blk 값을 wht로 */
-    --blk: #ffffff; /* 다크 모드에서는 텍스트가 밝아야 하므로 기존 wht 값을 blk로 */
-    --gray50: #2a2a2a;
-    --gray100: #3a3a3a;
-    --gray200: #555555;
-    --gray300: #707070;
-    --gray400: #8b8b8b;
-    --gray500: #a6a6a6;
-    --gray600: #c1c1c1;
-    --gray700: #dcdcdc;
-    --gray800: #ededed;
-    --gray900: #f7f7f7;
-    --primary: #1987fa; /* Primary 색상은 유지 또는 다크 모드에 맞게 조정 */
-    --secondary: #2186eb; /* Secondary 색상도 유지 또는 조정 */
-    --gradient-blue-green: linear-gradient(90deg, #1987fa, #00c6ff); /* 그라디언트 유지 */
+body[data-theme="dark"] {
+    /* --- Dark Mode Palette (Glassmorphism Optimized) --- */
+    --text-color: #E2E8F0; /* Text is light for dark mode */
+    --subheading-color: #94A3B8;
+    --placeholder-color: #64748B;
 
-    /* --- AI Chat Modal Content Backgrounds (Dark Mode) --- */
-    /* 다크 모드 시 AI 모달 콘텐츠 배경 - 좀 더 어두운 색상 */
-    --ai-modal-content-bg: var(--gray900); /* 다크 모드에 맞는 배경색 */
+    --primary-bg: #1E293B; /* Main background for body, etc. */
+    --primary-bg-opacity: #000000ad; /* Main background for body, etc. (mostly for backdrop blur color) */
+    --secondary-bg: #334155; /* Background for less glass elements */
+    --secondary-hover-bg: #475569; /* Hover state for secondary background elements */
+
+    --primary-accent: #60A5FA; /* Primary accent color */
+    --gradient-blue-red: linear-gradient(90deg, #60A5FA, #F87171); /* Existing gradient */
+
+    /* Point Gradient for emphasis (chat header, send button, user messages) */
+    --point-gradient: linear-gradient(90deg, #1987FA, #10C2A0);
+
+    --error-color: #EF4444;
+    --scrollbar-thumb: #64748B;
+    --scrollbar-track: #1A1B26;
+
+    /* Glassmorphism background transparencies for modals */
+    --stage1-modal-bg: rgba(30, 41, 59, 0.05); /* Modal 1: Very transparent for background to show well */
+    --stage2-modal-bg: rgba(30, 41, 59, 0.05); /* Adjusted to match stage1-modal-bg transparency */
+
+    --glass-border: rgba(255, 255, 255, 0.1); /* TRANSPARENT BORDER for glass elements */
+    --glass-blur: blur(15px); /* General blur for glass elements */
+    --glass-shadow: rgba(0, 0, 0, 0.4); /* Stronger shadow for dark mode glassmorphism */
+
+    /* NEW: Modal overlay background color (for .ai-portfolio-chat-modal.show.stage-2) */
+    --modal-overlay-bg: rgba(0, 0, 0, 0.7); /* Dark mode: Darken the background */
+
+    /* NEW: Focus colors for input field - Dark Mode */
+    --input-focus-bg: rgba(51, 65, 85, 0.5); /* secondary-bg with transparency */
+    --input-focus-border: rgba(71, 85, 105, 0.8); /* secondary-hover-bg with transparency */
+    --input-focus-shadow: rgba(0, 0, 0, 0.6); /* A soft grey shadow */
 }
 
-/* --- AI Portfolio Chat Modal General Styles --- */
+/* 3. AI ASSISTANT FAB & CURSOR STYLES
+----------------------------------------------------------------*/
+#ai-assistant-FAB {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 60px;
+    height: 60px;
+    z-index: 900; /* 헤더(1002)보다는 낮게 설정 */
+    cursor: none !important; /* JS로 제어할 커스텀 커서 사용 */
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), filter 0.4s ease;
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: grayscale(1); /* 기본적으로 흑백 */
+}
+
+#ai-assistant-FAB:hover {
+    filter: grayscale(0); /* 호버 시 컬러 */
+    transform: scale(1.1); /* 호버 시 확대 */
+}
+
+#ai-assistant-FAB.hidden {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+    pointer-events: none;
+}
+
+#custom-cursor-dot {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background-color: var(--primary-accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 950;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+#ai-assistant-ask-image {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    top: -10px;
+    left: -10px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 901;
+}
+
+/* 4. AI PORTFOLIO CHAT MODAL STYLES
+----------------------------------------------------------------*/
+/* AI Portfolio Chat Modal General Styles */
 .ai-portfolio-chat-modal {
     display: none;
     position: fixed;
-    z-index: 1000; /* 기존 모달보다 위에 오도록 */
+    z-index: 1001; /* 헤더(1002)보다 낮고, FAB(900)보다 높게 */
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background-color: rgba(0, 0, 0, 0); /* 초기 투명 */
-    justify-content: center;
-    align-items: center;
-    transition: background-color 0.5s cubic-bezier(0.32, 0.72, 0.33, 1.5);
+    background-color: rgba(0, 0, 0, 0); /* Start transparent */
+    transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    
 }
 
 .ai-portfolio-chat-modal.show {
+    display: block;
+}
+
+.ai-portfolio-chat-modal.show.stage-2 {
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
     display: flex;
-    background-color: rgba(0, 0, 0, 0.6); /* 모달 열릴 때 배경 */
+    justify-content: center;
+    align-items: center;
 }
 
 .ai-portfolio-chat-modal-content {
-    background-color: var(--ai-modal-content-bg); /* <-- 이 부분을 수정했습니다! */
-    padding: 24px;
+    background-color: var(--stage2-modal-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    padding: 20px;
     border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    max-width: 650px; /* 포트폴리오 채팅 모달의 적절한 너비 */
-    width: 90%;
-    position: relative;
+    box-shadow: 0 8px 32px var(--glass-shadow);
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    max-height: 92vh;
-    overflow-y: hidden; /* 내부 스크롤 관리 */
-    transform: scale(0.95);
+    overflow: hidden; /* ★★★ 이 속성은 hidden으로 유지되어야 합니다. */
+    position: relative;
     opacity: 0;
-    transition: transform 0.4s cubic-bezier(0.32, 0.72, 0.33, 1.5), opacity 0.4s ease, background-color 0.3s ease; /* background-color transition 추가 */
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease,
+                background-color 0.3s ease, width 0.3s ease, height 0.3s ease,
+                max-width 0.3s ease, max-height 0.3s ease,
+                bottom 0.3s ease, right 0.3s ease, margin 0.3s ease, padding 0.3s ease;
 }
 
-.ai-portfolio-chat-modal.show .ai-portfolio-chat-modal-content {
+/* Stage 1 Modal (Mini Modal) Styles */
+.ai-portfolio-chat-modal.stage-1 .ai-portfolio-chat-modal-content {
+    position: absolute;
+    bottom: 2rem;
+    right: 1.5em;
+    max-width: 380px;
+    width: auto;
+    height: auto;
+    max-height: 75vh;
+    transform-origin: bottom right;
+    padding: 16px;
+    gap: 10px;
+    /* overflow-y: auto; */
+    background-color: var(--stage1-modal-bg);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 20px var(--glass-shadow);
+        overflow: visible !important;
+}
+
+.ai-portfolio-chat-modal.stage-1.show .ai-portfolio-chat-modal-content {
+    opacity: 1;
+    transform: scale(1);
+    overflow: visible;
+    
+}
+
+.ai-portfolio-chat-modal.stage-1 .chat-header,
+.ai-portfolio-chat-modal.stage-1 .chat-messages .bot-message:not(.initial-suggestion),
+.ai-portfolio-chat-modal.stage-1 .chat-messages .user-message,
+.ai-portfolio-chat-modal.stage-1 #portfolioLoadingStatus,
+.ai-portfolio-chat-modal.stage-1 .ai-portfolio-results,
+.ai-portfolio-chat-modal.stage-1 .ai-portfolio-chat-modal-content .close-button {
+    display: none;
+}
+
+.ai-portfolio-chat-modal.stage-1 .chat-messages {
+    min-height: 0;
+    padding: 0;
+    margin-bottom: 0;
+    overflow: visible;
+    padding-left: 5px;
+    padding-bottom: 10px;
+}
+
+.ai-portfolio-chat-modal.stage-1 .chat-message.initial-suggestion {
+    margin-top: 0;
+    padding: 0;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow: visible;
+}
+
+.ai-portfolio-chat-modal.stage-1 .chat-message.initial-suggestion p {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--subheading-color);
+    margin-bottom: 6px;
+}
+
+.ai-portfolio-chat-modal.stage-1 .chat-message .suggestion-btn {
+    background-color: var(--stage1-modal-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    color: var(--text-color);
+    border: 1px solid var(--glass-border);
+    background-color: var(--primary-bg-opacity);
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    text-align: left;
+    box-shadow: 0 2px 8px var(--glass-shadow);
+}
+
+.ai-portfolio-chat-modal.stage-1 .chat-message .suggestion-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px var(--glass-shadow);
+    background-color: color-mix(in srgb, var(--stage1-modal-bg) 80%, var(--primary-accent));
+    border-color: var(--primary-accent);
+}
+
+.ai-portfolio-chat-modal.stage-1 .chat-message .suggestion-btn::after {
+    content: 'arrow_forward';
+    font-family: 'Material Symbols Rounded';
+    font-size: 18px;
+    color: var(--text-color);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.ai-portfolio-chat-modal.stage-1 .chat-message .suggestion-btn:hover::after {
+    transform: rotate(45deg);
+}
+
+/* Stage 2 Modal (Full Chat Window) Styles */
+.ai-portfolio-chat-modal.stage-2 .ai-portfolio-chat-modal-content {
+    max-width: 850px;
+    width: 90%;
+    max-height: 92vh;
+    transform-origin: center center;
+    margin: 4vh auto;
+    padding: 24px;
+    border: 1px solid var(--glass-border);
+}
+
+/* --- MODIFIED --- */
+/* .show 상태의 content에서 전체 스크롤을 유발하는 overflow:auto를 제거합니다. */
+.ai-portfolio-chat-modal.stage-2.show .ai-portfolio-chat-modal-content {
     transform: scale(1);
     opacity: 1;
+    /* overflow: auto;  <-- 이 줄을 삭제합니다. */
 }
 
-/* 나머지 CSS 코드는 동일하게 유지 */
-
-/*
-기존 .ai-portfolio-chat-modal-content 내부의 background-color: var(--wht);
-이것을 background-color: var(--ai-modal-content-bg); 로 변경하면 됩니다.
-
-그리고 부드러운 테마 전환을 위해 .ai-portfolio-chat-modal-content의 transition 속성에
-`background-color 0.3s ease`를 추가하는 것이 좋습니다.
-*/
-
 .ai-portfolio-chat-modal-content .close-button {
-    color: var(--gray500);
-    font-size: 26px;
+    color: var(--subheading-color);
+    font-size: 40px;
     font-weight: bold;
     position: absolute;
     top: 16px;
-    right: 16px;
+    right: 24px;
     cursor: pointer;
     transition: color 0.2s ease, transform 0.2s ease;
+    z-index: 10;
 }
 
 .ai-portfolio-chat-modal-content .close-button:hover,
 .ai-portfolio-chat-modal-content .close-button:focus {
-    color: var(--blk);
+    color: var(--text-color);
     transform: rotate(90deg);
+}
+
+/* +++ ADDED +++ */
+/* HTML에서 새로 추가한 스크롤 컨테이너에 대한 스타일입니다. */
+.chat-scroll-area {
+    flex-grow: 1;
+    overflow-y: auto;
+    min-height: 0;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black 20px, black calc(100% - 20px), transparent);
+    mask-image: linear-gradient(to bottom, transparent, black 20px, black calc(100% - 20px), transparent);
 }
 
 .chat-header {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--gray100);
-    margin-bottom: 15px;
-}
-
-.chat-header .ai-badge {
-    background: var(--gradient-blue-green);
-    color: var(--wht);
-    font-size: 12px;
-    font-weight: bold;
-    padding: 4px 10px;
-    border-radius: var(--radius-pill);
+    gap: 10px;
+    padding-bottom: 12px;
+    /* margin-bottom에서 padding-bottom으로 변경하면 더 자연스럽습니다. */
+    border-bottom: 1px solid color-mix(in srgb, var(--secondary-bg) 50%, transparent);
+    margin-bottom: 20px; 
 }
 
 .chat-header strong {
-    font-size: 18px;
-    color: var(--blk);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-color);
+    background: var(--point-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-left: -30px;
 }
 
+.chat-header .ai-header-lottie-container {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+}
+
+.ai-header-lottie-container svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* --- MODIFIED --- */
+/* .chat-messages에서 스크롤 및 레이아웃 관련 속성을 제거합니다. */
 .chat-messages {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding-right: 8px; /* 스크롤바 공간 확보 */
+    /* flex-grow: 1; <-- 제거 */
+    /* overflow-y: auto; <-- 제거 */
+    /* min-height: 250px; <-- 제거 */
+    padding-right: 10px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-bottom: 15px;
+    gap: 14px;
+    margin-bottom: 0;
 }
 
-/* Custom Scrollbar for Chat Messages */
-.chat-messages::-webkit-scrollbar {
-    width: 8px;
-}
-
-.chat-messages::-webkit-scrollbar-track {
-    background: var(--gray50);
-    border-radius: 4px;
-}
-
-.chat-messages::-webkit-scrollbar-thumb {
-    background: var(--gray300);
-    border-radius: 4px;
-}
-
-.chat-messages::-webkit-scrollbar-thumb:hover {
-    background: var(--gray500);
-}
 
 .chat-message {
-    padding: 10px 15px;
-    border-radius: 18px;
+    padding: 14px 18px;
+    border-radius: 20px;
     max-width: 80%;
     word-break: break-word;
-    line-height: 1.5;
+    line-height: 1.6;
     font-size: 14px;
+    background-color: var(--stage2-modal-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 2px 8px var(--glass-shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.chat-message:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--glass-shadow);
+    background-color: color-mix(in srgb, var(--stage2-modal-bg) 80%, var(--primary-accent));
+    border-color: var(--primary-accent);
 }
 
 .user-message {
-    background-color: var(--primary);
-    color: var(--wht);
+    background: var(--point-gradient);
+    color: #FFF;
     align-self: flex-end;
     border-bottom-right-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border: none;
 }
 
 .bot-message {
-    background-color: var(--gray50); /* #f0f2f5 대신 변수 사용 */
-    color: var(--blk);
+    color: var(--text-color);
     align-self: flex-start;
     border-bottom-left-radius: 4px;
+    background-color: var(--primary-bg-opacity);
 }
 
+/* --- MODIFIED --- */
+/* 하단 입력창이 항상 고정되도록 flex-shrink 속성을 확인합니다. */
 .chat-input-area {
     display: flex;
+    align-items: center;
     gap: 10px;
-    padding-top: 10px;
-    border-top: 1px solid var(--gray100);
+    padding-top: 14px;
+    border-top: 1px solid color-mix(in srgb, var(--secondary-bg) 50%, transparent);
+    position: relative;
+    flex-shrink: 0; /* 이 속성이 중요합니다. */
 }
 
 #aiPortfolioChatInput {
     flex-grow: 1;
-    padding: 12px 18px;
-    border: 1px solid var(--gray200);
-    border-radius: 25px;
-    font-size: 15px;
+    padding: 14px 50px 14px 18px;
+    border: 1px solid var(--glass-border);
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 500;
     outline: none;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    background-color: var(--wht); /* Input 배경색도 변수 사용 */
-    color: var(--blk); /* Input 텍스트 색상도 변수 사용 */
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    background-color: var(--stage2-modal-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    color: var(--text-color);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05), 0 2px 8px var(--glass-shadow);
 }
 
 #aiPortfolioChatInput:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(25, 135, 250, 0.1);
+    background-color: var(--input-focus-bg);
+    box-shadow: 0 0 0 3px var(--input-focus-shadow);
+    border-color: var(--input-focus-border);
+}
+
+#aiPortfolioChatInput::placeholder {
+    color: var(--placeholder-color);
 }
 
 .ai-chat-send-btn {
-    background-color: var(--primary);
-    color: var(--wht);
+    background: var(--point-gradient);
+    color: #FFF;
     border: none;
-    border-radius: 25px;
-    padding: 10px 20px;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
     cursor: pointer;
-    font-size: 15px;
-    font-weight: 600;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
 }
 
 .ai-chat-send-btn:hover {
-    background-color: #1565c0;
-    transform: translateY(-1px);
+    filter: brightness(1.15);
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
-/* Initial suggestion buttons */
+.ai-chat-send-btn .lottie-animation {
+    width: 100%;
+    height: 100%;
+    scale: 2;
+}
+
 .chat-message.initial-suggestion {
-    background: transparent; /* Remove background for prompt container */
-    color: var(--gray700);
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    box-shadow: none !important;
     align-self: flex-start;
     border-radius: 0;
     padding: 0;
-    margin-top: 10px;
+    margin-top: 14px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
 }
 
 .chat-message.initial-suggestion p {
     font-size: 13px;
-    color: var(--gray600);
-    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--subheading-color);
+    margin-bottom: 8px;
 }
 
 .chat-message .suggestion-btn {
-    background-color: var(--gray50); /* #eef6fc 대신 변수 사용 */
-    color: var(--primary);
-    border: 1px solid var(--gray100); /* #d4e9ff 대신 변수 사용 */
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 500;
+    background-color: var(--stage2-modal-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    color: var(--text-color);
+    border: 1px solid var(--glass-border);
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.2s, border-color 0.2s;
-    align-self: flex-start; /* Align individual buttons to left */
+    transition: background-color 0.2s ease, transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    align-self: flex-start;
     max-width: fit-content;
+    box-shadow: 0 2px 8px var(--glass-shadow);
+    background-color: var(--primary-bg-opacity);
 }
 
 .chat-message .suggestion-btn:hover {
-    background-color: var(--primary);
-    color: var(--wht);
+    background-color: color-mix(in srgb, var(--stage2-modal-bg) 80%, var(--primary-accent));
     transform: translateY(-2px);
-    border-color: var(--primary);
+    border-color: var(--primary-accent);
+    box-shadow: 0 4px 12px var(--glass-shadow);
 }
 
-
-/* --- Loading Status Styles (Portfoliomodal specific IDs) --- */
 #portfolioLoadingStatus {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  color: var(--gray600);
-  font-size: 15px;
-  width: 100%;
-  min-height: 250px; /* Adjust height for chat context */
-  background: var(--gray50); /* #f8f9ff 대신 변수 사용 */
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  padding: 20px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-color);
+    font-size: 14px;
+    width: 100%;
+    background-color: var(--stage2-modal-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    padding: 16px;
+    border-radius: 20px;
+    border-bottom-left-radius: 4px;
+    align-self: flex-start;
+    max-width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 2px 8px var(--glass-shadow);
+    border: 1px solid var(--glass-border);
+}
+
+#portfolioLoadingStatus.active {
+    display: flex;
 }
 
 #portfolioLoadingStatus .loading-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: 20px;
-  background: var(--wht);
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    background: transparent;
 }
 
 #portfolioLoadingLottie {
-  width: 60px; /* Slightly smaller Lottie for chat context */
-  height: 60px;
-  margin-bottom: 8px;
+    width: 50px;
+    height: 50px;
+    margin-bottom: 6px;
 }
 
 #portfolioLoadingText {
-  font-weight: 600;
-  font-size: 15px;
-  line-height: 1.5;
-  transition: opacity 0.3s ease-in-out;
-  text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: center;
+    color: var(--text-color);
 }
 
 #portfolioLoadingStatus .ai-loading-progress {
-  display: flex;
-  flex-direction: column;
-  gap: 15px; /* Adjust gap */
-  margin-top: 30px; /* Adjust margin */
-  width: 100%;
-  padding: 20px;
-  background: var(--gray50); /* #f5f7ff 대신 변수 사용 */
-  border-radius: 10px;
-  border: 1px solid var(--gray100);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+    width: 100%;
+    padding: 12px;
+    background: var(--stage2-modal-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+    box-shadow: inset 0 1px 4px var(--glass-shadow);
 }
 
-/* 나머지 로딩 상태 스타일은 변경 없음 */
+#portfolioLoadingStatus .ai-loading-progress .step {
+    font-size: 13px;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
-/* --- AI Portfolio Results Container --- */
+#portfolioLoadingStatus .ai-loading-progress .step .circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--primary-accent);
+    color: #FFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+#portfolioLoadingStatus .ai-loading-progress .step[data-status="active"] .circle {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
 .ai-portfolio-results {
-  width: 100%;
-  height: auto;
-  text-align: left;
-  font-style: normal;
-  display: flex;
-  flex-direction: column;
-  gap: 15px; /* Adjust gap */
-  overflow-y: auto;
-  padding-right: 10px;
-  flex-grow: 1; /* Make it fill available space */
+    display: none;
+    flex-direction: column;
+    gap: 14px;
+    overflow-y: auto;
+    padding-right: 10px;
+    flex-grow: 1;
+    background-color: var(--stage2-modal-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    color: var(--text-color);
+    padding: 16px;
+    border-radius: 20px;
+    border-bottom-left-radius: 4px;
+    align-self: flex-start;
+    max-width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 2px 8px var(--glass-shadow);
+    border: 1px solid var(--glass-border);
 }
 
-/* Custom Scrollbar for Result Cards */
+.ai-portfolio-results.show {
+    display: flex;
+}
+
 #portfolioResultCards::-webkit-scrollbar {
-  width: 8px;
-}
-#portfolioResultCards::-webkit-scrollbar-track {
-  background: var(--gray50);
-  border-radius: 4px;
-}
-#portfolioResultCards::-webkit-scrollbar-thumb {
-  background: var(--gray300);
-  border-radius: 4px;
-}
-#portfolioResultCards::-webkit-scrollbar-thumb:hover {
-  background: var(--gray500);
+    width: 6px;
 }
 
-/* --- AI Insight (Portfolio specific) --- */
+#portfolioResultCards::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+    border-radius: 3px;
+}
+
+#portfolioResultCards::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 3px;
+}
+
+#portfolioResultCards::-webkit-scrollbar-thumb:hover {
+    background: var(--subheading-color);
+}
+
 .ai-insight {
-  background-color: var(--gray50); /* #e9f5ff 대신 변수 사용 (혹은 다른 강조색) */
-  padding: 14px;
-  border-left: 4px solid var(--primary);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+    background-color: var(--stage2-modal-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    padding: 12px;
+    border-left: 4px solid var(--primary-accent);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05), 0 2px 8px var(--glass-shadow);
+    border: 1px solid var(--glass-border);
 }
 
 .ai-insight-badge {
-  background: var(--gradient-blue-green);
-  color: var(--wht);
-  font-size: 12px;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 6px;
-  flex-shrink: 0;
+    background: var(--gradient-blue-red);
+    color: #FFF;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    flex-shrink: 0;
 }
 
 #portfolioInsightText {
-  font-size: 14px;
-  color: var(--gray700);
-  font-style: normal;
-  line-height: 1.6;
+    font-size: 13px;
+    color: var(--text-color);
+    line-height: 1.6;
 }
 
-/* --- Portfolio Result Cards (e.g., project, skill) --- */
 #portfolioResultCards {
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Adjusted gap */
-    max-height: 400px; /* Limit height and enable scroll */
+    gap: 14px;
+    max-height: 500px;
 }
 
 .portfolio-card {
-    background-color: var(--wht);
-    border: 1px solid var(--gray100);
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    background-color: var(--primary-bg-opacity);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 12px var(--glass-shadow);
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease; /* 배경색 전환 추가 */
+    gap: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
     cursor: pointer;
 }
 
-/* 나머지 포트폴리오 카드 스타일은 변경 없음 */
+.portfolio-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px var(--glass-shadow);
+    background-color: color-mix(in srgb, var(--stage2-modal-bg) 80%, var(--primary-accent));
+    border-color: var(--primary-accent);
+}
 
+.portfolio-card h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0;
+}
 
-/* --- AI Follow-up Actions (Portfolio specific IDs) --- */
+.portfolio-card p {
+    font-size: 13px;
+    color: var(--subheading-color);
+    margin: 0;
+}
+
+.portfolio-card .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.portfolio-card .tag {
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.portfolio-card .card-action-btn {
+    background: var(--point-gradient);
+    color: #FFF;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    align-self: flex-start;
+    margin-top: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.portfolio-card .card-action-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
 #portfolioFollowUpActions {
-  background: var(--gray50); /* #f7fbff 대신 변수 사용 */
-  border-radius: 8px;
-  padding: 14px;
-  margin-top: 10px;
-  box-shadow: 0 2px 6px rgba(33, 134, 235, 0.05); /* box-shadow는 그대로 유지 */
+    background-color: var(--stage2-modal-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    color: var(--text-color);
+    padding: 16px;
+    border-radius: 20px;
+    border-bottom-left-radius: 4px;
+    align-self: flex-start;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-top: 14px;
+    display: none;
+    box-shadow: 0 2px 8px var(--glass-shadow);
+    border: 1px solid var(--glass-border);
+}
+
+#portfolioFollowUpActions.show {
+    display: block;
 }
 
 #portfolioFollowUpActions .ai-chat-bubble {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--primary);
-  background: var(--gray50); /* #e9f5ff 대신 변수 사용 */
-  padding: 8px 14px;
-  border-radius: 18px;
-  display: inline-block;
-  margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-accent);
+    background: var(--secondary-bg);
+    padding: 8px 14px;
+    border-radius: 18px;
+    display: inline-block;
+    margin-bottom: 10px;
 }
 
 #portfolioFollowUpButtons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 #portfolioFollowUpButtons .ai-action-btn {
-  border: none;
-  background: var(--gray50); /* #eef6fc 대신 변수 사용 */
-  color: var(--primary);
-  padding: 8px 14px;
-  border-radius: 18px;
-  font-weight: 600;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: background 0.2s, transform 0.2s;
+    border: 1px solid var(--glass-border);
+    background-color: var(--stage2-modal-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    color: var(--text-color);
+    padding: 10px 16px;
+    border-radius: 18px;
+    font-weight: 600;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.2s ease, transform 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 8px var(--glass-shadow);
+    cursor: pointer;
 }
 
-/* 나머지 팔로우업 버튼 스타일은 변경 없음 */
+#portfolioFollowUpButtons .ai-action-btn:hover {
+    background-color: color-mix(in srgb, var(--stage2-modal-bg) 80%, var(--primary-accent));
+    transform: translateY(-2px);
+    border-color: var(--primary-accent);
+    color: var(--primary-accent);
+    box-shadow: 0 4px 12px var(--glass-shadow);
+}
 
-/* Confetti Container (Reused from existing CSS) */
+.chat-message.follow-up-suggestion-message .ai-chat-bubble {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-accent);
+    background: var(--secondary-bg);
+    padding: 8px 14px;
+    border-radius: 18px;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.chat-message.follow-up-suggestion-message .follow-up-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.chat-message.follow-up-suggestion-message .ai-action-btn {
+    border: 1px solid var(--glass-border);
+    background-color: var(--stage2-modal-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    color: var(--text-color);
+    padding: 10px 16px;
+    border-radius: 18px;
+    font-weight: 600;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.2s ease, transform 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 8px var(--glass-shadow);
+    cursor: pointer;
+}
+
+.chat-message.follow-up-suggestion-message .ai-action-btn:hover {
+    background-color: color-mix(in srgb, var(--stage2-modal-bg) 80%, var(--primary-accent));
+    transform: translateY(-2px);
+    border-color: var(--primary-accent);
+    color: var(--primary-accent);
+    box-shadow: 0 4px 12px var(--glass-shadow);
+}
+
+body.dark-theme .chat-message.follow-up-suggestion-message .ai-chat-bubble,
+body.dark-theme .chat-message.follow-up-suggestion-message .ai-action-btn {
+    background: var(--secondary-bg);
+}
+
+body.dark-theme .chat-message.follow-up-suggestion-message .ai-action-btn:hover {
+    background-color: var(--secondary-hover-bg);
+}
+
+.chat-message.result-cards-message {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
+    align-self: flex-start;
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: none;
+}
+
 .confetti-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1001;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1001;
 }
 
-/* --- Responsive Adjustments --- */
 @media (max-width: 767px) {
-    .ai-portfolio-chat-modal-content {
+    .ai-portfolio-chat-modal.stage-1 .ai-portfolio-chat-modal-content {
+        right: 1rem;
+        bottom: calc(1.5rem + 60px);
+        max-width: calc(100vw - 2rem);
+        padding: 12px;
+    }
+
+    .ai-portfolio-chat-modal.stage-2 .ai-portfolio-chat-modal-content {
         padding: 16px;
-        width: 95%;
-        max-height: 90vh;
+        width: 98%;
+        max-height: 85vh;
+        margin: 2vh auto;
     }
-    .chat-header strong {
-        font-size: 16px;
-    }
+
     .chat-message {
         font-size: 13px;
-        padding: 8px 12px;
+        padding: 12px 16px;
     }
+
     #aiPortfolioChatInput {
         font-size: 13px;
-        padding: 10px 15px;
+        padding: 12px 40px 12px 16px;
     }
+
     .ai-chat-send-btn {
-        font-size: 13px;
-        padding: 8px 15px;
+        width: 38px;
+        height: 38px;
+        font-size: 18px;
     }
-    #portfolioLoadingStatus {
-        min-height: 200px;
+
+    .chat-header strong {
+        font-size: 18px;
     }
+
+    .chat-header .ai-header-lottie-container {
+        width: 36px;
+        height: 36px;
+    }
+
     #portfolioLoadingStatus .ai-loading-progress .step {
         font-size: 12px;
+    }
+
+    #portfolioResultCards {
+        max-height: 400px;
+    }
+
+    .ai-insight {
+        padding: 12px;
+    }
+
+    .ai-insight-badge {
+        font-size: 10px;
+        padding: 3px 8px;
+    }
+
+    #portfolioInsightText {
+        font-size: 12px;
+    }
+
+    .portfolio-card {
+        padding: 16px;
+    }
+
+    .portfolio-card h4 {
+        font-size: 14px;
+    }
+
+    .portfolio-card p {
+        font-size: 12px;
+    }
+
+    .portfolio-card .tag {
+        font-size: 10px;
+        padding: 3px 6px;
+    }
+
+    .portfolio-card .card-action-btn {
+        padding: 8px 14px;
+        font-size: 12px;
+    }
+
+    .chat-message.follow-up-suggestion-message .ai-chat-bubble,
+    .chat-message.follow-up-suggestion-message .ai-action-btn {
+        font-size: 13px;
+        padding: 8px 14px;
     }
 }

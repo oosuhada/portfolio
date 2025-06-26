@@ -6,8 +6,9 @@
   <title>About | Oosu Portfolio</title>
   <link rel="icon" type="image/png" href="../apple-touch-icon.png" />
   <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
-
   <link rel="stylesheet" href="../common/common.css" />
+  <link rel="stylesheet" href="../common/fixed_icons.css" />
+  <link rel="stylesheet" href="../common/ai_chat.css" />
   <link rel="stylesheet" href="./style/about-hero.css" />
   <link rel="stylesheet" href="./style/about-main.css" />
   <link rel="stylesheet" href="./style/about-skills.css" /> 
@@ -81,6 +82,27 @@
             <span class="visually-hidden">Connect</span>
         </a>
     </nav>
+</header>
+<header class="about-header" id="about-header" aria-label="About Utility Navigation">
+    <div class="about-header-inner">
+        <button class="theme-toggle theme-toggle-button" aria-label="Toggle theme">
+            <svg id="sun-icon-about" class="theme-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg id="moon-icon-about" class="theme-icon hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+            <span class="sr-only">Toggle theme</span>
+        </button>
+    </div>
 </header>
   <div id="top-sentinel"></div>
   <main class="about-main">
@@ -567,8 +589,7 @@
     </div>
   </div>
 </section>
-    
-    <div class="about-section-gap2"></div>
+    <!-- <div class="about-section-gap2"></div> -->
     <section class="about-values section-background-active">
       <h2 class="section-title">MY VALUES</h2>
       <div class="about-values-cols">
@@ -822,7 +843,76 @@
     </section>
 
   </main>
-<div id="ai-assistant-FAB"></div>
+             <div class="project-social-fixed">
+                        <a href="https://linkedin.com/" target="_blank" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="https://instagram.com/oosu.hada" target="_blank" aria-label="Instagram">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="1em" height="1em" style="vertical-align: middle;">
+                                <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6 42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/>
+                            </svg>
+                        </a>
+                        <a href="../connect/connect.html" aria-label="Connect">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </a>
+                    </div>
+<div id="ai-assistant-FAB" aria-label="Open AI Assistant" role="button" tabindex="0">
+    <img id="ai-assistant-ask-image" src="../../img/asklightmode.png" alt="Ask AI">
+</div>
+
+<div id="custom-cursor-dot"></div>
+
+<div id="ai-portfolio-chat-modal" class="ai-portfolio-chat-modal" aria-modal="true" role="dialog">
+    <div class="ai-portfolio-chat-modal-content">
+        <span class="close-button" aria-label="Close chat modal">×</span>
+
+        <div class="chat-scroll-area">
+            <div class="chat-header">
+                <div id="aiAssistantHeaderLottie" class="ai-header-lottie-container"></div>
+                <strong>AI Portfolio Assistant</strong>
+            </div>
+            <div class="chat-messages" id="portfolioChatMessages">
+                </div>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="aiPortfolioChatInput" placeholder="Ask me anything..." />
+            <button id="aiPortfolioChatSendBtn" class="ai-chat-send-btn">
+                </button>
+        </div>
+
+        <div id="portfolioLoadingStatus" style="display: none;">
+            <div class="loading-wrapper">
+                <div id="portfolioLoadingLottie"></div>
+                <p id="portfolioLoadingText">AI is preparing its response...</p>
+                <div class="ai-loading-progress">
+                    <div class="step" data-status="">
+                        <span class="circle">1</span> Analyzing your question
+                    </div>
+                    <div class="step" data-status="">
+                        <span class="circle">2</span> Searching portfolio data
+                    </div>
+                    <div class="step" data-status="">
+                        <span class="circle">3</span> Generating a tailored response
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ai-portfolio-results" id="aiPortfolioResults" style="display: none;">
+            <div class="ai-insight">
+                <span class="ai-insight-badge">INSIGHT</span>
+                <p id="portfolioInsightText"></p>
+            </div>
+            <div id="portfolioResultCards" class="custom-scrollbar"></div>
+            <div class="ai-follow-up-actions" id="portfolioFollowUpActions" style="display:none;">
+                <p class="ai-chat-bubble"></p>
+                <div class="follow-up-buttons" id="portfolioFollowUpButtons"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
   <footer class="footer-fixed">
     <div class="footer-row">
         <div class="footer-content">
@@ -844,11 +934,20 @@
 <script>
   AOS.init(); // AOS 초기화 코드
 </script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+<script src="https://unpkg.com/compromise"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.1"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+  <script src="../common/visual-effects.js"></script>
+  <script src="../common/ui-components.js"></script>
+  <script src="../common/navigation.js"></script>
   <script src="../common/common.js"></script>
   <script src="../common/theme-manager.js"></script>
+  <script src="../common/highlighter.js"></script>
+  <script type="module" src="../common/ai_chat.js"></script>
+  <script type="module" src="../common/ai_chat_logic.js"></script>
   <script src="./script/about-hero.js"></script>
   <script src="./script/about-main.js"></script>
   <script src="./script/about-skills.js"></script> 

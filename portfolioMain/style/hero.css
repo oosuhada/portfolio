@@ -1,6 +1,6 @@
 /* hero.css */
 :root {
---cursor-highlighter: url('../highlighter.png') 20 20, auto;
+  --cursor-highlighter: url('../highlighter.png') 20 20, auto;
 }
 
 /* NEW: guide-click-area에 대한 스타일 (이 요소가 실제 커스텀 커서 영역이 됩니다) */
@@ -289,7 +289,7 @@
     margin: 0;
     text-align: left;
     position: relative;
-    color: var(--text-color);
+    color: var(--text-primary-color); /* 수정: --text-color 대신 --text-primary-color 사용 */
     line-height: 1.2;
 }
 
@@ -309,7 +309,7 @@
 .hero-text .slider-text {
     font-size: 1.6rem;
     line-height: 1.4;
-    color: var(--text-color);
+    color: var(--text-secondary-color); /* 수정: --text-color 대신 --text-primary-color 사용 */
     font-weight: 400;
 }
 
@@ -354,8 +354,8 @@
     height: 8px;
     border-radius: 50%;
     background: radial-gradient(circle,
-        var(--yellow-pale) 50%,
-        var(--yellow) 70%,
+        var(--color-yellow-light) 50%, /* 수정: common.css의 --color-yellow-light 사용 */
+        var(--color-yellow-base) 70%,   /* 수정: common.css의 --color-yellow-base 사용 */
         rgba(255, 209, 102, 0.4) 85%,
         transparent 100%
     );
@@ -413,7 +413,7 @@
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background-color: #ddd;
+    background-color: #ddd; /* 이 색상도 변수화 고려 */
     cursor: var(--cursor-grab2);
     transition: background-color 0.3s, transform 0.3s;
     border: none;
@@ -426,8 +426,12 @@
 .slider-dot.active {
     width: 14px;
     height: 14px;
-    background-color: var(--gray-dark2);
+    background-color: rgb(44, 44, 44); /* 수정: --gray-dark2 대신 --text-primary-color 사용 */
     box-shadow: 0 3px 8px rgba(255, 255, 255, 0.7);
+}
+/* 다크 모드일 때 .slider-dot.active box-shadow 조정 */
+body[data-theme="dark"] .slider-dot.active {
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4); /* 다크 모드에 맞는 그림자 */
 }
 
 .slider-dot.active::after {
@@ -436,7 +440,7 @@
     width: 110%;
     height: 110%;
     border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgb(44, 44, 44);
     filter: blur(1.5px);
     top: 50%;
     left: 50%;
@@ -448,7 +452,7 @@
 .horizontal-gauge {
     width: 180px; /* 이 부분을 모바일에서 100%로 변경할 겁니다 */
     height: 10px;
-    background: rgba(243, 243, 243, 0.5);
+    background: var(--background-tertiary); /* 수정: rgba(243, 243, 243, 0.5) 대신 변수 사용 */
     border-radius: 5px;
     overflow: hidden;
     display: flex;
@@ -459,9 +463,13 @@
 .gauge-bar {
     height: 100%;
     width: 0;
-    background: linear-gradient(to right, var(--gray-dark2) 50%, var(--white2) 100%);
+    background: linear-gradient(to right, var(--text-primary-color) 50%, var(--text-inverted-color) 100%); /* 수정 */
     border-radius: 5px;
     transition: width 0.5s ease-out;
+}
+/* 다크 모드일 때 게이지 바 색상 조정 (선택 사항) */
+body[data-theme="dark"] .gauge-bar {
+  background: linear-gradient(to right, var(--ai-text-primary) 50%, var(--ai-text-secondary) 100%);
 }
 
 .hover-img {

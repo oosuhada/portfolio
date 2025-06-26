@@ -1,4 +1,4 @@
-/* ======================= VALUES SECTION (Compact Grid Layout) ======================= */
+/* ======================= VALUES SECTION - Upgraded for Light/Dark Mode ======================= */
 .value-title {
   /* 기존 h3의 상속된 마진을 명시적으로 제거 */
   margin-block-end: 0;
@@ -8,10 +8,9 @@
 .about-values-cols {
   display: flex; /* Flexbox container remains */
   flex-direction: row; /* Cards are arranged horizontally */
-  /* flex-wrap: wrap; REMOVED: We want cards to shrink, not wrap */
   justify-content: center; /* Center cards horizontally */
   align-items: flex-start; /* Align cards to the top vertically */
-  gap: clamp(-2rem, 2vw, 10rem);/* Gap between cards (horizontal and vertical if wrapped, but no wrap now) */
+  gap: clamp(-2rem, 2vw, 10rem);/* Gap between cards */
   max-width: 1200px; /* Max width for the entire section */
   width: 90%;
   margin: 0 auto;
@@ -40,8 +39,6 @@
   transform: translateY(40px);
   transition: opacity 0.5s ease, transform 0.5s ease, background 0.3s ease;
   min-height: auto;
-  
-  /* ADJUSTED: Make cards flexible to shrink */
   flex-basis: 250px; /* Initial ideal width for each card */
   flex-grow: 1;    /* Allow cards to grow if space is available */
   flex-shrink: 1;  /* IMPORTANT: Allow cards to shrink when space is constrained */
@@ -64,7 +61,6 @@
   transform: translateY(0);
 }
 
-/* Ink blot container - 높이 전환(transition) 추가 */
 .value-ink-blot {
   width: 200px;
   height: 80px; /* 초기 높이 */
@@ -73,10 +69,9 @@
   z-index: 2;
   flex-shrink: 0;
   overflow: visible;
-  transition: height 0.4s cubic-bezier(.23,1.12,.67,1.08); /* [수정] 높이 전환 효과 추가 */
+  transition: height 0.4s cubic-bezier(.23,1.12,.67,1.08); /* 높이 전환 효과 추가 */
 }
 
-/* [신규] 한자 표시 상태에서 ink-blot 높이 증가 */
 .value-card.show-hanja .value-ink-blot {
   height: 180px; /* 한자 표시 시 높이 증가 */
 }
@@ -87,17 +82,16 @@
   height: 150%; /* 부모 .value-ink-blot 보다 높게 */
   top: -25%; /* 위로 당겨서 중앙 정렬 */
   left: -10%; /* 왼쪽으로 당겨서 중앙 정렬 */
+  /* [수정] 라이트 모드 기본 배경 (어두운 색) */
   background: radial-gradient(ellipse at center, #2D2D33 0%, #18181B 100%);
   box-shadow: 0 4px 15px rgba(0,0,0,0.25), 0 2px 6px rgba(0,0,0,0.2);
   z-index: 1;
-  
   border-radius: 
     60% 40% 70% 30% / 
     30% 70% 40% 60%; 
   transform: 
     rotate(-5deg)
     scaleY(0.9);
-  
   filter: url(#classicWetInk);
   transition:
     background 0.6s cubic-bezier(.23,1.12,.67,1.08),
@@ -131,6 +125,9 @@
     scaleY(0.85);
   box-shadow: 0 8px 25px rgba(0,0,0,0.3), 0 3px 12px rgba(0,0,0,0.22);
 }
+body[data-theme="dark"] .value-ink-blot:hover .value-ink-shape {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.5), 0 3px 12px rgba(0,0,0,0.4);
+}
 
 .value-ink-blot:hover .value-ink-shape::before {
   opacity: 0.8;
@@ -161,32 +158,40 @@
 }
 
 .value-icon i {
+  /* [수정] 라이트 모드 아이콘 색상 (밝은 색) */
   color: #d9d9d9;
 }
+/* [추가] 다크 모드 아이콘 색상 (어두운 색) */
+body[data-theme="dark"] .value-icon i {
+  color: var(--text-secondary-color);
+}
 
-/* [수정] Hanja style: 미세한 블러 효과 추가, 위치 조정 */
 .value-hanja {
   font-family: 'LXGW WenKai TC', 'Noto Serif TC', serif;
   font-size: 2.5rem;
   font-weight: 600;
+  /* [수정] 라이트 모드 한자 색상 (밝은 색) */
   color: #d9d9d9;
   line-height: 1;
   text-shadow: 0 0 4px rgba(0,0,0,0.25);
   opacity: 0;
   z-index: 9;
-  filter: blur(0.6px); /* [수정] 아주 미세한 블러 효과 */
+  filter: blur(0.6px);
   position: absolute;
   white-space: nowrap;
-  top: 40%; /* [수정] 위쪽으로 살짝 이동하여 발음 공간 확보 */
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0.8);
-  transition: opacity 0.4s ease, transform 0.4s ease, top 0.4s cubic-bezier(.23,1.12,.67,1.08); /* [수정] top 전환 추가 */
+  transition: opacity 0.4s ease, transform 0.4s ease, top 0.4s cubic-bezier(.23,1.12,.67,1.08);
+}
+/* [추가] 다크 모드 한자 색상 (어두운 색) */
+body[data-theme="dark"] .value-hanja {
+  color: var(--text-primary-color);
 }
 
-/* [신규] 한글/로마자 발음 컨테이너 */
 .value-reading {
   position: absolute;
-  bottom: 15%; /* 한자 아래에 위치 */
+  bottom: 15%;
   left: 50%;
   transform: translateX(-50%);
   opacity: 0;
@@ -194,26 +199,33 @@
   flex-direction: column;
   align-items: center;
   gap: 0.1rem;
-  transition: opacity 0.3s ease 0.1s, bottom 0.4s cubic-bezier(.23,1.12,.67,1.08); /* [수정] bottom, opacity 전환 추가 */
+  transition: opacity 0.3s ease 0.1s, bottom 0.4s cubic-bezier(.23,1.12,.67,1.08);
 }
 
-/* [신규] 한글 발음 스타일 */
 .value-hangul {
   font-family: 'Pretendard', sans-serif;
   font-size: 0.8rem;
+  /* [수정] 라이트 모드 한글 색상 (밝은 색) */
   color: #c0c0c0;
   font-weight: 500;
 }
+/* [추가] 다크 모드 한글 색상 (어두운 색) */
+body[data-theme="dark"] .value-hangul {
+  color: var(--text-tertiary-color);
+}
 
-/* [신규] 로마자 발음 스타일 */
 .value-roma {
   font-family: 'Pretendard', sans-serif;
   font-size: 0.7rem;
+  /* [수정] 라이트 모드 로마자 색상 (밝은 색) */
   color: #999;
   font-style: italic;
 }
+/* [추가] 다크 모드 로마자 색상 (어두운 색) */
+body[data-theme="dark"] .value-roma {
+  color: var(--text-tertiary-color);
+}
 
-/* [수정] Toggle states 수정 */
 .value-card.show-hanja .value-icon {
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.8);
@@ -221,32 +233,32 @@
 
 .value-card.show-hanja .value-hanja {
   opacity: 1;
-  top: 42%; /* [수정] 활성화 시 한자 위치 */
+  top: 42%;
   transform: translate(-50%, -50%) scale(1);
 }
 
-/* [신규] 한자 표시 시 발음 보이기 */
 .value-card.show-hanja .value-reading {
   opacity: 1;
-  bottom: 12%; /* 활성화 시 발음 위치 */
+  bottom: 12%;
 }
 
-/* [수정] Title: min-height 추가로 높이 고정 */
 .value-title {
   font-family: 'Pretendard', sans-serif;
   font-size: 1.13rem;
   font-weight: 600;
-  color: #222;
+  /* [수정] 텍스트 색상 변수 적용 */
+  color: var(--text-primary-color);
   line-height: 1.25;
   position: relative;
   text-align: center;
   transition: color 0.3s ease;
-  min-height: 2.6em; /* 2줄 높이 확보로 시작점 정렬 */
-  word-break: keep-all; /* 단어 단위 줄바꿈 */
+  min-height: 2.6em;
+  word-break: keep-all;
 }
 
 .value-card:hover .value-title {
-  color: #C84131;
+  /* [수정] 호버 색상을 브랜드 보조 색상으로 통일 */
+  color: var(--brand-secondary);
 }
 
 .value-title::after {
@@ -254,22 +266,24 @@
   display: block;
   width: 40px;
   height: 3px;
-  background-color: #AD343E;
+  /* [수정] 기본/호버 색상을 브랜드 보조 색상으로 통일 */
+  background-color: var(--brand-secondary);
   border-radius: 1.5px;
   margin: 0.3em auto 0 auto;
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  opacity: 0.8;
+  transition: transform 0.3s ease, background-color 0.3s ease, opacity 0.3s ease;
 }
 
 .value-card:hover .value-title::after {
   transform: scaleX(1.2);
-  background-color: #C84131;
+  opacity: 1;
 }
 
-/* Description */
 .value-description {
   font-family: 'Pretendard', sans-serif;
   font-size: clamp(0.7rem, 2vw, 1rem);
-  color: var(--gray-dark2);
+  /* [수정] 보조 텍스트 색상 변수 적용 */
+  color: var(--text-secondary-color);
   line-height: 1.5;
   text-align: center;
 }
@@ -278,7 +292,6 @@
   display: inline-block;
 }
 
-/* Ink Splash Effect (positioning relative to value-ink-blot) */
 .ink-splash-container {
   position: absolute;
   top: 0;
@@ -294,7 +307,8 @@
   position: absolute;
   border-radius: 55% 40% 50% 45% / 50% 50% 45% 50%;
   opacity: 0;
-  background-color: #434343;
+  /* [수정] 잉크방울 색상을 텍스트 색상에 맞춤 (라이트:어둡게, 다크:밝게) */
+  background-color: var(--text-primary-color);
   animation: valueInkSplashAnimation 0.65s cubic-bezier(.25,.46,.45,.94) forwards;
   transform-origin: center;
   filter: url(#classicWetInk);
@@ -306,8 +320,7 @@
   100% { opacity: 0; transform: scale(1.5); }
 }
 
-/* 카드 내부 meaning-chunk의 줄바꿈을 없애기 위한 코드 */
 .value-card .meaning-chunk {
-  display: inline; /* span의 기본값으로, 줄바꿈을 없애고 옆으로 흐르게 함 */
-  line-height: inherit; /* 부모 <p> 태그의 줄 간격을 그대로 따르도록 함 */
+  display: inline;
+  line-height: inherit;
 }

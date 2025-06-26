@@ -1,0 +1,492 @@
+/* fixed_icons.css (AI 관련 스타일이 모두 제거된 최종 버전) */
+
+/* Logo Section */
+.logo-fixed {
+    position: fixed;
+    top: 70px;
+    left: calc(var(--main-left-gap) - 10px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    filter: blur(1px); /* 이 필터는 다크 모드에 맞춰 조정 필요할 수 있습니다. */
+    display: none;
+}
+
+.logo-fixed.is-fixed {
+    display: flex;
+}
+
+.logo-svg {
+    width: 85px;
+    height: auto;
+}
+
+.logo-svg path {
+    fill: rgb(var(--base-fg-solid));
+    transform: translateY(8px);
+    transform-origin: center;
+    transition: transform 0.2s ease-out;
+}
+
+.logo-svg path:hover {
+    transform: translateY(0px);
+}
+
+/* Project Social Fixed */
+.project-social-fixed {
+    position: fixed;
+    left: 1.5rem;
+    bottom: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    gap: 0.8rem;
+    z-index: 200;
+}
+
+.project-social-fixed a {
+    color: var(--color-gray-400);
+    font-size: 1.6rem;
+    transition: color 0.3s;
+    text-decoration: none;
+    padding: 0.15rem 0.1rem;
+    cursor: var(--cursor-grab-bottom) !important;
+}
+
+.project-social-fixed a:hover {
+    color: var(--text-secondary-color);
+    animation: bounceAndShrink 1.5s infinite ease-in-out; /* Apply the animation */
+}
+
+.project-social-fixed a[aria-label="LinkedIn"] i {
+    font-size: 1.0em;
+    margin-top: 0.3rem;
+}
+
+.project-social-fixed a[aria-label="Instagram"] {
+    margin-bottom: 0px;
+}
+
+.project-social-fixed a[aria-label="Connect"] {
+    margin-top: 0.1rem;
+    font-size: 1.5rem;
+}
+
+.project-social-fixed svg {
+    fill: currentColor;
+    width: 1.1em;
+    height: 1.1em;
+    display: inline-block;
+    vertical-align: middle;
+    transition: fill 0.3s;
+    cursor: var(--cursor-grab-bottom) !important;
+}
+
+.project-social-fixed a:hover svg {
+    fill: var(--text-secondary-color);
+    animation: bounceAndShrinksvg 1.2s infinite ease-in-out; /* Apply the animation */
+}
+
+/* Keyframe animation for icons to grow and shrink sequentially */
+@keyframes bounceAndShrink {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2); /* Icons grow slightly */
+    }
+}
+@keyframes bounceAndShrinksvg {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02); /* Icons grow slightly */
+    }
+}
+
+/* --- Body Blur Effect (for Header interactions) --- */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: inherit; /* Inherit background to apply blur to current page content */
+    filter: blur(10px);
+    /* z-index: 999; */
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.nav-header.header-blur-active ~ body::before {
+    opacity: 1;
+}
+
+/* --- Header Styles --- */
+.nav-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    background: var(--current-header-bg-opacity);
+    backdrop-filter: blur(5px);
+    z-index: 1002; /* Lab 헤더보다 높은 z-index 부여 */
+    border-bottom: 1px solid var(--current-header-border);
+    height: 3rem;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), height 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(.4,0,.2,1), background-color 0.3s ease;
+    overflow: hidden;
+    min-width: var(--site-min-width, 860px); /* Use fallback if --site-min-width is not defined */
+    opacity: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+.nav-header.hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.nav-header.expanded-desktop {
+    width: 100vw;
+    height: 3rem;
+    background: var(--current-header-bg-opacity);
+    backdrop-filter: blur(5px);
+    border-bottom: 1px solid var(--current-header-border);
+    z-index: 1001 !important;
+}
+
+.nav-header.collapsed-desktop {
+    width: calc(100vw / 16);
+    height: 3rem;
+    background: transparent;
+    backdrop-filter: none;
+    border: none;
+    z-index: 1001 !important;
+}
+
+.nav-header.expanded-mobile {
+    height: auto;
+    width: 100vw;
+}
+
+.nav-top-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 3rem;
+    padding: 0 var(--main-left-gap);
+    width: calc(100vw / 16);
+    box-sizing: border-box;
+    flex-shrink: 0;
+    border-right: 1px solid var(--current-header-border);
+    z-index: 1002 !important;
+}
+
+.nav-toggle-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--current-toggle-btn-color);
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease, color 0.3s ease;
+    flex-shrink: 0;
+    z-index: 1001 !important;
+}
+
+.nav-toggle-btn:hover {
+    color: var(--current-toggle-btn-hover-color);
+}
+
+.nav-toggle-btn.active .fas {
+    transform: rotate(90deg);
+}
+
+.nav-menu {
+    display: flex;
+    flex-direction: row;
+    width: calc(100vw * 15 / 16);
+    max-height: 3rem;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out, width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 1;
+    z-index: 1001 !important;
+}
+
+.nav-menu.expanded {
+    max-height: 3rem;
+    opacity: 1;
+    width: calc(100vw * 15 / 16);
+    z-index: 1001 !important;
+}
+
+.nav-menu:not(.expanded) {
+    max-height: 0;
+    opacity: 0;
+    width: 0;
+    z-index: 1001 !important;
+}
+
+.nav-center a {
+    text-decoration: none;
+    color: var(--current-header-nav-text); /* This is the key change */
+    font-size: 1rem;
+    padding: 1rem;
+    text-align: center;
+    line-height: 1rem;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-right: 1px solid var(--current-header-border);
+    flex: 1 1 0%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-center a:last-child {
+    border-right: none;
+}
+
+.nav-center a.truly-active {
+    background-color: var(--current-header-nav-bg-active);
+}
+
+.nav-center a.truly-active > span.nav-text-wrapper {
+    color: var(--current-header-nav-text-active);
+}
+
+.nav-center a.is-splashed {
+    background-color: var(--current-header-nav-bg-active);
+}
+
+.nav-center a.is-splashed > span.nav-text-wrapper {
+    color: var(--current-header-nav-text-active);
+}
+
+.nav-center a > span.nav-text-wrapper {
+    position: relative;
+    z-index: 1;
+    transition: color 0.3s ease;
+}
+
+/* --- Ink Splash and Confetti for Header/Navigation --- */
+.ink-splash {
+    position: absolute;
+    border-radius: 50%;
+    background-color: var(--color-gray-500); /* Use base gray for splash */
+    transform: scale(0);
+    opacity: 0.7;
+    pointer-events: none;
+    animation: splash-effect 0.6s cubic-bezier(.4,0,.2,1);
+    z-index: 0;
+}
+
+@keyframes splash-effect {
+    0% { transform: scale(0); opacity: 0.7; }
+    50% { opacity: 0.5; }
+    100% { transform: scale(2.5); opacity: 0; }
+}
+
+.confetti-particle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 10001;
+    opacity: 1;
+    will-change: transform, opacity, filter;
+}
+
+.screen-click-splash-blob {
+    position: absolute;
+    transform: scale(0);
+    opacity: 0.85;
+    pointer-events: none;
+    z-index: 9999;
+    animation: screen-blob-effect 0.7s cubic-bezier(.4,0,.2,1) forwards;
+}
+
+@keyframes screen-blob-effect {
+    0% { transform: scale(0.8); opacity: 0.85; filter: blur(1px); }
+    40% { opacity: 0.3; filter: blur(3px); }
+    100% { transform: scale(4.0); opacity: 0; filter: blur(10px); }
+}
+
+/* New Confetti Effect for Sustained Mousedown */
+.confetti-ink-splash {
+    position: absolute;
+    transform: scale(0);
+    opacity: 0.7;
+    pointer-events: none;
+    z-index: 10000;
+    animation: confetti-splash 0.7s ease-out forwards;
+}
+
+@keyframes confetti-splash {
+    0% { transform: scale(0); opacity: 1; }
+    50% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.5); opacity: 0; }
+}
+
+.confetti-particle-effect {
+    position: fixed;
+    pointer-events: none;
+    z-index: 10001;
+    opacity: 1;
+    will-change: transform, opacity, filter;
+}
+
+/* --- Media Queries --- */
+
+/* Mobile (max-width: 500px) */
+@media (max-width: 500px) {
+    .nav-header {
+        flex-direction: column;
+        height: 3rem;
+        width: 100vw;
+        transform: translateY(0) !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        background: transparent;
+        backdrop-filter: none;
+        border-bottom: none;
+    }
+
+    .nav-header.expanded-mobile {
+        height: auto;
+        background: var(--current-header-bg-opacity);
+        backdrop-filter: blur(5px);
+        border-bottom: 1px solid var(--current-header-border);
+    }
+
+    .nav-top-row {
+        width: 100%;
+        justify-content: space-between;
+        padding: 0 var(--main-left-gap);
+        border-right: none;
+        height: 3rem;
+        z-index: 1001;
+    }
+
+    .nav-title {
+        display: block; /* If you want to show a title on mobile */
+        display: none; /* Keep hidden based on original, adjust if needed */
+    }
+
+    .nav-toggle-btn {
+        width: auto;
+        height: 100%;
+    }
+
+    .nav-menu {
+        flex-direction: column;
+        width: 100%;
+        max-height: 0;
+        opacity: 0;
+        transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
+    }
+
+    .nav-menu.expanded {
+        max-height: 500px;
+        opacity: 1;
+        transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+        width: 100vw;
+    }
+
+    .nav-header.collapsed-desktop {
+        width: 100vw;
+        height: 3rem;
+    }
+}
+
+/* Desktop (min-width: 501px) */
+@media (min-width: 501px) {
+    .nav-header {
+        flex-direction: row;
+        height: 3rem;
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, backdrop-filter 0.3s ease, border 0.3s ease;
+    }
+
+    .nav-header.expanded-desktop {
+        height: 3rem;
+        width: 100vw;
+        border: none; /* Border is handled by parent .nav-header if not collapsed */
+        background: var(--current-header-bg-opacity);
+        backdrop-filter: blur(5px);
+    }
+
+    .nav-header.collapsed-desktop {
+        width: calc(100vw / 16);
+        background: transparent;
+        backdrop-filter: none;
+        border: none;
+        pointer-events: none;
+    }
+
+    .nav-top-row {
+        padding: 0;           /* 좌우 패딩을 항상 0으로 설정 */
+    }
+
+    .nav-header.collapsed-desktop .nav-top-row {
+        width: calc(100vw / 16);
+        justify-content: center;
+        border-right: none;
+        padding: 0;
+        pointer-events: auto;
+    }
+
+    .nav-title {
+        display: none;
+    }
+
+    .nav-toggle-btn {
+        width: 100%;
+        height: 100%;
+    }
+
+    .nav-menu {
+        width: calc(100vw * 15 / 16);
+        flex-direction: row;
+        max-height: 3rem;
+        opacity: 1;
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    }
+
+    .nav-menu:not(.expanded) {
+        width: 0;
+        opacity: 0;
+    }
+
+    .nav-center a {
+        border-right: 1px solid var(--current-header-border);
+        border-bottom: none;
+        flex: 1 1 0%;
+    }
+
+    .nav-center a:last-child {
+        border-right: none;
+    }
+}
+
+/* --- Global Cursor Styles (Applied to interactive elements) --- */
+a,
+button,
+[role="button"],
+input[type="submit"],
+input[type="button"],
+.nav-toggle-btn,
+#highlight-menu .color-swatch,
+.meaning-chunk,
+.timeline-chunk,
+.skill-chunk,
+.timeline-tag-chunk1,
+.timeline-tag-chunk2 {
+    cursor: var(--cursor-grab) !important;
+}

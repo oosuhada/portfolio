@@ -1,25 +1,3 @@
-/* portfolio.css */
-
-/* Root variables (unchanged) */
-:root {
-    --white: #fff;
-    --white2: #f8f9fa;
-    --gray-bg: #f8f9fa;
-    --gray-dark: #343a40;
-    --gray-dark2: #495057;
-    --gray-mid: #adb5bd;
-    --gray: #ced4da;
-    --yellow: #ffc107;
-    --yellow-pale: #fff3cd;
-    --main-left-gap: 5vw;
-    --text-color: #212529;
-    --underline-extra: 0px;
-    --base-fg-solid: 0, 0, 0;
-    --ctx-primary: 255, 255, 255;
-    --ctx-primary-fg-primary: 0, 0, 0;
-    --ctx-primary-fg-secondary: 50, 50, 50;
-}
-
 html, body {
     overflow-x: hidden;
 }
@@ -37,41 +15,6 @@ h1 {
      display: flex;
     flex-direction: column;
     margin-bottom: clamp(2rem, calc(8rem - 6vw), 50rem);
-}
-
-/* Logo Section */
-.logo-fixed {
-    position: fixed;
-    top: 70px;
-    left: calc(var(--main-left-gap) - 10px);
-    z-index: 1000;
-    cursor: var(--cursor-grab2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    filter: blur(1px);
-    display: none;
-}
-
-.logo-fixed.is-fixed {
-    display: flex;
-}
-
-.logo-svg {
-    width: 85px;
-    height: auto;
-}
-
-.logo-svg path {
-    fill: rgb(var(--base-fg-solid));
-    transform: translateY(8px);
-    transform-origin: center;
-    transition: transform 0.2s ease-out;
-}
-
-.logo-svg path:hover {
-    transform: translateY(0px);
 }
 
 /* Onboarding Guide */
@@ -99,8 +42,8 @@ h1 {
 .guide-tooltip {
     position: absolute;
     z-index: 2;
-    background: rgba(255, 255, 255, 0.9);
-    color: var(--gray-dark);
+    background: var(--background-card);
+    color: var(--text-primary-color);
     padding: 1em 1.5em;
     border-radius: 10px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
@@ -118,8 +61,8 @@ h1 {
     right: 4vw;
     bottom: 6vw;
     z-index: 3;
-    background: var(--gray-dark);
-    color: var(--white);
+    background: var(--text-primary-color);
+    color: var(--text-inverted-color);
     border: none;
     border-radius: 6px;
     font-size: 1rem;
@@ -139,7 +82,7 @@ h1 {
     right: calc(var(--underline-extra, 0px) * -1);
     bottom: -5px;
     height: 4px;
-    background: var(--yellow);
+    background: var(--yellow-highlight-light);
     border-radius: 2px;
     opacity: 0.7;
     z-index: 12001;
@@ -161,7 +104,7 @@ h1 {
     font-size: 3rem;
     animation: bounce 1.2s infinite;
     z-index: 2;
-    color: var(--gray-mid);
+    color: var(--text-secondary-color);
     opacity: 0.8;
     pointer-events: auto;
 }
@@ -203,7 +146,7 @@ h1 {
 }
 
 .project.active {
-    background-color: rgba(var(--gray-bg), 0.9);
+    background-color: var(--background-secondary);
     position: relative;
     z-index: 0;
 }
@@ -245,7 +188,7 @@ h1 {
     flex-direction: column;
     align-items: flex-start;
     gap: 20px;
-    color: var(--text-color);
+    color: var(--text-primary-color);
 }
 
 .project-info.active {
@@ -264,7 +207,7 @@ h1 {
 .project-number {
     font-size: 3.5rem;
     font-weight: 700;
-    color: var(--gray-dark);
+    color: var(--text-primary-color);
     line-height: 1;
     margin-bottom: 0.2em;
     letter-spacing: -0.03em;
@@ -275,7 +218,7 @@ h1 {
     font-weight: 600;
     margin-bottom: 0.15em;
     letter-spacing: -0.01em;
-    color: var(--text-color);
+    color: var(--text-primary-color);
 }
 
 .project-meta {
@@ -286,63 +229,14 @@ h1 {
 
 .project-date {
     font-size: 0.9rem;
-    color: var(--gray-mid);
+    color: var(--text-secondary-color);
     font-weight: 400;
 }
 
 .project-tools {
     font-size: 0.85rem;
-    color: var(--gray);
+    color: var(--text-tertiary-color);
     font-weight: 400;
-}
-
-.project-social-fixed {
-    position: fixed;
-    left: calc(var(--main-left-gap) - 4px);
-    bottom: 3vw;
-    display: flex;
-    flex-direction: row;
-    gap: 0.8rem;
-    z-index: 200;
-}
-
-.project-social-fixed a {
-    color: var(--gray-mid);
-    font-size: 1.6rem;
-    transition: color 0.3s;
-    text-decoration: none;
-    padding: 0.15rem 0.1rem;
-}
-
-.project-social-fixed a:hover {
-    color: var(--gray-dark);
-}
-
-.project-social-fixed a[aria-label="LinkedIn"] i {
-    font-size: 1.0em;
-    margin-top: 0.25rem;
-}
-
-.project-social-fixed a[aria-label="Instagram"] {
-    margin-bottom: 0px;
-}
-
-.project-social-fixed a[aria-label="Connect"] {
-    margin-top: 0.1rem;
-    font-size: 1.5rem;
-}
-
-.project-social-fixed svg {
-    fill: currentColor;
-    width: 1.1em;
-    height: 1.1em;
-    display: inline-block;
-    vertical-align: middle;
-    transition: fill 0.3s;
-}
-
-.project-social-fixed a:hover svg {
-    fill: var(--gray-dark);
 }
 
 .project-image {
@@ -376,8 +270,8 @@ h1 {
     position: absolute;
     bottom: 15px;
     right: 15px;
-    background-color: rgba(240, 240, 240, 0.9);
-    color: var(--gray-dark);
+    background-color: var(--background-secondary);
+    color: var(--text-primary-color);
     padding: 0.5em 0.9em;
     border-radius: 4px;
     font-size: 0.8rem;
@@ -465,17 +359,17 @@ h1 {
 }
 
 .marquee-item:hover {
-    background-color: rgb(var(--base-fg-solid));
-    color: rgb(var(--ctx-primary));
+    background-color: var(--text-primary-color);
+    color: var(--text-inverted-color);
     opacity: 0.7;
 }
 
 .marquee-primary-color {
-    color: rgb(var(--ctx-primary-fg-primary));
+    color: var(--text-primary-color);
 }
 
 .marquee-secondary-color {
-    color: rgb(var(--ctx-primary-fg-secondary));
+    color: var(--text-secondary-color);
 }
 
 .fade-overlay {
@@ -489,13 +383,13 @@ h1 {
 
 .fade-left {
     left: 0;
-    background: linear-gradient(to right, rgb(var(--ctx-primary)), transparent);
+    background: linear-gradient(to right, var(--current-bg), transparent);
 }
 
 .fade-right {
     right: 0;
     left: unset;
-    background: linear-gradient(to left, rgb(var(--ctx-primary)), transparent);
+    background: linear-gradient(to left, var(--current-bg), transparent);
 }
 
 @keyframes marquee-scroll {
@@ -526,7 +420,79 @@ h1 {
     100% { transform: translateX(0%); }
 }
 
-/* 다크모드가 아직 없으므로 일단 filter:none 처리 */
-/* body[data-theme='dark'] #lottie-container #lottie-inner-section {
-    filter: none;
-} */
+/* ==========================================================================
+   PORTFOLIO FIXED HEADER STYLES
+   ========================================================================== */
+
+.portfolio-header {
+    position: fixed;
+    top: 10px;
+    z-index: 999;
+    width: 100%;
+    background-color: transparent;
+    transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.portfolio-header.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-100%);
+}
+
+.portfolio-header:not(.hidden) {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.portfolio-header .portfolio-header-inner {
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 1rem;
+}
+
+/* Corrected theme-toggle style to match connect page */
+.portfolio-header .theme-toggle-button {
+    padding: 0.5rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    position: relative;
+    width: 2rem;  /* 32px */
+    height: 2rem; /* 32px */
+    transition: opacity 0.3s;
+    margin-top: 0.5rem;
+    margin-right: 1rem;
+    scale: 1.2;
+}
+
+.portfolio-header .theme-toggle-button:hover {
+    opacity: 0.7;
+}
+
+.portfolio-header .theme-icon {
+    width: 1.25rem; /* 20px */
+    height: 1.25rem; /* 20px */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.portfolio-header .theme-icon.hidden {
+    transform: translate(-50%, -50%) rotate(-90deg);
+    opacity: 0;
+}
+
+/* Light Theme: Only icon stroke color changes */
+body[data-theme="light"] .portfolio-header .theme-icon {
+    stroke: #333;
+}
+
+/* Dark Theme: Only icon stroke color changes */
+body[data-theme="dark"] .portfolio-header .theme-icon {
+    stroke: #eee;
+}

@@ -1,425 +1,203 @@
+/* timeline.css */
 /* Layout for sections (Desktop horizontal, Mobile vertical) */
 .section-row {
-    display: flex;
-    width: 100vw;
-    height: auto; /* Allow height to be determined by content, especially on mobile */
-    min-height: calc(100vh - var(--header-height, 0px)); /* Ensure it's at least viewport height on desktop */
-    overflow: hidden; /* Keeps the horizontal overflow hidden */
+  display: flex;
+  width: 100vw;
+  height: auto;
+  min-height: calc(100vh - var(--nav-header-height, 0px)); /* 원본 변수명(--nav-header-height) 유지 */
+  overflow: hidden;
 }
 
 /* Section Title styling */
 .section-title {
-    flex: 0 0 8.3333%;
-    max-width: 8.3333vw;
-    min-width: 80px;
-    background: #ffffff; /* Inactive: White background */
-    font-weight: bold;
-    font-size: 1.4em;
-    letter-spacing: 0rem;
-    cursor: var(--cursor-grab2);
-    position: sticky; /* Make the whole title column sticky on desktop */
-    bottom: 0; /* Stick to the top of the viewport */
-    user-select: none;
-    transition: background 0.2s, color 0.2s;
-    z-index: 1;
-    box-sizing: border-box;
-    height: auto; /* Allow height to be determined by content on desktop */
-    overflow-y: hidden; /* Prevent internal scroll for the title column itself */
-    overflow-x: hidden;
-    padding-bottom: 0x; /* Adjust as needed based on section-title-text height */
-    padding-top: 0px; /* Provides space for the text */
-    position: relative; /* Set to relative to contain the absolutely positioned text */
+  flex: 0 0 8.3333%;
+  max-width: 8.3333vw;
+  min-width: 80px;
+  font-weight: bold;
+  font-size: 1.4em;
+  letter-spacing: 0rem;
+  cursor: var(--cursor-grab2);
+  position: sticky;
+  bottom: 0;
+  user-select: none;
+  transition: background 0.2s, color 0.2s;
+  z-index: 1;
+  box-sizing: border-box;
+  height: auto;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  padding-bottom: 0px; /* 0x -> 0px 오타 수정 */
+  padding-top: 0px;
+  position: relative;
+  /* THEME-AWARE: 변수 사용 */
+  background: var(--dark-section-title-inactive-bg);
+}
+body[data-theme="light"] .section-title {
+  background: var(--light-section-title-inactive-bg);
 }
 
 .section-title.active {
-    background: #1b1b1b; /* Active: Dark background */
-    color: #ffffff; /* Active: White text */
-    cursor: var(--cursor-default2);
-    z-index: 2;
-    box-shadow: 2px 0 16px 0 rgba(0,0,0,0.10);
+  cursor: var(--cursor-default2);
+  z-index: 2;
+  box-shadow: 2px 0 16px 0 rgba(0, 0, 0, 0.10);
+  /* THEME-AWARE: 변수 사용 */
+  background: var(--dark-section-title-active-bg);
+}
+body[data-theme="light"] .section-title.active {
+  background: var(--light-section-title-active-bg);
 }
 
 .section-title .section-title-text {
-    font-size: 3.5em;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: -0.05em;
-    white-space: nowrap;
-    writing-mode: vertical-rl;
-    text-align: left;
-    position: absolute;
-    left: 10px; /* 왼쪽에서 10px 위치에 고정 */
-    bottom: -500px; /* 화면 하단에 정렬 */
-    margin: 0;
-    padding: 0;
-    pointer-events: none;
-    transform: none; /* GSAP가 translateY를 제어할 예정 */
-    color: #212121; /* Inactive: Black text */
-    background: inherit;
-    z-index: 2;
-    word-spacing: 0.3em; /* 단어 사이에 0.5em의 공간 추가 */
+  font-size: 3.5em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.05em;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+  text-align: left;
+  position: absolute;
+  left: 10px;
+  bottom: -500px;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+  transform: none;
+  background: inherit;
+  z-index: 2;
+  word-spacing: 0.3em;
+  /* THEME-AWARE: 변수 사용 */
+  color: var(--dark-section-title-inactive-text);
+}
+body[data-theme="light"] .section-title .section-title-text {
+  color: var(--light-section-title-inactive-text);
 }
 
 .section-title.active .section-title-text {
-    color: #ffffff; /* Active: White text */
+  color: var(--dark-section-title-active-text);
+}
+body[data-theme="light"] .section-title.active .section-title-text {
+  color: var(--light-section-title-active-text);
 }
 
-/* Section Content Area styling (the scrollable right panel) */
+/* Section Content Area styling */
 .section-content-area {
-    flex: 1 1 75%;
-    min-width: 0;
-    background: #111;
-    color: #fff;
-    display: flex;
-    flex-direction: column; /* Added for content to stack vertically */
-    align-items: flex-start;
-    justify-content: flex-start;
-    padding-top: 40px;
-    padding-bottom: 48px;
-    padding-left: clamp(16px, 2vw, 48px);
-    padding-right: clamp(16px, 2vw, 48px);
-    overflow-y: auto; /* Kept auto for content scroll */
-    overflow-x: hidden;
-    transition: opacity 0.5s, flex-basis 0.5s;
-    opacity: 1;
-    z-index: 1;
-    box-sizing: border-box;
-    scrollbar-width: thin; /* Keep scrollbar styling */
-    scrollbar-color: #888 #111; /* Keep scrollbar styling */
-    min-height: calc(100vh - var(--header-height, 0px)); /* Ensure content area is at least viewport height */
+  flex: 1 1 75%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-top: 40px;
+  padding-bottom: 48px;
+  padding-left: clamp(16px, 2vw, 48px);
+  padding-right: clamp(16px, 2vw, 48px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: opacity 0.5s, flex-basis 0.5s;
+  opacity: 1;
+  z-index: 1;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  min-height: calc(100vh - var(--nav-header-height, 0px));
+  /* THEME-AWARE: 변수 사용 */
+  background: var(--dark-timeline-content-bg);
+  color: var(--dark-timeline-content-text);
+  scrollbar-color: #888 var(--dark-timeline-content-bg);
+}
+body[data-theme="light"] .section-content-area {
+  background: var(--light-timeline-content-bg);
+  color: var(--light-timeline-content-text);
+  scrollbar-color: #888 var(--light-timeline-content-bg);
 }
 
 .section-content-area::-webkit-scrollbar {
-    width: 8px; /* Restored scrollbar width */
+  width: 8px;
 }
 .section-content-area::-webkit-scrollbar-track {
-    background: #111; /* Restored scrollbar track */
+  background: var(--dark-timeline-content-bg);
+}
+body[data-theme="light"] .section-content-area::-webkit-scrollbar-track {
+  background: var(--light-timeline-content-bg);
 }
 .section-content-area::-webkit-scrollbar-thumb {
-    background: #888; /* Restored scrollbar thumb */
-    border-radius: 4px; /* Restored scrollbar radius */
+  background: #888;
+  border-radius: 4px;
 }
 .section-content-area::-webkit-scrollbar-thumb:hover {
-    background: #aaa; /* Restored scrollbar hover */
+  background: #aaa;
 }
 
-/* General content container inside the area */
 .section-content {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    min-width: 0;
-    width: 100%;
-    gap: 22px;
-    box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  min-width: 0;
+  width: 100%;
+  gap: 22px;
+  box-sizing: border-box;
 }
 
-/* Utility class for GSAP phrase animation */
-.ease-cubic {
-    transition-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
-}
-
-/* Note: The .phrase span and .phrase span span styles are still here
-   because your HTML still has this structure. If you remove this structure
-   from HTML, these CSS rules can be removed too.
-   However, since GSAP is directly animating .main-title now, these
-   styles will largely be overridden or not actively used for the main animation.
-   Leaving them as they are for now assuming the HTML structure persists for
-   potential fallback or other minor effects.
-*/
-.phrase span {
-    display: inline-flex;
-    overflow: hidden;
-    margin-right: 5px;
-}
-
-.phrase span span {
-    display: inline-block;
-    transform: translateY(100%); /* This may still serve as an initial CSS state if GSAP is not yet active */
-}
-
-/* New CSS classes for section content */
-.flex-col-center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Main section header (Work, Education, Awards header) */
-.main-section-header {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 2rem;
-    width: 100%;
-    max-width: 1200px;
-    text-align: left; /* Ensure text alignment is left within header */
-}
-
-.main-title {
-    font-size: 3rem; /* text-5xl */
-    font-weight: 700;
-    line-height: 1.25; /* leading-tight */
-    margin-bottom: 0.5rem; /* mb-2 */
-    /* REMOVED: opacity and transform properties here, as GSAP will control them */
-    transition: none !important; /* Ensure no CSS transitions interfere with GSAP */
-}
-
-.sub-description {
-    font-size: 1.125rem; /* text-lg */
-    font-weight: 300;
-    width: 100%; /* Default for mobile */
-    line-height: 1.6; /* **Added for improved readability** */
-    /* REMOVED: opacity and transform properties here, as GSAP will control them */
-    transition: none !important; /* Ensure no CSS transitions interfere with GSAP */
-}
-
-/* Container for the list of items (activities, awards) */
-.items-list-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    width: 100%;
-    max-width: 1200px;
-}
-
-/* Individual item row (Work, Education, Award item) */
-.item-container {
-    display: flex;
-    flex-direction: column; /* flex-col for mobile, changes to row on desktop */
-    justify-content: space-between;
-    align-items: flex-start;
-    width: 100%;
-    padding: 3rem 2rem; /* px-8 py-12 */
-    gap: 0.5rem; /* gap-2 */
-    border-top: 1px solid #d1d5db; /* border-t border-gray-300 */
-    cursor: var(--cursor-default2);
-    transition: all 0.3s ease-in-out; /* transition-all duration-300 */
-    border-radius: 0.5rem; /* rounded-lg */
-}
-
-.item-column-left {
-    width: 100%; /* Default mobile width */
-}
-
-.item-column-right {
-    width: 100%; /* Default mobile width */
-    margin-top: 1rem; /* mt-4 for mobile */
-}
-
-.item-heading {
-    font-size: 1.875rem; /* text-3xl */
-    font-weight: 600;
-    margin: 0;
-}
-
-.item-subtitle {
-    color: #9ca3af; /* text-gray-400 */
-    font-size: 0.875rem; /* text-sm */
-    margin-top: 0.5rem; /* mt-2 */
-    line-height: 1.5; /* **Added for improved readability** */
-}
-
-.item-description-text {
-    font-size: 1rem; /* text-base */
-    font-weight: 300;
-    margin-top: 0;
-    margin-right: 2rem;
-    line-height: 1.7; /* **Added for improved readability** */
-}
-
-.item-period-text {
-    color: #6b7280; /* text-gray-500 */
-    font-size: 0.875rem; /* text-sm */
-    margin-top: 0.5rem; /* mt-2 */
-    line-height: 1.5; /* **Added for improved readability** */
-}
-
-/* Hover animations (Desktop) */
-.item-container:hover .item-heading {
-    transform: translateX(-10px); /* 왼쪽으로 이동 */
-    transition: transform 400ms ease;
-}
-.item-container:hover .item-column-left .item-subtitle {
-    transform: translateX(-10px);
-    transition: transform 400ms ease;
-}
-.item-container:hover .item-column-right .item-description-text,
-.item-container:hover .item-column-right .item-period-text {
-    transform: translateX(10px); /* 오른쪽으로 이동 */
-    transition: transform 400ms ease;
-}
-.item-container:hover {
-    background: rgba(30, 30, 30, 0.68);
-}
-
-/* Specific styling for mainDescription and subDescription layout */
-.section-content .main-section-header {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 24px;
-    width: 100%;
-    max-width: 1200px;
-}
-
-/* Adjust subDescription width on wider screens (>= 1101px) */
-@media (min-width: 1101px) {
-    .section-content .main-section-header .sub-description {
-        width: 80%;
-        max-width: 900px;
-    }
-}
-
-/* --- Mobile Styles (Breakpoint: max-width: 768px) --- */
+/* Mobile Styles */
 @media (max-width: 768px) {
-    .section-row {
-        flex-direction: column;
-        height: auto;
-        overflow-y: auto;
-        overflow-x: hidden;
-        min-height: auto;
-    }
-    .section-title {
-        flex: none;
-        max-width: none;
-        min-width: unset;
-        width: 100%;
-        height: 80px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        box-shadow: none;
-        position: static;
-        padding-bottom: 0;
-        padding-right: 0;
-        cursor: var(--cursor-grab2);
-        overflow-y: hidden;
-        background: #ffffff; /* Inactive: White background */
-    }
-    .section-title .section-title-text {
-        writing-mode: horizontal-tb;
-        font-size: 2.5em;
-        letter-spacing: -0.02em;
-        padding: 0;
-        margin: 0;
-        position: static; /* Mobile title text is static */
-        bottom: auto;
-        left: auto; /* Reset left to auto for mobile */
-        right: auto;
-        color: #212121; /* Inactive: Black text */
-        top: auto;
-        transform: translateX(-20px);
-    }
-    .section-title.active {
-        box-shadow: none;
-        position: sticky;
-        top: 0;
-        background: #111; /* Active: Dark background */
-        color: #ffffff; /* Active: White text */
-        z-index: 10;
-    }
-    .section-content-area {
-        flex: none;
-        min-width: unset;
-        width: 100%;
-        height: auto;
-        min-height: 50vh;
-        padding-top: 24px;
-        padding-bottom: 24px;
-        padding-left: 16px;
-        padding-right: 16px;
-        overflow-y: visible;
-        opacity: 1; /* This opacity might be overridden by GSAP, but it's not a starting animation point for GSAP */
-        transition: none;
-        min-height: auto;
-    }
-    .section-content {
-        gap: 16px;
-    }
-
-    /* item-container internal items vertical array Breakpoint (<= 768px now) */
-    .item-container {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 24px 16px;
-    }
-    .item-column-left, .item-column-right {
-        width: 100%;
-    }
-    .item-heading {
-        font-size: 2.2em;
-    }
-    .item-subtitle, .item-description-text, .item-period-text {
-        font-size: 0.9em;
-    }
-    .item-column-right {
-        margin-top: 0rem;
-    }
-
-    /* Hover animations (Mobile - Vertical) - consider removing if not desired on touch */
-    .item-container:hover .item-heading {
-        transform: translateY(-10px);
-        transition: transform 400ms ease;
-    }
-    .item-container:hover .item-column-left .item-subtitle {
-        transform: translateY(-10px);
-        transition: transform 400ms ease;
-    }
-    .item-container:hover .item-column-right .item-description-text,
-    .item-container:hover .item-column-right .item-period-text {
-        transform: translateY(10px);
-        transition: transform 400ms ease;
-    }
-
-    .section-content .main-section-header .sub-description {
-        width: 70%;
-        max-width: none;
-    }
-}
-
-/* Tablet/Intermediate Desktop Styles (769px to 1100px) */
-@media (min-width: 769px) and (max-width: 1100px) {
-    .item-container {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 24px 16px;
-    }
-    .item-column-left, .item-column-right {
-        width: 100%;
-    }
-
-    .item-heading {
-        font-size: 2.2em;
-    }
-    .item-subtitle, .item-description-text, .item-period-text {
-        font-size: 0.9em;
-        margin-right: 1rem;
-    }
-    .item-column-right {
-        margin-top: 1rem;
-    }
-}
-
-/* Desktop Styles (min-width: 769px) - for flex direction of items and widths */
-@media (min-width: 769px) {
-    .item-container {
-        flex-direction: row; /* Default to row on desktop */
-    }
-    .item-column-left {
-        width: 40%; /* md:w-2/5 */
-    }
-    .item-column-right {
-        width: 60%; /* md:w-3/5 */
-        margin-top: 0; /* md:mt-0 */
-    }
-    .item-heading {
-        font-size: 2.25rem; /* text-4xl */
-    }
-    .main-title {
-        font-size: 3.75rem; /* text-6xl */
-    }
-    .sub-description {
-        width: 70%; /* md:w-2/5 */
-    }
+  .section-row {
+    flex-direction: column;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: auto;
+  }
+  .section-title {
+    flex: none;
+    max-width: none;
+    min-width: unset;
+    width: 100%;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    box-shadow: none;
+    position: static;
+    padding-bottom: 0;
+    padding-right: 0;
+    cursor: var(--cursor-grab2);
+    overflow-y: hidden;
+  }
+  .section-title .section-title-text {
+    writing-mode: horizontal-tb;
+    font-size: 2.5em;
+    letter-spacing: -0.02em;
+    padding: 0;
+    margin: 0;
+    position: static;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    top: auto;
+    transform: translateX(-20px);
+  }
+  .section-title.active {
+    box-shadow: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .section-content-area {
+    flex: none;
+    min-width: unset;
+    width: 100%;
+    height: auto;
+    min-height: 50vh;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    padding-left: 16px;
+    padding-right: 16px;
+    overflow-y: visible;
+    opacity: 1;
+    transition: none;
+    min-height: auto;
+  }
+  .section-content {
+    gap: 16px;
+  }
 }

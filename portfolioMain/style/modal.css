@@ -36,7 +36,7 @@ body.no-scroll2 {
 }
 
 .modal-content {
-  background-color: var(--white2);
+  background-color: var(--background-card); /* 수정: --white2 대신 --background-card 사용 */
   padding: 40px;
   border-radius: 15px;
   box-shadow: 0 8px 30px rgba(0,0,0,0.25);
@@ -44,7 +44,7 @@ body.no-scroll2 {
   width: calc(100% - 80px); /* Max width within modal padding */
   max-width: 1900px;
   height: 90vh; /* Max height */
-  color: var(--text-color);
+  color: var(--text-primary-color); /* 수정: --text-color 대신 --text-primary-color 사용 */
   overflow-y: auto; /* Enable scrolling for modal content */
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
@@ -86,7 +86,7 @@ body.no-scroll2 {
 
 
 .close-button {
-  color: var(--gray-dark);
+  color: var(--text-primary-color); /* 수정: --gray-dark 대신 --text-primary-color 사용 */
   position: absolute;
   top: 15px;
   right: 25px;
@@ -99,7 +99,7 @@ body.no-scroll2 {
 }
 
 .close-button:hover, .close-button:focus {
-  color: var(--gray-mid);
+  color: var(--text-secondary-color); /* 수정: --gray-mid 대신 --text-secondary-color 사용 */
   text-decoration: none;
   cursor: var(--cursor-grab2);
 }
@@ -110,11 +110,12 @@ body.no-scroll2 {
   margin-bottom: 0.5rem;
   line-height: 1.2;
   display: none; /* Will be shown/hidden by JS or dynamically filled if needed */
+  color: var(--text-primary-color); /* 추가: 텍스트 색상 연결 */
 }
 
 #modal-meta {
   font-size: 1.1rem;
-  color: var(--gray-mid);
+  color: var(--text-secondary-color); /* 수정: --gray-mid 대신 --text-secondary-color 사용 */
   margin-bottom: 1.5rem;
   display: none; /* Will be shown/hidden by JS or dynamically filled if needed */
 }
@@ -143,13 +144,14 @@ body.no-scroll2 {
   margin: 0;
   padding: 0;
   line-height: 1.6;
+  color: var(--text-primary-color); /* 추가: 기본 텍스트 색상 연결 */
 }
 #modal-content-body .container {
   max-width: 1000px;
   margin: 0 auto;
 }
 #modal-content-body .card {
-  background: white;
+  background: var(--background-card); /* 수정: white 대신 변수 사용 */
   border-radius: 8px;
   padding: 40px;
 }
@@ -159,22 +161,22 @@ body.no-scroll2 {
 #modal-content-body .hero-image {
   width: 100%;
   height: 400px;
-  background: #e0e0e0;
+  background: var(--background-tertiary); /* 수정: #e0e0e0 대신 변수 사용 */
   border-radius: 8px;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #333;
+  color: var(--text-secondary-color); /* 수정: #333 대신 변수 사용 */
   font-size: 24px;
   font-weight: 600;
 }
 #modal-content-body .hero-caption {
   font-size: 12px;
-  color: #666;
+  color: var(--text-secondary-color); /* 수정: #666 대신 변수 사용 */
   text-align: center;
   padding: 10px;
-  background: #fff;
+  background: var(--background-card); /* 수정: #fff 대신 변수 사용 */
 }
 #modal-content-body .top-content {
   display: flex;
@@ -184,7 +186,7 @@ body.no-scroll2 {
 #modal-content-body .top-sidebar {
   flex: 0 0 200px;
   padding-left: 20px;
-  border-left: 3px solid #000;
+  border-left: 3px solid var(--text-primary-color); /* 수정: #000 대신 변수 사용 */
   order: 2;
 }
 #modal-content-body .top-main {
@@ -192,21 +194,21 @@ body.no-scroll2 {
   order: 1;
 }
 #modal-content-body .header {
-  border-bottom: 2px solid #000;
+  border-bottom: 2px solid var(--text-primary-color); /* 수정: #000 대신 변수 사용 */
   padding-bottom: 20px;
   margin-bottom: 30px;
 }
 #modal-content-body .project-title {
   font-size: 36px;
   font-weight: 900;
-  color: #000;
+  color: var(--text-primary-color); /* 수정: #000 대신 변수 사용 */
   margin-bottom: 8px;
   letter-spacing: -1px;
 }
 #modal-content-body .project-subtitle {
   font-size: 16px;
   font-weight: 400;
-  color: #666;
+  color: var(--text-secondary-color); /* 수정: #666 대신 변수 사용 */
   text-transform: uppercase;
   letter-spacing: 2px;
 }
@@ -216,7 +218,7 @@ body.no-scroll2 {
 #modal-content-body .sidebar-label {
   font-size: 10px;
   font-weight: 700;
-  color: #999;
+  color: var(--text-tertiary-color); /* 수정: #999 대신 변수 사용 */
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 8px;
@@ -225,7 +227,7 @@ body.no-scroll2 {
 #modal-content-body .sidebar-value {
   font-size: 13px;
   font-weight: 500;
-  color: #333;
+  color: var(--text-primary-color); /* 수정: #333 대신 변수 사용 */
   line-height: 1.4;
 }
 #modal-content-body .qr-section {
@@ -241,7 +243,7 @@ body.no-scroll2 {
 }
 #modal-content-body .qr-caption {
   font-size: 10px;
-  color: #666;
+  color: var(--text-secondary-color); /* 수정: #666 대신 변수 사용 */
   margin-top: 8px;
 }
 #modal-content-body .insights {
@@ -250,7 +252,7 @@ body.no-scroll2 {
 #modal-content-body .insights h3 {
   font-size: 18px;
   font-weight: 700;
-  color: #000;
+  color: var(--text-primary-color); /* 수정: #000 대신 변수 사용 */
   margin-bottom: 16px;
 }
 #modal-content-body .insights ul {
@@ -259,7 +261,7 @@ body.no-scroll2 {
 }
 #modal-content-body .insights li {
   font-size: 16px;
-  color: #444;
+  color: var(--text-primary-color); /* 수정: #444 대신 변수 사용 */
   line-height: 1.6;
   margin-bottom: 12px;
   position: relative;
@@ -269,7 +271,7 @@ body.no-scroll2 {
   content: '•';
   position: absolute;
   left: 0;
-  color: #000;
+  color: var(--text-primary-color); /* 수정: #000 대신 변수 사용 */
   font-size: 18px;
 }
 #modal-content-body .skills-values {
@@ -278,7 +280,7 @@ body.no-scroll2 {
 #modal-content-body .skills-values h3 {
   font-size: 18px;
   font-weight: 700;
-  color: #000;
+  color: var(--text-primary-color); /* 수정: #000 대신 변수 사용 */
   margin-bottom: 16px;
 }
 #modal-content-body .tags {
@@ -287,32 +289,30 @@ body.no-scroll2 {
   gap: 8px;
 }
 #modal-content-body .tag {
-  background: #333;
-  color: white;
+  background: var(--text-primary-color); /* 수정: #333 대신 변수 사용 */
+  color: var(--text-inverted-color); /* 수정: white 대신 변수 사용 */
   padding: 12px;
   text-align: center;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
-  border: 1px solid #333;
+  border: 1px solid var(--text-primary-color); /* 수정: #333 대신 변수 사용 */
   transition: all 0.2s ease;
   border-radius: 12px;
 }
 #modal-content-body .tag:hover {
-  background: #555;
-  color: white;
+  background: var(--text-secondary-color); /* 수정: #555 대신 변수 사용 */
+  color: var(--text-inverted-color); /* 수정: white 대신 변수 사용 */
 }
 #modal-content-body .process-section {
-  margin-bottom: 40px;
   border-radius: 6px;
   overflow: hidden;
   transition: all 0.3s ease;
+  border: 3px solid var(--border-secondary-color); /* 추가/수정: 테마에 맞는 보더 색상 */
 }
 #modal-content-body .process-section h3 {
-  font-size: 18px;
-  font-weight: 700;
-  color: #000;
+  color: var(--text-primary-color); /* 수정: #333 대신 변수 사용 */
   margin-bottom: 0;
   display: flex;
   align-items: center;
@@ -321,8 +321,8 @@ body.no-scroll2 {
   padding: 20px;
   margin: 0;
   transition: all 0.2s ease;
-  /* background: #f5f5f5; */
   font-size: 35px;
+  border-bottom: solid var(--border-primary-color) 1px; /* 추가: h3 아래 보더 */
 }
 #modal-content-body .process-section h3 .number-circle {
   display: inline-flex;
@@ -330,12 +330,12 @@ body.no-scroll2 {
   align-items: center;
   width: 80px;
   height: 80px;
-  background: #000;
-  border: 2px solid #000;
+  background: var(--text-primary-color); /* 수정: #000 대신 변수 사용 */
+  border: 2px solid var(--text-primary-color); /* 수정: #000 대신 변수 사용 */
   border-radius: 50%;
   font-size: 20px;
   font-weight: 700;
-  color: #fff;
+  color: var(--text-inverted-color); /* 수정: #fff 대신 변수 사용 */
   margin-right: 8px;
 }
 #modal-content-body .process-content {
@@ -348,7 +348,7 @@ body.no-scroll2 {
 }
 #modal-content-body .description {
   font-size: 16px;
-  color: #444;
+  color: var(--text-primary-color); /* 수정: #444 대신 변수 사용 */
   line-height: 1.8;
   margin-bottom: 20px;
 }
@@ -379,10 +379,10 @@ body.no-scroll2 {
 }
 #modal-content-body .carousel-caption {
   font-size: 12px;
-  color: #666;
+  color: var(--text-secondary-color); /* 수정: #666 대신 변수 사용 */
   text-align: center;
   padding: 10px;
-  background: #fff;
+  background: var(--background-card); /* 수정: #fff 대신 변수 사용 */
 }
 #modal-content-body .carousel-nav {
   display: flex;
@@ -393,8 +393,8 @@ body.no-scroll2 {
   transform: translateY(-50%);
 }
 #modal-content-body .carousel-nav-button {
-  background: rgba(0,0,0,0.5);
-  color: #fff;
+  background: rgba(0,0,0,0.5); /* 이 부분은 배경 투명도를 유지하는 것이 좋을 수 있습니다. */
+  color: var(--text-inverted-color); /* 수정: #fff 대신 변수 사용 */
   border: none;
   padding: 10px;
   cursor: var(--cursor-grab2);
@@ -402,16 +402,15 @@ body.no-scroll2 {
   transition: background 0.2s ease;
 }
 #modal-content-body .carousel-nav-button:hover {
-  background: rgba(0,0,0,0.7);
+  background: rgba(0,0,0,0.7); /* 이 부분도 배경 투명도를 유지 */
 }
 /* 1. Discover - Mindmap Style */
 #modal-content-body .discover-section {
-  border: 3px solid #666;
+  border: 3px solid var(--border-secondary-color); /* 수정: #666 대신 변수 사용 */
 }
 #modal-content-body .discover-section h3 {
-  /* background: #f5f5f5; */
-  color: #333;
-  border-bottom: solid #333 1px ;
+  color: var(--text-primary-color); /* 수정: #333 대신 변수 사용 */
+  border-bottom: solid var(--border-primary-color) 1px ; /* 수정: #333 대신 변수 사용 */
 }
 #modal-content-body .discover-content {
   display: grid;
@@ -421,7 +420,7 @@ body.no-scroll2 {
   margin-bottom: 20px;
 }
 #modal-content-body .mindmap-container {
-  background: #fff;
+  background: var(--background-card); /* 수정: #fff 대신 변수 사용 */
   border-radius: 12px;
   padding: 20px;
   min-height: 200px;
@@ -431,8 +430,8 @@ body.no-scroll2 {
   position: relative;
 }
 #modal-content-body .mindmap-center {
-  background: #666;
-  color: #fff;
+  background: var(--text-primary-color); /* 수정: #666 대신 변수 사용 */
+  color: var(--text-inverted-color); /* 수정: #fff 대신 변수 사용 */
   padding: 15px 20px;
   border-radius: 50px;
   font-weight: 600;
@@ -445,8 +444,8 @@ body.no-scroll2 {
 }
 #modal-content-body .mindmap-node {
   position: absolute;
-  background: #e0e0e0;
-  color: #333;
+  background: var(--background-tertiary); /* 수정: #e0e0e0 대신 변수 사용 */
+  color: var(--text-primary-color); /* 수정: #333 대신 변수 사용 */
   padding: 8px 12px;
   border-radius: 20px;
   font-size: 12px;
@@ -463,24 +462,23 @@ body.no-scroll2 {
 }
 /* 2. Define - Flowchart Style */
 #modal-content-body .define-section {
-  border: 3px solid #666;
+  border: 3px solid var(--border-secondary-color); /* 수정: #666 대신 변수 사용 */
 }
 #modal-content-body .define-section h3 {
-  /* background: #f5f5f5; */
-  color: #333;
+  color: var(--text-primary-color); /* 수정: #333 대신 변수 사용 */
 }
 #modal-content-body .flowchart-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 20px;
-  background: #fff;
+  background: var(--background-card); /* 수정: #fff 대신 변수 사용 */
   border-radius: 12px;
   padding: 30px 20px;
 }
 #modal-content-body .flow-step {
-  background: #666;
-  color: #fff;
+  background: var(--text-primary-color); /* 수정: #666 대신 변수 사용 */
+  color: var(--text-inverted-color); /* 수정: #fff 대신 변수 사용 */
   padding: 15px 20px;
   border-radius: 8px;
   text-align: center;
@@ -490,17 +488,16 @@ body.no-scroll2 {
   min-width: 100px;
 }
 #modal-content-body .flow-arrow {
-  color: #666;
+  color: var(--text-secondary-color); /* 수정: #666 대신 변수 사용 */
   font-size: 24px;
   font-weight: bold;
 }
 /* 3. Design - Color Palette Style */
 #modal-content-body .design-section {
-  border: 3px solid #666;
+  border: 3px solid var(--border-secondary-color); /* 수정: #666 대신 변수 사용 */
 }
 #modal-content-body .design-section h3 {
-  /* background: #f5f5f5; */
-  color: #333;
+  color: var(--text-primary-color); /* 수정: #333 대신 변수 사용 */
 }
 #modal-content-body .design-showcase {
   display: grid;
@@ -509,7 +506,7 @@ body.no-scroll2 {
   margin-top: 20px;
 }
 #modal-content-body .color-palette {
-  background: #fff;
+  background: var(--background-card); /* 수정: #fff 대신 변수 사용 */
   border-radius: 12px;
   padding: 20px;
 }
@@ -517,7 +514,7 @@ body.no-scroll2 {
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 15px;
-  color: #333;
+  color: var(--text-primary-color); /* 수정: #333 대신 변수 사용 */
 }
 #modal-content-body .color-row {
   display: flex;
@@ -531,12 +528,12 @@ body.no-scroll2 {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--text-inverted-color); /* 수정: #fff 대신 변수 사용 */
   font-size: 10px;
   font-weight: 600;
 }
 #modal-content-body .mockup-container {
-  background: #fff;
+  background: var(--background-card); /* 수정: #fff 대신 변수 사용 */
   border-radius: 12px;
   padding: 20px;
   display: flex;
@@ -545,30 +542,25 @@ body.no-scroll2 {
   min-height: 180px;
 }
 #modal-content-body .phone-mockup {
-  width: 80px;
-  height: 140px;
-  background: #333;
+  background: var(--text-primary-color); /* 수정: #333 대신 변수 사용 */
   border-radius: 12px;
   position: relative;
   padding: 8px;
 }
 #modal-content-body .phone-screen {
-  width: 100%;
-  height: 100%;
-  /* background: #e0e0e0; */
+  background: var(--background-tertiary); /* 수정: #e0e0e0 대신 변수 사용 */
   border-radius: 6px;
   position: relative;
 }
 /* 4. Deliver - Dashboard Style */
 #modal-content-body .deliver-section {
-  border: 3px solid #666;
+  border: 3px solid var(--border-secondary-color); /* 수정: #666 대신 변수 사용 */
 }
 #modal-content-body .deliver-section h3 {
-  /* background: #f5f5f5; */
-  color: #333;
+  color: var(--text-primary-color); /* 수정: #333 대신 변수 사용 */
 }
 #modal-content-body .dashboard-container {
-  background: #fff;
+  background: var(--background-card); /* 수정: #fff 대신 변수 사용 */
   border-radius: 12px;
   padding: 20px;
   margin-top: 20px;
@@ -580,20 +572,20 @@ body.no-scroll2 {
   margin-bottom: 20px;
 }
 #modal-content-body .metric-card {
-  background: #f5f5f5;
-  border-left: 4px solid #666;
+  background: var(--background-secondary); /* 수정: #f5f5f5 대신 변수 사용 */
+  border-left: 4px solid var(--text-primary-color); /* 수정: #666 대신 변수 사용 */
   padding: 15px;
   border-radius: 8px;
 }
 #modal-content-body .metric-value {
   font-size: 24px;
   font-weight: 700;
-  color: #333;
+  color: var(--text-primary-color); /* 수정: #333 대신 변수 사용 */
   margin-bottom: 5px;
 }
 #modal-content-body .metric-label {
   font-size: 12px;
-  color: #666;
+  color: var(--text-secondary-color); /* 수정: #666 대신 변수 사용 */
   text-transform: uppercase;
 }
 #modal-content-body .progress-section {
@@ -604,18 +596,18 @@ body.no-scroll2 {
 }
 #modal-content-body .progress-label {
   font-size: 12px;
-  color: #666;
+  color: var(--text-secondary-color); /* 수정: #666 대신 변수 사용 */
   margin-bottom: 5px;
 }
 #modal-content-body .progress-bar {
   height: 8px;
-  background: #e0e0e0;
+  background: var(--background-tertiary); /* 수정: #e0e0e0 대신 변수 사용 */
   border-radius: 4px;
   overflow: hidden;
 }
 #modal-content-body .progress-fill {
   height: 100%;
-  background: #666;
+  background: var(--text-primary-color); /* 수정: #666 대신 변수 사용 */
   transition: width 0.3s ease;
 }
 #modal-content-body .nav-buttons {
@@ -626,7 +618,7 @@ body.no-scroll2 {
 #modal-content-body .nav-button {
   width: 200px;
   height: 200px;
-  background: #333;
+  background: var(--text-primary-color); /* 수정: #333 대신 변수 사용 */
   border-radius: 50%;
   display: flex;
   flex-direction: column;
@@ -637,15 +629,15 @@ body.no-scroll2 {
   position: relative;
 }
 #modal-content-body .nav-button:hover {
-  background: #555;
+  background: var(--text-secondary-color); /* 수정: #555 대신 변수 사용 */
 }
 #modal-content-body .nav-button i {
-  color: #fff;
+  color: var(--text-inverted-color); /* 수정: #fff 대신 변수 사용 */
   font-size: 24px;
   margin-bottom: 5px;
 }
 #modal-content-body .nav-button span {
-  color: #fff;
+  color: var(--text-inverted-color); /* 수정: #fff 대신 변수 사용 */
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
@@ -669,7 +661,7 @@ body.no-scroll2 {
   #modal-content-body .top-sidebar {
       order: 1;
       border-left: none;
-      border-top: 3px solid #000;
+      border-top: 3px solid var(--text-primary-color); /* 수정: #000 대신 변수 사용 */
       padding-left: 0;
       padding-top: 20px;
   }

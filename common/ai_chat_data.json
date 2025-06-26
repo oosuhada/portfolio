@@ -15,7 +15,7 @@
         "name": "Oosu's AI Assistant v2.4",
         "capabilities": {
             "en": "I'm designed to offer personalized guidance, remember our conversation, and provide deep, narrative insights into Oosu's work. I can answer questions about projects, skills, career, values, and even help you brainstorm. Feel free to ask me 'what if' questions or for advice!",
-            "ko": "저는 사용자의 역할에 맞춰 개인화된 안내를 제공하고, 대화 맥락을 기억하며, Oosu님의 작업에 대한 깊고 서사적인 답변을 드릴 수 있습니다. 프로젝트, 스킬, 경력, 가치관에 대해 답변하고, 브레인스토밍이나 '만약 ~라면?' 질문에 대한 조언도 해드릴 수 있습니다!"
+            "ko": "저는 사용자의 역할에 맞춰 개인화된 안내를 제공하고, 대화 맥락을 기억하며, Oosu님의 작업에 대한 깊고 서사적인 답변을 드릴 수 있습니다! 프로젝트, 스킬, 경력, 가치관에 대해 답변하고, 브레인스토밍이나 '만약 ~라면?' 질문에 대한 조언도 해드릴 수 있습니다!"
         },
         "data_source": {
             "en": "My responses are based on the official portfolio content and this knowledge base, personally curated by Oosu. I learn from interactions but do not store personal identifiable information.",
@@ -62,11 +62,11 @@
 
     "navigation_map": {
         "_label": "Mapping of high-level topics to their respective pages and anchor IDs for direct navigation.",
-        "portfolio": {"page": "portfolioMain/portfolio.html", "name": {"en": "Portfolio page", "ko": "포트폴리오 페이지"}, "keywords": ["portfolio", "projects", "work", "작품", "포트폴리오", "프로젝트"]},
-        "about": {"page": "about/about.html", "name": {"en": "About page", "ko": "About 페이지"}, "keywords": ["about", "profile", "values", "process", "fun facts", "소개", "자기소개", "가치관", "프로세스", "재미있는사실"]},
-        "career": {"page": "career/career.html", "name": {"en": "Career page", "ko": "경력 페이지"}, "keywords": ["career", "experience", "job", "education", "awards", "경력", "이력", "학력", "수상"]},
-        "lab": {"page": "lab/lab.html", "name": {"en": "Lab page", "ko": "Lab 페이지"}, "keywords": ["lab", "hobbies", "experiments", "creative", "실험실", "취미", "창작", "놀이터"]},
-        "connect": {"page": "connect/connect.html", "name": {"en": "Connect page", "ko": "Connect 페이지"}, "keywords": ["contact", "connect", "inquiry", "연락", "문의", "소셜링크"]}
+        "portfolio": {"page": "../portfolioMain/portfolio.html", "name": {"en": "Portfolio page", "ko": "포트폴리오 페이지"}, "keywords": ["portfolio", "projects", "work", "작품", "포트폴리오", "프로젝트"]},
+        "about": {"page": "../about/about.html", "name": {"en": "About page", "ko": "About 페이지"}, "keywords": ["about", "profile", "values", "process", "fun facts", "소개", "자기소개", "가치관", "프로세스", "재미있는사실"]},
+        "career": {"page": "../career/career.html", "name": {"en": "Career page", "ko": "경력 페이지"}, "keywords": ["career", "experience", "job", "education", "awards", "경력", "이력", "학력", "수상"]},
+        "lab": {"page": "../lab/lab.html", "name": {"en": "Lab page", "ko": "Lab 페이지"}, "keywords": ["lab", "hobbies", "experiments", "creative", "실험실", "취미", "창작", "놀이터"]},
+        "connect": {"page": "../connect/connect.html", "name": {"en": "Connect page", "ko": "Connect 페이지"}, "keywords": ["contact", "connect", "inquiry", "연락", "문의", "소셜링크"]}
     },
 
     "keywords_map": {
@@ -225,7 +225,7 @@
                     "ko": "데이터 분석, 프론트엔드 개발, 기업가 정신을 바탕으로 Oosu님은 미학과 유용성 사이의 균형을 맞추며 항상 큰 그림을 놓치지 않는 디자인 철학을 가지고 있습니다."
                 }
             },
-            "url_fragment": "about/about.html#about-profile",
+            "url_fragment": "../about/about.html#about-profile",
             "keywords": ["name meaning", "design philosophy", "background", "이름 의미", "디자인 철학", "배경", "개인정보", "자기소개", "소개"],
             "response_type": "text_and_link",
             "followUpActions": [
@@ -240,7 +240,7 @@
                 "en": "Oosu's portfolio features diverse projects from cross-platform apps to responsive websites, each a deep dive into problem-solving, showcasing a blend of design and technical skills. Here are some highlights:",
                 "ko": "Oosu님의 포트폴리오는 크로스 플랫폼 앱부터 반응형 웹사이트에 이르기까지 다양한 프로젝트들을 선보이며, 각 프로젝트는 문제 해결 과정을 깊이 있게 탐구하며 디자인과 기술 역량의 조화를 보여줍니다. 몇 가지 주요 프로젝트는 다음과 같습니다:"
             },
-            "url_fragment": "portfolioMain/portfolio.html#portfolio",
+            "url_fragment": "../portfolioMain/portfolio.html#",
             "keywords": ["project", "projects", "work", "portfolio", "작품", "포트폴리오", "프로젝트", "프로젝트목록", "case study", "케이스 스터디", "구체적인 프로젝트"],
             "response_type": "cards_and_link",
             "items": [
@@ -249,7 +249,7 @@
                     "title": {"en": "Nomad Market (Cross-platform App)", "ko": "노마드 마켓 (크로스 플랫폼 앱)"},
                     "description": {"en": "A cross-platform app for nomadic lifestyles, focusing on used item trading with intuitive UX. (Flutter, Figma, Firebase)", "ko": "유목 생활자를 위한 중고거래 크로스플랫폼 앱으로, 직관적인 UX에 중점을 두었습니다. (Flutter, Figma, Firebase)"},
                     "tags": ["Flutter", "Figma", "Firebase", "Cross-platform", "UI/UX", "Mobile Development"],
-                    "link": "portfolioMain/portfolio.html#project1",
+                    "link": "../portfolioMain/portfolio.html#project1",
                     "keywords": ["nomad market", "노마드 마켓", "중고거래 앱", "프로젝트 1", "노마드 마켓 프로젝트", "nomad market project"],
                     "details": {
                         "motivation": {"en": "Inspired by the growing digital nomad community and the need for a localized, reliable trading platform for transient users.", "ko": "성장하는 디지털 노마드 커뮤니티와 임시적인 사용자들을 위한 현지화되고 신뢰할 수 있는 거래 플랫폼의 필요성에서 영감을 받았습니다."},
@@ -305,7 +305,7 @@
                     "title": {"en": "Onjung (Cross-platform App)", "ko": "온정 (크로스 플랫폼 앱)"},
                     "description": {"en": "An app designed to foster social warmth and community connection, built with Flutter.", "ko": "사회적 온정 경험과 커뮤니티 연결을 촉진하기 위해 Flutter로 개발된 앱입니다."},
                     "tags": ["Flutter", "Community App", "UX Design"],
-                    "link": "portfolioMain/portfolio.html#project2",
+                    "link": "../portfolioMain/portfolio.html#project2",
                     "keywords": ["onjung", "온정", "커뮤니티 앱", "프로젝트 2"],
                     "details": {
                         "motivation": {"en": "Inspired by the growing need for genuine human connection in an increasingly digital world, especially in local communities.", "ko": "점점 더 디지털화되는 세상에서, 특히 지역 커뮤니티에서 진정한 인간적 연결에 대한 필요성이 커지는 것에 영감을 받았습니다."},
@@ -326,7 +326,8 @@
                             "en": "Increased community engagement by 30% in pilot tests and significantly reduced instances of negative user interactions due to proactive moderation. Achieved positive sentiment score of 4.5/5 from beta users.", "ko": "파일럿 테스트에서 커뮤니티 참여도를 30% 증가시키고, 사전 예방적 관리를 통해 부정적인 사용자 상호작용 사례를 크게 줄였습니다. 베타 사용자로부터 4.5/5의 긍정적인 감성 점수를 달성했습니다."},
                         "contributions": {
                             "en": "Responsible for defining user stories, designing core interaction flows, and developing key Flutter UI components. Collaborated closely with backend developers on API integration and data structure for community features.",
-                            "ko": "사용자 스토리 정의, 핵심 상호작용 흐름 설계, 주요 Flutter UI 컴포넌트 개발을 담당했습니다. API 통합 및 커뮤니티 기능 데이터 구조와 관련하여 백엔드 개발자와 긴밀히 협력했습니다."},
+                            "ko": "사용자 스토리 정의, 핵심 상호작용 흐름 설계, 주요 Flutter UI 컴포넌트 개발을 담당했습니다. API 통합 및 커뮤니티 기능 데이터 구조와 관련하여 백엔드 개발자와 긴밀히 협력했습니다."
+                        },
                         "narrative_qna": {
                             "_label": "Pre-defined answers for deeper, narrative questions about this project.",
                             "most_challenging_aspect": {
@@ -357,7 +358,7 @@
                     "title": {"en": "Oosu Salon (Responsive Website)", "ko": "Oosu 살롱 (반응형 웹사이트)"},
                     "description": {"en": "Responsive website for a premium wine bar brand, ensuring optimal viewing across devices.", "ko": "프리미엄 와인바 브랜드의 반응형 웹사이트로, 모든 기기에서 최적의 보기 경험을 제공합니다."},
                     "tags": ["HTML", "CSS", "JavaScript", "Responsive Web"],
-                    "link": "portfolioMain/portfolio.html#project3",
+                    "link": "../portfolioMain/portfolio.html#project3",
                     "keywords": ["oosu salon", "오수 살롱", "와인바 웹사이트", "프로젝트 3"],
                     "details": {
                         "motivation": {"en": "Having run Oosu Salon, I understood the direct impact a strong digital presence has on customer engagement and business success. This project was a chance to apply my design and development skills to elevate a real-world business.", "ko": "Oosu 살롱을 운영하면서 강력한 디지털 존재감이 고객 참여와 사업 성공에 미치는 직접적인 영향을 이해했습니다. 이 프로젝트는 제 디자인 및 개발 기술을 실제 비즈니스에 적용하여 성과를 높일 기회였습니다."},
@@ -400,7 +401,7 @@
                                 "ko": "Oosu 살롱을 운영하면서 강력한 디지털 존재감이 고객 참여와 사업 성공에 미치는 직접적인 영향을 이해했습니다. 이 프로젝트는 제 디자인 및 개발 기술을 실제 비즈니스에 적용하여 성과를 높일 기회였습니다."
                             },
                             "failure_example": {
-                                "en": "An early iteration had complex navigation for wine lists, leading to user confusion. Simplified the menu structure and added clearer filters based on early user feedback.",
+                                "en": "An early iteration had complex navigation for wine lists, leading to user confusion. We simplified it based on early user feedback, embracing progressive disclosure.",
                                 "ko": "초기 반복에서는 와인 리스트 내비게이션이 복잡하여 사용자 혼란을 초래했습니다. 초기 사용자 피드백을 바탕으로 메뉴 구조를 단순화하고 더 명확한 필터를 추가했습니다."
                             }
                         }
@@ -411,7 +412,7 @@
                     "title": {"en": "Skyscanner App Redesign (UX Focus)", "ko": "스카이스캐너 앱 리디자인 (UX 중심)"},
                     "description": {"en": "Conceptual redesign of the Skyscanner app, improving user experience and visual aesthetics through Figma.", "ko": "스카이스캐너 앱의 개념적인 리디자인으로, Figma를 통해 사용자 경험과 시각적 미학 개선에 중점을 두었습니다."},
                     "tags": ["Figma", "UI/UX Design", "App Redesign", "Travel App"],
-                    "link": "portfolioMain/portfolio.html#project5",
+                    "link": "../portfolioMain/portfolio.html#project5",
                     "keywords": ["skyscanner", "스카이스캐너", "앱 리디자인", "프로젝트 5", "skyscanner redesign"],
                     "details": {
                         "motivation": {"en": "As a frequent traveler myself, I often found existing flight comparison apps clunky. This redesign was driven by a personal passion to create a truly seamless and enjoyable travel planning experience.", "ko": "저 역시 잦은 여행자로서 기존 항공권 비교 앱들이 불편하다고 느꼈습니다. 이 리디자인은 진정으로 원활하고 즐거운 여행 계획 경험을 만들고자 하는 개인적인 열정에서 비롯되었습니다."},
@@ -465,7 +466,7 @@
                     "title": {"en": "Sticks and Stones (Responsive Website)", "ko": "스틱스 앤 스톤스 (반응형 웹사이트)"},
                     "description": {"en": "Developed a visually engaging, responsive website, showcasing strong frontend skills.", "ko": "시각적으로 매력적인 반응형 웹사이트를 개발하며 강력한 프론트엔드 기술을 선보였습니다."},
                     "tags": ["HTML", "CSS", "JavaScript", "Responsive Web"],
-                    "link": "portfolioMain/portfolio.html#project4",
+                    "link": "../portfolioMain/portfolio.html#project4",
                     "keywords": ["sticks and stones", "스틱스 앤 스톤스", "프로젝트 4", "sticks and stones website"],
                     "details": {
                         "motivation": {"en": "This project was a deeply personal one, combining my passion for art with my technical skills. I wanted to create a digital space that truly honored the artist's work and provided a unique viewing experience.", "ko": "이 프로젝트는 예술에 대한 저의 열정과 기술적 능력을 결합한 매우 개인적인 작업이었습니다. 예술가의 작품을 진정으로 존중하고 독특한 감상 경험을 제공하는 디지털 공간을 만들고 싶었습니다."},
@@ -529,7 +530,7 @@
                 "en": "Oosu possesses a versatile and strategically developed skill set. Below is a breakdown of key competencies, including proficiency levels and project applications.",
                 "ko": "Oosu님은 다재다능하고 전략적으로 개발된 스킬셋을 보유하고 있습니다. 아래에서 숙련도 및 프로젝트 적용 사례를 포함한 핵심 역량을 확인하실 수 있습니다."
             },
-            "url_fragment": "about/about.html#skills-section",
+            "url_fragment": "../about/about.html#skills-section",
             "keywords": ["skill", "skills", "tech stack", "technology", "tool", "tools", "ability", "강점", "기술", "스택", "툴", "능력", "개발", "숙련도", "숙련", "역량"],
             "response_type": "cards_and_link",
             "items": [
@@ -538,7 +539,7 @@
                     "type": "skill",
                     "name": {"en": "Frontend Development", "ko": "프론트엔드 개발"},
                     "description": {"en": "Building interactive and performant web experiences with HTML, CSS, JavaScript, and modern frameworks like React and Vue. Strong understanding of responsive design and web performance.", "ko": "성능과 반응형 디자인에 중점을 둔 인터랙티브 웹 경험을 구축합니다. HTML, CSS, JavaScript 및 React, Vue와 같은 최신 프레임워크를 활용합니다. 반응형 디자인 및 웹 성능에 대한 이해가 깊습니다."},
-                    "link": "about/about.html#frontend-title-main",
+                    "link": "../about/about.html#frontend-title-main",
                     "details": [
                         {"name": "HTML/CSS", "level": "Expert", "experience_years": "5+", "projects_used_in": ["oosu-salon-website", "sticks-and-stones"], "keywords": ["html", "css", "웹표준", "반응형"], "narrative_qna": {"advice": {"en": "Mastering HTML/CSS is the foundation. Focus on semantic HTML and responsive layouts first.", "ko": "HTML/CSS 마스터는 기본 중의 기본입니다. 시맨틱 HTML과 반응형 레이아웃에 먼저 집중하세요."}}},
                         {"name": "JavaScript (ES6+)", "level": "Expert", "experience_years": "4+", "projects_used_in": ["oosu-salon-website", "sticks-and-stones", "lab-animation-art"], "keywords": ["javascript", "es6", "web interaction"], "narrative_qna": {"advice": {"en": "Deep dive into asynchronous JavaScript and ES6+ features for cleaner, more efficient code.", "ko": "더 깔끔하고 효율적인 코드를 위해 비동기 JavaScript와 ES6+ 기능에 깊이 파고드세요."}}},
@@ -552,7 +553,7 @@
                     "type": "skill",
                     "name": {"en": "UX/UI & Product Design", "ko": "UX/UI & 제품 디자인"},
                     "description": {"en": "Applying user-centered methodologies to create intuitive and effective digital products, from research to prototyping and design systems.", "ko": "사용자 중심 방법론을 적용하여 리서치부터 프로토타이핑, 디자인 시스템 구축까지 직관적이고 효과적인 디지털 제품을 만듭니다."},
-                    "link": "about/about.html#uxui-title-main",
+                    "link": "../about/about.html#uxui-title-main",
                     "details": [
                         {"name": "User Research", "level": "Expert", "experience_years": "5+", "projects_used_in": ["nomad-market", "skyscanner-redesign"], "keywords": ["user research", "사용자 조사", "인터뷰"], "narrative_qna": {"advice": {"en": "Conducting user interviews and surveys is critical. Listen to users' true needs, not just what they say.", "ko": "사용자 인터뷰와 설문조사는 매우 중요합니다. 사용자들이 말하는 것만이 아닌 진정한 니즈를 경청하세요."}}},
                         {"name": "Wireframing & Prototyping", "level": "Expert", "experience_years": "4+", "projects_used_in": ["nomad-market", "skyscanner-redesign"], "keywords": ["wireframe", "prototype", "와이어프레임", "프로토타이핑"], "narrative_qna": {"advice": {"en": "Start with low-fidelity wireframes to quickly test concepts. Iterate rapidly based on early feedback.", "ko": "컨셉을 빠르게 테스트하기 위해 저해상도 와이어프레임부터 시작하세요. 초기 피드백을 바탕으로 빠르게 반복하세요."}}},
@@ -566,7 +567,7 @@
                     "type": "skill",
                     "name": {"en": "Tools & Systems", "ko": "툴 및 시스템"},
                     "description": {"en": "Skilled in collaborative workflows and proficient with a range of design and development tools for comprehensive creative output.", "ko": "협업 워크플로우에 능숙하며, 포괄적인 창의적 결과물을 위한 다양한 디자인 및 개발 툴을 능숙하게 다룹니다."},
-                    "link": "about/about.html#tools-title-main",
+                    "link": "../about/about.html#tools-title-main",
                     "details": [
                         {"name": "Git & GitHub", "level": "Proficient", "experience_years": "4+", "projects_used_in": ["all projects"], "keywords": ["git", "github", "버전 관리"], "narrative_qna": {"advice": {"en": "Mastering Git is essential for collaboration. Practice branching and merging daily.", "ko": "Git 마스터는 협업에 필수적입니다. 매일 브랜칭과 머징을 연습하세요."}}},
                         {"name": "Notion", "level": "Expert", "experience_years": "3+", "projects_used_in": ["all projects"], "keywords": ["notion", "노션", "프로젝트 관리"], "narrative_qna": {"advice": {"en": "Notion is a versatile tool for project management, documentation, and knowledge sharing. Explore its database features.", "ko": "Notion은 프로젝트 관리, 문서화, 지식 공유를 위한 다재다능한 도구입니다. 데이터베이스 기능을 탐색해보세요."}}},
@@ -580,7 +581,7 @@
                     "type": "skill",
                     "name": {"en": "Strengths & Adaptability", "ko": "강점 및 적응력"},
                     "description": {"en": "A fast learner with strong problem-solving skills, creative intuition, and cross-functional communication. Adapts quickly to new challenges and environments, always seeking innovative solutions.", "ko": "빠른 학습 능력과 뛰어난 문제 해결 능력, 창의적인 직관, 다기능적 소통 능력을 지녔습니다. 새로운 도전과 환경에 빠르게 적응하며 항상 혁신적인 해결책을 모색합니다."},
-                    "link": "about/about.html#strengths-title-main",
+                    "link": "../about/about.html#strengths-title-main",
                     "details": [
                         {"name": "Problem-solving", "level": "Expert", "experience_years": "7+", "projects_used_in": ["all experiences"], "keywords": ["문제 해결", "problem solving"], "narrative_qna": {"advice": {"en": "Break down complex problems into smaller, manageable parts. Start with the root cause, not just the symptom.", "ko": "복잡한 문제를 더 작고 관리하기 쉬운 부분으로 나누세요. 증상만이 아닌 근본 원인부터 시작하세요."}}},
                         {"name": "Fast Learning", "level": "Expert", "experience_years": "7+", "projects_used_in": ["all experiences"], "keywords": ["빠른 학습", "fast learner"], "narrative_qna": {"advice": {"en": "Embrace curiosity and don't be afraid to dive into unfamiliar topics. Practice consistently and reflect on what you learn.", "ko": "호기심을 갖고 낯선 주제에 뛰어드는 것을 두려워 마세요. 꾸준히 연습하고 배운 것을 되돌아보세요."}}},
@@ -593,7 +594,7 @@
                     "type": "skill",
                     "name": {"en": "Data Analytics & Research", "ko": "데이터 분석 및 리서치"},
                     "description": {"en": "Experienced in consumer behavior analysis, market research, and data-driven decision making. Skilled in extracting actionable insights from complex datasets.", "ko": "소비자 행동 분석, 시장 조사, 데이터 기반 의사 결정에 경험이 있습니다. 복잡한 데이터셋에서 실행 가능한 인사이트를 도출하는 데 능숙합니다."},
-                    "link": "career/career.html#skills-showcase-section",
+                    "link": "../career/career.html#skills-showcase-section",
                     "details": [
                         {"name": "Consumer Insights", "level": "Proficient", "experience_years": "3+", "projects_used_in": ["gfk", "zegna"], "keywords": ["소비자 인사이트", "consumer insights"], "narrative_qna": {"advice": {"en": "Beyond numbers, seek the 'why' behind consumer behavior. Empathy is key even in data analysis.", "ko": "숫자를 넘어 소비자 행동의 '왜'를 찾으세요. 데이터 분석에서도 공감이 중요합니다."}}},
                         {"name": "Market Research", "level": "Proficient", "experience_years": "3+", "projects_used_in": ["gfk"], "keywords": ["시장 조사", "market research"], "narrative_qna": {"advice": {"en": "Understand both qualitative and quantitative research methods. The best insights often come from combining them.", "ko": "질적 연구와 양적 연구 방법을 모두 이해하세요. 최고의 통찰력은 종종 둘을 결합할 때 나옵니다."}}},
@@ -613,13 +614,13 @@
                 "en": "Oosu's professional journey is a rich blend of entrepreneurship, data analytics, and consumer experience design, leading to a multidisciplinary UX/UI expertise. See the full timeline including work, education, and awards on the <a href='../career/career.html#timeline-wrapper'>Career page</a>.",
                 "ko": "Oosu님의 전문적인 여정은 기업가 정신, 데이터 분석, 소비자 경험 디자인이 풍부하게 융합되어 다분야 UX/UI 전문가로 이끌었습니다. 경력, 교육, 수상 내역을 포함한 전체 타임라인은 <a href='../career/career.html#timeline-wrapper'>Career 페이지</a>에서 확인하실 수 있습니다."
             },
-            "url_fragment": "career/career.html#timeline-wrapper",
+            "url_fragment": "../career/career.html#timeline-wrapper",
             "keywords": ["career", "experience", "job", "employment", "history", "회사", "경력", "직무", "이력", "업무", "이력서", "resume"],
             "response_type": "text_and_link",
             "sections": {
                 "work_experience": {
                     "title": {"en": "Work Experience", "ko": "업무 경력"},
-                    "url_fragment": "career/career.html#work-experience",
+                    "url_fragment": "../career/career.html#work-experience",
                     "items": [
                         {"id": "oosu-salon", "title": {"en": "Founder & CEO, OOSU SALON YEONNAM", "ko": "OOSU 살롱 연남 창업자 겸 CEO"}, "description": {"en": "Led comprehensive business strategy, spatial design, and customer experience optimization for a successful wine bar. (Feb 2020 - Jan 2025)", "ko": "프리미엄 와인바 창업, 서비스/공간 디자인, 고객경험 최적화를 주도하여 성공적인 운영을 이끌었습니다. (2020년 2월 - 2025년 1월)"}, "keywords": ["oosu salon", "founder", "CEO", "창업", "오수 살롱", "와인바"],
                             "achievements": {"en": ["Achieved break-even point within the first year by optimizing operational efficiency by 20%.", "Increased customer retention by 30% through a personalized loyalty program and enhanced physical UX.", "Successfully navigated pandemic challenges, adapting business model to retain revenue."], "ko": ["운영 효율 20% 최적화를 통해 설립 첫 해 손익분기점 달성.", "개인화된 로열티 프로그램 및 물리적 UX 개선을 통해 고객 재방문율 30% 증가.", "팬데믹 기간 중 비즈니스 모델을 성공적으로 조정하여 매출 유지."]},
@@ -662,7 +663,7 @@
                 },
                 "education": {
                     "title": {"en": "Education", "ko": "학력"},
-                    "url_fragment": "career/career.html#education-content",
+                    "url_fragment": "../career/career.html#education-content",
                     "items": [
                         {"id": "uxui-course", "title": {"en": "UX/UI Design Course, Seoul City Digital Training Program", "ko": "서울시 디지털 교육 프로그램 UX/UI 디자인 과정"}, "description": {"en": "Comprehensive UX/UI design training covering user research, prototyping, and design thinking methodologies. (Apr 2025 - Jul 2025)", "ko": "사용자 연구, 프로토타이핑, 디자인 사고 방법론을 포함하는 UX/UI 디자인 교육을 수료했습니다. (2025년 4월 - 7월)"}, "keywords": ["uxui course", "design training", "uxui 교육", "디자인코스"]},
                         {"id": "programming-course", "title": {"en": "Programming Course, Korea Digital Training Bootcamp by Team Sparta", "ko": "팀스파르타 코딩 부트캠프"}, "description": {"en": "Intensive Flutter app development bootcamp focusing on bridging design and development. (Oct 2024 - Feb 2025)", "ko": "Flutter 앱 개발 부트캠프를 통해 디자인과 개발의 연결을 강화하고 기술 구현 능력을 향상시켰습니다. (2024년 10월 - 2025년 2월)"}, "keywords": ["programming", "coding bootcamp", "flutter", "코딩", "플러터", "프로그래밍교육"]},
@@ -672,7 +673,7 @@
                 },
                 "awards": {
                     "title": {"en": "Awards & Recognition", "ko": "수상 및 표창"},
-                    "url_fragment": "career/career.html#awards-content",
+                    "url_fragment": "../career/career.html#awards-content",
                     "items": [
                         {"id": "sk-award", "title": {"en": "Excellence Award, SK Better World", "ko": "SK Better World 우수상"}, "description": {"en": "Recognized for innovative 4th Industrial Revolution concept, demonstrating forward-thinking approach to emerging technologies and their societal impact. (Jul 2017)", "ko": "혁신적인 4차 산업혁명 개념으로 우수상을 수상했으며, 신기술 및 사회적 영향에 대한 선구적인 접근 방식을 보여주었습니다. (2017년 7월)"}, "keywords": ["sk better world", "4ir award", "sk 어워드"]},
                         {"id": "lg-award", "title": {"en": "Grand Prize, LG Electronics Styler IMC Competition", "ko": "LG전자 Styler IMC 공모전 최우수상"}, "description": {"en": "Awarded highest recognition for integrated marketing communication strategy, showcasing exceptional brand positioning and consumer engagement expertise. (Nov 2013)", "ko": "통합 마케팅 커뮤니케이션 전략으로 최고 상을 수상했으며, 탁월한 브랜드 포지셔닝 및 소비자 참여 전문성을 보여주었습니다. (2013년 11월)"}, "keywords": ["lg electronics", "imc award", "lg 어워드"]},
@@ -696,7 +697,7 @@
                 "en": "Oosu's design philosophy is guided by four core values: Empathy Over Aesthetics, Big-Picture Thinking, Continuous Growth, and Design with Conviction. These values ensure a human-centered, holistic, and impactful approach.",
                 "ko": "Oosu님의 디자인 철학은 네 가지 핵심 가치인 '미학보다 공감', '거시적 사고', '지속적인 성장', 그리고 '신념을 가진 디자인'을 기반으로 합니다. 이러한 가치들은 인간 중심적이고 총체적이며 영향력 있는 접근 방식을 보장합니다."
             },
-            "url_fragment": "about/about.html#about-values",
+            "url_fragment": "../about/about.html#about-values",
             "keywords": ["value", "values", "philosophy", "belief", "가치관", "철학", "신념", "디자인철학"],
             "response_type": "list_and_link",
             "items": [
@@ -716,7 +717,7 @@
                 "en": "Oosu employs a flexible and adaptable four-phase process for design and development: DISCOVER, DEFINE, DESIGN, and DELIVER. This iterative methodology ensures thoroughness and continuous refinement.",
                 "ko": "Oosu님은 디자인 및 개발에 있어 유연하고 적응 가능한 4단계 프로세스(DISCOVER, DEFINE, DESIGN, DELIVER)를 활용합니다. 이 반복적인 방법론은 철저함과 지속적인 개선을 보장합니다."
             },
-            "url_fragment": "about/about.html#about-process",
+            "url_fragment": "../about/about.html#about-process",
             "keywords": ["process", "design process", "workflow", "methodology", "단계", "과정", "절차", "작업방식"],
             "response_type": "list_and_link",
             "items": [
@@ -736,7 +737,7 @@
                 "en": "Beyond the professional side, Oosu has several unique fun facts that offer insights into their journey and perspective, highlighting how diverse experiences contribute to a holistic design mindset. Explore them all:",
                 "ko": "전문적인 면모 외에도, Oosu님은 그들의 여정과 관점에 대한 통찰을 제공하는 몇 가지 독특한 재미있는 사실들을 가지고 있습니다. 다양한 경험이 총체적인 디자인 사고방식에 어떻게 기여했는지 보여줍니다. 모두 탐색해보세요:"
             },
-            "url_fragment": "about/about.html#about-funfacts",
+            "url_fragment": "../about/about.html#about-funfacts",
             "keywords": ["fun fact", "hobby", "hobbies", "interest", "story", "재미있는 사실", "취미", "이야기", "흥미", "궁금", "랜덤", "personal"],
             "response_type": "list_and_link",
             "items": [
@@ -759,7 +760,7 @@
                 "en": "Welcome to Oosu's creative playground, the Lab! Here, passion meets creativity in various interactive and experimental projects, ranging from Animation Art to unique Loading Effects. Discover playful experiments and innovative concepts.",
                 "ko": "Oosu의 창의적인 놀이터, Lab에 오신 것을 환영합니다! 이곳에서는 열정과 창의성이 애니메이션 아트부터 독특한 로딩 효과에 이르기까지 다양한 인터랙티브하고 실험적인 프로젝트로 만납니다. 즐거운 실험과 혁신적인 개념들을 탐색해보세요."
             },
-            "url_fragment": "lab/lab.html",
+            "url_fragment": "../lab/lab.html",
             "keywords": ["lab", "hobbies", "experiments", "creative coding", "playground", "실험실", "취미", "창작", "코드", "코딩", "놀이터", "예술", "아이디어"],
             "response_type": "list_and_link",
             "items": [
@@ -782,7 +783,7 @@
                 "en": "Oosu is always open to connecting! You can reach out through various professional and social channels like LinkedIn and GitHub, or send a direct message via the postcard form on the <a href='../connect/connect.html'>Connect page</a>. The AI Smart Assistant on the Connect page can even help you draft inquiries!",
                 "ko": "Oosu님은 항상 연결에 열려 있습니다! LinkedIn 및 GitHub와 같은 다양한 전문 및 소셜 채널을 통해 연락하시거나, 엽서 양식을 통해 직접 메시지를 보내보세요. Connect 페이지의 AI 스마트 어시스턴트는 문의 초안 작성을 도와드릴 수도 있습니다!"
             },
-            "url_fragment": "connect/connect.html",
+            "url_fragment": "../connect/connect.html",
             "keywords": ["contact", "connect", "reach out", "email", "linkedin", "github", "inquiry", "연락", "문의", "이메일", "연결", "소셜링크", "메시지", "contact form", "문의 양식"],
             "response_type": "text_and_link",
             "contact_details": {
@@ -802,7 +803,7 @@
                 "en": "I am Oosu's AI Portfolio Assistant, designed to help you explore Oosu's work and answer your questions. I analyze your queries, search Oosu's portfolio content, and provide tailored responses or direct you to relevant sections. My responses are based on the official portfolio content and this knowledge base, personally curated by Oosu.",
                 "ko": "저는 Oosu님의 AI 포트폴리오 어시스턴트입니다. Oosu님의 작업을 탐색하고 질문에 답변해 드리기 위해 설계되었습니다. 저는 귀하의 질문을 분석하고, Oosu님의 포트폴리오 콘텐츠를 검색하여 맞춤형 답변을 제공하거나 관련 섹션으로 안내해 드립니다. 저의 답변은 Oosu님이 직접 큐레이션한 공식 포트폴리오 콘텐츠와 이 지식 베이스를 기반으로 합니다."
             },
-            "url_fragment": "connect/connect.html#ai-assistant-section",
+            "url_fragment": "../connect/connect.html#ai-assistant-section",
             "keywords": ["ai capabilities", "what can you do", "how do you work", "ai assistant", "너는 뭐니", "ai 기능", "어떻게작동해", "스마트 어시스턴트", "ai", "인공지능"],
             "response_type": "text_only",
             "followUpActions": [
@@ -840,11 +841,11 @@
                 "ko": "Oosu님의 포트폴리오는 여러분의 탐색을 돕기 위해 체계적으로 구성되어 있습니다. 주요 섹션은 다음과 같습니다:"
             },
             "items": [
-                {"name": {"en": "1. Portfolio", "ko": "1. 포트폴리오"}, "description": {"en": "Dive into Oosu's main projects and case studies.", "ko": "Oosu님의 주요 프로젝트와 케이스 스터디를 자세히 탐색하세요."}, "link": "portfolioMain/portfolio.html"},
-                {"name": {"en": "2. About", "ko": "2. About"}, "description": {"en": "Discover Oosu's personal story, skills, values, and design process.", "ko": "Oosu님의 이야기, 스킬, 가치관, 디자인 프로세스를 알아보세요."}, "link": "about/about.html"},
-                {"name": {"en": "3. Career", "ko": "3. 경력"}, "description": {"en": "Explore professional experiences, education, and awards with detailed narratives.", "ko": "전문 경력, 학력, 수상 내역을 상세한 서사와 함께 확인하세요."}, "link": "career/career.html"},
-                {"name": {"en": "4. Lab", "ko": "4. Lab"}, "description": {"en": "See creative experiments and side projects, often with code demos.", "ko": "창의적인 실험과 사이드 프로젝트(종종 코드 데모 포함)를 구경하세요."}, "link": "lab/lab.html"},
-                {"name": {"en": "5. Connect", "ko": "5. Connect"}, "description": {"en": "Find ways to connect with Oosu and use the AI Smart Assistant for drafting messages.", "ko": "Oosu님과 연결하는 방법을 찾고, AI 스마트 어시스턴트로 메시지 초안을 작성해보세요."}, "link": "connect/connect.html"}
+                {"name": {"en": "1. Portfolio", "ko": "1. 포트폴리오"}, "description": {"en": "Dive into Oosu's main projects and case studies.", "ko": "Oosu님의 주요 프로젝트와 케이스 스터디를 자세히 탐색하세요."}, "link": "../portfolioMain/portfolio.html"},
+                {"name": {"en": "2. About", "ko": "2. About"}, "description": {"en": "Discover Oosu's personal story, skills, values, and design process.", "ko": "Oosu님의 이야기, 스킬, 가치관, 디자인 프로세스를 알아보세요."}, "link": "../about/about.html"},
+                {"name": {"en": "3. Career", "ko": "3. 경력"}, "description": {"en": "Explore professional experiences, education, and awards with detailed narratives.", "ko": "전문 경력, 학력, 수상 내역을 상세한 서사와 함께 확인하세요."}, "link": "../career/career.html"},
+                {"name": {"en": "4. Lab", "ko": "4. Lab"}, "description": {"en": "See creative experiments and side projects, often with code demos.", "ko": "창의적인 실험과 사이드 프로젝트(종종 코드 데모 포함)를 구경하세요."}, "link": "../lab/lab.html"},
+                {"name": {"en": "5. Connect", "ko": "5. Connect"}, "description": {"en": "Find ways to connect with Oosu and use the AI Smart Assistant for drafting messages.", "ko": "Oosu님과 연결하는 방법을 찾고, AI 스마트 어시스턴트로 메시지 초안을 작성해보세요."}, "link": "../connect/connect.html"}
             ],
             "response_type": "list_and_link",
             "followUpActions": [
@@ -874,7 +875,7 @@
             "followUpActions": [
                 {"label": {"en": "What services do you offer?", "ko": "어떤 서비스를 제공하나요?"}, "query": {"en": "service offerings", "ko": "제공 서비스"}},
                 {"label": {"en": "What's your preferred collaboration type?", "ko": "선호하는 협업 유형은?"}, "query": {"en": "preferred collaboration type", "ko": "선호 협업 유형"}},
-                {"label": {"en": "Where can I send a job offer?", "ko": "채용 제안은 어디로 보내면 되나요?"}, "query": {"en": "where to send job offer", "ko": "채용 제안 보내는 곳"}, "action": "navigate", "target_page": "connect", "url_fragment": "connect/connect.html#postcard-section"}
+                {"label": {"en": "Where can I send a job offer?", "ko": "채용 제안은 어디로 보내면 되나요?"}, "query": {"en": "where to send job offer", "ko": "채용 제안 보내는 곳"}, "action": "navigate", "target_page": "connect", "url_fragment": "../connect/connect.html#postcard-section"}
             ]
         }
     },

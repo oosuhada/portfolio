@@ -1,19 +1,24 @@
-// common/ai_chat.js
-
-// ai_chat_logic.js 모듈에서 AIPortfolioLogic 객체를 임포트합니다.
-import { AIPortfolioLogic } from './ai_chat_logic.js';
-
+/*
+* AI Portfolio Chat - JS Final Logic (2025 Trend Edition)
+* This script handles all client-side logic for the AI chat modal,
+* including state transitions, event handling, and dynamic content rendering.
+*/
 document.addEventListener('DOMContentLoaded', function() {
     console.log("[AI_Portfolio_Chat] DOM content loaded. Initializing AI portfolio chat modal.");
 
     // --- DOM Element References ---
     const aiPortfolioChatModal = document.getElementById('ai-portfolio-chat-modal');
+    const aiAssistantFAB = document.getElementById('ai-assistant-FAB');
+
+    if (!aiPortfolioChatModal) {
+        console.warn("[AI_Portfolio_Chat] AI Portfolio Chat Modal element not found. Chat functionality will be disabled.");
+        return;
+    }
+
     const closePortfolioChatModalBtn = aiPortfolioChatModal.querySelector('.close-button');
     const portfolioChatMessagesContainer = document.getElementById('portfolioChatMessages');
     const aiPortfolioChatInput = document.getElementById('aiPortfolioChatInput');
     const aiPortfolioChatSendBtn = document.getElementById('aiPortfolioChatSendBtn');
-
-    // AI Result Display Areas (Loading, Final Results)
     const portfolioLoadingStatus = document.getElementById('portfolioLoadingStatus');
     const portfolioLoadingLottieContainer = document.getElementById('portfolioLoadingLottie');
     const portfolioLoadingText = document.getElementById('portfolioLoadingText');
@@ -24,27 +29,31 @@ document.addEventListener('DOMContentLoaded', function() {
     const portfolioFollowUpButtons = document.getElementById('portfolioFollowUpButtons');
 
     let portfolioLottieAnimation;
+    let aiAssistantHeaderLottieAnimation;
+    let sendButtonLottieAnimation;
     let isLoading = false;
-    let loadingTimeouts = []; // Stores loading sequence timeouts
-
-    // --- Language Setting Variable (Default: English) ---
+    let loadingTimeouts = [];
     let currentLanguage = navigator.language.startsWith('ko') ? 'ko' : 'en';
 
-    // AI 로직 파일에 현재 언어 설정 전달
-    AIPortfolioLogic.setLanguage(currentLanguage);
+    function initializeAILogic() {
+        if (typeof window.AIPortfolioLogic?.loadKnowledgeBase === 'function') {
+            window.AIPortfolioLogic.setLanguage(currentLanguage);
+            window.AIPortfolioLogic.loadKnowledgeBase().then(() => {
+                console.log("[AI_Portfolio_Chat] AI logic data ready.");
+                resetPortfolioChatModal();
+                aiPortfolioChatInput.placeholder = currentLanguage === 'ko' ?
+                    "궁금한 점을 입력해주세요" :
+                    "Ask me anything";
+            }).catch(error => {
+                console.error("Failed to load AI data for logic:", error);
+                addPortfolioChatMessage(currentLanguage === 'ko' ? "AI 어시스턴트 데이터 로딩에 실패했습니다." : "Failed to load AI assistant data.", 'bot');
+            });
+        } else {
+            console.log("[AI_Portfolio_Chat] AIPortfolioLogic not yet available, retrying...");
+            setTimeout(initializeAILogic, 50);
+        }
+    }
 
-    // AI 데이터 로드 (초기 로드 또는 필요 시).
-    AIPortfolioLogic.loadKnowledgeBase().then(() => {
-        console.log("[AI_Portfolio_Chat] AI logic data ready.");
-        resetPortfolioChatModal(); // 데이터 로드 후 초기 봇 메시지를 다시 설정하여 언어 반영
-    }).catch(error => {
-        console.error("Failed to load AI data for logic:", error);
-        addPortfolioChatMessage(currentLanguage === 'ko' ?
-            "죄송합니다. AI 어시스턴트 데이터 로딩에 실패했습니다. 관리자에게 문의해주세요." :
-            "Sorry, failed to load AI assistant data. Please contact the administrator.", 'bot');
-    });
-
-    // --- Lottie Animation Initialization (Modal Loading) ---
     function initializePortfolioLottie() {
         if (portfolioLoadingLottieContainer && !portfolioLottieAnimation) {
             portfolioLottieAnimation = lottie.loadAnimation({
@@ -54,429 +63,335 @@ document.addEventListener('DOMContentLoaded', function() {
                 autoplay: false,
                 path: 'https://gist.githubusercontent.com/oosuhada/10350c165ecf9363a48efa8f67aaa401/raw/ea144b564bea1a65faffe4b6c52f8cc1275576de/ai-assistant-logo.json'
             });
-            portfolioLottieAnimation.addEventListener('DOMLoaded', () => {
-                portfolioLottieAnimation.playSegments([61, 89], true);
+            portfolioLottieAnimation.addEventListener('DOMLoaded', () => portfolioLottieAnimation.playSegments([61, 89], true));
+        }
+        const aiAssistantHeaderLottieContainer = document.getElementById('aiAssistantHeaderLottie');
+        if (aiAssistantHeaderLottieContainer && !aiAssistantHeaderLottieAnimation) {
+            aiAssistantHeaderLottieAnimation = lottie.loadAnimation({
+                container: aiAssistantHeaderLottieContainer,
+                renderer: 'svg',
+                loop: true,
+                autoplay: true,
+                path: 'https://gist.githubusercontent.com/oosuhada/10350c165ecf9363a48efa8f67aaa401/raw/ea144b564bea1a65faffe4b6c52f8cc1275576de/ai-assistant-logo.json'
             });
+        }
+
+        if (aiPortfolioChatSendBtn && !sendButtonLottieAnimation) {
+            const lottieDiv = document.createElement('div');
+            lottieDiv.classList.add('lottie-animation');
+            aiPortfolioChatSendBtn.appendChild(lottieDiv);
+            sendButtonLottieAnimation = lottie.loadAnimation({
+                container: lottieDiv,
+                renderer: 'svg',
+                loop: true,
+                autoplay: true,
+                path: 'https://gist.githubusercontent.com/oosuhada/10350c165ecf9363a48efa8f67aaa401/raw/ea144b564bea1a65faffe4b6c52f8cc1275576de/ai-assistant-logo.json'
+            });
+            sendButtonLottieAnimation.addEventListener('DOMLoaded', () => sendButtonLottieAnimation.playSegments([61, 89], true));
         }
     }
 
-    // --- Modal Open/Close Functions ---
     function openPortfolioChatModal() {
-        aiPortfolioChatModal.style.display = 'flex';
-        setTimeout(() => {
-            aiPortfolioChatModal.classList.add('show');
-            aiPortfolioChatInput.focus();
-            portfolioChatMessagesContainer.scrollTop = portfolioChatMessagesContainer.scrollHeight;
-        }, 10);
+        if (aiAssistantFAB) {
+            aiAssistantFAB.classList.add('hidden');
+        }
+        aiPortfolioChatModal.classList.add('show', 'stage-1');
     }
 
     function closePortfolioChatModal() {
-        aiPortfolioChatModal.classList.remove('show');
-        setTimeout(() => {
-            aiPortfolioChatModal.style.display = 'none';
-            resetPortfolioChatModal();
-        }, 300);
+        aiPortfolioChatModal.classList.remove('show', 'stage-1', 'stage-2');
+        if (aiAssistantFAB) {
+            aiAssistantFAB.classList.remove('hidden');
+        }
+        setTimeout(resetPortfolioChatModal, 400);
     }
 
     function resetPortfolioChatModal() {
-        // Hide all dynamic content
-        portfolioLoadingStatus.style.display = 'none';
-        aiPortfolioResults.style.display = 'none';
-
-        // Reset chat messages (keep only initial bot message)
-        // JSON 데이터의 initial_suggestions를 직접 사용하도록 변경
-        const initialSuggestions = AIPortfolioLogic.getInitialSuggestions(currentLanguage);
-
-        let suggestionButtonsHtml = '';
-        if (initialSuggestions && initialSuggestions.length > 0) {
-            suggestionButtonsHtml = initialSuggestions.map(s => `
-                <button class="ai-action-btn suggestion-btn" data-query="${s.query}">${s.label}</button>
-            `).join('');
+        if (portfolioLoadingStatus && portfolioLoadingStatus.parentNode) {
+            portfolioLoadingStatus.parentNode.removeChild(portfolioLoadingStatus);
         }
-
-        portfolioChatMessagesContainer.innerHTML = `
-            <div class="chat-message bot-message">
-                ${currentLanguage === 'ko' ? "안녕하세요! Oosu님의 AI 포트폴리오 어시스턴트입니다. 무엇을 도와드릴까요?" : "Hello! I'm Oosu's AI Portfolio Assistant. How can I help you today?"}
-            </div>
-            <div class="chat-message bot-message initial-suggestion">
-                <p>${currentLanguage === 'ko' ? "예시 질문:" : "Example questions:"}</p>
-                ${suggestionButtonsHtml}
-            </div>
-        `;
-
-        aiPortfolioChatInput.value = '';
-
-        // Reset loading steps
-        document.querySelectorAll('#portfolioLoadingStatus .ai-loading-progress .step').forEach(step => {
-            step.setAttribute('data-status', '');
-        });
-
-        // Stop and reset Lottie animation
-        if (portfolioLottieAnimation) {
-            portfolioLottieAnimation.stop();
+        if (aiPortfolioResults) aiPortfolioResults.classList.remove('show');
+        if (portfolioFollowUpActions) portfolioFollowUpActions.classList.remove('show');
+        let initialSuggestions = window.AIPortfolioLogic?.getInitialSuggestions() || [];
+        let suggestionButtonsHtml = initialSuggestions.map(s => `<button class="ai-action-btn suggestion-btn" data-query="${s.query}">${s.label}</button>`).join('');
+        if (portfolioChatMessagesContainer) {
+            portfolioChatMessagesContainer.innerHTML = `
+<div class="chat-message bot-message">
+${currentLanguage === 'ko' ? "안녕하세요! Oosu님의 AI 포트폴리오 어시스턴트입니다. 무엇을 도와드릴까요?" : "Hello! I'm Oosu's AI Portfolio Assistant. How can I help you today?"}
+</div>
+<div class="chat-message bot-message initial-suggestion">
+<p>${currentLanguage === 'ko' ? "예시 질문:" : "Example questions:"}</p>
+${suggestionButtonsHtml}
+</div>
+`;
+        } else {
+            console.warn("[AI_Portfolio_Chat] portfolioChatMessagesContainer not found during reset. Initial messages might not appear.");
         }
-
-        // Clear result area content
-        portfolioInsightText.textContent = '';
-        portfolioResultCardsContainer.innerHTML = '';
-        portfolioFollowUpButtons.innerHTML = '';
-        portfolioFollowUpActions.style.display = 'none';
-
-        // Show only chat interface again
-        aiPortfolioChatInput.style.display = 'block';
-        aiPortfolioChatSendBtn.style.display = 'block';
-        portfolioChatMessagesContainer.style.display = 'flex';
-
-        // Remove confetti container (if it was created from previous search)
+        if (aiPortfolioChatInput) aiPortfolioChatInput.value = '';
+        document.querySelectorAll('#portfolioLoadingStatus .ai-loading-progress .step').forEach(step => step.setAttribute('data-status', ''));
+        if (portfolioLottieAnimation) portfolioLottieAnimation.stop();
         const confettiContainer = aiPortfolioChatModal.querySelector('.confetti-container');
-        if (confettiContainer) {
-            confettiContainer.remove();
-        }
+        if (confettiContainer) confettiContainer.remove();
     }
 
-    // --- Add Chat Message Function ---
-    function addPortfolioChatMessage(message, type) {
+    function addPortfolioChatMessage(message, type, ...additionalClasses) {
+        if (!portfolioChatMessagesContainer) {
+            console.error("[AI_Portfolio_Chat] Cannot add message: portfolioChatMessagesContainer is null.");
+            return;
+        }
         const messageElement = document.createElement('div');
-        messageElement.classList.add('chat-message', `${type}-message`);
+        messageElement.classList.add('chat-message', `${type}-message`, ...additionalClasses);
         messageElement.innerHTML = message;
         portfolioChatMessagesContainer.appendChild(messageElement);
         portfolioChatMessagesContainer.scrollTop = portfolioChatMessagesContainer.scrollHeight;
     }
 
-    // --- Set Loading State Function ---
+    // =========================================================================
+    // MODIFIED FUNCTION: transitionToStage2
+    // 콜백 로직을 제거하고 UI 전환 역할만 수행하도록 단순화합니다.
+    // =========================================================================
+    function transitionToStage2() {
+        if (!aiPortfolioChatModal) {
+            console.warn("[AI_Portfolio_Chat] transitionToStage2 aborted: aiPortfolioChatModal is null.");
+            return;
+        }
+        if (aiPortfolioChatModal.classList.contains('stage-1')) {
+            console.log('Transitioning from Stage 1 to Stage 2.');
+            aiPortfolioChatModal.classList.remove('stage-1');
+            aiPortfolioChatModal.classList.add('stage-2');
+        }
+    }
+
     function setLoadingState(loading) {
         isLoading = loading;
-        aiPortfolioChatInput.disabled = loading;
-        aiPortfolioChatSendBtn.disabled = loading;
-        aiPortfolioChatSendBtn.classList.toggle('loading', loading);
-
+        if (aiPortfolioChatInput) aiPortfolioChatInput.disabled = loading;
+        if (aiPortfolioChatSendBtn) {
+            aiPortfolioChatSendBtn.disabled = loading;
+            if (sendButtonLottieAnimation) {
+                if (loading) {
+                    sendButtonLottieAnimation.stop();
+                } else {
+                    sendButtonLottieAnimation.playSegments([61, 89], true);
+                }
+            }
+        }
         if (loading) {
-            portfolioLoadingStatus.style.display = 'flex';
-            aiPortfolioResults.style.display = 'none';
-            portfolioChatMessagesContainer.style.display = 'none';
-            aiPortfolioChatInput.style.display = 'none';
-            aiPortfolioChatSendBtn.style.display = 'none';
+            if (portfolioLoadingStatus) {
+                portfolioLoadingStatus.classList.add('active');
+                if (portfolioChatMessagesContainer) {
+                    portfolioChatMessagesContainer.appendChild(portfolioLoadingStatus);
+                    portfolioChatMessagesContainer.scrollTop = portfolioChatMessagesContainer.scrollHeight;
+                }
+            }
             if (portfolioLottieAnimation) portfolioLottieAnimation.play();
         } else {
-            portfolioLoadingStatus.style.display = 'none';
+            if (portfolioLoadingStatus && portfolioLoadingStatus.parentNode) {
+                portfolioLoadingStatus.parentNode.removeChild(portfolioLoadingStatus);
+            }
+            if (portfolioLoadingStatus) portfolioLoadingStatus.classList.remove('active');
             if (portfolioLottieAnimation) portfolioLottieAnimation.stop();
         }
     }
 
-    // --- Update Loading Step Function ---
-    function updateLoadingStep(index, status) {
-        const steps = document.querySelectorAll('#portfolioLoadingStatus .ai-loading-progress .step');
-        if (steps[index]) {
-            steps[index].setAttribute('data-status', status);
-            gsap.fromTo(steps[index],
-                { opacity: 0, x: -20 },
-                { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out' }
-            );
-        }
-    }
-
-    // --- Run Loading Sequence Function ---
     function runLoadingSequence() {
         loadingTimeouts.forEach(clearTimeout);
         loadingTimeouts = [];
         const messages = [
-            { text_en: "Analyzing your question...", text_ko: "사용자님의 질문을 분석 중입니다...", delay: 1500, step_text_en: "Analyzing your question", step_text_ko: "질문 분석 중" },
-            { text_en: "Searching portfolio data...", text_ko: "포트폴리오에서 관련 정보를 탐색 중입니다...", delay: 2000, step_text_en: "Searching portfolio data", step_text_ko: "포트폴리오 데이터 탐색 중" },
-            { text_en: "Generating a tailored response...", text_ko: "가장 적합한 답변을 생성하고 있습니다...", delay: 2000, step_text_en: "Generating a tailored response", step_text_ko: "맞춤 답변 생성 중" }
+            { text_en: "Analyzing your question...", text_ko: "질문 분석 중...", delay: 1500 },
+            { text_en: "Searching portfolio data...", text_ko: "포트폴리오 탐색 중...", delay: 2000 },
+            { text_en: "Generating a response...", text_ko: "답변 생성 중...", delay: 2000 }
         ];
-
         let cumulativeDelay = 0;
-        const step1Text = document.querySelector('#portfolioLoadingStatus .ai-loading-progress .step:nth-child(1)');
-        const step2Text = document.querySelector('#portfolioLoadingStatus .ai-loading-progress .step:nth-child(2)');
-        const step3Text = document.querySelector('#portfolioLoadingStatus .ai-loading-progress .step:nth-child(3)');
-
-        step1Text.innerHTML = `<span class="circle">1</span> ${messages[0][`step_text_${currentLanguage}`]}`;
-        step2Text.innerHTML = `<span class="circle">2</span> ${messages[1][`step_text_${currentLanguage}`]}`;
-        step3Text.innerHTML = `<span class="circle">3</span> ${messages[2][`step_text_${currentLanguage}`]}`;
-
+        const steps = document.querySelectorAll('#portfolioLoadingStatus .ai-loading-progress .step');
+        steps.forEach((step, index) => step.innerHTML = `<span class="circle">${index + 1}</span> ${messages[index][`text_${currentLanguage}`]}`);
         updateLoadingStep(0, 'active');
-
         const updateText = (text) => {
-            gsap.to(portfolioLoadingText, {
-                opacity: 0,
-                duration: 0.2,
-                onComplete: () => {
-                    portfolioLoadingText.innerHTML = text;
+            if (portfolioLoadingText) {
+                gsap.to(portfolioLoadingText, { opacity: 0, duration: 0.2, onComplete: () => {
+                    portfolioLoadingText.textContent = text;
                     gsap.to(portfolioLoadingText, { opacity: 1, duration: 0.2 });
-                }
-            });
+                }});
+            }
         };
-
-        updateText(currentLanguage === 'ko' ? "AI 어시스턴트가 답변을 준비 중입니다..." : "AI assistant is preparing its response...");
-
+        updateText(currentLanguage === 'ko' ? "AI가 답변을 준비합니다..." : "AI is preparing a response...");
         messages.forEach((message, index) => {
             cumulativeDelay += message.delay;
             const timeout = setTimeout(() => {
                 updateText(message[`text_${currentLanguage}`]);
                 updateLoadingStep(index, 'done');
-                if (index < messages.length - 1) {
-                    updateLoadingStep(index + 1, 'active');
-                }
+                if (index < messages.length - 1) updateLoadingStep(index + 1, 'active');
             }, cumulativeDelay);
             loadingTimeouts.push(timeout);
         });
     }
 
-    // --- AI Response Fetching Function (delegates to ai_chat_logic.js) ---
-    async function fetchAIResponseFromLogic(query) {
-        console.log(`[AI Portfolio Chat] Delegating query to AI Logic: "${query}"`);
-
-        await new Promise(res => setTimeout(res, 2000));
-
-        try {
-            const responseData = AIPortfolioLogic.getAIResponse(query, currentLanguage);
-            if (!responseData) {
-                throw new Error('AI logic module did not return a valid response.');
-            }
-            return responseData;
-        } catch (error) {
-            console.error('Error getting response from AI logic module:', error);
-            return {
-                aiInsight: {
-                    en: 'Sorry, an error occurred while processing your request. Please try again.',
-                    ko: '죄송합니다, 요청을 처리하는 중 오류가 발생했습니다. 다시 시도해 주세요.'
-                },
-                results: [],
-                followUpActions: []
-            };
+    function updateLoadingStep(index, status) {
+        const steps = document.querySelectorAll('#portfolioLoadingStatus .ai-loading-progress .step');
+        if (steps[index]) {
+            steps[index].setAttribute('data-status', status);
+            gsap.fromTo(steps[index], { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out' });
         }
     }
 
-    // --- Function to Create Portfolio Card HTML ---
     function createPortfolioCardHTML(item) {
         const title = item.title;
         const description = item.description;
         const buttonText = currentLanguage === 'ko' ? '자세히 보기' : 'View Details';
-
+        let linkHtml = '';
+        if (item.type === 'project' && item.id) {
+            linkHtml = `<button class="card-action-btn view-project-via-modal" data-project-id="${item.id}">${buttonText}</button>`;
+        } else if (item.link) {
+            linkHtml = `<button class="card-action-btn" onclick="window.open('${item.link}', '_blank')">${buttonText}</button>`;
+        }
         if (item.type === 'project') {
-            return `
-                <div class="portfolio-card">
-                    <h4>${title}</h4>
-                    <p>${description}</p>
-                    <div class="tags">
-                        ${(item.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('')}
-                    </div>
-                    <button class="card-action-btn" ${item.link ? `onclick="window.open('${item.link}', '_blank')"` : 'disabled'}>${buttonText}</button>
-                </div>
-            `;
+            return `<div class="portfolio-card"><h4>${title}</h4><p>${description}</p><div class="tags">${(item.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('')}</div>${linkHtml}</div>`;
         } else if (item.type === 'skill') {
-            return `
-                <div class="portfolio-card">
-                    <h4>${title}</h4>
-                    <p>${description}</p>
-                    <div class="tags">
-                        ${(item.keywords || []).map(kw => `<span class="tag">${kw}</span>`).join('')}
-                    </div>
-                </div>
-            `;
+            return `<div class="portfolio-card"><h4>${title}</h4><p>${description}</p><div class="tags">${(item.keywords || []).map(kw => `<span class="tag">${kw}</span>`).join('')}</div>${linkHtml}</div>`;
         }
         return '';
     }
 
-    // --- Function to Render Portfolio Results in Modal ---
     function renderPortfolioResults(data) {
         setLoadingState(false);
+        const insightText = data.aiInsight?.[currentLanguage] || data.aiInsight?.['en'] || data.aiInsight || '';
+        if(insightText) addPortfolioChatMessage(insightText, 'bot');
 
-        const insightText = typeof data.aiInsight === 'object' && data.aiInsight !== null ?
-                            data.aiInsight[currentLanguage] || data.aiInsight['en'] :
-                            data.aiInsight || '';
-
-        addPortfolioChatMessage(insightText, 'bot');
-
-        aiPortfolioResults.style.display = 'flex';
-        portfolioInsightText.innerHTML = insightText;
-
-        portfolioResultCardsContainer.innerHTML = '';
-        if (data.results && data.results.length > 0) {
-            data.results.forEach(item => {
-                portfolioResultCardsContainer.innerHTML += createPortfolioCardHTML(item);
-            });
-        } else if (data.response_type !== 'text_only' && data.response_type !== 'list_and_text' && data.response_type !== 'text_and_link') {
-            portfolioResultCardsContainer.innerHTML = currentLanguage === 'ko' ?
-                '<p style="text-align:center; color:var(--gray500);">관련 정보를 찾을 수 없습니다. 다른 질문을 해주세요.</p>' :
-                '<p style="text-align:center; color:var(--gray500);">No relevant information found. Please ask another question.</p>';
-        }
-
-        portfolioFollowUpButtons.innerHTML = '';
-        if (data.followUpActions && data.followUpActions.length > 0) {
-            portfolioFollowUpActions.querySelector('.ai-chat-bubble').textContent = currentLanguage === 'ko' ? "💡 이런 것도 궁금하신가요?" : "💡 Curious about anything else?";
-            data.followUpActions.forEach(action => {
-                const btn = document.createElement('button');
-                btn.classList.add('ai-action-btn');
-                btn.dataset.query = typeof action.query === 'object' ? action.query['en'] : action.query;
-                btn.innerHTML = `<span class="icon">🤔</span> ${typeof action.label === 'object' ? action.label[currentLanguage] || action.label['en'] : action.label}`;
-                if (action.action) btn.dataset.action = action.action;
-                if (action.target_page) btn.dataset.targetPage = action.target_page;
-                if (action.target_id) btn.dataset.targetId = action.target_id;
-                if (action.url_fragment) btn.dataset.urlFragment = action.url_fragment;
-
-                portfolioFollowUpButtons.appendChild(btn);
-            });
-            portfolioFollowUpActions.style.display = 'block';
-        } else {
-            portfolioFollowUpActions.style.display = 'none';
-        }
-
-        if (data.additionalInfo) {
-            const additionalInfoText = typeof data.additionalInfo === 'object' && data.additionalInfo !== null ?
-                                       data.additionalInfo[currentLanguage] || data.additionalInfo['en'] :
-                                       data.additionalInfo || '';
-            if (additionalInfoText) {
-                addPortfolioChatMessage(additionalInfoText, 'bot');
+        if (data.results?.length > 0) {
+            let resultsHtml = data.results.map(createPortfolioCardHTML).join('');
+            addPortfolioChatMessage(resultsHtml, 'bot', 'result-cards-message');
+            if (portfolioChatMessagesContainer) {
+                gsap.fromTo(portfolioChatMessagesContainer.querySelectorAll(".portfolio-card"), { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out', delay: 0.1 });
             }
-        }
-
-        gsap.fromTo(aiPortfolioResults,
-            { opacity: 0, y: 20 },
-            { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }
-        );
-        gsap.fromTo(".portfolio-card",
-            { opacity: 0, x: -20 },
-            { opacity: 1, x: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out', delay: 0.3 }
-        );
-
-        aiPortfolioChatInput.style.display = 'block';
-        aiPortfolioChatSendBtn.style.display = 'block';
-        portfolioChatMessagesContainer.style.display = 'flex';
-
-        portfolioChatMessagesContainer.scrollTop = portfolioChatMessagesContainer.scrollHeight;
-
-        if (data.results && data.results.length > 0) {
             const confettiContainer = document.createElement('div');
             confettiContainer.className = 'confetti-container';
-            aiPortfolioChatModal.appendChild(confettiContainer);
-            lottie.loadAnimation({
-                container: confettiContainer,
-                renderer: 'svg',
-                loop: false,
-                autoplay: true,
-                path: 'https://lottie.host/81a94207-6f8d-4f1a-b605-2436893dd0ce/Y7v1z0e7vV.json'
-            });
-            setTimeout(() => confettiContainer.remove(), 3000);
+            if (aiPortfolioChatModal) {
+                aiPortfolioChatModal.appendChild(confettiContainer);
+                lottie.loadAnimation({ container: confettiContainer, renderer: 'svg', loop: false, autoplay: true, path: 'https://lottie.host/81a94207-6f8d-4f1a-b605-2436893dd0ce/Y7v1z0e7vV.json' });
+                setTimeout(() => confettiContainer.remove(), 3000);
+            }
+        } else if (!['text_only', 'list_and_text', 'text_and_link'].includes(data.response_type)) {
+            addPortfolioChatMessage(currentLanguage === 'ko' ? '관련 정보를 찾지 못했습니다.' : 'No relevant information found.', 'bot');
         }
 
-        if (data.action === 'navigate' && data.target_page) {
-            let targetUrl = `../${data.target_page}/${data.target_page}.html`;
-            if (data.url_fragment) {
-                targetUrl += `#${data.url_fragment}`;
+        if (data.followUpActions?.length > 0) {
+            const bubbleText = currentLanguage === 'ko' ? "💡 이런 것도 궁금하신가요?" : "💡 Curious about anything else?";
+            let buttonsHtml = data.followUpActions.map(action => {
+                const label = action.label?.[currentLanguage] || action.label?.['en'] || action.label;
+                const query = action.query?.['en'] || action.query;
+                return `<button class="ai-action-btn" data-query="${query}" data-action="${action.action || ''}" data-target-page="${action.target_page || ''}" data-url-fragment="${action.url_fragment || ''}"><span class="icon">🤔</span> ${label}</button>`;
+            }).join('');
+            addPortfolioChatMessage(`<div class="ai-chat-bubble">${bubbleText}</div><div class="follow-up-buttons">${buttonsHtml}</div>`, 'bot', 'follow-up-suggestion-message');
+        }
+
+        const additionalInfoText = data.additionalInfo?.[currentLanguage] || data.additionalInfo?.['en'] || data.additionalInfo || '';
+        if (additionalInfoText) addPortfolioChatMessage(additionalInfoText, 'bot');
+
+        if (data.action === 'navigate' && data.target_page && window.AIPortfolioLogic?.knowledgeBase?.navigation_map) {
+            const pageData = window.AIPortfolioLogic.knowledgeBase.navigation_map[data.target_page];
+            if (pageData?.page) {
+                let targetUrl = data.url_fragment ? `${pageData.page.split('#')[0]}#${data.url_fragment}` : pageData.page;
+                setTimeout(() => { window.location.href = targetUrl; closePortfolioChatModal(); }, 1000);
             }
-            setTimeout(() => {
-                window.location.href = targetUrl;
-                closePortfolioChatModal();
-            }, 1000);
         }
     }
 
-
-    // --- AI Search Handling Function ---
     async function handlePortfolioSearch(query) {
         if (isLoading) return;
-
-        addPortfolioChatMessage(query, 'user');
         setLoadingState(true);
         runLoadingSequence();
-
         try {
-            const data = await fetchAIResponseFromLogic(query);
+            const data = await window.AIPortfolioLogic.getAIResponse(query);
             renderPortfolioResults(data);
         } catch (error) {
             console.error("[AI Portfolio Search Error]", error);
-            addPortfolioChatMessage(currentLanguage === 'ko' ?
-                `죄송합니다. 오류가 발생했습니다: ${error.message}<br>잠시 후 다시 시도해주세요.` :
-                `Sorry, an error occurred: ${error.message}<br>Please try again shortly.`, 'bot');
+            addPortfolioChatMessage(currentLanguage === 'ko' ? "요청 처리 중 문제가 발생했습니다." : "An error occurred while processing your request.", 'bot');
             setLoadingState(false);
-            aiPortfolioChatInput.style.display = 'block';
-            aiPortfolioChatSendBtn.style.display = 'block';
-            portfolioChatMessagesContainer.style.display = 'flex';
         } finally {
             loadingTimeouts.forEach(clearTimeout);
         }
     }
-
-    // --- Send Button/Enter Key Handling Function ---
-    function handlePortfolioChatSend() {
-        const query = aiPortfolioChatInput.value.trim();
-        if (!query) return;
-
+    
+    // =========================================================================
+    // MODIFIED FUNCTION: handlePortfolioChatSend
+    // Stage 1일 경우, 콜백 없이 transitionToStage2()를 먼저 호출한 후,
+    // 곧바로 handlePortfolioSearch()를 실행하여 동시 진행을 유도합니다.
+    // =========================================================================
+    function handlePortfolioChatSend(queryOverride = '') {
+        if (!aiPortfolioChatInput || !portfolioChatMessagesContainer) return;
+        const query = queryOverride || aiPortfolioChatInput.value.trim();
+        if (!query || isLoading) return;
+        const isStage1 = aiPortfolioChatModal.classList.contains('stage-1');
         aiPortfolioChatInput.value = '';
-        handlePortfolioSearch(query);
+        addPortfolioChatMessage(query, 'user');
+        if (isStage1) {
+            transitionToStage2(); // 1. 애니메이션 전환 시작
+            handlePortfolioSearch(query); // 2. AI 검색 즉시 동시 시작
+        } else {
+            handlePortfolioSearch(query);
+        }
     }
 
     // --- Event Listeners ---
-    document.addEventListener('openAIPortfolioChatModal', openPortfolioChatModal);
-    closePortfolioChatModalBtn.addEventListener('click', closePortfolioChatModal);
-
-    // Close modal when clicking outside
-    window.addEventListener('click', (event) => {
-        if (event.target == aiPortfolioChatModal) {
-            closePortfolioChatModal();
-        }
-    });
-
-    // Input field Enter key event
-    aiPortfolioChatInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !isLoading) {
-            handlePortfolioChatSend();
-        }
-    });
-
-    // Send button click event
-    aiPortfolioChatSendBtn.addEventListener('click', () => {
-        if (!isLoading) {
-            handlePortfolioChatSend();
-        }
-    });
-
-    // Initial example question button click event (event delegation)
-    portfolioChatMessagesContainer.addEventListener('click', (e) => {
-        const suggestionBtn = e.target.closest('.suggestion-btn');
-        if (suggestionBtn) {
-            const query = suggestionBtn.dataset.query;
-            aiPortfolioChatInput.value = query;
-            handlePortfolioChatSend();
-        }
-    });
-
-    // Follow-up buttons click event (delegation for dynamically added buttons)
-    portfolioFollowUpButtons.addEventListener('click', (e) => {
-        const targetBtn = e.target.closest('.ai-action-btn');
-        if (!targetBtn) return;
-
-        const action = targetBtn.dataset.action;
-        const query = targetBtn.dataset.query;
-
-        if (action === 'navigate') {
-            const targetPage = targetBtn.dataset.targetPage;
-            const urlFragment = targetBtn.dataset.urlFragment || '';
-            const pageName = targetBtn.textContent.replace('🤔', '').trim();
-
-            closePortfolioChatModal();
-            let targetUrl = `../${targetPage}/${targetPage}.html`;
-            if (urlFragment) {
-                targetUrl += `#${urlFragment}`;
+    if (closePortfolioChatModalBtn) {
+        closePortfolioChatModalBtn.addEventListener('click', closePortfolioChatModal);
+    }
+    if (aiAssistantFAB) {
+        aiAssistantFAB.addEventListener('click', openPortfolioChatModal);
+    }
+    if (aiPortfolioChatModal) {
+        aiPortfolioChatModal.addEventListener('click', (event) => {
+            if (event.target === aiPortfolioChatModal && aiPortfolioChatModal.classList.contains('stage-2')) {
+                closePortfolioChatModal();
             }
-            setTimeout(() => {
-                window.location.href = targetUrl;
-            }, 300);
-        } else if (action === 'show_specific_item_details') {
-            aiPortfolioChatInput.value = query;
-            handlePortfolioChatSend();
-        } else {
-            aiPortfolioChatInput.value = query;
-            handlePortfolioChatSend();
+        });
+    }
+    document.addEventListener('click', (event) => {
+        if (!aiPortfolioChatModal || !aiPortfolioChatModal.classList.contains('stage-1')) return;
+        const modalContent = aiPortfolioChatModal.querySelector('.ai-portfolio-chat-modal-content');
+        const fabButton = document.getElementById('ai-assistant-FAB');
+        if (modalContent && fabButton && !modalContent.contains(event.target) && !fabButton.contains(event.target)) {
+            closePortfolioChatModal();
         }
     });
+    if (aiPortfolioChatInput) {
+        aiPortfolioChatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !isLoading) {
+                e.preventDefault();
+                handlePortfolioChatSend();
+            }
+        });
+    }
+    if (aiPortfolioChatSendBtn) {
+        aiPortfolioChatSendBtn.addEventListener('click', () => {
+            if (!isLoading) handlePortfolioChatSend();
+        });
+    }
+    if (portfolioChatMessagesContainer) {
+        portfolioChatMessagesContainer.addEventListener('click', (e) => {
+            const targetBtn = e.target.closest('.suggestion-btn, .view-project-via-modal, .follow-up-suggestion-message .ai-action-btn');
+            if (!targetBtn) return;
+            if (targetBtn.matches('.suggestion-btn')) {
+                handlePortfolioChatSend(targetBtn.dataset.query);
+            } else if (targetBtn.matches('.view-project-via-modal')) {
+                document.dispatchEvent(new CustomEvent('openProjectModalFromChat', { detail: { projectId: targetBtn.dataset.projectId } }));
+                closePortfolioChatModal();
+            } else if (targetBtn.matches('.follow-up-suggestion-message .ai-action-btn')) {
+                const { query, action, targetPage, urlFragment } = targetBtn.dataset;
+                if (action === 'navigate') {
+                    const pageData = window.AIPortfolioLogic?.knowledgeBase?.navigation_map?.[targetPage];
+                    if (pageData?.page) {
+                        let targetUrl = urlFragment ? `${pageData.page.split('#')[0]}#${urlFragment}` : pageData.page;
+                        closePortfolioChatModal();
+                        setTimeout(() => { window.location.href = targetUrl; }, 300);
+                    }
+                } else {
+                    handlePortfolioChatSend(query);
+                }
+            }
+        });
+    }
 
-    // Handle input field placeholder text
-    aiPortfolioChatInput.placeholder = currentLanguage === 'ko' ?
-        "질문이나 궁금한 점을 입력해주세요 (예: AI 관련 프로젝트 있나요?)" :
-        "Ask me anything (e.g., Do you have AI-related projects?)";
-
-    // Initial Lottie animation load (on DOMContentLoaded)
+    // --- Initialization ---
+    initializeAILogic();
     initializePortfolioLottie();
-}); 
+});

@@ -1,9 +1,10 @@
-/* ======================= about-main.css ======================= */
+/* ======================= about-main.css - Upgraded for Light/Dark Mode ======================= */
+
 /* ======================= 공통 카드 그리드 레이아웃: 모든 섹션에서 사용 ======================= */
 body {
   font-family: 'Pretendard', sans-serif;
-  color: var(--gray-dark);
-  line-height: 1.6;
+  /* [수정] body의 기본 텍스트 색상을 공통 변수로 지정 */
+  color: var(--text-primary-color);
 }
 
 /* 의미 단위 강조 - 마우스 오버/키보드 포커스 */
@@ -18,28 +19,28 @@ body {
 .meaning-chunk:focus {
   text-decoration: underline;
   text-underline-offset: 0.18em;
-  /* background: #f5f5f555; */
+  /* [권장] 필요 시 하이라이트 효과를 변수로 통일 가능 */
+  /* background: var(--yellow-highlight-light); */
   outline: none;
 }
 
 /* 섹션 레이아웃 및 간격 */
-.about-skills, /* Added .about-skills here for consistent padding */
+.about-skills,
 .about-values,
 .about-process {
   padding-left: clamp(0.7rem, 8vw, 10rem);
   padding-right: clamp(0.7rem, 8vw, 10rem);
-  padding-top: 5rem; /* Added consistent vertical padding */
-  padding-bottom: 5rem; /* Added consistent vertical padding */
+  padding-top: 5rem;
+  padding-bottom: 5rem;
   position: relative;
   box-sizing: border-box;
 }
-/* 각 섹션별 margin-bottom 개별 설정 */
 .about-funfacts {
   margin-bottom: 2rem;
   padding-left: clamp(0.7rem, 8vw, 10rem);
   padding-right: clamp(0.7rem, 8vw, 10rem);
-  padding-top: 3rem; /* Added consistent vertical padding */
-  padding-bottom: 3rem; /* Added consistent vertical padding */
+  padding-top: 3rem;
+  padding-bottom: 3rem;
   position: relative;
   box-sizing: border-box;
 }
@@ -54,12 +55,14 @@ body {
   font-weight: 700;
   margin-bottom: 4rem;
   text-align: left;
+  /* [수정] 라이트 모드 기본 그라데이션 */
   background: linear-gradient(45deg, #24243e, #414145);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   position: relative;
   padding-left: 2rem;
+  transition: background 0.3s ease;
 }
 
 .section-title::before {
@@ -70,72 +73,52 @@ body {
   transform: translateY(-50%);
   width: 0.5rem;
   height: 2.5rem;
+  /* [수정] 라이트 모드 기본 그라데이션 */
   background: linear-gradient(45deg, #24243e, #414145);
   border-radius: 0.25rem;
+  transition: background 0.3s ease;
 }
 
-/* 공통 카드(애니메이션 등) */
-/* .skill-card,
-.value-card,
-.process-card,
-.funfact-card {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: none !important; } */
-  /* This might be an issue if GSAP is not always controlling it. Consider if this !important is necessary. */
+/* [추가] 다크 모드에서 제목이 보이도록 밝은 그라데이션으로 변경 */
+body[data-theme="dark"] .section-title {
+  background: linear-gradient(45deg, var(--color-gray-100), var(--color-gray-300));
+  -webkit-background-clip: text; /* vendor prefix 유지 */
+  background-clip: text;
+}
+body[data-theme="dark"] .section-title::before {
+  background: linear-gradient(45deg, var(--color-gray-100), var(--color-gray-300));
+}
 
-/* .skill-card.in-view,
-.value-card.in-view,
-.process-card.in-view,
-.funfact-card.in-view {
-  opacity: 1;
-  transform: none;
-  transition:
-    transform 0.3s cubic-bezier(.23,1.12,.67,1.08),
-    box-shadow 0.3s cubic-bezier(.23,1.12,.67,1.08),
-    background 0.35s cubic-bezier(.23,1.12,.67,1.08),
-    color 0.35s cubic-bezier(.23,1.12,.67,1.08);
-} */
-/* .skill-card.in-view:hover,
-.value-card.in-view:hover,
-.process-card.in-view:hover,
-.funfact-card.in-view:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-  z-index: 2;
-} */
 
 /* ======================= 한지+그레인 배경 (공통) ======================= */
 .section-background-active {
-  position: relative; /* Positioning context for pseudo-elements */
-  /* width, left, right, margin-left, margin-right removed from here */
+  position: relative;
   box-sizing: border-box;
-  overflow: hidden; /* To contain pseudo-elements if they somehow overflow (shouldn't with 100% height) */
-  z-index: 0; /* Base stacking context */
+  overflow: hidden;
+  z-index: 0;
 }
 
-/* 기본적으로 배경 효과는 투명 (opacity: 0) */
 .section-background-active::before,
 .section-background-active::after {
   content: "";
   position: absolute;
   top: 0;
-  left: 50%; /* Center pseudo-element */
-  transform: translateX(-50%); /* Align to center of parent */
-  width: 100vw; /* Full viewport width for the background */
-  height: 100%; /* Full height of the parent .section-background-active */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 100%;
   opacity: 0;
-  transition: opacity 0.8s cubic-bezier(.33,1.02,.45,.98); /* Smoother, slightly faster transition */
+  transition: opacity 0.8s cubic-bezier(.33,1.02,.45,.98);
   pointer-events: none;
-  z-index: -1; /* Position backgrounds behind the content of .section-background-active */
+  z-index: -1;
 }
 
-/* 스크롤 트리거로 .background-active가 붙을 때만 자연스럽게 등장 */
+/* 라이트 모드 배경 효과 */
 .section-background-active.background-active::before {
-  background: #f5f5f5 url('./hanji.') repeat center center/auto 520px;
+  background: var(--color-gray-100) url('./hanji.png') repeat center center/auto 520px; /* #f5f5f5를 변수로 */
   opacity: 0.22;
   mix-blend-mode: multiply;
-  transition-delay: 0.3s; /* Shorter delay for hanji to appear */
+  transition-delay: 0.3s;
 }
 .section-background-active.background-active::after {
   background: url('https://grainy-gradients.vercel.app/noise.svg');
@@ -143,22 +126,94 @@ body {
   background-repeat: repeat;
   opacity: 0.29;
   mix-blend-mode: multiply;
-  transition-delay: 0.2s; /* Optional: slight delay for grain or sync with hanji */
+  transition-delay: 0.2s;
 }
 
-/* about 페이지만 슬라이드 효과 따로 */
-/* body.about-page .nav-header {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  transition: transform 0.3s cubic-bezier(.4,0,.2,1) !important;
-  z-index: 9999 !important;
+/* [추가] 다크 모드에서 배경 효과가 잘 보이도록 수정 */
+body[data-theme="dark"] .section-background-active.background-active::before {
+  opacity: 0.1; /* 다크모드에서는 더 은은하게 */
+  mix-blend-mode: screen; /* multiply -> screen 으로 변경해야 밝은 텍스처가 보임 */
 }
-body.about-page .nav-header.hidden {
-  transform: translateY(-100%) !important;
-} */
+body[data-theme="dark"] .section-background-active.background-active::after {
+  opacity: 0.08; /* 다크모드에서는 더 은은하게 */
+  mix-blend-mode: overlay; /* multiply -> overlay 로 변경 */
+}
 
-/* 다크모드가 아직 없으므로 일단 filter:none 처리 */
-/* body[data-theme='dark'] #lottie-container #lottie-inner-section {
-    filter: none;
-} */
+
+/* ==========================================================================
+   ABOUT FIXED HEADER STYLES
+   ========================================================================== */
+
+.about-header {
+    position: fixed;
+    top: 10px;
+    z-index: 999;
+    width: 100%;
+    background-color: transparent;
+    transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.about-header.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-100%);
+}
+
+.about-header:not(.hidden) {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.about-header .about-header-inner {
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 1rem;
+}
+
+.about-header .theme-toggle-button {
+    padding: 0.5rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    position: relative;
+    width: 2rem;
+    height: 2rem;
+    transition: opacity 0.3s;
+    margin-top: 0.5rem;
+    margin-right: 1rem;
+    scale: 1.2;
+}
+
+.about-header .theme-toggle-button:hover {
+    opacity: 0.7;
+}
+
+.about-header .theme-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.3s, opacity 0.3s, stroke 0.3s ease;
+    /* [수정] 아이콘 색상을 공통 변수로 통합 */
+    stroke: var(--text-primary-color);
+}
+
+.about-header .theme-icon.hidden {
+    transform: translate(-50%, -50%) rotate(-90deg);
+    opacity: 0;
+}
+
+/* [삭제] 위에서 변수로 통합했으므로 개별 테마 설정은 더 이상 필요 없음 */
+/*
+body[data-theme="light"] .about-header .theme-icon {
+    stroke: #333;
+}
+body[data-theme="dark"] .about-header .theme-icon {
+    stroke: #eee;
+}
+*/

@@ -200,12 +200,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const opacity = minOpacity + (1 - minOpacity) * ratio;
     photo.style.opacity = opacity;
     desc.style.opacity = opacity;
-    const blurVal = 1.0 * (1 - ratio);
+    const blurVal = 0.5 * (1 - ratio); // Lowered blur intensity
     photo.style.filter = `blur(${blurVal}px)`;
     desc.style.filter = `blur(${blurVal}px)`;
-    const startC = 157, endC = 26;
-    const currC = Math.round(startC + (endC - startC) * ratio);
-    desc.style.color = `rgb(${currC},${currC},${currC})`;
+    // Removed: desc.style.color = `rgb(${currC},${currC},${currC})`;
   }
 
   function refreshLayout() {

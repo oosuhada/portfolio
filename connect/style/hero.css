@@ -73,7 +73,7 @@ body, button, input, textarea, ::placeholder {
     justify-content: flex-end;
     align-items: center;
     width: 100%;
-    padding: 1rem 2rem;
+    padding: 1rem 0rem;
 }
 
 .weather-section.hidden {
@@ -96,9 +96,9 @@ body, button, input, textarea, ::placeholder {
 }
 
 .weather .material-symbols-outlined {
-    width: 20px;
-    height: 20px;
-    margin-left: 4px;
+    width: 24px;
+    height: 24px;
+    margin-left: 10px;
     padding-bottom: 4px;
     font-variation-settings: "FILL" 0, "wght" 100, "GRAD" 0, "opsz" 48;
 }
@@ -286,7 +286,7 @@ body[data-theme="light"] .input--username:-webkit-autofill {
 /* Scroll Down Arrow */
 .scroll-down-arrow {
     position: absolute;
-    bottom: 20px;
+    bottom: 80px;
     left: 25px;
     transform: none;
     animation: bounce-left 2s infinite;

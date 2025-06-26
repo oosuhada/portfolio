@@ -1,21 +1,187 @@
-/* common.css */
-:root {
-  /* 라이트 모드 변수 */
-  --light-bg: #ffffff;      /* 라이트 모드 배경색 (흰색) */
-  --light-text: #1d1d1f;    /* 라이트 모드 텍스트 색상 (검은색 계열) */
+/* common.css - Upgraded Version */
 
-  /* 다크 모드 변수 */
-  --dark-bg: #121212;       /* 다크 모드 배경색 (검은색 계열) */
-  --dark-text: #f5f5f7;     /* 다크 모드 텍스트 색상 (밝은 회색/흰색 계열) */
+:root {
+  /* --- Base Color Palette (Neutral - Light Mode Default) --- */
+  /* These are the foundational colors for your design system. */
+  --color-white: #fff;
+  --color-black: #000;
+
+  --color-gray-100: #f5f8fa; /* Lightest gray for sections/backgrounds */
+  --color-gray-200: #e9e9e9; /* Lighter gray for backgrounds/borders */
+  --color-gray-300: #bdbdbd; /* Mid-light gray */
+  --color-gray-400: #888;    /* Mid gray */
+  --color-gray-500: #555;    /* Mid-dark gray */
+  --color-gray-600: #222;    /* Darkest gray for text/elements */
+
+  --color-yellow-light: #fff9b2;
+  --color-yellow-base: #FFD166;
+  --color-yellow-dark: #ffe26b; /* For lines, etc. */
+  --color-yellow-strong: #ffd93a;
+
+  --color-pink-base: #FFA4D3;
+  --color-pink-strong: #E36498;
+
+  /* --- [NEW] AI Chat/Brand Inspired Colors (for dark mode) --- */
+  /* These are specifically for the AI chat modal, but also good for general dark theme accents. */
+  --brand-primary: #4285f4; /* Google Blue */
+  --brand-secondary: #d96570; /* Google Red/Pink */
+
+  --ai-bg-primary: #242424; /* Main modal background */
+  --ai-bg-secondary: #383838; /* Input fields, bot messages */
+  --ai-bg-tertiary: #181818; /* Deeper background */
+  --ai-bg-lightest: #2a2a2a; /* Slightly lighter for contrast */
+
+  --ai-text-primary: #E3E3E3; /* Main text color */
+  --ai-text-secondary: #828282; /* Subheadings, less emphasized */
+  --ai-text-inverted: #ffffff; /* White text on dark/colored backgrounds */
+  --ai-border-color: #31373f;
+
+  /* --- Dynamic Theme Variables (Light Mode Defaults) --- */
+  /* These variables will change based on the 'data-theme' attribute on the body. */
+  --current-bg: var(--color-white);
+  --current-text: var(--color-black); /* [수정] 기본 텍스트를 가장 어둡게 */
+  --current-text-secondary: var(--color-gray-600); /* [수정] 보조 텍스트를 더 어둡게 */
+  --current-text-inverted: var(--color-white); /* Text color when on a dark/accent background */
+  --current-border: var(--color-gray-200);
+  --current-header-bg-opacity: rgba(255, 255, 255, 0.96); /* White with opacity for header */
+  --current-header-border: rgba(233, 233, 233, 0.67); /* Lighter border for header */
+  --current-header-nav-text: rgba(85, 85, 85, 0.66); /* Gray with opacity for nav text */
+  --current-header-nav-text-active: var(--color-gray-600); /* Dark text for active nav item */
+  --current-header-nav-bg-active: rgba(189, 189, 189, 0.67); /* Gray with opacity for active nav bg */
+  --current-toggle-btn-color: var(--color-gray-400);
+  --current-toggle-btn-hover-color: var(--color-gray-600);
+  --current-yellow-highlight: rgba(255, 226, 107, 0.7); /* Base highlight color */
+
+  /* --- Layout & Spacing --- */
+  --main-left-gap: 5vw;
+  /* --site-min-width: 860px; */ /* Consider removing if not strictly needed */
+
+ /* --- [추가] 전역으로 사용될 기본 색상 변수들 (Light Mode Default) --- */
+  --text-primary-color: var(--color-black); /* [수정] 메인 텍스트 색상 (더 진하게) */
+  --text-secondary-color: var(--color-gray-600); /* [수정] 보조 텍스트 색상 (더 진하게) */
+  --text-tertiary-color: var(--color-gray-500); /* [수정] 더 연한 텍스트/아이콘 색상 (더 진하게) */
+  --text-tertiary-color2: var(--color-gray-300); /* [수정] 더 연한 텍스트/아이콘 색상 (더 진하게) */
+  --text-tertiary-color3: var(--color-gray-100); /* [수정] 더 연한 텍스트/아이콘 색상 (더 진하게) */
+  --text-inverted-color: var(--color-white);
+  
+  --border-primary-color: var(--color-gray-200); /* 기본 보더 색상 */
+  --border-secondary-color: var(--color-gray-300); /* 약간 더 진한 보더 색상 */
+
+  --background-secondary: var(--color-gray-100); /* 보조 배경 (카드, 섹션 등) */
+  --background-tertiary: var(--color-gray-200); /* 더 연한 보조 배경 */
+  --background-card: var(--color-white); /* 카드 배경 */
+
+  --yellow-highlight-light: rgba(255, 226, 107, 0.7); /* 라이트 모드 옐로우 하이라이트 */
+  --yellow-base-color: var(--color-yellow-base); /* 기존 옐로우 베이스 */
+
+  --link-color: var(--brand-primary); /* 링크 색상 (선택 사항, 통일성을 위해) */
+  --link-hover-color: var(--brand-primary); /* 링크 호버 색상 (선택 사항) */
 }
 
+/* --- Dark Mode Overrides for Dynamic Theme Variables --- */
+body[data-theme="dark"] {
+  --current-bg: var(--ai-bg-primary); /* Main dark background */
+  --current-text: var(--ai-text-inverted); /* [수정] 기본 텍스트를 가장 밝게 (대비 강화) */
+  --current-text-secondary: var(--ai-text-primary); /* [수정] 보조 텍스트를 더 밝게 (대비 강화) */
+  --current-text-inverted: var(--ai-text-inverted); /* White text on dark/accent background */
+  --current-border: var(--ai-border-color); /* Dark mode border color */
+  --current-header-bg-opacity: rgba(31, 31, 31, 0.67); /* Dark with opacity for header */
+  --current-header-border: rgba(255, 255, 255, 0.12); /* Lighter border for header in dark mode */
+  --current-header-nav-text: rgba(227, 227, 227, 0.4); /* MODIFIED: Lighter text with more transparency for non-active nav text */
+  --current-header-nav-text-active: var(--ai-text-inverted); /* White text for active nav item in dark mode */
+  --current-header-nav-bg-active: rgba(21, 21, 21, 0.67); /* Black with slight transparency for active nav bg */
+  --current-toggle-btn-color: var(--ai-text-secondary);
+  --current-toggle-btn-hover-color: var(--ai-text-primary);
+  /* --current-yellow-highlight: rgba(66, 133, 244, 0.4); */ /* 이 라인은 이제 필요 없으므로 주석 처리하거나 삭제합니다. */
+
+  /* Specific cursor overrides for dark mode.
+     This assumes your cursor paths are set up to provide dark versions. */
+  --cursor-default: var(--cursor-pointer-dark);
+  --cursor-default2: var(--cursor-pointer-dark2);
+  --cursor-ew-resize: var(--cursor-ew-resize-dark);
+  --cursor-ew-resize2: var(--cursor-ew-resize-dark2);
+  --cursor-ask: var(--cursor-ask-dark);
+
+  /* --- [추가/수정] 다크 모드에서의 전역 색상 변수 값 --- */
+  --text-primary-color: var(--ai-text-inverted); /* [수정] 메인 텍스트 색상 (더 밝게) */
+  --text-secondary-color: var(--ai-text-primary); /* [수정] 보조 텍스트 색상 (더 밝게) */
+  --text-tertiary-color: var(--ai-text-secondary); /* [수정] 더 연한 텍스트/아이콘 색상 (더 밝게) */
+  --text-inverted-color: var(--ai-text-inverted);
+
+  --border-primary-color: var(--ai-border-color);
+  --border-secondary-color: var(--color-gray-600); /* 다크 모드에서 더 진한 보더 */
+
+  --background-secondary: var(--ai-bg-secondary);
+  --background-tertiary: var(--ai-bg-tertiary);
+  --background-card: var(--ai-bg-lightest); /* 다크 모드 카드 배경 */
+
+  --yellow-highlight-light: rgba(255, 255, 100, 0.3); /* 다크 모드 옐로우 하이라이트 조정 */
+  --yellow-base-color: var(--color-yellow-dark); /* 다크 모드에서 약간 더 진한 옐로우 */
+
+  --link-color: var(--brand-primary);
+  --link-hover-color: var(--brand-secondary); /* 다크 모드 링크 호버 색상 */
+}
+
+/* --- Cursor Variable Definitions (Separate for clarity) --- */
+/* Paths to cursor images */
+:root {
+  /* Light Mode Cursor Paths */
+  --cursor-pointer-light: url('../img/pointer-dark.png'), auto;
+  --cursor-pointer-light2: url('../../img/pointer-dark.png'), auto;
+  --cursor-ew-resize-light: url('../img/ew-resize-dark.png') 40 20, auto;
+  --cursor-ew-resize-light2: url('../../img/ew-resize-dark.png') 40 20, auto;
+  --cursor-ask-light: url('../img/asklightmode.png') 25 25, auto;
+
+  /* Dark Mode Cursor Paths */
+  --cursor-pointer-dark: url('../img/pointer-light.png'), auto;
+  --cursor-pointer-dark2: url('../../img/pointer-light.png'), auto;
+  --cursor-ew-resize-dark: url('../img/ew-resize-light.png') 40 20, auto;
+  --cursor-ew-resize-dark2: url('../../img/ew-resize-light.png') 40 20, auto;
+  --cursor-ask-dark: url('../img/askdarkmode.png') 25 25, auto;
+
+  /* Universal Grab Cursors (Path should be mode-agnostic if possible, or defined per mode if needed) */
+  --cursor-grab-single: url('../img/grab.png') 11 3, auto;
+  --cursor-grab-single2:  url('../../img/grab.png') 11 3, auto;
+  --cursor-grabbing-single: url('../img/grabbing.png') 11 3, auto;
+  --cursor-grabbing-single2: url('../../img/grabbing.png') 11 3, auto;
+  --cursor-grab-bottom: url('../img/grab-bottom.png') 0 50, auto;
+  --cursor-grab-bottom2:  url('../../img/grab-bottom.png') 0 50, auto;
+
+  /* Current Cursor Variable (Defaults to light mode) */
+  --cursor-default: var(--cursor-pointer-light);
+  --cursor-default2: var(--cursor-pointer-light2);
+  --cursor-pointer: var(--cursor-grab-single); /* Using grab for interactive pointer */
+  --cursor-grab: var(--cursor-grab-single);
+  --cursor-grab2: var(--cursor-grab-single2);
+  --cursor-grabbing: var(--cursor-grabbing-single);
+  --cursor-grabbing2: var(--grabbing-single2);
+  --cursor-ew-resize: var(--cursor-ew-resize-light);
+  --cursor-ew-resize2: var(--cursor-ew-resize-light2);
+  --cursor-ask: var(--cursor-ask-light);
+}
+
+/* --- Global Body & HTML Styles --- */
+html, body {
+  min-width: 100vw;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: 'Pretendard', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', Arial, sans-serif;
+  background: var(--current-bg);
+  color: var(--current-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  cursor: var(--cursor-default); /* Apply default cursor from variable */
+}
+
+/* --- Preloader --- */
 #preloader {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: #ffffff;
+    background: var(--current-bg); /* Use current background */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -26,116 +192,13 @@
 
 .loading-text {
     font-size: 2rem;
+    color: var(--current-text); /* Use current text color */
     animation: fade 1s ease-in-out infinite alternate;
 }
 
 @keyframes fade {
     0% { opacity: 0.2; }
     100% { opacity: 1; }
-}
-
-:root {
-    --main-left-gap: 5vw;
-    /* --site-min-width: 860px; */
-    --gray-dark: #222;
-    --gray-dark2: #22222293;
-    --gray: #555;
-    --gray2: #555555a9;
-    --gray-mid: #888;
-    --gray-mid2: rgba(136, 136, 136, 0.69);
-    --gray-light: #aaa;
-    --gray-bg: #86868600;
-    --gray-bg2: #e9e9e9aa;
-    --gray-section: #f5f8fa;
-    --white: #fff;
-    --white2: #ffffff9a;
-    --black: #000;
-    --black2: #00000069;
-    --yellow: #FFD166;
-    --yellow-pale: #fff9b2;
-    --yellow-line: #ffe26b;
-    --yellow-dark: #ffd93a;
-    --pink: #FFA4D3;
-    --pink-strong: #E36498;
-    --gray-active-nav-bg: #bdbdbdaa;
-    --gray-active-nav-text: var(--gray-dark);
-
-    /* ▼▼▼ [추가] 커스텀 커서 변수 정의 ▼▼▼ */
-    /* 라이트 모드 커서 */
-    --cursor-pointer-light: url('../img/pointer-dark.png'), auto;
-    --cursor-pointer-light2: url('../../img/pointer-dark.png'), auto;
-    --cursor-ew-resize-light: url('../img/ew-resize-dark.png') 40 20, auto;
-    --cursor-ew-resize-light2: url('../../img/ew-resize-dark.png') 40 20, auto;
-    --cursor-ask-light: url('../img/asklightmode.png') 25 25, auto;
-
-    /* 다크 모드 커서 */
-    --cursor-pointer-dark: url('../img/pointer-light.png'), auto;
-    --cursor-pointer-dark2: url('../../img/pointer-light.png'), auto;
-    --cursor-ew-resize-dark: url('../img/ew-resize-light.png') 40 20, auto;
-    --cursor-ew-resize-dark2: url('../../img/ew-resize-light.png') 40 20, auto;
-    --cursor-ask-dark: url('../img/askdarkmode.png') 25 25, auto;
-
-    /* 단일 이미지 커서 (모드 공통) */
-    --cursor-grab-single: url('../img/grab.png') 11 3, auto;
-    --cursor-grab-single2:  url('../../img/grab.png') 11 3, auto;
-    --cursor-grabbing-single: url('../img/grabbing.png') 11 3, auto;
-    --cursor-grabbing-single2: url('../../img/grabbing.png') 11 3, auto;
-
-    /* 현재 모드에 따라 적용될 커서 변수 (기본은 라이트 모드) */
-    --cursor-default: var(--cursor-pointer-light);
-    --cursor-default2: var(--cursor-pointer-light2);
-    --cursor-pointer: var(--cursor-grab-single);
-    --cursor-grab: var(--cursor-grab-single);
-    --cursor-grab2: var(--cursor-grab-single2);
-    --cursor-grabbing: var(--cursor-grabbing-single);
-    --cursor-grabbing2: var(--cursor-grabbing-single2);
-    --cursor-ew-resize: var(--cursor-ew-resize-light);
-    --cursor-ew-resize2: var(--cursor-ew-resize-light2);
-    --cursor-ask: var(--cursor-ask-light);
-}
-
-html.dark {
- --cursor-default: var(--cursor-pointer-dark);
-    --cursor-default2: var(--cursor-pointer-dark2);
-    --cursor-pointer: var(--cursor-grab-single);
-    --cursor-grab: var(--cursor-grab-single);
-    --cursor-grab2: var(--cursor-grab-single2);
-    --cursor-grabbing: var(--cursor-grabbing-single);
-    --cursor-grabbing2: var(--cursor-grabbing-single2);
-    --cursor-ew-resize: var(--cursor-ew-resize-dark);
-    --cursor-ew-resize2: var(--cursor-ew-resize-dark2);
-    --cursor-ask: var(--cursor-ask-dark);
-}
-
-html, body {
-  min-width: 100vw;
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-    font-family: 'Pretendard', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', Arial, sans-serif;
-    background: var(--white);
-}
-
-/* Add blur to body content when nav-header has 'header-blur-active' class */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: inherit;
-    filter: blur(10px);
-    z-index: 999;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-}
-
-/* 변경된 부분: header-blur-active 클래스에 따라 블러 배경 표시 */
-.nav-header.header-blur-active ~ body::before {
-    opacity: 1;
 }
 
 .visually-hidden {
@@ -150,227 +213,17 @@ body::before {
     border: 0;
 }
 
-/* Header Styles */
-.nav-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    background: #ffffff96;
-    backdrop-filter: blur(5px);
-    z-index: 1001;
-    border-bottom: 1px solid var(--gray-bg);
-    height: 3rem;
-    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), height 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(.4,0,.2,1);
-    overflow: hidden;
-    min-width: var(--site-min-width);
-    opacity: 1;
-    display: flex;
-    flex-direction: row;
-}
-
-.nav-header.hidden {
-    transform: translateY(-100%);
-    opacity: 0;
-    pointer-events: none;
-}
-
-.nav-header.expanded-desktop {
-    width: 100vw;
-    height: 3rem;
-    background: #ffffff96;
-    backdrop-filter: blur(5px);
-    border: 1px solid var(--gray-bg);
-}
-
-.nav-header.collapsed-desktop {
-    width: calc(100vw / 16);
-    height: 3rem;
-    background: transparent;
-    backdrop-filter: none;
-    border: none;
-}
-
-.nav-header.expanded-mobile {
-    height: auto;
-    width: 100vw;
-}
-
-.nav-top-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 3rem;
-    padding: 0 var(--main-left-gap);
-    width: calc(100vw / 16);
-    box-sizing: border-box;
-    flex-shrink: 0;
-    border-right: 1px solid var(--gray-bg);
-}
-
-.nav-toggle-btn {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    /* cursor 변수는 하단 전역 스타일에서 관리 */
-    color: var(--gray-mid);
-    padding: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.3s ease, color 0.3s ease;
-    flex-shrink: 0;
-}
-
-.nav-toggle-btn:hover {
-    color: var(--gray-dark);
-}
-
-.nav-toggle-btn.active .fas {
-    transform: rotate(90deg);
-}
-
-.nav-menu {
-    display: flex;
-    flex-direction: row;
-    width: calc(100vw * 15 / 16);
-    max-height: 3rem;
-    overflow: hidden;
-    transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out, width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    opacity: 1;
-}
-
-.nav-menu.expanded {
-    max-height: 3rem;
-    opacity: 1;
-    width: calc(100vw * 15 / 16);
-}
-
-.nav-menu:not(.expanded) {
-    max-height: 0;
-    opacity: 0;
-    width: 0;
-}
-
-.nav-center a {
-    text-decoration: none;
-    color: var(--gray2);
-    font-size: 1rem;
-    padding: 1rem;
-    text-align: center;
-    line-height: 1rem;
-    box-sizing: border-box;
-    position: relative;
-    overflow: hidden;
-    transition: background-color 0.3s ease;
-    border-right: 1px solid var(--gray-bg);
-    flex: 1 1 0%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.nav-center a:last-child {
-    border-right: none;
-}
-
-.nav-center a.truly-active {
-    background-color: var(--gray-active-nav-bg);
-}
-
-.nav-center a.truly-active > span.nav-text-wrapper {
-    color: var(--gray-active-nav-text);
-}
-
-.nav-center a.is-splashed {
-    background-color: var(--gray-active-nav-bg);
-}
-
-.nav-center a.is-splashed > span.nav-text-wrapper {
-    color: var(--gray-active-nav-text);
-}
-
-.nav-center a > span.nav-text-wrapper {
-    position: relative;
-    z-index: 1;
-    transition: color 0.3s ease;
-}
-
-/* Ink Splash and Confetti for Header/Navigation */
-.ink-splash {
-    position: absolute;
-    border-radius: 50%;
-    background-color: var(--gray);
-    transform: scale(0);
-    opacity: 0.7;
-    pointer-events: none;
-    animation: splash-effect 0.6s cubic-bezier(.4,0,.2,1);
-    z-index: 0;
-}
-
-@keyframes splash-effect {
-    0% { transform: scale(0); opacity: 0.7; }
-    50% { opacity: 0.5; }
-    100% { transform: scale(2.5); opacity: 0; }
-}
-
-.confetti-particle {
-    position: fixed;
-    pointer-events: none;
-    z-index: 10001;
-    opacity: 1;
-    will-change: transform, opacity, filter;
-}
-
-.screen-click-splash-blob {
-    position: absolute;
-    transform: scale(0);
-    opacity: 0.85;
-    pointer-events: none;
-    z-index: 9999;
-    animation: screen-blob-effect 0.7s cubic-bezier(.4,0,.2,1) forwards;
-}
-
-@keyframes screen-blob-effect {
-    0% { transform: scale(0.8); opacity: 0.85; filter: blur(1px); }
-    40% { opacity: 0.3; filter: blur(3px); }
-    100% { transform: scale(4.0); opacity: 0; filter: blur(10px); }
-}
-
-/* New Confetti Effect for Sustained Mousedown */
-.confetti-ink-splash {
-    position: absolute;
-    transform: scale(0);
-    opacity: 0.7;
-    pointer-events: none;
-    z-index: 10000;
-    animation: confetti-splash 0.7s ease-out forwards;
-}
-
-@keyframes confetti-splash {
-    0% { transform: scale(0); opacity: 1; }
-    50% { transform: scale(1); opacity: 0.8; }
-    100% { transform: scale(1.5); opacity: 0; }
-}
-
-.confetti-particle-effect {
-    position: fixed;
-    pointer-events: none;
-    z-index: 10001;
-    opacity: 1;
-    will-change: transform, opacity, filter;
-}
-
-/* Footer Styles */
+/* --- Footer Styles --- */
 footer {
     width: 100vw;
     height: 30vw;
-    min-width: var(--site-min-width);
+    min-width: var(--site-min-width, 860px);
     padding: 2rem var(--main-left-gap) 5rem 0;
     text-align: right;
-    color: var(--gray-mid);
+    color: var(--current-text-secondary); /* Use secondary text color */
     background: transparent;
     box-sizing: border-box;
+    z-index: 1000;
 }
 
 .footer-row {
@@ -391,25 +244,25 @@ footer {
 .footer-content p {
     margin: 0 0 1.5rem 0;
     font-size: 1.16rem;
-    color: var(--gray-mid);
+    color: var(--current-text-secondary); /* Use secondary text color */
     line-height: 2.1;
 }
 
 .footer-content a {
-    color: var(--pink-strong);
+    color: var(--color-pink-strong); /* Use a strong pink from base palette */
     text-decoration: none;
     font-weight: 600;
     transition: color 0.2s;
 }
 
 .footer-content a:hover {
-    color: var(--pink);
+    color: var(--color-pink-base); /* Use base pink on hover */
     text-decoration: underline;
 }
 
 .footer-copyright {
     font-size: 0.96rem;
-    color: var(--gray-light);
+    color: var(--current-text-secondary); /* Use secondary text color */
     display: block;
     margin-top: 1.2rem;
 }
@@ -432,28 +285,12 @@ footer {
     transform-origin: 50% 85%;
 }
 
-/* General footer background for 다크모드 대응*/
-footer {
-    background-color: transparent;
-    z-index: 8;
-    position: relative;
-    color: var(--dark-text);
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-body[data-theme="light"] footer {
-    background-color: transparent;
-    color: var(--light-text);
-}
-
-footer a {
-    color: var(--dark-text);
-    text-decoration: underline;
-    transition: color 0.3s ease;
-}
-
-/* 다크모드가 없는 특정 페이지들을 위해 페이지에서 직접 관리하도록 함 */
-body[data-theme='dark']:not(#portfolio-page):not(#about-page) #lottie-container #lottie-inner-section {
+/* --- Lottie Animation Filter (for dark mode compatibility) --- */
+/* Filter lottie for dark mode unless it's a portfolio/about page where it's handled differently */
+/* body[data-theme='dark']:not(#portfolio-page):not(#about-page) #lottie-container #lottie-inner-section {
+    filter: invert(75%);
+} */
+body[data-theme='dark'] #lottie-container #lottie-inner-section {
     filter: invert(75%);
 }
 
@@ -461,13 +298,12 @@ body[data-theme='light'] #lottie-container #lottie-inner-section {
     filter: none;
 }
 
-/* Highlighter Styles */
+/* --- Highlighter Styles --- */
 .meaning-chunk,
 .timeline-chunk,
 .skill-chunk,
 .timeline-tag-chunk1,
 .timeline-tag-chunk2 {
-    /* cursor 변수는 하단 전역 스타일에서 관리 */
     transition: background-color 0.3s ease;
     display: inline;
     padding-top: 0.1em;
@@ -477,69 +313,32 @@ body[data-theme='light'] #lottie-container #lottie-inner-section {
     border-radius: 3px;
 }
 
-.highlight-yellow { background-color: rgba(255, 226, 107, 0.7); }
+/* Ensure highlight colors adapt or are explicitly defined */
+/* Light Mode Default Colors */
+.highlight-yellow { background-color: var(--yellow-highlight-light); } /* 수정: 새로 정의한 변수 사용 */
 .highlight-pink { background-color: rgba(255, 164, 211, 0.6); }
 .highlight-orange { background-color: rgba(255, 159, 67, 0.6); }
 .highlight-green { background-color: rgba(130, 212, 167, 0.7); }
 .highlight-blue { background-color: rgba(137, 196, 244, 0.7); }
 .highlight-gray { background-color: rgba(204, 204, 204, 0.8); }
 
-.meaning-chunk.highlight-yellow,
-.timeline-chunk.highlight-yellow,
-.skill-chunk.highlight-yellow,
-.timeline-tag-chunk1.highlight-yellow,
-.timeline-tag-chunk2.highlight-yellow {
-    background-color: rgba(255, 226, 107, 0.7);
-}
+/* Explicit overrides for dark mode for specific highlight colors */
+body[data-theme="dark"] .highlight-yellow { background-color: rgba(255, 255, 100, 0.3); } /* 다크 모드 옐로우 하이라이트 직접 정의 */
+body[data-theme="dark"] .highlight-pink { background-color: rgba(255, 120, 190, 0.5); }
+body[data-theme="dark"] .highlight-orange { background-color: rgba(255, 180, 100, 0.5); }
+body[data-theme="dark"] .highlight-green { background-color: rgba(100, 220, 140, 0.6); }
+body[data-theme="dark"] .highlight-blue { background-color: rgba(100, 180, 255, 0.6); }
+body[data-theme="dark"] .highlight-gray { background-color: rgba(150, 150, 150, 0.7); }
 
-.meaning-chunk.highlight-pink,
-.timeline-chunk.highlight-pink,
-.skill-chunk.highlight-pink,
-.timeline-tag-chunk1.highlight-pink,
-.timeline-tag-chunk2.highlight-pink {
-    background-color: rgba(255, 164, 211, 0.6);
-}
 
-.meaning-chunk.highlight-orange,
-.timeline-chunk.highlight-orange,
-.skill-chunk.highlight-orange,
-.timeline-tag-chunk1.highlight-orange,
-.timeline-tag-chunk2.highlight-orange {
-    background-color: rgba(255, 159, 67, 0.6);
-}
-
-.meaning-chunk.highlight-green,
-.timeline-chunk.highlight-green,
-.skill-chunk.highlight-green,
-.timeline-tag-chunk1.highlight-green,
-.timeline-tag-chunk2.highlight-green {
-    background-color: rgba(130, 212, 167, 0.7);
-}
-
-.meaning-chunk.highlight-blue,
-.timeline-chunk.highlight-blue,
-.skill-chunk.highlight-blue,
-.timeline-tag-chunk1.highlight-blue,
-.timeline-tag-chunk2.highlight-blue {
-    background-color: rgba(137, 196, 244, 0.7);
-}
-
-.meaning-chunk.highlight-gray,
-.timeline-chunk.highlight-gray,
-.skill-chunk.highlight-gray,
-.timeline-tag-chunk1.highlight-gray,
-.timeline-tag-chunk2.highlight-gray {
-    background-color: rgba(204, 204, 204, 0.8);
-}
-
-/* Highlight Menu */
+/* --- Highlight Menu --- */
 #highlight-menu {
     position: absolute;
     display: none;
     align-items: center;
     gap: 8px;
-    background-color: #fff;
-    border: 1px solid var(--gray-bg);
+    background-color: var(--current-bg); /* Use current background */
+    border: 1px solid var(--current-border); /* Use current border */
     border-radius: 20px;
     padding: 6px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -547,10 +346,14 @@ body[data-theme='light'] #lottie-container #lottie-inner-section {
     user-select: none;
 }
 
+body[data-theme="dark"] #highlight-menu {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* Darker shadow for dark mode */
+}
+
 #highlight-menu .drag-handle {
     cursor: move;
     padding: 4px;
-    color: var(--gray-mid);
+    color: var(--text-secondary-color); /* 수정: --current-text-secondary 대신 --text-secondary-color 사용 */
     font-weight: bold;
     font-size: 14px;
     line-height: 1;
@@ -567,7 +370,6 @@ body[data-theme='light'] #lottie-container #lottie-inner-section {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    /* cursor 변수는 하단 전역 스타일에서 관리 */
     border: 2px solid transparent;
     transition: transform 0.2s ease, border-color 0.2s ease;
 }
@@ -577,235 +379,13 @@ body[data-theme='light'] #lottie-container #lottie-inner-section {
 }
 
 #highlight-menu .color-swatch.active {
-    border-color: var(--gray-dark);
+    border-color: var(--text-primary-color); /* 수정: --current-text 대신 --text-primary-color 사용 */
     transform: scale(1.1);
 }
 
-.color-swatch[data-color="yellow"] { background-color: #FFD166; }
-.color-swatch[data-color="pink"] { background-color: #FFA4D3; }
-.color-swatch[data-color="orange"] { background-color: #FF9F43; }
-.color-swatch[data-color="green"] { background-color: #82D4A7; }
-.color-swatch[data-color="blue"] { background-color: #89C4F4; }
-.color-swatch[data-color="gray"] { background-color: #CCC; }
-
-/* Media Query for Mobile (max-width: 767px) */
-@media (max-width: 767px) {
-    .nav-header {
-        flex-direction: column;
-        height: 3rem;
-        width: 100vw;
-        transform: translateY(0) !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-        background: transparent;
-        backdrop-filter: none;
-        border-bottom: none;
-    }
-
-    .nav-header.expanded-mobile {
-        height: auto;
-        background: #ffffff96;
-        backdrop-filter: blur(5px);
-        border-bottom: 1px solid var(--gray-bg);
-    }
-
-    .nav-top-row {
-        width: 100%;
-        justify-content: space-between;
-        padding: 0 var(--main-left-gap);
-        border-right: none;
-        height: 3rem;
-    }
-
-    .nav-title {
-        display: block;
-        display: none;
-    }
-
-    .nav-toggle-btn {
-        width: auto;
-        height: 100%;
-    }
-
-    .nav-menu {
-        flex-direction: column;
-        width: 100%;
-        max-height: 0;
-        opacity: 0;
-        transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
-    }
-
-    .nav-menu.expanded {
-        max-height: 500px;
-        opacity: 1;
-        transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
-    }
-
-    .nav-header.collapsed-desktop {
-        width: 100vw;
-        height: 3rem;
-    }
-}
-
-/* Media Query for Desktop (min-width: 768px) */
-@media (min-width: 768px) {
-    .nav-header {
-        flex-direction: row;
-        height: 3rem;
-        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, backdrop-filter 0.3s ease, border 0.3s ease;
-    }
-
-    .nav-header.expanded-desktop {
-        height: 3rem;
-        width: 100vw;
-        border: none;
-        background: #ffffff96;
-        backdrop-filter: blur(5px);
-    }
-
-    .nav-header.collapsed-desktop {
-        width: calc(100vw / 16);
-        background: transparent;
-        backdrop-filter: none;
-        border: none;
-    }
-
-    .nav-top-row {
-        width: calc(100vw / 16);
-        justify-content: center;
-        border-right: none;
-        padding: 0;
-    }
-
-    .nav-title {
-        display: none;
-    }
-
-    .nav-toggle-btn {
-        width: 100%;
-        height: 100%;
-    }
-
-    .nav-menu {
-        width: calc(100vw * 15 / 16);
-        flex-direction: row;
-        max-height: 3rem;
-        opacity: 1;
-        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
-    }
-
-    .nav-menu:not(.expanded) {
-        width: 0;
-        opacity: 0;
-    }
-
-    .nav-center a {
-        border-right: 1px solid var(--gray-bg);
-        border-bottom: none;
-        flex: 1 1 0%;
-    }
-
-    .nav-center a:last-child {
-        border-right: none;
-    }
-}
-
-html, body {
-  cursor: var(--cursor-default);
-}
-
-/*
-  클릭 등 상호작용이 가능한 모든 요소에 grab 커서를 일괄 적용합니다.
-  !important를 사용하여 다른 스타일에 의해 덮어쓰이는 것을 방지합니다.
-*/
-a,
-button,
-[role="button"],
-input[type="submit"],
-input[type="button"],
-.nav-toggle-btn,
-#highlight-menu .color-swatch,
-.meaning-chunk,
-.timeline-chunk,
-.skill-chunk,
-.timeline-tag-chunk1,
-.timeline-tag-chunk2 {
-    cursor: var(--cursor-grab);
-}
-
-/* ▼▼▼ [수정됨] AI Assistant Button Styles ▼▼▼ */
-#ai-assistant-FAB {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    width: 60px;
-    height: 60px;
-    z-index: 800;
-
-    /* [수정됨] 기본 커서 비활성화 */
-    cursor: none !important; /* 기본 커서를 숨깁니다. */
-
-    /* [수정됨] filter 효과에 애니메이션을 적용하기 위해 'filter'를 transition에 추가합니다. */
-    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), filter 0.4s ease;
-    opacity: 1;
-    transform: translateY(0) scale(1);
-
-    /* [추가됨] 기본 상태에서는 회색조(grayscale) 필터를 적용합니다. */
-    filter: grayscale(1);
-}
-
-/* [추가됨] 마우스를 올렸을 때(hover) 적용될 스타일 */
-#ai-assistant-FAB:hover {
-    /* 회색조 필터를 제거하여 원래 색상으로 표시합니다. */
-    filter: grayscale(0);
-
-    /* 크기를 1.1배 확대합니다. */
-    transform: scale(1.1);
-}
-
-#ai-assistant-FAB.hidden {
-    opacity: 0;
-    transform: translateY(20px) scale(0.9);
-    pointer-events: none;
-}
-
-/* 모바일 화면에서는 버튼 크기 및 위치 미세 조정 */
-@media (max-width: 767px) {
-    #ai-assistant-FAB {
-        width: 50px;
-        height: 50px;
-        bottom: 1.5rem;
-        right: 1.5rem;
-    }
-
-    /* 모바일에서는 hover 기능이 없으므로 필터를 비활성화하여 항상 컬러로 보이게 처리 */
-    #ai-assistant-FAB, #ai-assistant-FAB:hover {
-        filter: grayscale(0);
-    }
-}
-
-/* --- [추가] 커스텀 커서 요소 스타일 --- */
-#custom-cursor-dot {
-    position: fixed;
-    width: 8px; /* 작은 원 크기 */
-    height: 8px;
-    background-color: var(--pink-strong); /* 원 색상 */
-    border-radius: 50%;
-    pointer-events: none; /* 클릭 이벤트를 방해하지 않도록 설정 */
-    z-index: 900; /* AI 버튼보다 위에, 메뉴보다는 아래 */
-    opacity: 0; /* 초기에는 숨김 */
-    transform: translate(-50%, -50%); /* 중앙 정렬 */
-    transition: opacity 0.2s ease, transform 0.1s ease; /* 부드러운 움직임 */
-}
-
-#ai-assistant-ask-image {
-    position: absolute; /* AI Assistant FAB 내에서 절대 위치 */
-    width: 40px; /* 이미지 크기 조절 */
-    height: 40px;
-    top: -10px; /* FAB 좌측 상단으로 이동 */
-    left: -10px;
-    pointer-events: none;
-    opacity: 0; /* 초기에는 숨김 */
-    transition: opacity 0.3s ease;
-    z-index: 801; /* FAB보다 약간 높게 설정 */
-}
+.color-swatch[data-color="yellow"] { background-color: var(--color-yellow-base); }
+.color-swatch[data-color="pink"] { background-color: var(--color-pink-base); }
+.color-swatch[data-color="orange"] { background-color: #FF9F43; } /* Assuming this is a custom orange */
+.color-swatch[data-color="green"] { background-color: #82D4A7; } /* Assuming this is a custom green */
+.color-swatch[data-color="blue"] { background-color: #89C4F4; } /* Assuming this is a custom blue */
+.color-swatch[data-color="gray"] { background-color: var(--color-gray-300); } /* Use mid-light gray from palette */

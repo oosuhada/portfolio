@@ -1,26 +1,72 @@
 // common/ai_chat_logic.js
+// Transformers.js 라이브러리에서 필요한 함수를 동적으로 임포트
+const { pipeline, cos_sim } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.1');
 
 const AIPortfolioLogic = (() => {
-    // --- Private Variables ---
     let knowledgeBase = null; // JSON 데이터를 캐싱할 변수
     let currentLanguage = 'en'; // 현재 언어 설정
 
-    // --- Private Methods ---
+    // 로컬 라이브러리 인스턴스
+    let fuse;
+    let extractor; // Transformers.js 모델
+    let dbEmbeddings;
+    let documents;
 
     /**
-     * 포트폴리오 지식 베이스(JSON)를 비동기적으로 로드하고 캐싱합니다.
+     * 포트폴리오 지식 베이스(JSON)를 비동기적으로 로드하고 캐싱하며,
+     * Fuse.js 및 Transformers.js 모델을 초기화합니다.
      * @returns {Promise<void>}
      */
     async function loadKnowledgeBase() {
         if (knowledgeBase) return; // 이미 로드되었으면 실행하지 않음
         try {
             const response = await fetch('../common/ai_chat_data.json');
-            if (!response.ok) throw new Error('Knowledge base file not found.');
+            if (!response.ok) throw new Error('Knowledge base file not found or failed to fetch.');
             knowledgeBase = await response.json();
-            console.log("[AI_Portfolio_Logic] Knowledge Base loaded successfully.");
+            documents = knowledgeBase.search_documents;
+
+            if (!documents || !Array.isArray(documents) || documents.length === 0) {
+                console.warn("[AI_Portfolio_Logic] No search documents found in knowledgeBase. Fuse.js and Transformers.js will not be fully functional.");
+                documents = []; // 문서가 없으면 빈 배열로 초기화하여 이후 오류 방지
+            }
+
+            // Fuse.js 초기화
+            fuse = new Fuse(documents, {
+                keys: ['query_phrases'],
+                threshold: 0.6, // 0에 가까울수록 엄격, 1에 가까울수록 관대
+                includeScore: true // 점수 포함
+            });
+            console.log("[AI_Portfolio_Logic] Fuse.js initialized.");
+
+            // Transformers.js 모델 로드 및 임베딩 생성
+            console.log("[AI_Portfolio_Logic] Loading Transformers.js model...");
+            extractor = await pipeline('feature-extraction', 'Xenova/multilingual-e5-small');
+            console.log("[AI_Portfolio_Logic] Transformers.js model loaded.");
+
+            const itemsToEmbed = documents.map(doc => {
+                // Ensure text_for_embedding is a string, handling localization
+                const text = doc.text_for_embedding && typeof doc.text_for_embedding === 'object' ?
+                    doc.text_for_embedding[currentLanguage] || doc.text_for_embedding['en'] :
+                    doc.text_for_embedding;
+                return typeof text === 'string' ? text : ''; // Ensure it's a string
+            }).filter(Boolean); // Filter out empty strings
+
+            if (itemsToEmbed.length > 0) {
+                 dbEmbeddings = await extractor(itemsToEmbed, { pooling: 'mean', normalize: true });
+                 console.log("[AI_Portfolio_Logic] Document embeddings created.");
+            } else {
+                 console.warn("[AI_Portfolio_Logic] No valid text to create embeddings from. Transformers.js semantic search may not work.");
+                 dbEmbeddings = null;
+            }
+
+            console.log("[AI_Portfolio_Logic] Local libraries and knowledge base ready.");
+
         } catch (error) {
-            console.error("[AI_Portfolio_Logic] Error loading knowledge base:", error);
-            knowledgeBase = {}; // 오류 발생 시 빈 객체로 초기화
+            console.error("[AI_Portfolio_Logic] Critical error during knowledge base load or library initialization:", error);
+            knowledgeBase = null; // 오류 발생 시 knowledgeBase를 null로 설정하여 이후 접근 시 오류 명확화
+            fuse = null;
+            extractor = null;
+            dbEmbeddings = null;
         }
     }
 
@@ -31,6 +77,18 @@ const AIPortfolioLogic = (() => {
     function setLanguage(lang) {
         currentLanguage = lang;
         console.log(`[AI_Portfolio_Logic] Language set to: ${currentLanguage}`);
+    }
+
+    /**
+     * Knowledge Base에서 다국어 필드를 현재 언어에 맞게 추출합니다.
+     * @param {string|object} field - 다국어 객체 또는 단일 문자열
+     * @returns {string} 현재 언어에 맞는 텍스트 또는 영어 기본값
+     */
+    function getLocalizedText(field) {
+        if (typeof field === 'object' && field !== null) {
+            return field[currentLanguage] || field['en'] || '';
+        }
+        return field || '';
     }
 
     /**
@@ -46,7 +104,7 @@ const AIPortfolioLogic = (() => {
             if (query.includes(keyword)) {
                 return true;
             }
-            if (synonymsMap[keyword]) {
+            if (synonymsMap && synonymsMap[keyword]) {
                 if (synonymsMap[keyword].some(s => query.includes(s.toLowerCase()))) {
                     return true;
                 }
@@ -55,204 +113,159 @@ const AIPortfolioLogic = (() => {
         return false;
     }
 
-    /**
-     * 사용자 쿼리를 분석하여 가장 적합한 카테고리, 세부 항목, 의도를 찾아냅니다.
-     * @param {string} rawQuery - 사용자의 원본 질문 (대소문자 보존)
-     * @returns {object} { category, item, subSection, intent, score, action, target_page, url_fragment }
-     */
-    function processUserQuery(rawQuery) {
-        const normalizedQuery = rawQuery.toLowerCase().trim();
-        let bestMatch = {
-            category: null,
-            item: null,
-            subSection: null,
-            intent: null,
-            score: 0,
-            action: null,
-            target_page: null,
-            url_fragment: null
-        };
-
-        const keywordsMap = knowledgeBase.keywords_map;
-        const synonymsMap = knowledgeBase.synonyms_map[currentLanguage] || knowledgeBase.synonyms_map['en'];
-
-        // --- 1. 높은 우선순위: 상호작용 문구 처리 ---
-        if (matchesKeyword(normalizedQuery, ['hello', 'hi', '안녕', '안녕하세요', '반가워'], synonymsMap)) {
-            bestMatch.category = 'greeting'; bestMatch.score = 1000; return bestMatch;
+    // 1. Fuse.js 검색 로직
+    function runFuseSearch(query) {
+        if (!fuse || !documents || documents.length === 0) {
+            console.warn("[AI_Portfolio_Logic] Fuse.js not initialized or no documents to search.");
+            return null;
         }
-        if (matchesKeyword(normalizedQuery, ['thank', '고마워', '감사'], synonymsMap)) {
-            bestMatch.category = 'thank_you'; bestMatch.score = 1000; return bestMatch;
+        const results = fuse.search(query);
+        if (results.length > 0 && results[0].score < 0.6) { // 임계값 조정
+            console.log(`[AI_Portfolio_Logic] Fuse.js matched: ${results[0].item.id} with score ${results[0].score}`);
+            return results[0].item.response; // 매칭된 문서의 응답 템플릿 반환
         }
-        if (matchesKeyword(normalizedQuery, ['love it', 'amazing', 'cool', 'awesome', '대박', '멋져요', '마음에 들어요', '최고', '흥미롭다', 'fantastic', 'wonderful'], synonymsMap)) {
-            bestMatch.category = 'celebratory'; bestMatch.score = 1000; return bestMatch;
-        }
-        if (matchesKeyword(normalizedQuery, ['struggling', 'hard', 'difficult', '막막', '어려워요', '힘들어요', '고민', '좌절', 'confused', 'don\'t understand', 'complex', '복잡', '모르겠어요', '헷갈려요', 'overwhelmed', 'stressed', 'too much', '압도', '스트레스', '많다'], synonymsMap)) {
-            bestMatch.category = 'empathetic'; bestMatch.score = 1000; return bestMatch;
-        }
-
-        // --- 2. 'What If' 시나리오 검사 ---
-        for (const scenario of knowledgeBase.what_if_scenarios.scenarios) {
-            const scenarioKeywords = (Array.isArray(scenario.trigger_keywords) ? scenario.trigger_keywords : [scenario.trigger_keywords]).map(kw => kw.toLowerCase());
-            if (matchesKeyword(normalizedQuery, scenarioKeywords, synonymsMap)) {
-                bestMatch.category = 'what_if';
-                bestMatch.item = scenario.id;
-                bestMatch.score = 900;
-                return bestMatch;
-            }
-        }
-
-        // --- 3. 특정 페이지 이동 요청 (navigation_map) ---
-        for (const pageKey in knowledgeBase.navigation_map) {
-            const pageData = knowledgeBase.navigation_map[pageKey];
-            const pageKeywords = pageData.keywords.map(kw => kw.toLowerCase());
-            if (matchesKeyword(normalizedQuery, pageKeywords, synonymsMap)) {
-                bestMatch.category = 'navigation';
-                bestMatch.target_page = pageKey;
-                bestMatch.url_fragment = pageData.page.split('#')[1] || null;
-                bestMatch.action = 'navigate';
-                bestMatch.score = 800;
-                return bestMatch;
-            }
-        }
-
-        // --- 4. 메인 카테고리/아이템/의도 매칭 (더 복합적인 NLU) ---
-        let matchedCandidates = [];
-
-        for (const categoryKey in keywordsMap) {
-            const categoryData = keywordsMap[categoryKey];
-            let currentScore = 0;
-            let currentCandidate = {
-                category: categoryKey,
-                item: null,
-                subSection: null,
-                intent: null
-            };
-
-            // 4.1. 메인 키워드 매칭
-            const mainKeywords = categoryData.main_keywords ? categoryData.main_keywords.map(k => k.toLowerCase()) : [];
-            if (matchesKeyword(normalizedQuery, mainKeywords, synonymsMap)) {
-                currentScore += 100;
-            }
-
-            // 4.2. 서브 키워드 매칭 (특정 아이템)
-            if (categoryData.sub_keywords) {
-                for (const subKey in categoryData.sub_keywords) {
-                    const subItem = categoryData.sub_keywords[subKey];
-                    const subKeywords = [
-                        getLocalizedText(subItem.en).toLowerCase(), // Ensure localized text is processed
-                        getLocalizedText(subItem.ko).toLowerCase(),
-                        ...(subItem.variations || []).map(k => k.toLowerCase())
-                    ].filter(Boolean);
-
-                    if (matchesKeyword(normalizedQuery, subKeywords, synonymsMap)) {
-                        currentCandidate.item = subKey;
-                        currentScore += 200;
-                        break;
-                    }
-                }
-            }
-
-            // 4.3. 의도 키워드 매칭
-            if (categoryData.intent_keywords) {
-                for (const intentKey in categoryData.intent_keywords) {
-                    const intentKeywords = categoryData.intent_keywords[intentKey].map(k => k.toLowerCase());
-                    if (matchesKeyword(normalizedQuery, intentKeywords, synonymsMap)) {
-                        currentCandidate.intent = intentKey;
-                        currentScore += 50;
-                        break;
-                    }
-                }
-            }
-
-            // 4.4. 경력 서브 섹션 매칭
-            if (categoryKey === 'career' && knowledgeBase.response_categories.career.sections) {
-                for (const sectionKey in knowledgeBase.response_categories.career.sections) {
-                    const sectionData = knowledgeBase.response_categories.career.sections[sectionKey];
-                    const sectionKeywords = (sectionData.keywords || []).map(k => k.toLowerCase());
-                    if (matchesKeyword(normalizedQuery, sectionKeywords, synonymsMap)) {
-                        currentCandidate.subSection = sectionKey;
-                        currentScore += 150;
-                        break;
-                    }
-                }
-            }
-
-            if (currentScore > 0) {
-                currentCandidate.score = currentScore;
-                matchedCandidates.push(currentCandidate);
-            }
-        }
-
-        // 5. 가장 적합한 매칭 후보 선택
-        if (matchedCandidates.length > 0) {
-            matchedCandidates.sort((a, b) => b.score - a.score);
-            bestMatch = { ...bestMatch, ...matchedCandidates[0] };
-        }
-
-        // --- 6. 특정 명확한 질문에 대한 직접 매칭 (높은 점수 부여) ---
-        if (matchesKeyword(normalizedQuery, knowledgeBase.profile_info.keywords, synonymsMap)) {
-            bestMatch.category = 'about_me_deep_dive'; bestMatch.score = Math.max(bestMatch.score, 700);
-        }
-        if (matchesKeyword(normalizedQuery, knowledgeBase.keywords_map.about_ai_assistant.main_keywords, synonymsMap)) {
-            bestMatch.category = 'about_ai_assistant'; bestMatch.score = Math.max(bestMatch.score, 700);
-        }
-        if (matchesKeyword(normalizedQuery, knowledgeBase.response_categories.portfolio_building_tips.keywords, synonymsMap)) {
-            bestMatch.category = 'portfolio_building_tips'; bestMatch.score = Math.max(bestMatch.score, 700);
-        }
-        if (matchesKeyword(normalizedQuery, knowledgeBase.response_categories.career_availability.keywords, synonymsMap)) {
-            bestMatch.category = 'career_availability'; bestMatch.score = Math.max(bestMatch.score, 700);
-        }
-        if (matchesKeyword(normalizedQuery, ['site structure', 'site map', 'page list', '사이트 구조', '사이트 맵', '페이지 목록', '구성'], synonymsMap)) {
-            bestMatch.category = 'site_structure_overview'; bestMatch.score = Math.max(bestMatch.score, 700);
-        }
-        if (matchesKeyword(normalizedQuery, knowledgeBase.keywords_map.connect.main_keywords, synonymsMap)) {
-            bestMatch.category = 'connect'; bestMatch.score = Math.max(bestMatch.score, 700);
-        }
-
-        // --- 7. "AI 관련 프로젝트" 질문에 대한 특별 처리 (JSON에 AI 내용 직접 추가하지 않는 방식) ---
-        const aiKeywords = ['ai', '인공지능', 'machine learning', '머신러닝', 'deep learning', '딥러닝'];
-        const projectKeywords = ['project', '프로젝트', 'work', '작품', 'case study', '사례', '개발'];
-
-        const hasAiKeyword = matchesKeyword(normalizedQuery, aiKeywords, synonymsMap);
-        const hasProjectKeyword = matchesKeyword(normalizedQuery, projectKeywords, synonymsMap);
-
-        if (hasAiKeyword && hasProjectKeyword) {
-            // AI 관련 프로젝트를 JSON 데이터 내에서 찾으려고 시도 (tags, keywords, description 내 AI 키워드 포함 여부)
-            const aiRelatedProjects = knowledgeBase.response_categories.projects.items.filter(p =>
-                (p.tags && p.tags.some(tag => aiKeywords.some(ak => tag.toLowerCase().includes(ak)))) ||
-                (p.keywords && p.keywords.some(kw => aiKeywords.some(ak => kw.toLowerCase().includes(ak)))) ||
-                (getLocalizedText(p.description).toLowerCase().includes('ai')) ||
-                (getLocalizedText(p.description).toLowerCase().includes('인공지능')) ||
-                (p.details && p.details.narrative_qna && p.details.narrative_qna.ai_integration) // AI 통합 인텐트가 있는 경우
-            );
-
-            if (aiRelatedProjects.length > 0) {
-                // AI 관련 프로젝트가 있는 경우, 해당 프로젝트 카테고리로 강하게 매칭
-                bestMatch.category = 'projects';
-                // 가장 관련 높은 프로젝트의 ID를 item으로 설정 (여기서는 첫 번째)
-                bestMatch.item = aiRelatedProjects[0].id;
-                // AI 관련 질문에 대한 일반 정보 의도
-                bestMatch.intent = 'general_info'; // 또는 'ai_integration' 인텐트가 있다면
-                bestMatch.score = Math.max(bestMatch.score, 980); // 매우 높은 점수
-                bestMatch.ai_found = true; // AI 관련 프로젝트를 찾았음을 표시
-                return bestMatch;
-            } else {
-                // AI 관련 프로젝트가 JSON에 명시적으로 없는 경우, 특별한 폴백 응답
-                bestMatch.category = 'no_ai_projects'; // 새로운 임시 카테고리
-                bestMatch.score = Math.max(bestMatch.score, 900);
-                return bestMatch;
-            }
-        }
-
-        // --- 8. 최종 폴백: 매칭되는 것이 없으면 default_response ---
-        if (bestMatch.score === 0 || !bestMatch.category) {
-            bestMatch.category = 'default_response';
-        }
-
-        console.log(`[AI_Portfolio_Logic] Query analysis result for "${rawQuery}":`, bestMatch);
-        return bestMatch;
+        return null;
     }
 
+    // 2. Compromise.js (영어 전용) 로직
+    function runCompromise(query) {
+        if (typeof nlp === 'undefined') {
+            console.warn("[AI_Portfolio_Logic] Compromise.js (nlp) is not loaded or available.");
+            return null;
+        }
+
+        const doc = nlp(query.toLowerCase());
+
+        // 특정 엔티티나 패턴을 찾아서 의도 파악
+        // 예시: "projects about AI", "tell me about your skills"
+        if (doc.has('project') || doc.has('projects') || doc.has('work')) {
+            if (doc.has('ai') || doc.has('machine learning')) {
+                const aiRelated = knowledgeBase.response_categories.projects.items.filter(p =>
+                    (p.tags && p.tags.some(tag => tag.toLowerCase().includes('ai') || tag.toLowerCase().includes('machine learning'))) ||
+                    (p.keywords && p.keywords.some(kw => kw.toLowerCase().includes('ai') || kw.toLowerCase().includes('machine learning')))
+                );
+                if (aiRelated.length > 0) {
+                    return { category: 'projects', item: aiRelated[0].id };
+                }
+                return { category: 'no_ai_projects' };
+            }
+            return { category: 'projects', item: null }; // 일반 프로젝트 질문
+        }
+        if (doc.has('skill') || doc.has('skills') || doc.has('tech stack')) {
+            return { category: 'skills', item: null }; // 스킬 질문
+        }
+        if (doc.has('career') || doc.has('experience') || doc.has('job')) {
+            return { category: 'career', item: null }; // 경력 질문
+        }
+        if (doc.has('contact') || doc.has('connect') || doc.has('email')) {
+            return { category: 'connect', item: null }; // 연락 질문
+        }
+        if (doc.has('oosu') || doc.has('about you')) {
+            return { category: 'about_me_deep_dive', item: null }; // Oosu에 대한 질문
+        }
+
+        return null; // 매칭되는 의도가 없을 경우
+    }
+
+    // 3. Transformers.js 의미 검색 로직
+    async function runTransformers(query) {
+        if (!extractor || !dbEmbeddings) {
+            console.warn("[AI_Portfolio_Logic] Transformers.js model or embeddings not ready.");
+            return null;
+        }
+
+        const queryEmbedding = await extractor(query, { pooling: 'mean', normalize: true });
+        let bestMatch = { score: -1, index: -1 };
+
+        for (let i = 0; i < dbEmbeddings.dims[0]; ++i) {
+            const docEmbedding = dbEmbeddings.slice([i, i + 1]);
+            const score = (queryEmbedding.dot(docEmbedding.T)).data[0];
+            if (score > bestMatch.score) {
+                bestMatch = { score, index: i };
+            }
+        }
+
+        // 0.75 이상의 높은 유사도일 때만 유효하다고 판단
+        if (bestMatch.score > 0.75) {
+            console.log(`[AI_Portfolio_Logic] Transformers.js matched: ${documents[bestMatch.index].id} with score ${bestMatch.score}`);
+            return documents[bestMatch.index].response; // 매칭된 문서의 응답 템플릿 반환
+        }
+        return null;
+    }
+
+    // 4. Korean.js (한국어 전용) - Placeholder
+    // 실제 Korean.js 라이브러리에 따라 구현 필요
+    function runKoreanJs(query) {
+        // 이 부분은 Korean.js의 실제 기능에 따라 구현되어야 합니다.
+        // 예: 형태소 분석, 키워드 추출 등을 통해 의도 파악
+        // 현재는 더미 로직으로 구성
+        const normalizedQuery = query.toLowerCase();
+        const synonymsMap = knowledgeBase.synonyms_map[currentLanguage] || knowledgeBase.synonyms_map['en'];
+
+        if (matchesKeyword(normalizedQuery, ["프로젝트", "작품"], synonymsMap)) {
+            if (matchesKeyword(normalizedQuery, ["ai", "인공지능", "머신러닝"], synonymsMap)) {
+                const aiRelated = knowledgeBase.response_categories.projects.items.filter(p =>
+                    (p.tags && p.tags.some(tag => matchesKeyword(tag.toLowerCase(), ["ai", "인공지능"], synonymsMap))) ||
+                    (p.keywords && p.keywords.some(kw => matchesKeyword(kw.toLowerCase(), ["ai", "인공지능"], synonymsMap)))
+                );
+                if (aiRelated.length > 0) {
+                    return { category: 'projects', item: aiRelated[0].id };
+                }
+                return { category: 'no_ai_projects' };
+            }
+            return { category: 'projects', item: null };
+        }
+        if (matchesKeyword(normalizedQuery, ["스킬", "기술", "기술 스택"], synonymsMap)) {
+            return { category: 'skills', item: null };
+        }
+        if (matchesKeyword(normalizedQuery, ["경력", "경험", "직무"], synonymsMap)) {
+            return { category: 'career', item: null };
+        }
+        if (matchesKeyword(normalizedQuery, ["연락", "컨택"], synonymsMap)) {
+            return { category: 'connect', item: null };
+        }
+        if (matchesKeyword(normalizedQuery, ["오수", "oosu", "오수에 대해"], synonymsMap)) {
+            return { category: 'about_me_deep_dive', item: null };
+        }
+        return null;
+    }
+
+    // 5. 서버리스 API 프록시 호출
+    async function callApiProxy(query) {
+        try {
+            console.log("[AI_Portfolio_Logic] Calling API Proxy...");
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: query, language: currentLanguage })
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error(`API Proxy error: ${response.status} - ${errorText}`);
+                return null;
+            }
+            const data = await response.json();
+            console.log("[AI_Portfolio_Logic] API Proxy response:", data);
+
+            if (data && data.aiInsight) {
+                return {
+                    aiInsight: data.aiInsight, // API에서 이미 로컬라이즈된 텍스트나 객체 형태로 반환한다고 가정
+                    results: data.results || [],
+                    followUpActions: data.followUpActions || [],
+                    response_type: data.response_type || 'text_only',
+                    action: data.action,
+                    target_page: data.target_page,
+                    url_fragment: data.url_fragment,
+                    additionalInfo: data.additionalInfo || ''
+                };
+            }
+            return null;
+        } catch (error) {
+            console.error("[AI_Portfolio_Logic] API Proxy call failed:", error);
+            return null;
+        }
+    }
 
     /**
      * 인텐트 키워드를 사용자 친화적인 라벨로 변환합니다.
@@ -288,24 +301,12 @@ const AIPortfolioLogic = (() => {
     }
 
     /**
-     * Knowledge Base에서 다국어 필드를 현재 언어에 맞게 추출합니다.
-     * @param {string|object} field - 다국어 객체 또는 단일 문자열
-     * @returns {string} 현재 언어에 맞는 텍스트 또는 영어 기본값
+     * 분석된 의도(match 객체)와 rawQuery를 기반으로 최종 AI 응답 객체를 생성합니다.
+     * @param {object} match - 로컬 라이브러리/API에서 반환된 매칭 객체
+     * @param {string} rawQuery - 사용자의 원본 쿼리
+     * @returns {object} UI 렌더링을 위한 포맷된 응답 객체
      */
-    function getLocalizedText(field) {
-        if (typeof field === 'object' && field !== null) {
-            return field[currentLanguage] || field['en'] || '';
-        }
-        return field || '';
-    }
-
-    /**
-     * 매칭된 결과에 따라 지식 베이스에서 응답 데이터를 추출하고 포맷합니다.
-     * @param {object} match - processUserQuery가 반환한 매칭 객체
-     * @param {string} rawQuery - 사용자의 원본 쿼리 (특정 Q&A 매칭용)
-     * @returns {object} - UI 렌더링을 위한 포맷된 응답 객체
-     */
-    function generateAIResponse(match, rawQuery) {
+    function generateFinalResponse(match, rawQuery) {
         let response = {
             aiInsight: '',
             results: [],
@@ -317,13 +318,26 @@ const AIPortfolioLogic = (() => {
             url_fragment: match.url_fragment
         };
 
+        // 매칭 객체에 aiInsight가 직접 포함된 경우 (예: API 응답)
+        if (match.aiInsight) {
+            response.aiInsight = getLocalizedText(match.aiInsight);
+            response.results = match.results || [];
+            response.followUpActions = match.followUpActions || [];
+            response.response_type = match.response_type || 'text_only';
+            response.action = match.action;
+            response.target_page = match.target_page;
+            response.url_fragment = match.url_fragment;
+            response.additionalInfo = getLocalizedText(match.additionalInfo) || '';
+            return response;
+        }
+
         // --- 상호작용 문구 처리 (highest priority) ---
         if (['greeting', 'thank_you', 'celebratory', 'empathetic'].includes(match.category)) {
             const prompts = knowledgeBase.interactive_phrases[`${match.category}_responses`]?.prompts;
             if (prompts) {
                 let selectedPrompt;
                 if (match.category === 'empathetic') {
-                    selectedPrompt = prompts.find(p => p.trigger_keywords && p.trigger_keywords.some(kw => rawQuery.toLowerCase().includes(kw.toLowerCase())));
+                    selectedPrompt = prompts.find(p => p.trigger_keywords && p.trigger_keywords.some(kw => rawQuery.toLowerCase().includes(getLocalizedText(kw).toLowerCase())));
                 }
                 if (!selectedPrompt) {
                     selectedPrompt = prompts[Math.floor(Math.random() * prompts.length)];
@@ -331,10 +345,12 @@ const AIPortfolioLogic = (() => {
                 response.aiInsight = getLocalizedText(selectedPrompt.response || selectedPrompt);
                 response.response_type = 'text_only';
                 if (match.category === 'greeting') {
-                    response.followUpActions = knowledgeBase.assistant_info.user_guidance_examples.initial_suggestions.map(s => ({
-                        label: getLocalizedText(s.label),
-                        query: s.query['en']
-                    }));
+                    if (knowledgeBase.assistant_info && knowledgeBase.assistant_info.user_guidance_examples) {
+                        response.followUpActions = knowledgeBase.assistant_info.user_guidance_examples.initial_suggestions.map(s => ({
+                            label: getLocalizedText(s.label),
+                            query: getLocalizedText(s.query)
+                        }));
+                    }
                 } else if (match.category === 'empathetic' || match.category === 'thank_you') {
                     response.followUpActions = knowledgeBase.interactive_phrases.no_results_follow_up.prompts.slice(0, 2).map(s => ({
                         label: getLocalizedText(s),
@@ -398,65 +414,58 @@ const AIPortfolioLogic = (() => {
             return response;
         }
 
+        // --- 메인 카테고리별 응답 처리 (knowledgeBase.response_categories 참조) ---
+        const categoryBaseData = knowledgeBase.response_categories && knowledgeBase.response_categories[match.category] ?
+                                 knowledgeBase.response_categories[match.category] : null;
 
-        // --- 메인 카테고리별 응답 처리 ---
-        const categoryBaseData = knowledgeBase.response_categories[match.category];
-        if (categoryBaseData) {
-            response.aiInsight = getLocalizedText(categoryBaseData.aiInsight);
-            response.response_type = categoryBaseData.response_type;
+        if (!categoryBaseData) {
+            console.warn(`[AI_Portfolio_Logic] No category data found for '${match.category}'. Falling back to default response.`);
+            return getDefaultResponse();
+        }
 
-            if (categoryBaseData.items) {
-                if (match.item) {
-                    const specificItem = categoryBaseData.items.find(i => i.id === match.item);
-                    if (specificItem) {
-                        let itemInsight = `<h4>${getLocalizedText(specificItem.title || specificItem.name)}</h4><p>${getLocalizedText(specificItem.description)}</p>`;
+        response.aiInsight = getLocalizedText(categoryBaseData.aiInsight);
+        response.response_type = categoryBaseData.response_type;
 
-                        if (match.intent && specificItem.details && specificItem.details.narrative_qna) {
-                            const qnaAnswer = specificItem.details.narrative_qna[match.intent];
-                            if (qnaAnswer) {
-                                itemInsight += `<p><strong>${formatIntentLabel(match.intent)}:</strong> ${getLocalizedText(qnaAnswer)}</p>`;
-                            }
-                        } else if (match.category === 'skills' && specificItem.details) {
-                            itemInsight += `<ul>`;
-                            specificItem.details.forEach(detail => {
-                                itemInsight += `<li><strong>${detail.name}</strong>: ${detail.level} (${detail.experience_years} experience)`;
-                                if (detail.projects_used_in && detail.projects_used_in.length > 0) {
-                                    const projectsUsed = detail.projects_used_in.map(pId => {
-                                        const proj = knowledgeBase.response_categories.projects.items.find(pi => pi.id === pId);
-                                        return proj ? getLocalizedText(proj.title) : pId;
-                                    }).join(', ');
-                                    itemInsight += ` - Used in: ${projectsUsed}`;
-                                }
-                                if (detail.narrative_qna && detail.narrative_qna.advice) {
-                                    itemInsight += `<br><em>💡 ${getLocalizedText(detail.narrative_qna.advice)}</em>`;
-                                }
-                                itemInsight += `</li>`;
-                            });
-                            itemInsight += `</ul>`;
+        if (categoryBaseData.items) {
+            if (match.item) {
+                const specificItem = categoryBaseData.items.find(i => i.id === match.item);
+                if (specificItem) {
+                    let itemInsight = `<h4>${getLocalizedText(specificItem.title || specificItem.name)}</h4><p>${getLocalizedText(specificItem.description)}</p>`;
+                    if (match.intent && specificItem.details && specificItem.details.narrative_qna) {
+                        const qnaAnswer = specificItem.details.narrative_qna[match.intent];
+                        if (qnaAnswer) {
+                            itemInsight += `<p><strong>${formatIntentLabel(match.intent)}:</strong> ${getLocalizedText(qnaAnswer)}</p>`;
                         }
-                        response.aiInsight = itemInsight;
-                        response.results = [{
-                            type: match.category.slice(0, -1),
-                            title: getLocalizedText(specificItem.title || specificItem.name),
-                            description: getLocalizedText(specificItem.description),
-                            tags: specificItem.tags || specificItem.keywords || [],
-                            link: specificItem.link,
-                            keywords: specificItem.keywords || []
-                        }];
-                        response.response_type = 'cards_and_link';
-                    } else {
-                        console.warn(`[AI_Portfolio_Logic] Specific item '${match.item}' not found in category '${match.category}'. Listing all.`);
-                        response.results = categoryBaseData.items.map(item => ({
-                            type: match.category.slice(0, -1),
-                            title: getLocalizedText(item.title || item.name),
-                            description: getLocalizedText(item.description),
-                            tags: item.tags || item.keywords || [],
-                            link: item.link,
-                            keywords: item.keywords || []
-                        }));
-                        response.response_type = 'cards_and_link';
+                    } else if (match.category === 'skills' && specificItem.details) {
+                        itemInsight += `<ul>`;
+                        specificItem.details.forEach(detail => {
+                            itemInsight += `<li><strong>${detail.name}</strong>: ${detail.level} (${detail.experience_years} experience)`;
+                            if (detail.projects_used_in && detail.projects_used_in.length > 0) {
+                                const projectsUsed = detail.projects_used_in.map(pId => {
+                                    const proj = knowledgeBase.response_categories.projects.items.find(pi => pi.id === pId);
+                                    return proj ? getLocalizedText(proj.title) : pId;
+                                }).join(', ');
+                                itemInsight += ` - Used in: ${projectsUsed}`;
+                            }
+                            if (detail.narrative_qna && detail.narrative_qna.advice) {
+                                itemInsight += `<br><em>💡 ${getLocalizedText(detail.narrative_qna.advice)}</em>`;
+                            }
+                            itemInsight += `</li>`;
+                        });
+                        itemInsight += `</ul>`;
                     }
+                    response.aiInsight = itemInsight;
+                    response.results = [{
+                        type: match.category.slice(0, -1),
+                        title: getLocalizedText(specificItem.title || specificItem.name),
+                        description: getLocalizedText(specificItem.description),
+                        tags: specificItem.tags || specificItem.keywords || [],
+                        link: specificItem.link,
+                        keywords: specificItem.keywords || []
+                    }];
+                    response.response_type = 'cards_and_link';
                 } else {
+                    console.warn(`[AI_Portfolio_Logic] Specific item '${match.item}' not found in category '${match.category}'. Listing all.`);
                     response.results = categoryBaseData.items.map(item => ({
                         type: match.category.slice(0, -1),
                         title: getLocalizedText(item.title || item.name),
@@ -467,64 +476,74 @@ const AIPortfolioLogic = (() => {
                     }));
                     response.response_type = 'cards_and_link';
                 }
-            } else if (match.category === 'career' && match.subSection) {
-                const subSectionData = categoryBaseData.sections[match.subSection];
-                if (subSectionData) {
-                    let sectionHtml = `<h4>${getLocalizedText(subSectionData.title)}</h4><ul>`;
-                    subSectionData.items.forEach(item => {
-                        sectionHtml += `<li><strong>${getLocalizedText(item.title)}</strong> (${getLocalizedText(item.description)})`;
-                        if (match.intent && item.narrative_qna && item.narrative_qna[match.intent]) {
-                            sectionHtml += `<br><em>${formatIntentLabel(match.intent)}: ${getLocalizedText(item.narrative_qna[match.intent])}</em>`;
-                        } else if (match.intent === 'general_info' && item.achievements) {
-                             sectionHtml += `<br><em>${formatIntentLabel('achievements')}: ${getLocalizedText(item.achievements.join(', '))}</em>`;
-                        }
-                        sectionHtml += `</li>`;
-                    });
-                    sectionHtml += `</ul>`;
-                    response.aiInsight = sectionHtml;
-                    response.response_type = 'text_and_link';
-                    response.url_fragment = subSectionData.url_fragment;
-                } else {
-                    return getDefaultResponse();
-                }
-            } else if (match.category === 'about_me_deep_dive') {
-                let aboutMeText = '';
-                for (const key in categoryBaseData.content) {
-                    aboutMeText += `<p>${getLocalizedText(categoryBaseData.content[key])}</p>`;
-                }
-                response.aiInsight += aboutMeText;
-                response.response_type = 'text_and_link';
-            } else if (match.category === 'portfolio_building_tips') {
-                let tipsHtml = '';
-                categoryBaseData.items.forEach(tip => {
-                    tipsHtml += `<p>${getLocalizedText(tip)}</p>`;
-                });
-                if (categoryBaseData.additionalInfo) {
-                    tipsHtml += `<p><em>${getLocalizedText(categoryBaseData.additionalInfo)}</em></p>`;
-                }
-                response.aiInsight += tipsHtml;
-                response.response_type = 'list_and_text';
-            } else if (match.category === 'site_structure_overview') {
-                let structureHtml = '<ul>';
-                categoryBaseData.items.forEach(section => {
-                    structureHtml += `<li><strong>${getLocalizedText(section.name)}</strong>: ${getLocalizedText(section.description)}</li>`;
-                });
-                structureHtml += '</ul>';
-                response.aiInsight += structureHtml;
-                response.response_type = 'list_and_link';
-            } else if (match.category === 'connect') {
-                response.aiInsight += `<p>${getLocalizedText(categoryBaseData.contact_details)}</p>`;
-                response.response_type = 'text_and_link';
+            } else { // 특정 아이템이 지정되지 않았으면 모든 아이템 목록을 보여줌
+                response.results = categoryBaseData.items.map(item => ({
+                    type: match.category.slice(0, -1),
+                    title: getLocalizedText(item.title || item.name),
+                    description: getLocalizedText(item.description),
+                    tags: item.tags || item.keywords || [],
+                    link: item.link,
+                    keywords: item.keywords || []
+                }));
+                response.response_type = 'cards_and_link';
             }
+        } else if (match.category === 'career' && match.subSection) {
+            const subSectionData = categoryBaseData.sections[match.subSection];
+            if (subSectionData) {
+                let sectionHtml = `<h4>${getLocalizedText(subSectionData.title)}</h4><ul>`;
+                subSectionData.items.forEach(item => {
+                    sectionHtml += `<li><strong>${getLocalizedText(item.title)}</strong> (${getLocalizedText(item.description)})`;
+                    if (match.intent && item.narrative_qna && item.narrative_qna[match.intent]) {
+                        sectionHtml += `<br><em>${formatIntentLabel(match.intent)}: ${getLocalizedText(item.narrative_qna[match.intent])}</em>`;
+                    } else if (match.intent === 'general_info' && item.achievements) {
+                        sectionHtml += `<br><em>${formatIntentLabel('achievements')}: ${getLocalizedText(item.achievements.join(', '))}</em>`;
+                    }
+                    sectionHtml += `</li>`;
+                });
+                sectionHtml += `</ul>`;
+                response.aiInsight = sectionHtml;
+                response.response_type = 'text_and_link';
+                response.url_fragment = subSectionData.url_fragment;
+            } else {
+                return getDefaultResponse();
+            }
+        } else if (match.category === 'about_me_deep_dive') {
+            let aboutMeText = '';
+            for (const key in categoryBaseData.content) {
+                aboutMeText += `<p>${getLocalizedText(categoryBaseData.content[key])}</p>`;
+            }
+            response.aiInsight += aboutMeText;
+            response.response_type = 'text_and_link';
+        } else if (match.category === 'portfolio_building_tips') {
+            let tipsHtml = '';
+            categoryBaseData.items.forEach(tip => {
+                tipsHtml += `<p>${getLocalizedText(tip)}</p>`;
+            });
+            if (categoryBaseData.additionalInfo) {
+                tipsHtml += `<p><em>${getLocalizedText(categoryBaseData.additionalInfo)}</em></p>`;
+            }
+            response.aiInsight += tipsHtml;
+            response.response_type = 'list_and_text';
+        } else if (match.category === 'site_structure_overview') {
+            let structureHtml = '<ul>';
+            categoryBaseData.items.forEach(section => {
+                structureHtml += `<li><strong>${getLocalizedText(section.name)}</strong>: ${getLocalizedText(section.description)}</li>`;
+            });
+            structureHtml += '</ul>';
+            response.aiInsight += structureHtml;
+            response.response_type = 'list_and_link';
+        } else if (match.category === 'connect') {
+            response.aiInsight += `<p>${getLocalizedText(categoryBaseData.contact_details)}</p>`;
+            response.response_type = 'text_and_link';
         } else {
-             // 카테고리 데이터는 있지만 items가 없는 경우 (예: career_availability, about_ai_assistant)
-             response.aiInsight = getLocalizedText(categoryBaseData.aiInsight);
-             response.response_type = categoryBaseData.response_type;
+            // 카테고리 데이터는 있지만 items가 없는 경우 (예: career_availability, about_ai_assistant)
+            response.aiInsight = getLocalizedText(categoryBaseData.aiInsight);
+            response.response_type = categoryBaseData.response_type;
         }
 
         // 팔로우업 액션 추가 (기본 카테고리의 followUpActions)
         if (categoryBaseData && categoryBaseData.followUpActions && categoryBaseData.followUpActions.length > 0) {
-            response.followUpActions = categoryBaseData.followUpActions.map(action => ({
+            response.followUpActions = [...response.followUpActions, ...categoryBaseData.followUpActions.map(action => ({
                 label: getLocalizedText(action.label),
                 query: getLocalizedText(action.query),
                 action: action.action,
@@ -532,32 +551,31 @@ const AIPortfolioLogic = (() => {
                 category: action.category,
                 target_page: action.target_page,
                 url_fragment: action.url_fragment
-            }));
+            }))];
         }
 
         // 특정 아이템의 내러티브 Q&A에 따른 추가 팔로우업 액션
         if (match.item && categoryBaseData && categoryBaseData.items) {
-             const specificItem = categoryBaseData.items.find(i => i.id === match.item);
-             if (specificItem && specificItem.details && specificItem.details.narrative_qna) {
+            const specificItem = categoryBaseData.items.find(i => i.id === match.item);
+            if (specificItem && specificItem.details && specificItem.details.narrative_qna) {
                 const narrativeQna = specificItem.details.narrative_qna;
                 for (const qnaKey in narrativeQna) {
-                    if (qnaKey !== '_label' && qnaKey !== match.intent && typeof narrativeQna[qnaKey] === 'object') {
+                    if (qnaKey !== '_label' && qnaKey !== match.intent && typeof narrativeQna[qnaKey] === 'object' && narrativeQna[qnaKey][currentLanguage]) {
                         const queryLabel = formatIntentLabel(qnaKey);
-                        if (queryLabel && narrativeQna[qnaKey][currentLanguage]) {
-                            response.followUpActions.push({
-                                label: `${queryLabel} (${getLocalizedText(specificItem.title)})`,
-                                query: `${qnaKey} ${getLocalizedText(specificItem.title).toLowerCase()}`,
-                                action: 'show_specific_item_details',
-                                target_id: specificItem.id,
-                                category: match.category,
-                                intent: qnaKey
-                            });
-                        }
+                        response.followUpActions.push({
+                            label: `${queryLabel} (${getLocalizedText(specificItem.title)})`,
+                            query: `${qnaKey} ${getLocalizedText(specificItem.title).toLowerCase()}`,
+                            action: 'show_specific_item_details',
+                            target_id: specificItem.id,
+                            category: match.category,
+                            intent: qnaKey
+                        });
                     }
                 }
+                // 중복 제거
                 response.followUpActions = Array.from(new Set(response.followUpActions.map(a => JSON.stringify(a))))
-                                            .map(s => JSON.parse(s));
-             }
+                    .map(s => JSON.parse(s));
+            }
         }
 
         return response;
@@ -568,6 +586,18 @@ const AIPortfolioLogic = (() => {
      * @returns {object} - 포맷된 기본 응답 객체
      */
     function getDefaultResponse() {
+        // knowledgeBase가 로드되지 않았을 경우를 대비한 최후의 방어
+        if (!knowledgeBase || !knowledgeBase.default_response || !knowledgeBase.interactive_phrases) {
+            console.error("[AI_Portfolio_Logic] Default response data missing from knowledgeBase or knowledgeBase not loaded.");
+            return {
+                aiInsight: {
+                    en: "Sorry, I'm currently unable to provide a response. Please check the console for errors.",
+                    ko: "죄송합니다. 현재 응답을 제공할 수 없습니다. 콘솔에서 오류를 확인해주세요."
+                },
+                results: [],
+                followUpActions: []
+            };
+        }
         const defaultData = knowledgeBase.default_response;
         let response = {
             aiInsight: getLocalizedText(defaultData.aiInsight),
@@ -579,15 +609,13 @@ const AIPortfolioLogic = (() => {
             additionalInfo: '',
             response_type: 'text_only'
         };
-
         const clarificationPrompts = knowledgeBase.interactive_phrases.clarification_requests.prompts;
         const randomPrompt = clarificationPrompts[Math.floor(Math.random() * clarificationPrompts.length)];
         response.additionalInfo = getLocalizedText(randomPrompt);
-
         return response;
     }
 
-    // --- Public API ---
+    // Public API
     return {
         loadKnowledgeBase: async function() {
             await loadKnowledgeBase();
@@ -595,19 +623,71 @@ const AIPortfolioLogic = (() => {
         setLanguage: function(lang) {
             setLanguage(lang);
         },
-        getAIResponse: function(query) {
+        // 초기 제안을 가져오는 새로운 공개 메서드 추가
+        getInitialSuggestions: function() {
+            if (knowledgeBase && knowledgeBase.assistant_info && knowledgeBase.assistant_info.user_guidance_examples) {
+                return knowledgeBase.assistant_info.user_guidance_examples.initial_suggestions.map(s => ({
+                    label: getLocalizedText(s.label),
+                    query: getLocalizedText(s.query)
+                }));
+            }
+            return [];
+        },
+        getAIResponse: async function(query) {
             if (!knowledgeBase) {
-                 console.error("[AI_Portfolio_Logic] Knowledge Base not loaded. Cannot process query.");
-                 return {
+                console.error("[AI_Portfolio_Logic] Knowledge Base not loaded. Cannot process query.");
+                return {
                     aiInsight: getLocalizedText({en: 'My knowledge base is not ready yet. Please try again in a moment.', ko: '아직 지식 베이스가 준비되지 않았습니다. 잠시 후 다시 시도해주세요.'}),
                     results: [],
                     followUpActions: []
-                 };
+                };
             }
-            const queryAnalysisResult = processUserQuery(query);
-            return generateAIResponse(queryAnalysisResult, query);
+
+            let responseTemplate = null;
+
+            console.log("Attempting Level 1: Fuse.js");
+            responseTemplate = runFuseSearch(query);
+            if (responseTemplate) {
+                console.log("Fuse.js successful.");
+                return generateFinalResponse(responseTemplate, query);
+            }
+
+            if (currentLanguage === 'en') {
+                console.log("Attempting Level 2 (EN): compromise.js");
+                responseTemplate = runCompromise(query);
+                if (responseTemplate) {
+                    console.log("Compromise.js successful.");
+                    return generateFinalResponse(responseTemplate, query);
+                }
+            } else if (currentLanguage === 'ko') {
+                console.log("Attempting Level 2 (KO): Korean.js (Placeholder)");
+                responseTemplate = runKoreanJs(query); // Korean.js 로직 호출
+                if (responseTemplate) {
+                    console.log("Korean.js (Placeholder) successful.");
+                    return generateFinalResponse(responseTemplate, query);
+                }
+            }
+
+            console.log("Attempting Level 3: Transformers.js");
+            responseTemplate = await runTransformers(query);
+            if (responseTemplate) {
+                console.log("Transformers.js successful.");
+                return generateFinalResponse(responseTemplate, query);
+            }
+
+            console.log("Falling back to API Proxy (Gemini/Grok/OpenAI)...");
+            responseTemplate = await callApiProxy(query);
+            if (responseTemplate) {
+                console.log("API Proxy successful.");
+                return generateFinalResponse(responseTemplate, query);
+            }
+
+            // 최종 실패
+            console.warn("All AI logic layers failed. Returning default response.");
+            return getDefaultResponse();
         }
     };
 })();
 
-export { AIPortfolioLogic };
+// `export` 대신 전역 스코프나 다른 방식으로 `ai_chat.js`에서 접근할 수 있도록 합니다.
+window.AIPortfolioLogic = AIPortfolioLogic;

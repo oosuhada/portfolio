@@ -22,7 +22,7 @@
 }
 .carousel-category-jump {
   display: flex;
-  gap: 1.5rem;
+  gap: 3rem;
   justify-content: center;
   margin-bottom: 0.2rem;
   align-items: flex-start;
@@ -33,6 +33,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: transform 0.3s ease-out;
 }
 .category-jump-btn {
   width: 2.8rem;
@@ -47,7 +48,19 @@
   align-items: center;
   justify-content: center;
   padding: 0;
+
 }
+/* 첫 번째와 마지막 아이템을 가장 많이 내립니다 */
+/* .category-jump-item:nth-child(1),
+.category-jump-item:nth-child(6) {
+  transform: translateY(25px);
+} */
+
+/* 두 번째와 다섯 번째 아이템을 중간 정도로 내립니다 */
+/* .category-jump-item:nth-child(2),
+.category-jump-item:nth-child(5) {
+  transform: translateY(10px);
+} */
 .category-jump-btn img {
   width: 100%;
   height: 100%;
@@ -61,12 +74,14 @@
   color: var(--poster-text-color);
   font-size: 0.8rem;
   font-weight: 600;
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
-  pointer-events: none;
   white-space: nowrap;
   text-align: center;
+  pointer-events: none;
+  /* 기본적으로 라벨이 보이도록 opacity를 0.7로 설정하고, 위치 이동(transform) 제거 */
+  opacity: 0.6;
+  transform: translateY(0);
+  /* 부드러운 전환 효과를 위해 transition 속성 수정 */
+  transition: opacity 0.2s ease-out;
 }
 .category-jump-item:hover .category-jump-btn {
   transform: scale(1.12);

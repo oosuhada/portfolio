@@ -355,166 +355,6 @@ body[data-theme="dark"] .send-button { color: #000; }
 
 
 /* ==========================================================================
-   3. HIGHLIGHT HUB STYLES (highlight-hub.css)
-   ========================================================================== */
-
-#highlight-hub-section {
-    width: 100%;
-    background-color: transparent; /* Changed to transparent for overall background to show */
-    color: var(--text-primary);
-    padding: 60px 20px;
-    border-bottom: 1px solid var(--border-color);
-    box-sizing: border-box;
-    position: relative;
-    opacity: 0;
-    transform: translateY(40px);
-    transition: color 0.3s, border-color 0.3s;
-}
-
-.hub-header { max-width: 1200px; margin: 0 auto 30px auto; text-align: center; }
-.hub-header h1 { font-size: 2.5em; color: var(--text-primary); margin-bottom: 10px; font-weight: 700; }
-.hub-header p { font-size: 1.2em; color: var(--text-secondary); }
-.hub-header strong { color: var(--accent-primary); font-weight: 600; }
-
-.hub-container { display: flex; max-width: 1200px; margin: 0 auto; background: transparent; min-height: 90vh; }
-.highlights-panel { flex: 2; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
-.panel-header { margin-bottom: 25px; }
-.panel-header h2 { font-size: 1.5em; color: var(--text-primary); margin-bottom: 5px; }
-
-.hub-tabs { margin-top: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
-.hub-tab-btn {
-    background: none; border: none; padding: 8px 16px; font-size: 1em; font-weight: 600;
-    color: var(--text-secondary); cursor: pointer; position: relative; border-radius: 5px;
-    transition: background-color 0.2s, color 0.2s;
-}
-.hub-tab-btn.active { color: var(--text-primary); }
-.hub-tab-btn.active::after {
-    content: ''; position: absolute; bottom: -6px; left: 0; width: 100%; height: 3px;
-    background-color: var(--accent-primary); border-radius: 2px;
-}
-
-.timeline-container { flex-grow: 1; }
-.cards-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding-top: 20px; }
-
-.no-highlights {
-    font-size: 1.1em; font-weight: 500; color: var(--text-secondary); text-align: center;
-    grid-column: 1 / -1; padding: 40px 20px; background-color: var(--background-card);
-    border-radius: 8px; border: 2px dashed var(--border-color);
-}
-
-.highlight-card {
-    background: var(--background-card); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 15px;
-    border-left: 5px solid; cursor: grab;
-    transition: box-shadow 0.3s, transform 0.3s, opacity 0.3s, background-color 0.3s, border-color 0.3s;
-    position: relative; display: flex; flex-direction: column; opacity: 0; transform: translateY(30px);
-}
-.highlight-card:active { cursor: grabbing; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transform: scale(1.03); }
-
-.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.card-page-source {
-    font-size: 0.8em; font-weight: 600; color: var(--text-secondary);
-    background-color: var(--background-tag); padding: 3px 8px; border-radius: 10px;
-}
-.unhighlight-card-btn {
-    background: none; border: none; font-size: 1.2em; color: #ccc; cursor: pointer; padding: 5px;
-    border-radius: 50%; line-height: 1; transition: color 0.2s, background-color 0.2s, transform 0.2s;
-}
-.unhighlight-card-btn:hover { color: #e74c3c; background-color: #fbecec; transform: scale(1.1); }
-.card-text { font-size: 0.95em; color: var(--text-primary); line-height: 1.5; flex-grow: 1; }
-.card-actions { margin-top: 15px; display: flex; gap: 10px; justify-content: flex-end; }
-.card-actions button {
-    background-color: var(--background-tag); border: 1px solid var(--border-color); border-radius: 5px; padding: 6px 12px;
-    font-size: 0.85em; font-weight: 500; cursor: pointer; transition: all 0.2s ease-in-out; color: var(--text-secondary);
-}
-.card-actions button:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-/* Specific button styles can be kept or integrated further */
-
-.timeline-container { position: relative; padding: 20px 0; list-style: none; }
-.timeline-container.hidden { display: none; }
-.timeline-container::before {
-    content: ''; position: absolute; top: 0; left: 20px; height: 100%; width: 4px;
-    background: var(--border-color); border-radius: 2px; transition: background-color 0.3s;
-}
-.timeline-item { margin: 20px 0; padding-left: 50px; position: relative; opacity: 0; transform: translateX(-20px); }
-.timeline-dot {
-    content: ''; position: absolute; left: 11px; top: 5px; height: 20px; width: 20px;
-    background: var(--background-card); border: 4px solid; border-radius: 50%; z-index: 1;
-    transition: background-color 0.3s;
-}
-.timeline-content {
-    background: var(--background-card); padding: 15px; border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: box-shadow 0.2s, background-color 0.3s;
-}
-.timeline-content:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-.timeline-date { display: block; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; font-size: 0.9em; }
-.timeline-page { font-weight: bold; color: var(--text-primary); margin-bottom: 10px; }
-.timeline-text { font-size: 0.95em; line-height: 1.5; color: var(--text-primary); }
-
-.actions-panel {
-    flex: 2; padding: 20px; display: flex; flex-direction: column; gap: 20px;
-    border-left: 1px solid var(--border-color); transition: border-color 0.3s;
-}
-.ai-assistant-section { background: var(--background-panel); padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: background-color 0.3s; }
-.actions-panel h2, .actions-panel h3 { color: var(--text-primary); margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
-.actions-panel h2 { font-size: 1.4em; }
-.actions-panel h3 { font-size: 1.1em; font-weight: 600; margin-top: 20px; }
-.actions-panel h3:first-child { margin-top: 0; }
-
-.ai-module { margin-bottom: 20px; }
-.ai-buttons-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.ai-buttons-grid button {
-    padding: 10px; border: 1px solid var(--border-color); background-color: var(--background-tag);
-    color: var(--text-secondary); border-radius: 5px; cursor: pointer; font-size: 0.9em; font-weight: 500;
-    text-align: center; transition: all 0.2s ease-out; display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-/* ✨ Added hover state for better interactivity */
-.ai-buttons-grid button:not(.active):hover {
-    background-color: var(--background-button-hover);
-    border-color: var(--text-secondary);
-}
-.ai-buttons-grid button.active {
-    background-color: var(--accent-primary); color: var(--text-on-accent); border-color: var(--accent-primary);
-    transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0, 82, 204, 0.2);
-}
-/* ✨ Specific overrides for dark mode button text */
-body[data-theme="dark"] .ai-buttons-grid button {
-    color: var(--text-primary);
-}
-body[data-theme="dark"] .ai-buttons-grid button.active { box-shadow: 0 4px 8px rgba(74, 144, 226, 0.2); }
-
-.ai-output-box {
-    margin-top: 15px; padding: 15px; background: var(--background-ai-output); border: 1px solid var(--border-color);
-    border-radius: 5px; min-height: 100px; font-size: 0.9em;
-    color: var(--text-secondary); /* Default color */
-    white-space: pre-wrap;
-    line-height: 1.6; transition: background-color 0.3s, color 0.3s;
-}
-/* ✨ Specific override for dark mode AI box text */
-body[data-theme="dark"] .ai-output-box {
-    color: var(--text-primary);
-}
-.ai-output-box strong { color: var(--text-primary); }
-.ai-output-box ul { padding-left: 20px; margin-top: 10px; }
-.ai-output-box .keyword-tag {
-    display: inline-block; background-color: var(--accent-secondary-bg); color: var(--accent-primary);
-    padding: 3px 8px; border-radius: 12px; margin: 3px; font-weight: 500;
-}
-
-#ai-generate-btn, #ai-regenerate-btn, #ai-go-to-postcard-btn {
-    width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; cursor: pointer;
-    font-size: 1em; font-weight: bold; text-align: center; transition: all 0.2s ease-out;
-    display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px;
-}
-#ai-generate-btn { background-color: var(--accent-primary-hover); color: var(--text-on-accent); border-color: var(--accent-primary-hover); }
-#ai-generate-btn:hover { background-color: var(--accent-primary-darker); transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0, 82, 204, 0.2); }
-#ai-post-generate-controls { display: flex; gap: 10px; width: 100%; }
-#ai-post-generate-controls.hidden { display: none; }
-#ai-regenerate-btn { flex: 1; background-color: var(--background-tag); color: var(--text-secondary); }
-body[data-theme="dark"] #ai-regenerate-btn { color: var(--text-primary); }
-#ai-go-to-postcard-btn { flex: 2; background-color: var(--accent-primary); color: var(--text-on-accent); border-color: var(--accent-primary); }
-
-
-/* ==========================================================================
    4. FIXED HEADER STYLES
    ========================================================================== */
 
@@ -524,14 +364,14 @@ body[data-theme="dark"] #ai-regenerate-btn { color: var(--text-primary); }
 }
 .connect-page-header.hidden { opacity: 0; visibility: hidden; transform: translateY(-100%); }
 .connect-page-header:not(.hidden) { opacity: 1; visibility: visible; transform: translateY(0); }
-.connect-page-header .header-inner { margin: 0 auto; display: flex; justify-content: flex-end; align-items: center; padding: 0 1rem; }
-.connect-page-header .button-group { display: flex; align-items: center; gap: 1rem; }
+.connect-page-header .header-inner { margin: 0 auto; display: flex; justify-content: flex-end; align-items: center; padding: 0rem; }
+.connect-page-header .button-group { display: flex; align-items: center; gap: 1rem;   margin-right: 1rem;}
 .connect-page-header .button {
     display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; font-size: 0.875rem;
     border-radius: 0.375rem; text-decoration: none; cursor: pointer;
     transition: background-color var(--transition-duration), color var(--transition-duration), border-color var(--transition-duration);
 }
-.connect-page-header .theme-toggle { padding: 0.5rem; border: none; background: none; cursor: pointer; position: relative; width: 2rem; height: 2rem; }
+.connect-page-header .theme-toggle { padding: 0.5rem; border: none; background: none; cursor: pointer; position: relative; width: 2rem; height: 2rem; scale: 1.2;}
 .connect-page-header .theme-icon {
     width: 1.25rem; height: 1.25rem; position: absolute; top: 50%; left: 50%;
     transform: translate(-50%, -50%); transition: transform var(--transition-duration), opacity var(--transition-duration);

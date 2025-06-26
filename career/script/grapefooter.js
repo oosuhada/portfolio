@@ -1,4 +1,6 @@
-console.log("--- grapefooter.js (v15 - ScrollTrigger Restart Animation Fix) loaded ---");
+// grapefooter.js (수정된 버전)
+
+console.log("--- grapefooter.js (v16 - Title Scroll Animation Added) loaded ---");
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log("GRAPEFOOTER: DOMContentLoaded. Initializing script.");
@@ -42,12 +44,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const settingsButton = document.getElementById('settingsButton');
     const tvDial = document.getElementById('tvDial');
 
+    // ==========================================================
+    // NEW: 스크롤 애니메이션을 위한 제목 요소 선택
+    // ==========================================================
+    const grapeFooterTitle = document.querySelector('.grape-footer-section-title');
+
+
     // --- IMPORTANT: Element Check ---
-    if (!section || !tvContainer || !tvScreen || !videoContent || !staticEffect || !tvTurnon || !colorBars || !closeBtn || !footerImgEl || !footerTextEl || !vcrNoiseCanvas || !settingsOverlay || !closeSettingsBtn || !channelUpButton || !channelDownButton || !settingsButton || !tvDial || !effectToggleStatic || !effectToggleVCR || !effectToggleScanlines || !effectToggleGlow || !videoContentWrapper || !effectToggleRGBSplit || !effectToggleChromatic) {
+    // ==========================================================
+    // MODIFIED: 제목 요소(grapeFooterTitle)에 대한 null 체크 추가
+    // ==========================================================
+    if (!section || !tvContainer || !tvScreen || !videoContent || !staticEffect || !tvTurnon || !colorBars || !closeBtn || !footerImgEl || !footerTextEl || !vcrNoiseCanvas || !settingsOverlay || !closeSettingsBtn || !channelUpButton || !channelDownButton || !settingsButton || !tvDial || !effectToggleStatic || !effectToggleVCR || !effectToggleScanlines || !effectToggleGlow || !videoContentWrapper || !effectToggleRGBSplit || !effectToggleChromatic || !grapeFooterTitle) {
         console.error("GRAPEFOOTER: One or more required DOM elements not found. Please check your HTML structure and IDs carefully.");
+        // 어떤 요소가 없는지 구체적으로 확인하기 위한 로그 추가
+        if (!grapeFooterTitle) console.error("GRAPEFOOTER: Element '.grape-footer-section-title' not found.");
         return;
     }
     console.log("GRAPEFOOTER: All DOM elements found.");
+
 
     // --- State & Animation variables ---
     let isFullScreen = false;
@@ -383,22 +397,13 @@ document.addEventListener('DOMContentLoaded', () => {
         .to(colorBars, { opacity: 0, duration: 0.3, delay: 0.3 })
         .to(videoContent, { opacity: 1, duration: 1 }, "<")
         .call(() => {
-            // --- REMOVE OR COMMENT OUT THESE LINES TO DISABLE INITIAL STATIC/VCR NOISE ---
-            // gsap.to(staticEffect, { opacity: 1, duration: 0.5 });
-            // staticEffect.classList.add('noise-active');
-            // vcrScreenEffect.enableVCRNoise();
-            // gsap.to(scanlines, { opacity: 1, duration: 0.5 }); // Keep if you want scanlines on by default
-            // gsap.to(screenGlow, { opacity: 1, duration: 0.5 }); // Keep if you want glow on by default
             updateVideoContentFilter();
         });
 
-    // --- ALSO UNCHECK THESE TOGGLES IF YOU WANT THEM OFF BY DEFAULT ---
-    effectToggleStatic.checked = false; // Change to false
-    effectToggleVCR.checked = false;    // Change to false
-    // effectToggleScanlines.checked = true; // Keep true or change to false as desired
-    // effectToggleGlow.checked = true;      // Keep true or change to false as desired
-    effectToggleRGBSplit.checked = false; // Change to false if you want it off by default
-    effectToggleChromatic.checked = false; // Change to false if you want it off by default
+    effectToggleStatic.checked = false; 
+    effectToggleVCR.checked = false;    
+    effectToggleRGBSplit.checked = false;
+    effectToggleChromatic.checked = false;
 }
 
     function playChannelSwitchEffect(cb) {
@@ -462,16 +467,48 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Settings Panel Functions ---
     function openSettings() {
         gsap.to(settingsOverlay, { opacity: 1, visibility: 'visible', duration: 0.3 });
-        settingsOverlay.classList.add('active'); // Add active class for styling/conditional checks
+        settingsOverlay.classList.add('active');
     }
 
     function closeSettings() {
         gsap.to(settingsOverlay, { opacity: 0, visibility: 'hidden', duration: 0.3, onComplete: () => {
-            settingsOverlay.classList.remove('active'); // Remove active class on close
+            settingsOverlay.classList.remove('active');
         }});
     }
 
     // --- ScrollTrigger ---
+
+ // 1. 타임라인 생성 및 ScrollTrigger 연결
+const tl = gsap.timeline({
+    scrollTrigger: {
+        trigger: section,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1.5,
+    }
+});
+
+// 2. 타임라인에 애니메이션 추가
+// yPercent는 시작(-600)부터 끝(600)까지 계속 움직이도록 설정
+tl.fromTo(grapeFooterTitle, 
+    { yPercent: -800 }, 
+    { yPercent: 80, ease: 'none' },
+    0 // 타임라인 시작(0초)부터 애니메이션 시작
+);
+
+// opacity는 시작(0) -> 중간(1) -> 끝(0)으로 변하도록 설정
+tl.fromTo(grapeFooterTitle,
+    { opacity: 0 },
+    { 
+        opacity: 1, 
+        repeat: 1,     // 애니메이션을 1번 반복하고
+        yoyo: true,    // 원래 상태(opacity: 0)로 되돌아오게 함
+        ease: 'power1.inOut' // 부드러운 페이드 효과
+    },
+    0 // yPercent와 동일하게 타임라인 시작(0초)부터 애니메이션 시작
+);
+
+    // TV 애니메이션을 제어하는 기존 ScrollTrigger
     ScrollTrigger.create({
         trigger: section,
         start: "top center",
@@ -489,12 +526,6 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         markers: false
     });
-
-    // --- INITIALIZATION ---
-    // The ScrollTrigger's onEnter/onEnterBack callbacks now handle the animation start.
-    // The unconditional call below has been removed to prevent the animation from
-    // playing on page load regardless of the scroll position.
-    // playLoopSequence(); // <- THIS LINE IS NOW COMMENTED OUT TO FIX THE ISSUE
 
     // --- Event Listener Delegation for TV Container Clicks ---
     tvContainer.addEventListener('click', (e) => {

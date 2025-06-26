@@ -1,5 +1,4 @@
-/* ======================= about-skills.css (최종 수정) ======================= */
-/* Ink Blot Theme – Advanced (Refactored for Overflow Prevention) */
+/* ======================= about-skills.css - Upgraded for Light/Dark Mode ======================= */
 
 .about-skills {
   position: relative;
@@ -12,35 +11,31 @@
 
 .about-skills-cols {
   display: flex;
-  flex-wrap: nowrap; /* 카드가 다음 줄로 넘어가지 않도록 함 */
-  justify-content: center; /* 카드들을 중앙 정렬 */
+  flex-wrap: nowrap;
+  justify-content: center;
   align-items: flex-start;
-  /* 화면 크기에 따라 카드 간 간격을 유동적으로 조절합니다.
-     최소 0.2rem, 선호하는 값 1.33vw (뷰포트 너비의 1.33%), 최대 1rem으로 설정됩니다. */
   gap: clamp(0.2rem, 4vw, 8rem);
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
-  padding: 0.5rem; /* 컨테이너 내부 여백 */
+  padding: 0.5rem;
   transition: min-height 0.5s cubic-bezier(.23,1.12,.67,1.08);
-  overflow-x: visible; /* 카드가 정말 너무 많거나 작아질 때 가로 스크롤 허용 */
-  -webkit-overflow-scrolling: touch; /* iOS 부드러운 스크롤 */
+  overflow-x: visible;
+  -webkit-overflow-scrolling: touch;
 }
 
 .skill-card {
   position: relative;
-  cursor: default; /* 카드 자체는 클릭 대상이 아님을 암시 */
+  cursor: default;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  opacity: 0; /* JS로 in-view 시 opacity: 1 처리 */
-
+  opacity: 0;
   flex-grow: 0;
   flex-shrink: 1;
   flex-basis: 200px;
   min-width: 170px;
-
   min-height: 260px;
   padding-bottom: 0;
   z-index: 1;
@@ -48,17 +43,9 @@
               opacity 0.5s ease, transform 0.3s ease;
   overflow: visible;
 }
+.skill-card.in-view { opacity: 1; }
+.skill-card.expanded { min-height: 540px; z-index: 10; }
 
-.skill-card.in-view {
-  opacity: 1;
-}
-
-.skill-card.expanded {
-  min-height: 540px;
-  z-index: 10; /* 확장된 카드가 다른 카드 위로 오도록 함 */
-}
-
-/* 마우스 오버시 의미단위 밑줄 효과 */
 .skill-chunk {
   display: inline-block;
   cursor: var(--cursor-grab2);
@@ -70,7 +57,8 @@
 .skill-chunk:focus {
   text-decoration: underline;
   text-underline-offset: 0.18em;
-  background: #f5f5f555;
+  /* [수정] 배경 하이라이트 색상을 변수로 변경 */
+  background: var(--yellow-highlight-light);
   outline: none;
 }
 
@@ -95,6 +83,9 @@
   transform: scale(1.08);
   box-shadow: 0 14px 34px rgba(0,0,0,0.28), 0 4px 12px rgba(0,0,0,0.19);
 }
+body[data-theme="dark"] .skill-ink-blot:hover .skill-ink-shape {
+    box-shadow: 0 14px 34px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.3);
+}
 
 .skill-ink-shape {
   position: absolute;
@@ -102,8 +93,10 @@
   height: 100%;
   top: 0;
   left: 0;
+  /* [수정] 라이트 모드 기본 배경 (어두운 색) */
   background: radial-gradient(ellipse at center, #252525 0%, #141414 100%);
-  color: #b0b0b0;
+  /* [수정] 라이트 모드 기본 텍스트 색상 (밝은 회색) */
+  color: var(--ai-text-primary); 
   box-shadow: 0 6px 22px rgba(0,0,0,0.23), 0 1px 4px rgba(0,0,0,0.11);
   display: flex;
   justify-content: flex-start;
@@ -144,8 +137,9 @@
 }
 
 .skill-card.expanded .skill-ink-shape {
+  /* [수정] 확장 시 라이트 모드 배경 */
   background: linear-gradient(135deg, #242424 80%, #444 100%);
-  color: #fff;
+  color: var(--color-white);
   box-shadow: 0 22px 70px rgba(0,0,0,0.49), 0 8px 32px rgba(0,0,0,0.25);
   padding: 0;
 }
@@ -163,10 +157,16 @@
   transition: opacity 0.4s, transform 0.4s;
 }
 .skill-initial-content .skill-icon {
+  /* [수정] 라이트 모드 아이콘 색상 (밝은 회색) */
   color: #d9d9d9 !important;
   font-size: 2.8rem;
   margin-bottom: 0;
 }
+/* [추가] 다크 모드 아이콘 색상 (어두운 회색) */
+body[data-theme="dark"] .skill-initial-content .skill-icon {
+    color: var(--text-secondary-color) !important;
+}
+
 .skill-initial-text { display: none !important; }
 
 .skill-card.expanded .skill-initial-content {
@@ -189,14 +189,20 @@
   padding: 2.5rem 0.8rem;
   box-sizing: border-box;
   transition: opacity 0.4s 0.2s, color 0.4s;
-  color: #fff;
+  /* [수정] 라이트 모드 확장시 텍스트 색상 */
+  color: var(--color-white);
 }
 
 .skill-card.expanded .skill-expanded-content {
   opacity: 1;
   pointer-events: auto;
   position: relative;
-  color: #fff !important;
+  /* [수정] 라이트 모드 확장시 텍스트 색상 */
+  color: var(--color-white) !important;
+}
+/* [추가] 다크 모드 확장시 텍스트 색상 */
+body[data-theme="dark"] .skill-card.expanded .skill-expanded-content {
+  color: var(--text-primary-color) !important;
 }
 
 .skill-expanded-content .skill-icon.expanded-icon,
@@ -220,11 +226,13 @@
   justify-content: flex-end;
   width: 100%;
   height: 100%;
-  color: #fff !important;
+  /* [수정] 라이트 모드 확장시 리스트 텍스트 색상 */
+  color: var(--color-white) !important;
   font-size: 1.08rem;
 }
 .skill-card.expanded .skill-details-list li {
-  color: #fff !important;
+  /* [수정] 라이트 모드 확장시 리스트 아이템 텍스트 색상 */
+  color: var(--color-white) !important;
   text-align: left;
   font-size: 1.07rem;
   font-family: 'Pretendard', sans-serif;
@@ -236,19 +244,25 @@
   transform: none;
   position: static;
 }
+/* [추가] 다크 모드 확장시 리스트 텍스트 색상 */
+body[data-theme="dark"] .skill-card.expanded .skill-details-list,
+body[data-theme="dark"] .skill-card.expanded .skill-details-list li {
+  color: var(--text-primary-color) !important;
+}
 
 .skill-main-title {
   display: block;
   font-family: 'Pretendard', sans-serif;
   font-size: 1.13rem;
   font-weight: 600;
-  color: var(--gray-dark, #333);
+  /* [수정] 텍스트 색상 변수 적용 */
+  color: var(--text-primary-color);
   margin-top: 1.4rem;
   margin-bottom: 0.2rem;
   text-align: center;
   width: 100%;
   opacity: 1;
-  transition: margin 0.3s, opacity 0.3s;
+  transition: margin 0.3s, opacity 0.3s, color 0.3s;
 }
 .skill-card.expanded .skill-main-title {
   opacity: 1 !important;
@@ -258,12 +272,13 @@
 .click-drag-hint {
   opacity: 0.6;
   font-size: 0.7rem;
-  color: #777;
+  /* [수정] 텍스트 색상 변수 적용 */
+  color: var(--text-secondary-color);
   margin-top: 0.4rem;
   font-style: italic;
   width: 100%;
   text-align: center;
-  transition: margin 0.3s, opacity 0.3s;
+  transition: margin 0.3s, opacity 0.3s, color 0.3s;
 }
 
 .skill-card.expanded .click-drag-hint {
@@ -271,7 +286,6 @@
   pointer-events: none;
 }
 
-/* SPLASH EFFECT (애니메이션) */
 .ink-splash-container {
   position: absolute;
   top: 0;
@@ -287,7 +301,8 @@
   position: absolute;
   border-radius: 60% 40% 50% 50% / 50% 55% 45% 50%;
   opacity: 0;
-  background-color: #222;
+  /* [수정] 잉크방울 색상을 텍스트 색상에 맞춤 (라이트:검정, 다크:흰색) */
+  background-color: var(--text-primary-color);
   animation: inkSplashAnimation 0.6s cubic-bezier(.25,.46,.45,.94) forwards;
   transform-origin: center;
 }
@@ -297,218 +312,200 @@
   100% { opacity: 0; transform: scale(1.6); }
 }
 
-/* [추가] 재정렬 모드에서 카드들을 흔들기 위한 Keyframes 애니메이션 */
 @keyframes jiggle {
   0% { transform: rotate(-0.8deg); }
   50% { transform: rotate(0.8deg); }
   100% { transform: rotate(-0.8deg); }
 }
 
-/* [수정] .is-jiggling 클래스를 가진 카드 내부의 .skill-ink-blot만 흔들리도록 선택자를 변경 */
 .is-jiggling .skill-ink-blot {
   animation: jiggle 0.3s infinite;
 }
 
-/* [수정] 드래그 중인 카드 내부의 .skill-ink-blot은 흔들림을 멈춤 */
 .is-jiggling.drag-dragging .skill-ink-blot {
   animation: none;
 }
 
-/* 폰트 관련 기본 변수 (기존 스타일에서 가져옴) */
-:root {
-  --Grey: #a3a3a3;
-  --LightBlue: #12b3eb;
-  --DarkBlue: #5460f9;
-  --Black: #000000;
-  --White: #ffffff;
-  --gray-dark: #333;
-  /* 페이지의 실제 배경색을 변수로 정의하여 사용하면 편리합니다. */
-  --page-background: #f0f0f0; /* 이 값을 실제 웹사이트 배경색으로 맞춰주세요! */
-  --grab: url('../../img/grab.png') 11 3, auto !important;
-}
 
-/* Icon View Styles */
+/* --- Icon View Styles --- */
 .skills-icon-view {
-  display: none; /* Initially hidden */
-  width: 100%; /* 상위 컨테이너를 가득 채우도록 100% 유지 */
+  display: none; 
+  width: 100%; 
   margin: 0 auto;
   padding: 20px 0;
-  opacity: 0; /* For smooth transition */
+  opacity: 0;
 }
 
 .skills-section {
   width: 100%;
   margin-bottom: 40px;
-  text-align: center; /* 섹션 전체 중앙 정렬은 그대로 유지 */
+  text-align: center;
 }
 
 .skills-header {
   font-size: 1.8rem;
   font-weight: 600;
   margin-bottom: 20px;
-  color: var(--Black);
-  text-align: left; /* 요청하신 대로 좌측 정렬 */
-  padding-left: 5vw; /* .marquee-container의 좌측 여백과 맞춰줍니다. */
+  /* [수정] 텍스트 색상 변수 적용 */
+  color: var(--text-primary-color);
+  text-align: left;
+  padding-left: 5vw;
 }
 
-/* --- Marquee Effect Styles --- */
 .skills-wrapper {
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* 마키는 시작점에서 흐르도록 유지 */
+  justify-content: flex-start;
   gap: 20px;
   white-space: nowrap;
   box-sizing: border-box;
-  padding: 10px 0; /* 좌우 페이드 효과를 위해 좌우 패딩 제거 */
+  padding: 10px 0;
 }
 
-/* .skill 아이템 (컨테이너 역할) */
 .skill {
   position: relative;
-  display: flex; /* 내부 콘텐츠를 중앙 정렬 */
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 15px;
-  height: 120px; /* 크기 키움 */
-  width: 120px; /* 크기 키움 */
-  background-color: transparent; /* skill 자체는 배경 없음 */
-  border-radius: 48% 52% 51% 49% / 49% 50% 50% 51%; /* 불규칙한 원형 */
+  height: 120px;
+  width: 120px;
+  background-color: var(--color-gray-900);
+  border-radius: 48% 52% 51% 49% / 49% 50% 50% 51%;
   transform: scale(1);
-  transition: transform 0.3s ease, color 0.3s ease; /* skill 자체의 트랜지션 */
-  box-shadow: none; /* 그림자 없음 */
+  transition: transform 0.3s ease, color 0.3s ease;
+  box-shadow: none;
   flex-shrink: 0;
   margin-right: 40px;
-  overflow: visible; /* 내부 아이콘과 텍스트가 튀어나와도 보이도록 */
-  z-index: 1; /* 기본 z-index */
+  overflow: visible;
+  z-index: 1;
 }
 
-/* 잉크 번짐 효과의 배경 (새로운 div.skill-ink-background) */
 .skill-ink-background {
   position: absolute;
-  /* skill 원형보다 약간 크게 하여 필터가 번지는 공간을 충분히 확보 */
-  top: -10px; /* 확장 여백 */
-  left: -10px; /* 확장 여백 */
-  width: calc(100% + 20px); /* 원래 크기 + 20px */
-  height: calc(100% + 20px); /* 원래 크기 + 20px */
-  border-radius: inherit; /* 부모 .skill의 border-radius 상속 */
-  background-color: var(--White); /* **평소 잉크 번짐 효과의 배경색 (기본 흰색)** */
-  box-shadow: 0px 0px 5px 0px rgba(38, 38, 38, 0.25); /* 기본 그림자 */
-  filter: url(#classicWetInk); /* **평소에도 잉크 번짐 필터 적용** */
-  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, filter 0.3s ease; /* 모든 효과에 트랜지션 */
-  pointer-events: none; /* 클릭 이벤트 방지 */
-  z-index: 0; /* 가장 아래에 위치 (내부 콘텐츠보다 아래) */
+  top: -10px;
+  left: -10px;
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  border-radius: inherit;
+  /* [수정] 배경색을 카드 배경 변수로 설정 */
+  background-color: var(--color-gray-900);
+  /* [수정] 라이트 모드 그림자 */
+  box-shadow: 0px 0px 5px 0px rgba(38, 38, 38, 0.25);
+  filter: url(#classicWetInk);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, filter 0.3s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+/* [추가] 다크 모드에서 아이콘 배경 그림자 변경 */
+body[data-theme="dark"] .skill-ink-background {
+    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.3);
 }
 
-/* 호버 시 효과 */
 .skill:hover {
-  /* .skill 자체의 transform은 유지 (scale 등) */
-  color: var(--White); /* 텍스트 색상 변경 */
+  /* [수정] 호버시 텍스트 색상을 반전 색상 변수로 설정 */
+  color: var(--color-gray-100);
 }
 
 .skill:hover .skill-ink-background {
-  background-color: #333; /* **호버 시 잉크 번짐 효과의 배경색 변경** */
-  box-shadow: 0px 0px 10px 1px rgba(38, 38, 38, 0.5); /* 호버 시 그림자 변경 */
-  filter: url(#classicWetInk); /* **호버 시에도 필터 유지** */
-  transform: scale(1.08); /* 호버 시 잉크 번짐 레이어 살짝 확대 */
+  /* [수정] 호버 시 배경색을 어두운 회색으로 */
+  background-color: var(--color-gray-100);
+  box-shadow: 0px 0px 10px 1px rgba(38, 38, 38, 0.5);
+  filter: url(#classicWetInk);
+  transform: scale(1.08);
+}
+/* [추가] 다크 모드에서 호버시 배경을 밝은 회색으로 변경 */
+body[data-theme="dark"] .skill:hover .skill-ink-background {
+  background-color: var(--color-gray-600);
+  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.4);
 }
 
-/* 아이콘과 텍스트가 잉크 번짐 배경 위에 보이도록 z-index 설정 및 크기 조절 */
 .skills-logo {
-  position: relative; /* z-index 적용을 위해 */
-  z-index: 1; /* .skill-ink-background 위에 위치 (skill-ink-background z-index 0보다 높게) */
-  width: 40%; /* .skill 너비의 60% */
-  height: auto; /* 비율 유지 */
-  max-width: 40px; /* 최대 크기 제한 */
-  max-height: 40px; /* 최대 크기 제한 */
+  position: relative;
+  z-index: 1;
+  width: 40%;
+  height: auto;
+  max-width: 40px;
+  max-height: 40px;
 }
 .skills-logo img {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* 이미지 비율 유지 */
-  filter: grayscale(100%); /* 기본적으로 흑백 */
+  object-fit: contain;
+  filter: grayscale(100%);
   transition: filter 0.3s ease;
 }
+/* [추가] 다크 모드에서 기본 로고 이미지를 반전시켜 잘 보이게 함 */
+body[data-theme="dark"] .skills-logo img {
+  filter: grayscale(100%) invert(1);
+}
+
 
 .skill:hover .skills-logo img {
-  filter: none; /* 호버 시 원본 컬러로 */
+  filter: none;
   scale: 1.08;
   transition: filter 1s cubic-bezier(0.075, 0.82, 0.165, 1),
               scale 1s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 
 .skill span {
-  position: relative; /* z-index 적용을 위해 */
-  z-index: 1; /* .skill-ink-background 위에 위치 */
-  /* 화면 크기에 따라 폰트 크기 유동적으로 조절 */
+  position: relative;
+  z-index: 1;
   font-size: clamp(0.7rem, 2vw, 1.05rem);
   font-weight: 500;
-  white-space: normal; /* 텍스트가 필요하면 줄 바꿈되도록 */
-  padding: 0 5px; /* 좌우 여백 추가하여 원형 경계에 너무 붙지 않도록 */
-  box-sizing: border-box; /* 패딩이 너비에 포함되도록 */
-  width: 100%; /* 부모 .skill의 너비에 맞춰 패딩 적용을 위함 */
+  white-space: normal;
+  padding: 0 5px;
+  box-sizing: border-box;
+  width: 100%;
+  /* [수정] 기본 텍스트 색상 적용. 호버는 부모(.skill)에서 처리 */
+  color: var(--text-primary-color);
+  transition: color 0.3s ease;
 }
 
 .marquee-container {
   position: relative;
-  overflow: visible; /* 마키 콘텐츠 숨김 */
-  width: 100vw; /* 뷰포트 전체 너비 */
-  margin: 0; /* 중앙 정렬 해제 */
-  left: 50%; /* 뷰포트 왼쪽 끝에 맞추기 위해 50% 이동 */
-  transform: translateX(-50%); /* 정확히 중앙에서 왼쪽으로 50% 이동 */
-  background-color: transparent; /* 마키 컨테이너 배경을 투명하게 설정 */
+  overflow: visible;
+  width: 100vw;
+  margin: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: transparent;
 }
 
 .marquee-content {
   display: flex;
   width: max-content;
-  will-change: transform; /* 애니메이션 성능 최적화 */
+  will-change: transform;
 }
 
-/* Opacity Fade Effects - JavaScript로 각 아이템의 opacity를 조절할 것이므로,
-   가상 요소는 배경색 없이 투명하게 유지. */
 .marquee-container::before,
 .marquee-container::after {
   content: '';
   position: absolute;
   top: 0;
-  width: 15%; /* 페이드 효과의 길이 조절 (이 영역에서 opacity가 변함) */
+  width: 15%;
   height: 100%;
   z-index: 10;
   pointer-events: none;
-  background: transparent; /* 오버레이 배경을 투명하게 설정 */
+  background: transparent;
 }
 
-.marquee-container::before {
-  left: 0;
-}
-
-.marquee-container::after {
-  right: 0;
-}
+.marquee-container::before { left: 0; }
+.marquee-container::after { right: 0; }
 
 
 @media only screen and (min-width: 1100px) {
-  .skills-icon-view {
-    width: 100%;
-  }
-  .skills-section {
-    margin-bottom: 60px;
-  }
-  .skills-header {
-    padding-left: 5vw;
-  }
-  .skills-wrapper {
-    gap: 30px;
-    padding: 20px 0;
-  }
+  .skills-icon-view { width: 100%; }
+  .skills-section { margin-bottom: 60px; }
+  .skills-header { padding-left: 5vw; }
+  .skills-wrapper { gap: 30px; padding: 20px 0; }
   .skill {
-    height: 150px; /* 큰 화면에서 크기 더 키움 */
-    width: 150px; /* 큰 화면에서 크기 더 키움 */
+    height: 150px;
+    width: 150px;
     margin-right: 50px;
-    border-radius: 48% 52% 51% 49% / 49% 50% 50% 51%; /* 큰 화면에서도 불규칙한 원형 유지 */
+    border-radius: 48% 52% 51% 49% / 49% 50% 50% 51%;
   }
-  /* 큰 화면에서 아이콘과 텍스트 크기 다시 조절 */
   .skill .skills-logo {
       max-width: 80px;
       max-height: 80px;
@@ -518,52 +515,46 @@
   }
 }
 
-
-/* --- SECTION TITLE STYLING --- */
-/* 모든 .section-title의 기본 스타일 (왼쪽 정렬) */
 .section-title {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  color: var(--Black);
+  /* [수정] 텍스트 색상 변수 적용 */
+  color: var(--text-primary-color);
   transition: color 0.3s;
-  user-select: none; /* 텍스트 선택 방지 */
+  user-select: none;
   display: inline-flex;
-  align-items: baseline; /* Align text baselines */
-  gap: 10px; /* Space between title and description */
+  align-items: baseline;
+  gap: 10px;
 }
 
-/* Skills 섹션의 제목을 포함하는 컨테이너에 텍스트 정렬 적용 */
 #skills-section .section-title {
-    text-align: left; /* Skills section title will be left-aligned */
-    display: flex; /* Use flex to align title and description side by side */
-    align-items: baseline; /* Align based on text baseline */
-    justify-content: flex-start; /* Align contents to the start */
-    width: 100%; /* Take full width of its parent */
+    text-align: left;
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-start;
+    width: 100%;
     cursor: var(--grab)
 }
 
-/* Skills 섹션의 제목에만 커서 변경 및 호버 효과 적용 */
-.skills-main-title-text { /* HTML에서 해당 h2에 부여한 ID 사용 */
+.skills-main-title-text {
   cursor: var(--grab);
 }
 
 .skills-main-title-text:hover {
   text-decoration: underline;
-  text-underline-offset: 0.25em; /* Adjust to move the underline further from the text */
-  text-decoration-color: #111; /* Match your hover color */
+  text-underline-offset: 0.25em;
+  /* [수정] 밑줄 색상을 텍스트 색상 변수로 변경 */
+  text-decoration-color: var(--text-primary-color);
 }
 
-/* 뷰 전환 설명 텍스트 스타일 */
 .view-toggle-description {
-  display: inline-block; /* Inline with the title */
-  font-size: 0.7rem; /* 원하는 크기 */
-  color: #777; /* 약간 흐린 색상 */
-  margin-top: 0; /* No top margin needed when inline */
+  display: inline-block;
+  font-size: 0.7rem;
+  /* [수정] 텍스트 색상 변수 적용 */
+  color: var(--text-tertiary-color);
+  margin-top: 0;
   margin-left: 1rem;
-  transition: opacity 0.3s ease; /* 전환 효과 */
-  vertical-align: middle; /* Align vertically with the title */
+  transition: opacity 0.3s ease, color 0.3s ease;
+  vertical-align: middle;
 }
-
-/* SVG Filter for Ink Effect */
-/* This SVG is already correctly defined in index.html, no need to duplicate */

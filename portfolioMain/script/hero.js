@@ -307,19 +307,79 @@ document.addEventListener('preloaderHidden', function () {
 
         const styleSheet = document.createElement('style');
         styleSheet.type = 'text/css';
-        styleSheet.innerHTML = `
+       styleSheet.innerHTML = `
+            /* 테마별 Ticker 스타일을 위한 CSS 변수 정의 */
+            :root {
+                /* 라이트 모드 (기본값) */
+                --ticker-item-color: #bdbdbd77; 
+                --ticker-opacity-low: 0.1;
+                --ticker-opacity-medium: 0.2;
+                --ticker-opacity-high: 0.3;
+                --ticker-opacity-very-high: 0.4;
+            }
+
+            /* * [수정된 부분]
+             * body.dark-mode 대신 실제 테마 관리자에서 사용하는 html.dark 선택자로 변경합니다.
+             */
+            html.dark {
+                /* 다크 모드일 때 적용될 값 */
+                --ticker-item-color: #666666;
+                --ticker-opacity-low: 0.1;
+                --ticker-opacity-medium: 0.1;
+                --ticker-opacity-high: 0.1;
+                --ticker-opacity-very-high: 0.2;
+            }
+
             /* 마키 애니메이션들 (좌우 스크롤) */
             @keyframes marquee1 { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
             @keyframes marquee2 { 0% { transform: translateX(-50%); } 100% { transform: translateX(0%); } }
             @keyframes marquee3 { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
-            /* 페이드인/아웃 애니메이션들 */
-            @keyframes fadeInOut1 { 0% { opacity: 0.2; transform: scale(1); } 15% { opacity: 0.3; transform: scale(1); } 85% { opacity: 0.3; transform: scale(1); } 100% { opacity: 0.2; transform: scale(1); } }
-            @keyframes fadeInOut2 { 0% { opacity: 0.2; transform: scale(1); } 5% { opacity: 0.3; transform: scale(1); } 20% { opacity: 0.3; transform: scale(1); } 80% { opacity: 0.3; transform: scale(1); } 95% { opacity: 0.3; transform: scale(1); } 100% { opacity: 0.2; transform: scale(1); } }
-            @keyframes fadeInOut3 { 0% { opacity: 0.1; transform: scale(1); } 15% { opacity: 0.2; transform: scale(1); } 85% { opacity: 0.2; transform: scale(1); } 100% { opacity: 0.1; transform: scale(1); } }
-            @keyframes fadeInOut4 { 0% { opacity: 0.2; transform: scale(1); } 15% { opacity: 0.5; transform: scale(1); } 85% { opacity: 0.5; transform: scale(1); } 100% { opacity: 0.2; transform: scale(1); } }
+
+            /* 페이드인/아웃 애니메이션들 (opacity에 CSS 변수 사용) */
+            @keyframes fadeInOut1 {
+                0%   { opacity: var(--ticker-opacity-medium); transform: scale(1); }
+                15%  { opacity: var(--ticker-opacity-high); transform: scale(1); }
+                85%  { opacity: var(--ticker-opacity-high); transform: scale(1); }
+                100% { opacity: var(--ticker-opacity-medium); transform: scale(1); }
+            }
+            @keyframes fadeInOut2 {
+                0%   { opacity: var(--ticker-opacity-medium); transform: scale(1); }
+                5%   { opacity: var(--ticker-opacity-high); transform: scale(1); }
+                20%  { opacity: var(--ticker-opacity-high); transform: scale(1); }
+                80%  { opacity: var(--ticker-opacity-high); transform: scale(1); }
+                95%  { opacity: var(--ticker-opacity-high); transform: scale(1); }
+                100% { opacity: var(--ticker-opacity-medium); transform: scale(1); }
+            }
+            @keyframes fadeInOut3 {
+                0%   { opacity: var(--ticker-opacity-low); transform: scale(1); }
+                15%  { opacity: var(--ticker-opacity-medium); transform: scale(1); }
+                85%  { opacity: var(--ticker-opacity-medium); transform: scale(1); }
+                100% { opacity: var(--ticker-opacity-low); transform: scale(1); }
+            }
+            @keyframes fadeInOut4 {
+                0%   { opacity: var(--ticker-opacity-medium); transform: scale(1); }
+                15%  { opacity: var(--ticker-opacity-very-high); transform: scale(1); }
+                85%  { opacity: var(--ticker-opacity-very-high); transform: scale(1); }
+                100% { opacity: var(--ticker-opacity-medium); transform: scale(1); }
+            }
+             @keyframes fadeInOut5 {
+                0%   { opacity: var(--ticker-opacity-high); transform: scale(1); }
+                15%  { opacity: var(--ticker-opacity-very-high); transform: scale(1); }
+                85%  { opacity: var(--ticker-opacity-very-high); transform: scale(1); }
+                100% { opacity: var(--ticker-opacity-high); transform: scale(1); }
+            }
+
             /* 동적으로 생성된 티커들을 위한 공통 스타일 */
             .ticker-section {} .ticker-wrap {} .ticker {} .item-collection {}
-            .item { display: inline-block; padding: 0 1rem; font-size: 1.6rem; color: #bdbdbd77; font-weight: 500; font-family: "Poppins", sans-serif; }
+            .item { 
+                display: inline-block; 
+                padding: 0 1rem; 
+                font-size: 1.6rem; 
+                color: var(--ticker-item-color); 
+                font-weight: 500; 
+                font-family: "Poppins", sans-serif; 
+                transition: color 0.3s ease;
+            }
         `;
         document.head.appendChild(styleSheet);
     }

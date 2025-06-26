@@ -1,325 +1,200 @@
-// timeline.js
+// timeline.js (리사이즈 및 메뉴 이동 문제 모두 해결된 최종 버전)
 
-// Declare DOM elements for global access
+// 전역 변수 선언
 let timelineTitles = [];
 let timelineContents = [];
 let sectionRow;
-
-// Array to store all dynamically created ScrollTrigger instances.
-// This is crucial for correctly killing existing ScrollTriggers during re-rendering
-// to prevent duplicates and malfunctions.
 let allDynamicScrollTriggers = [];
+let prevIsMobile = window.matchMedia('(max-width: 768px)').matches;
 
 /**
- * Renders the active timeline section and reorders DOM elements.
- * @param {number} activeIdx - The index of the section to activate.
+ * 활성 타임라인 섹션을 렌더링하고 DOM 요소를 재정렬합니다.
+ * @param {number} activeIdx - 활성화할 섹션의 인덱스.
  */
 function renderTimelineSection(activeIdx) {
-    // If sectionRow is not yet initialized, find and initialize it from the DOM.
     if (!sectionRow) {
         sectionRow = document.getElementById('sectionRow');
         if (!sectionRow) {
-            console.error("Error: 'sectionRow' element not found. Cannot render timeline sections.");
+            console.error("Error: 'sectionRow' element not found.");
             return;
         }
     }
 
-    // If titles and contents arrays are empty, initialize them from HTML.
-    // This initialization should ideally happen once on DOMContentLoaded, but
-    // a check is included here for safety at the start of the function.
-    if (timelineTitles.length === 0 || timelineContents.length === 0) {
-        document.querySelectorAll('.section-title').forEach(titleElement => {
-            timelineTitles.push(titleElement);
-        });
-        document.querySelectorAll('.section-content-area').forEach(contentElement => {
-            timelineContents.push(contentElement);
-        });
-        console.log("DEBUG: Initialized timelineTitles and timelineContents arrays within renderTimelineSection (secondary init check).");
+    if (timelineTitles.length === 0) {
+        document.querySelectorAll('.section-title').forEach(el => timelineTitles.push(el));
+        document.querySelectorAll('.section-content-area').forEach(el => timelineContents.push(el));
     }
 
-    // "Kill" all existing ScrollTrigger instances to prevent duplication.
-    // This is very important during section transitions or window resizing.
+    // --- [메뉴 이동 문제 해결] ---
+    // 렌더링 시작 전, 모든 콘텐츠 영역의 잔류 스타일을 초기화하여 깨끗한 상태에서 시작.
+    // 이것이 메뉴 이동 시 레이아웃이 깨지는 것을 방지합니다.
+    timelineContents.forEach(el => {
+        el.style.display = '';
+        el.style.opacity = '';
+        el.style.height = '';
+        el.style.minHeight = '';
+    });
+    console.log("DEBUG: All content areas styles reset before rendering.");
+    // ---
+
     allDynamicScrollTriggers.forEach(st => st.kill());
     allDynamicScrollTriggers = [];
-    console.log("DEBUG: Killed all previous dynamic ScrollTriggers.");
 
-    // Remove all child DOM elements from sectionRow to prepare for reordering.
     while (sectionRow.firstChild) {
         sectionRow.removeChild(sectionRow.firstChild);
     }
-    console.log("DEBUG: Cleared sectionRow DOM children.");
 
-    // Remove the 'active' class from all section titles.
     timelineTitles.forEach(t => t.classList.remove('active'));
-    console.log("DEBUG: Removed 'active' class from all titles.");
 
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
 
     if (isMobile) {
-        console.log("DEBUG: Applying mobile layout logic.");
-        // Mobile layout: Add all titles in order, then add the active content after the active title.
+        // 모바일 레이아웃 로직
         for (let i = 0; i < timelineTitles.length; i++) {
             sectionRow.appendChild(timelineTitles[i]);
             const titleText = timelineTitles[i].querySelector('.section-title-text');
             if (titleText) {
-                // For mobile, reset GSAP control to let CSS take over.
-                gsap.set(titleText, { left: 'auto', top: 'auto', bottom: 'auto', position: 'static', margin: 0, x: 0, y: 0, translateY: 0, scale: 1 });
-                console.log(`DEBUG: Mobile - Resetting position for titleText ${i} to static.`);
+                gsap.set(titleText, { clearProps: "all" }); // GSAP 스타일 완전 초기화
             }
 
             if (i === activeIdx) {
                 timelineTitles[i].classList.add('active');
-                timelineContents[i].style.opacity = '1';
                 timelineContents[i].style.display = 'flex';
+                timelineContents[i].style.opacity = '1';
                 sectionRow.appendChild(timelineContents[i]);
-                console.log(`DEBUG: Mobile - Activated section ${i} and appended its content.`);
             } else {
-                timelineContents[i].style.opacity = '0';
                 timelineContents[i].style.display = 'none';
-                console.log(`DEBUG: Mobile - Hid inactive content for section ${i}.`);
             }
         }
     } else {
-        console.log("DEBUG: Applying desktop layout logic.");
-        // Desktop layout: Dynamically order content and titles.
-        // Order: [Titles before active section] -> [Active Content] -> [Active Title] -> [Titles after active section]
-
-        // Add titles before the active section.
+        // 데스크탑 레이아웃 로직
         for (let i = 0; i < activeIdx; i++) {
             sectionRow.appendChild(timelineTitles[i]);
-            timelineContents[i].style.opacity = '0'; // Hide corresponding content.
             timelineContents[i].style.display = 'none';
-            console.log(`DEBUG: Desktop - Appended title ${i} (before active).`);
         }
 
-        // Add the active content area.
-        timelineContents[activeIdx].style.opacity = '1';
         timelineContents[activeIdx].style.display = 'flex';
+        timelineContents[activeIdx].style.opacity = '1';
         sectionRow.appendChild(timelineContents[activeIdx]);
-        console.log(`DEBUG: Desktop - Appended active content for section ${activeIdx}.`);
 
-        // Add the active title element and apply the 'active' class.
         timelineTitles[activeIdx].classList.add('active');
         sectionRow.appendChild(timelineTitles[activeIdx]);
-        console.log(`DEBUG: Desktop - Appended active title ${activeIdx} and marked active.`);
 
-        // Add titles after the active section.
         for (let i = activeIdx + 1; i < timelineTitles.length; i++) {
             sectionRow.appendChild(timelineTitles[i]);
-            timelineContents[i].style.opacity = '0'; // Hide corresponding content.
             timelineContents[i].style.display = 'none';
-            console.log(`DEBUG: Desktop - Appended title ${i} (after active).`);
         }
-
-        // --- Desktop only: ScrollTrigger setup for all section title texts ---
-        if (window.gsap && window.ScrollTrigger) {
-            console.log("DEBUG: Setting up ScrollTriggers for ALL section title texts on desktop.");
-
-            const allTitleTexts = [];
-            const titleMovementBounds = []; // Store calculated movement bounds for each title
-
-            timelineTitles.forEach((titleElement, idx) => {
-                const titleText = titleElement.querySelector('.section-title-text');
-                if (titleText) {
-                    allTitleTexts.push(titleText);
-
-                    // Ensure CSS is set for positioning before getting dimensions
-                    // For vertical-rl, offsetWidth is visual height, offsetHeight is visual width.
-                    // Assuming .section-title-text has 'bottom: 0' and its parent has 'position: relative'.
-                    const parentColHeight = titleElement.offsetHeight; // The height of the parent .section-title
-                    const textVisualHeight = titleText.offsetWidth; // The visual height of the text (in vertical-rl)
-
-                    // The top padding of the .section-title element.
-                    // Get computed style for accurate padding values.
-                    const computedStyle = window.getComputedStyle(titleElement);
-                    const paddingTop = parseFloat(computedStyle.paddingTop);
-                    const paddingBottom = parseFloat(computedStyle.paddingBottom);
-
-                    // Max upward movement from bottom:0 (negative translateY) before hitting top padding
-                    const maxUpwardTranslation = -(parentColHeight - paddingTop - textVisualHeight);
-
-                    // Max downward movement from bottom:0 (positive translateY) before hitting bottom padding
-                    // If bottom:0 is the lowest, then maxDownwardTranslation is 0.
-                    // If you want it to go slightly beyond bottom:0 but still within the parent,
-                    // you could allow a small positive value, e.g., paddingBottom.
-                    const maxDownwardTranslation = 0; // Keeping it simple: 0 means it stops at bottom:0.
-
-                    // Define the range of motion for this specific title text.
-                    // startTranslateY: Where the text should be when ScrollTrigger starts (e.g., further up)
-                    // endTranslateY: Where the text should be when ScrollTrigger ends (e.g., at bottom:0 or slightly below)
-                    // We want it to start higher up, so it comes down into view.
-                    // Let's make the start point relative to its max allowed upward movement.
-                    // For example, start at 80% of its max upward translation range.
-                    const startY = maxUpwardTranslation * 0.8; // Adjust this multiplier (e.g., 0.5 to 1.0)
-                    // We want it to end at or slightly below its natural bottom:0 position.
-                    // A small positive value could make it go slightly beyond bottom:0, but still within parent.
-                    const endY = maxDownwardTranslation; // Sticking to 0 for ending at bottom:0
-
-                    titleMovementBounds.push({
-                        titleText: titleText,
-                        minTranslateY: maxUpwardTranslation, // The absolute highest (most negative translateY) it can go
-                        maxTranslateY: maxDownwardTranslation, // The absolute lowest (most positive translateY) it can go
-                        initialTranslateY: startY, // The translateY when the animation starts
-                        finalTranslateY: endY // The translateY when the animation ends
-                    });
-
-                    // Set initial position immediately with GSAP to prevent FOUC
-                    gsap.set(titleText, { translateY: startY });
-                    console.log(`DEBUG: Initial GSAP set for titleText ${idx} to translateY: ${startY.toFixed(2)}px.`);
-                }
-            });
-
-            if (allTitleTexts.length > 0) {
-                const mainContentArea = timelineContents[0]; // Using the first content area as the trigger basis
-                if (mainContentArea) {
-                    // Create a single GSAP timeline for all title texts
-                    const tl = gsap.timeline({ paused: true });
-
-                    allTitleTexts.forEach((titleText, idx) => {
-                        const bounds = titleMovementBounds.find(b => b.titleText === titleText);
-                        if (bounds) {
-                            // Add a tween for each title to the main timeline.
-                            // The '0' for position ensures all these tweens start at the same time
-                            // within this main timeline, ensuring synchronized movement.
-                            tl.to(titleText, {
-                                translateY: bounds.finalTranslateY,
-                                duration: 1, // Duration within the GSAP timeline (will be stretched by ScrollTrigger)
-                                ease: "none"
-                            }, 0); // Start all these tweens at the very beginning of 'tl'
-                        }
-                    });
-
-                    // Now, link this GSAP timeline to ScrollTrigger
-                    const st = ScrollTrigger.create({
-                        trigger: mainContentArea,
-                        scroller: window,
-                        start: "top 90%", // Starts when the top of mainContentArea is 90% down from viewport top
-                        endTrigger: sectionRow,
-                        end: "bottom top", // Ends when the bottom of sectionRow hits the top of the viewport
-                        scrub: true, // Smoothly link animation to scroll position
-                        animation: tl, // Associate the GSAP timeline directly with ScrollTrigger
-                        // markers: true // For debugging: shows start/end markers
-                    });
-                    allDynamicScrollTriggers.push(st);
-                    console.log(`DEBUG: Main ScrollTrigger created for all title texts, linked to a single GSAP timeline.`);
-
-                } else {
-                    console.warn("DEBUG: First content area not found. Cannot create main title text ScrollTrigger.");
-                }
-            } else {
-                console.warn("DEBUG: No title texts found for ScrollTrigger animation.");
-            }
-        } else {
-            console.warn("DEBUG: GSAP or ScrollTrigger not loaded for all title text animations on desktop.");
-        }
+        
+        // 데스크탑 타이틀 스크롤 애니메이션
+        setupDesktopTitleAnimations();
     }
 
-    // --- Content animations for the active section (main title phrase, description, cards) ---
-    const currentActiveContentArea = timelineContents[activeIdx];
-    const mainTitleElement = currentActiveContentArea.querySelector('.main-title');
-    const phraseSpans = mainTitleElement ? mainTitleElement.querySelectorAll('.phrase span span') : [];
-    const descriptionP = currentActiveContentArea.querySelector('.main-section-header .sub-description');
-    const timelineCards = currentActiveContentArea.querySelectorAll(".item-container.timeline-card");
-
-    // **Important: Explicitly set the initial state of animations before playing them.**
-    // This ensures that animations always start from a consistent point.
-    console.log("DEBUG: Setting initial states for active section content animations.");
-    gsap.set(phraseSpans, { y: '100%', opacity: 0 });
-    if (descriptionP) {
-        gsap.set(descriptionP, { opacity: 0, y: '50px' });
-    }
-    gsap.set(timelineCards, { opacity: 0, y: 50 });
-
-
-    // Main title phrase animation
-    console.log("DEBUG: Playing phrase animation for active section.");
-    gsap.to(phraseSpans, {
-        y: 0,
-        opacity: 1,
-        stagger: 0.01,
-        duration: 0.5,
-        ease: 'power2.out',
-        onComplete: () => console.log("DEBUG: Phrase animation complete for active section.")
-    });
-
-    // Description paragraph animation - This animation must be explicitly played.
-    if (descriptionP) {
-        console.log("DEBUG: Playing description animation for active section.");
-        gsap.to(descriptionP, {
-            opacity: 1,
-            y: 0,
-            duration: 0.5,
-            ease: 'power2.out',
-            delay: 0.5, // Give a slight delay after the phrase animation starts.
-            onComplete: () => console.log("DEBUG: Description animation complete for active section.")
-        });
-    } else {
-        console.warn("DEBUG: sub-description element not found for animation in active section.");
-    }
-
-    // ScrollTrigger animation for timeline cards within the active content area
-    timelineCards.forEach((card, index) => {
-        const cardST = ScrollTrigger.create({
-            trigger: card,
-            start: "top 90%", // Starts when the card is 90% into the viewport.
-            toggleActions: "play none none reverse", // Play on scroll down, reverse on scroll back up.
-            scroller: window,
-            animation: gsap.to(card, { opacity: 1, y: 0, duration: 0.6, ease: "power1.out" }),
-            onEnter: () => console.log(`DEBUG: Card ${index} entered view for active section.`),
-            onLeaveBack: () => console.log(`DEBUG: Card ${index} left view (scrolling back) for active section.`)
-        });
-        allDynamicScrollTriggers.push(cardST);
-    });
-    console.log("DEBUG: Card ScrollTriggers created for active section.");
+    // 활성 콘텐츠 내부 요소 애니메이션
+    setupActiveContentAnimations(activeIdx);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.gsap && window.ScrollTrigger) {
-        gsap.registerPlugin(ScrollTrigger);
-        console.log("DEBUG: GSAP and ScrollTrigger registered.");
-    } else {
-        console.error("DEBUG: GSAP or ScrollTrigger not loaded. Please check your script imports.");
+/**
+ * 데스크탑 뷰에서 타이틀 스크롤 애니메이션을 설정합니다.
+ */
+function setupDesktopTitleAnimations() {
+    if (!window.gsap || !window.ScrollTrigger) return;
+    
+    const allTitleTexts = [];
+    timelineTitles.forEach(titleElement => {
+        const titleText = titleElement.querySelector('.section-title-text');
+        if (titleText) {
+            const parentColHeight = titleElement.offsetHeight;
+            const textVisualHeight = titleText.offsetWidth;
+            const paddingTop = parseFloat(window.getComputedStyle(titleElement).paddingTop);
+            const maxUpwardTranslation = -(parentColHeight - paddingTop - textVisualHeight);
+            const startY = maxUpwardTranslation * 0.8;
+            gsap.set(titleText, { y: startY });
+            allTitleTexts.push({ element: titleText, endY: 0 });
+        }
+    });
+
+    if (allTitleTexts.length > 0 && timelineContents[0]) {
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: timelineContents[0],
+                scroller: window,
+                start: "top 90%",
+                endTrigger: sectionRow,
+                end: "bottom top",
+                scrub: true,
+            }
+        });
+        allTitleTexts.forEach(item => tl.to(item.element, { y: item.endY, ease: "none" }, 0));
+        allDynamicScrollTriggers.push(tl.scrollTrigger);
+    }
+}
+
+/**
+ * 활성 콘텐츠 내부의 요소(타이틀, 설명, 카드)에 대한 애니메이션을 설정합니다.
+ * @param {number} activeIdx - 활성화된 섹션의 인덱스.
+ */
+function setupActiveContentAnimations(activeIdx) {
+    const contentArea = timelineContents[activeIdx];
+    if (!contentArea) return;
+
+    const mainTitle = contentArea.querySelector('.main-title');
+    const phraseSpans = mainTitle ? mainTitle.querySelectorAll('.phrase span span') : [];
+    const description = contentArea.querySelector('.main-section-header .sub-description');
+    const cards = contentArea.querySelectorAll(".item-container.timeline-card");
+
+    gsap.set(phraseSpans, { y: '100%', opacity: 0 });
+    gsap.set(description, { opacity: 0, y: '50px' });
+    gsap.set(cards, { opacity: 0, y: 50 });
+
+    gsap.to(phraseSpans, { y: 0, opacity: 1, stagger: 0.01, duration: 0.5, ease: 'power2.out' });
+    if (description) {
+        gsap.to(description, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: 0.4 });
     }
 
-    sectionRow = document.getElementById('sectionRow');
-    document.querySelectorAll('.section-title').forEach(titleElement => {
-        timelineTitles.push(titleElement);
+    cards.forEach(card => {
+        const st = ScrollTrigger.create({
+            trigger: card,
+            start: "top 90%",
+            toggleActions: "play none none reverse",
+            animation: gsap.to(card, { opacity: 1, y: 0, duration: 0.6, ease: "power1.out" }),
+        });
+        allDynamicScrollTriggers.push(st);
     });
-    document.querySelectorAll('.section-content-area').forEach(contentElement => {
-        timelineContents.push(contentElement);
-    });
-    console.log("DEBUG: DOM elements (titles and contents) initialized.");
+}
 
-    timelineTitles.forEach((t, i) => {
-        t.addEventListener('click', () => {
-            if (t.classList.contains('active')) {
-                console.log(`DEBUG: Clicked already active tab ${i}. Ignoring.`);
-                return;
-            }
-            console.log(`DEBUG: Tab ${i} clicked. Calling renderTimelineSection.`);
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (!window.gsap || !window.ScrollTrigger) {
+        console.error("GSAP or ScrollTrigger not loaded.");
+        return;
+    }
+    gsap.registerPlugin(ScrollTrigger);
+
+    renderTimelineSection(0); // 초기 렌더링
+
+    const debounce = (func, wait) => {
+        let timeout;
+        return (...args) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    };
+
+    const handleResize = () => {
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        if (isMobile !== prevIsMobile) {
+            console.log("DEBUG: Breakpoint changed. Forcing re-render.");
+            prevIsMobile = isMobile;
+            renderTimelineSection(timelineTitles.findIndex(t => t.classList.contains('active')));
+        }
+    };
+
+    window.addEventListener('resize', debounce(handleResize, 200));
+
+    timelineTitles.forEach((title, i) => {
+        title.addEventListener('click', () => {
+            if (title.classList.contains('active')) return;
             renderTimelineSection(i);
         });
     });
-
-    console.log("DEBUG: Initial render of section 0.");
-    renderTimelineSection(0);
-
-    window.addEventListener('resize', () => {
-        console.log("DEBUG: Window resized. Re-rendering current section.");
-        let currentActiveIdx = 0;
-        timelineTitles.forEach((t, i) => {
-            if (t.classList.contains('active')) {
-                currentActiveIdx = i;
-            }
-        });
-        ScrollTrigger.refresh();
-        renderTimelineSection(currentActiveIdx);
-    });
-
-    window.timelineComponent = {
-        titles: timelineTitles,
-        contents: timelineContents,
-        renderSection: renderTimelineSection
-    };
-    console.log("DEBUG: timelineComponent exposed globally.");
 });

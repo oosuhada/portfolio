@@ -1,9 +1,5 @@
-/* --- Animation Styles for Modals (these are not directly used for funfact cards) --- */
-/* (omitted for brevity, as they are part of the original HTML) */
+/* ======================= FUN FACTS - Upgraded for Light/Dark Mode ======================= */
 
-/* ======================= FUN FACTS (수정 완료) ======================= */
-
-/* Main section is now the positioning context for floating cards. */
 .about-funfacts {
   position: relative;
   width: 100%;
@@ -12,7 +8,6 @@
   overflow: hidden;
 }
 
-/* These containers are no longer used. */
 .funfacts-card-display-area,
 .about-funfacts-cols {
   display: none;
@@ -26,52 +21,54 @@
   align-items: flex-start;
   width: 90%;
   max-width: 320px;
-  min-height: 220px; /* Used as a base for height calculation in JS */
-  background: #fff;
-  /* border-radius is animated by JS */
+  min-height: 220px;
+  /* [수정] 카드 배경색을 변수로 설정 */
+  background: var(--background-card);
   padding: 1.8rem;
+  /* [수정] 라이트 모드 기본 그림자 */
   box-shadow: 0 8px 25px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.07);
-  color: var(--gray-dark);
   cursor: var(--cursor-grab2);
   overflow: hidden;
-  will-change: transform, opacity, z-index, border-radius, filter; /* filter 추가 */
-  opacity: 0; /* Default hidden state, animated by JS */
+  will-change: transform, opacity, z-index, border-radius, filter;
+  opacity: 0;
   transform-origin: center center;
   z-index: 10;
-  border-radius: 12px; /* 기본값 설정 */
-  filter: blur(0px); /* 기본 블러 값 */
+  border-radius: 12px;
+  filter: blur(0px);
+  transition: background 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+}
+/* [추가] 다크 모드 카드 스타일 */
+body[data-theme="dark"] .funfact-card {
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3), 0 4px 15px rgba(0,0,0,0.2);
 }
 
-/* Existing floating animation */
 .funfact-card.is-floating {
   animation: floatAnimation 18s infinite ease-in-out;
 }
 
-/* Card dragging state */
 .funfact-card.is-dragging {
   cursor: var(--cursor-grabbing2);
   box-shadow: 0 15px 40px rgba(0,0,0,0.2), 0 5px 15px rgba(0,0,0,0.15);
   transform: scale(1.05);
   transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
-  animation-play-state: paused; /* Pause floating animation while dragging */
+  animation-play-state: paused;
+}
+body[data-theme="dark"] .funfact-card.is-dragging {
+    box-shadow: 0 15px 45px rgba(0,0,0,0.4), 0 5px 20px rgba(0,0,0,0.3);
 }
 
-/* Click-me message no longer needed, hide it. */
-.click-me-msg {
-  display: none;
-}
-
-.fact-text-content {
-  display: block !important;
-}
+.click-me-msg { display: none; }
+.fact-text-content { display: block !important; }
 
 .fact-text-content p {
   font-family: 'Pretendard', sans-serif;
   font-size: 0.95rem;
   line-height: 1.7;
-  color: #555;
+  /* [수정] 보조 텍스트 색상 변수 적용 */
+  color: var(--text-secondary-color);
   position: relative;
   z-index: 3;
+  transition: color 0.3s ease;
 }
 
 .funfact-card h3 {
@@ -80,12 +77,13 @@
   font-weight: 600;
   margin-bottom: 1rem;
   line-height: 1.3;
-  color: #333;
+  /* [수정] 기본 텍스트 색상 변수 적용 */
+  color: var(--text-primary-color);
   position: relative;
   z-index: 3;
+  transition: color 0.3s ease;
 }
 
-/* Ink blot and paper effect styles */
 .funfact-card .ink-splash-container {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
   pointer-events: none; overflow: hidden; z-index: 0; filter: url(#classicWetInk);
@@ -93,9 +91,16 @@
 
 .ink-blot-drop {
   position: absolute; width: 0; height: 0; border-radius: 50%;
-  background-color: rgba(30, 30, 30, 0.6); opacity: 0; transform: scale(0.1);
+  /* [수정] 라이트 모드 잉크 방울 색상 */
+  background-color: rgba(30, 30, 30, 0.6);
+  opacity: 0; transform: scale(0.1);
   animation: ink-blot-animation 1.0s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   pointer-events: none;
+  transition: background-color 0.3s ease;
+}
+/* [추가] 다크 모드 잉크 방울 색상 */
+body[data-theme="dark"] .ink-blot-drop {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 @keyframes ink-blot-animation {
@@ -107,12 +112,13 @@
 
 .confetti-particle {
   position: fixed; pointer-events: none; z-index: 10001; opacity: 1;
-  will-change: transform, opacity; background-color: #222;
+  will-change: transform, opacity;
+  /* [수정] 콘페티 색상을 테마에 따라 자동 변경되도록 수정 */
+  background-color: var(--text-primary-color);
   border-radius: 45% 55% 50% 50% / 50% 55% 45% 50%;
 }
 
-
-/* ======================= Mountain Interactive Styles (Revised) ======================= */
+/* ======================= Mountain Interactive Styles ======================= */
 
 .funfact-instruction {
   text-align: center;
@@ -120,9 +126,11 @@
   font-size: 0.9rem;
   font-style: italic;
   font-family: 'Pretendard', sans-serif;
-  color: #888;
+  /* [수정] 3차 텍스트 색상 변수 적용 */
+  color: var(--text-tertiary-color);
   opacity: 0.8;
   max-width: 90%;
+  transition: color 0.3s ease;
 }
 
 .funfact-spacer {
@@ -151,37 +159,50 @@
   pointer-events: none;
   filter: grayscale(30%) contrast(1.1);
 }
+/* [추가] 다크모드에서 산 이미지가 너무 튀지 않도록 조정 */
+body[data-theme="dark"] .mountain-background-image {
+    filter: grayscale(50%) contrast(1) brightness(0.8);
+}
+
 
 .sparkle-dot {
   position: absolute;
-  width: 14px;
-  height: 14px;
-  background-color: rgba(220, 220, 220, 0.8);
+  width: 18px;
+  height: 18px;
+  /* [유지] common.css의 노란색 변수를 그대로 사용 */
+  background-color: var(--color-yellow-base);
   border-radius: 50%;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.7), 0 0 12px rgba(220, 220, 220, 0.5);
+  box-shadow: 0 0 10px var(--color-yellow-light), 0 0 20px var(--color-yellow-base);
   cursor: var(--cursor-grab2);
   transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), background-color 0.4s ease, box-shadow 0.4s ease;
-  animation: sparkleAnimation 2.5s infinite ease-in-out alternate;
+  animation: sparkleAnimation 2.2s infinite ease-in-out;
   will-change: transform, opacity, box-shadow;
   transform-origin: center center;
 }
 
 .sparkle-dot:hover {
-  transform: scale(2.2) !important;
+  transform: scale(2) !important;
 }
 
 .sparkle-dot.is-active {
-  background-color: #ff8e8e;
-  box-shadow: 0 0 12px #ff8e8e, 0 0 20px rgba(255, 142, 142, 0.7);
+  background-color: var(--text-tertiary-color);
+  box-shadow: 0 0 16px var(--color-yellow-strong), 0 0 30px rgba(255, 217, 58, 0.8);
   animation: none;
-  transform: scale(1.5);
+  transform: scale(1.6);
   opacity: 1;
 }
 
 @keyframes sparkleAnimation {
-  0% { opacity: 0.7; transform: scale(0.95); }
-  50% { opacity: 1; transform: scale(1.05); }
-  100% { opacity: 0.7; transform: scale(0.95); }
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+    box-shadow: 0 0 10px var(--color-yellow-light), 0 0 20px var(--color-yellow-base);
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+    box-shadow: 0 0 16px var(--color-yellow-light), 0 0 30px var(--color-yellow-strong);
+  }
 }
 
 @keyframes floatAnimation {
@@ -209,86 +230,53 @@
   align-items: center;
   overflow: hidden;
 }
-
-/* Default Lottie animation style */
 .lottie-animation {
-  width: 70%;
-  height: 70%;
-  transform: scale(1.8);
+  width: 70%; height: 70%; transform: scale(1.8);
 }
-
-/* 2nd card ('Certified Sensory Player') icon style */
 .funfact-card[data-fact-id="sensory-player"] .lottie-animation {
-  width: 90%;
-  height: 90%;
+  width: 90%; height: 90%;
 }
-
-/* 3rd and 4th card icon style */
 .funfact-card[data-fact-id="piano-precision"] .lottie-animation,
 .funfact-card[data-fact-id="holistic-experience"] .lottie-animation {
-  width: 50%;
-  height: 50%;
+  width: 50%; height: 50%;
 }
 
 /* ======================= FUN FACTS Card Active Layout Changes ======================= */
-
 .funfact-card.is-active-fact {
-  display: flex; /* Makes the card visible */
+  display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
-  /* GSAP가 opacity와 transform을 제어합니다. */
 }
 
-/* [Modified] Blob-like entry and exit animations for funfact cards */
-/* CSS 애니메이션은 border-radius만 제어합니다. */
 .funfact-card.blob-enter {
   animation: funfactBlobBorderRadiusIn 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
-
 .funfact-card.blob-exit {
   animation: funfactBlobBorderRadiusOut 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
-
-/* 등장 애니메이션 (border-radius만) */
 @keyframes funfactBlobBorderRadiusIn {
   0% { border-radius: 0% 100% 0% 100% / 0% 100% 0% 100%; }
   50% { border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%; }
   100% { border-radius: 12px; }
 }
-
-/* 퇴장 애니메이션 (border-radius 및 filter) */
 @keyframes funfactBlobBorderRadiusOut {
-  0% {
-    border-radius: 12px;
-    filter: blur(0px); /* 초기 블러 없음 */
-  }
-  50% {
-    border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%; /* 자연스러운 원으로 수축 */
-    filter: blur(3px); /* 중간 블러 적용 */
-  }
-  100% {
-    border-radius: 50%; /* 완전히 원형으로 사라지게 */
-    filter: blur(10px); /* 최대 블러 적용 */
-  }
+  0% { border-radius: 12px; filter: blur(0px); }
+  50% { border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%; filter: blur(3px); }
+  100% { border-radius: 50%; filter: blur(10px); }
 }
 
-
-/* [Correction 1] Reduced icon container size and margin to make space for longer titles */
 .funfact-card.is-active-fact .lottie-icon-container {
   width: 50px;
   height: 50px;
   margin-bottom: 0;
-  margin-right: 0.8rem; /* Slightly reduced margin */
+  margin-right: 0.8rem;
   flex-shrink: 0;
 }
-
-/* [Correction 2] Slightly reduced title font size to prevent overflow */
 .funfact-card.is-active-fact h3 {
   flex-grow: 1;
-  font-size: 1.3rem; /* Slightly reduced font size */
+  font-size: 1.3rem;
 }
-
 .funfact-card.is-active-fact .fact-text-content {
   flex-basis: 100%;
   margin-top: 0.8rem;
