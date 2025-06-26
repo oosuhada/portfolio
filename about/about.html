@@ -589,6 +589,7 @@
     </div>
   </div>
 </section>
+
     <!-- <div class="about-section-gap2"></div> -->
     <section class="about-values section-background-active">
       <h2 class="section-title">MY VALUES</h2>
@@ -856,6 +857,25 @@
                             <i class="fa-solid fa-paper-plane"></i>
                         </a>
                     </div>
+<!-- AI Assistant Loading Overlay - Hidden by default -->
+<div id="ai-loading-overlay" class="ai-loading-overlay">
+    <div class="ai-loading-content">
+        <div id="ai-loading-lottie-overlay"></div>
+        <p id="ai-loading-text-overlay">AI 어시스턴트 준비 중...</p>
+        <div class="ai-loading-progress-overlay">
+            <div class="step" data-status="">
+                <span class="circle">1</span> Analyzing your question
+            </div>
+            <div class="step" data-status="">
+                <span class="circle">2</span> Searching portfolio data
+            </div>
+            <div class="step" data-status="">
+                <span class="circle">3</span> Generating a tailored response
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="ai-assistant-FAB" aria-label="Open AI Assistant" role="button" tabindex="0">
     <img id="ai-assistant-ask-image" src="../../img/asklightmode.png" alt="Ask AI">
 </div>
@@ -872,15 +892,18 @@
                 <strong>AI Portfolio Assistant</strong>
             </div>
             <div class="chat-messages" id="portfolioChatMessages">
-                </div>
+                <!-- Chat messages will be dynamically added here -->
+            </div>
         </div>
 
         <div class="chat-input-area">
             <input type="text" id="aiPortfolioChatInput" placeholder="Ask me anything..." />
             <button id="aiPortfolioChatSendBtn" class="ai-chat-send-btn">
-                </button>
+                <!-- Lottie animation for send button will be inserted here by JS -->
+            </button>
         </div>
 
+        <!-- This loading status element will be moved inside chat messages when active -->
         <div id="portfolioLoadingStatus" style="display: none;">
             <div class="loading-wrapper">
                 <div id="portfolioLoadingLottie"></div>
@@ -934,9 +957,9 @@
 <script>
   AOS.init(); // AOS 초기화 코드
 </script>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
-<script src="https://unpkg.com/compromise"></script>
-<script type="module" src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.1"></script>
+<!-- Removed: <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script> -->
+<!-- Removed: <script src="https://unpkg.com/compromise"></script> -->
+<!-- Removed: <script type="module" src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.1"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
@@ -946,8 +969,8 @@
   <script src="../common/common.js"></script>
   <script src="../common/theme-manager.js"></script>
   <script src="../common/highlighter.js"></script>
-  <script type="module" src="../common/ai_chat.js"></script>
-  <script type="module" src="../common/ai_chat_logic.js"></script>
+  <!-- Removed: <script type="module" src="../common/ai_chat.js"></script> -->
+  <!-- Removed: <script type="module" src="../common/ai_chat_logic.js"></script> -->
   <script src="./script/about-hero.js"></script>
   <script src="./script/about-main.js"></script>
   <script src="./script/about-skills.js"></script> 

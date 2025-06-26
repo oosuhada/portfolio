@@ -1,4 +1,10 @@
-// common.js
+// common/common.js
+
+// Global flag to track if AI scripts have been loaded
+let aiScriptsLoaded = false;
+let aiLoadingOverlayTimeout = null;
+// Promise to track the ongoing AI script loading process
+let aiScriptsLoadPromise = null;
 
 // --- Core Utility Functions ---
 
@@ -29,18 +35,19 @@ window.validateField = (field) => {
  */
 function disableAllTransitions() {
     const style = document.createElement('style');
-    style.id = 'no-transition-on-exit'; // 고유 ID
+    style.id = 'no-transition-on-exit'; // Unique ID
     style.textContent = `
         * {
             transition: none !important;
         }
-        body::before { /* 배경 transition 등 유사 요소에 대비 */
+        body::before { /* For elements like background transitions */
             transition: none !important;
         }
     `;
     document.head.appendChild(style);
 
-    // 짧은 시간 후 스타일 태그 제거 (페이지 로드 전 스타일 적용 보장)
+    // Remove the style tag after a very short delay to re-enable transitions
+    // This ensures styles are applied before the page visually loads, then removed.
     setTimeout(() => {
         const tempStyle = document.getElementById('no-transition-on-exit');
         if (tempStyle) {
@@ -50,40 +57,259 @@ function disableAllTransitions() {
 }
 
 /**
- * 아코디언 내비게이션 메뉴의 확장 상태를 확인하는 전역 헬퍼 함수.
- * 헤더 스크롤 로직에서 사용됩니다.
- * @returns {boolean} 메뉴가 확장되어 있으면 true, 아니면 false
+ * Global helper function to check the expanded state of the navigation header.
+ * Used by header scroll logic.
+ * @returns {boolean} True if the menu is expanded, false otherwise.
  */
 window.getNavHeaderExpandedState = function() {
     const accordionNavMenu = document.getElementById('accordionNavMenu');
     return accordionNavMenu ? accordionNavMenu.classList.contains('expanded') : false;
 };
 
-// 다른 모듈에서 접근할 수 있도록 함수를 전역 스코프에 노출
+// Expose functions to the global scope for other modules to access
 window.disableAllTransitions = disableAllTransitions;
+
+
+// --- AI Chat Lazy Loading Logic ---
+
+/**
+ * Helper function to dynamically load a script and return a Promise that resolves when loaded.
+ * Handles both classic and module scripts. Ensures idempotency.
+ * @param {string} url - The URL of the script to load.
+ * @param {boolean} isModule - True if it's an ES module (type="module").
+ * @returns {Promise<void>} A Promise that resolves when the script is loaded, or rejects on error.
+ */
+function loadScript(url, isModule = false) {
+    return new Promise((resolve, reject) => {
+        // Check if the script is already in the DOM
+        const existingScript = document.head.querySelector(`script[src="${url}"]`);
+        if (existingScript) {
+            // If already loaded or loading, resolve if it's successfully loaded, otherwise wait for its state.
+            // For simplicity, if it exists, we assume it will eventually load successfully or has already.
+            // In a more complex scenario, you might want to check its `readyState` or use a loading cache.
+            console.log(`[CommonJS] Script already present, skipping duplicate load: ${url}`);
+            existingScript.onload = resolve; // Ensure we still wait for it to be fully loaded
+            existingScript.onerror = reject;
+            return;
+        }
+
+        const script = document.createElement('script');
+        script.src = url;
+        if (isModule) {
+            script.type = 'module';
+        }
+        script.async = true; // Load asynchronously to not block parsing
+
+        script.onload = () => {
+            console.log(`[CommonJS] Script loaded successfully: ${url}`);
+            resolve();
+        };
+
+        script.onerror = (e) => {
+            console.error(`[CommonJS] Error loading script: ${url}`, e);
+            reject(new Error(`Failed to load script: ${url}`));
+        };
+
+        document.head.appendChild(script);
+    });
+}
+
+/**
+ * Displays the full-screen loading overlay for AI assistant.
+ */
+function showAiLoadingOverlay() {
+    const overlay = document.getElementById('ai-loading-overlay');
+    const lottieContainer = document.getElementById('ai-loading-lottie-overlay');
+    const textElement = document.getElementById('ai-loading-text-overlay');
+    const steps = document.querySelectorAll('#ai-loading-overlay .ai-loading-progress-overlay .step');
+
+    if (overlay) {
+        overlay.classList.add('active');
+        // Initialize Lottie for the overlay if not already
+        if (lottieContainer && typeof lottie !== 'undefined' && !window.aiOverlayLottieAnimation) {
+            window.aiOverlayLottieAnimation = lottie.loadAnimation({
+                container: lottieContainer,
+                renderer: 'svg',
+                loop: true,
+                autoplay: false, // Control autoplay manually
+                path: 'https://gist.githubusercontent.com/oosuhada/10350c165ecf9363a48efa8f67aaa401/raw/ea144b564bea1a65faffe4b6c52f8cc1275576de/ai-assistant-logo.json'
+            });
+        }
+        if (window.aiOverlayLottieAnimation) {
+            window.aiOverlayLottieAnimation.play();
+        }
+
+        // Reset progress steps
+        steps.forEach((step, index) => {
+            step.setAttribute('data-status', '');
+            // Update text based on initial message and current language
+            const messages = [
+                { text_en: "Analyzing your question", text_ko: "질문 분석 중" },
+                { text_en: "Searching portfolio data", text_ko: "포트폴리오 탐색 중" },
+                { text_en: "Generating a tailored response", text_ko: "맞춤형 답변 생성 중" }
+            ];
+            const currentLang = navigator.language.startsWith('ko') ? 'ko' : 'en';
+            step.innerHTML = `<span class="circle">${index + 1}</span> ${messages[index][`text_${currentLang}`]}`;
+        });
+
+        // Initial text
+        if (textElement) {
+            textElement.textContent = navigator.language.startsWith('ko') ? "AI 어시스턴트 준비 중..." : "AI Assistant preparing...";
+        }
+
+        // Simulate progress for the overlay itself (separate from chat modal's internal progress)
+        let currentStep = 0;
+        const overlayMessages = [
+            { text_en: "Loading AI libraries...", text_ko: "AI 라이브러리 로드 중...", delay: 500 },
+            { text_en: "Initializing AI models...", text_ko: "AI 모델 초기화 중...", delay: 1000 },
+            { text_en: "Almost ready...", text_ko: "거의 준비 완료...", delay: 1000 }
+        ];
+
+        let cumulativeDelay = 0;
+        overlayMessages.forEach((msg, index) => {
+            cumulativeDelay += msg.delay;
+            aiLoadingOverlayTimeout = setTimeout(() => {
+                if (textElement) {
+                    textElement.textContent = msg[`text_${navigator.language.startsWith('ko') ? 'ko' : 'en'}`];
+                }
+                if (steps[currentStep]) {
+                    steps[currentStep].setAttribute('data-status', 'done');
+                }
+                currentStep++;
+                if (steps[currentStep]) {
+                    steps[currentStep].setAttribute('data-status', 'active');
+                }
+            }, cumulativeDelay);
+        });
+    }
+}
+
+/**
+ * Hides the full-screen loading overlay for AI assistant.
+ */
+function hideAiLoadingOverlay() {
+    const overlay = document.getElementById('ai-loading-overlay');
+    if (overlay) {
+        overlay.classList.remove('active');
+        if (window.aiOverlayLottieAnimation) {
+            window.aiOverlayLottieAnimation.stop();
+        }
+        // Clear any pending timeouts for the overlay messages
+        clearTimeout(aiLoadingOverlayTimeout);
+    }
+}
+
+
+/**
+ * Dynamically loads all AI chat related assets (JS libraries and local scripts).
+ * This function returns a Promise that resolves when all scripts are loaded.
+ * It also manages the global loading overlay.
+ */
+async function backgroundLoadAiChatAssets() {
+    // If a load is already in progress, return that promise
+    if (aiScriptsLoadPromise) {
+        console.log("[CommonJS] AI script load already initiated. Returning existing promise.");
+        return aiScriptsLoadPromise;
+    }
+
+    // Create a new promise for the loading process
+    aiScriptsLoadPromise = new Promise(async (resolve, reject) => {
+        console.log("[CommonJS] Starting background loading of AI chat assets...");
+        showAiLoadingOverlay(); // Show the full-screen overlay immediately
+
+        try {
+            // Load CDN Libraries sequentially for dependency order
+            await loadScript('https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js');
+            await loadScript('https://unpkg.com/compromise');
+            // Transformers.js needs to be loaded as a module to make `pipeline` available.
+            // It exposes `Xenova` object globally.
+            await loadScript('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.1', true);
+
+            // Load local AI scripts
+            // IMPORTANT: ai_chat_logic.js and ai_chat_ui.js must be modules for top-level await imports/proper module behavior
+            await loadScript('../common/ai_chat_logic.js', true); // ai_chat_logic.js is a module
+            await loadScript('../common/ai_chat_ui.js', true); // FIX: ai_chat_ui.js also as a module
+
+
+            // After all scripts are loaded, initialize UI
+            // The `window.initializeAiChatModalUI` will now be safely available if ai_chat_ui.js loaded as module.
+            if (typeof window.initializeAiChatModalUI === 'function') {
+                window.initializeAiChatModalUI(); // Call the main initialization function from ai_chat_ui.js
+            } else {
+                console.error("[CommonJS] window.initializeAiChatModalUI is not defined after loading ai_chat_ui.js.");
+                throw new Error("AI Chat UI initialization function missing.");
+            }
+
+            aiScriptsLoaded = true; // Mark as loaded successfully
+            hideAiLoadingOverlay(); // Hide the overlay
+            console.log("[CommonJS] All AI chat assets loaded and initialized.");
+            resolve(); // Resolve the promise on success
+
+        } catch (error) {
+            console.error("[CommonJS] Failed to load AI chat assets:", error);
+            hideAiLoadingOverlay(); // Hide the overlay even on error
+            if (typeof window.addPortfolioChatMessage === 'function') {
+                window.addPortfolioChatMessage(navigator.language.startsWith('ko') ? "AI 어시스턴트를 로드하는 데 실패했습니다. 잠시 후 다시 시도해주세요." : "Failed to load AI assistant. Please try again later.", 'bot');
+            }
+            aiScriptsLoadPromise = null; // Reset promise on failure so it can be re-attempted
+            reject(error); // Reject the promise on error
+        }
+    });
+
+    return aiScriptsLoadPromise; // Return the promise
+}
 
 
 // --- Main Initialization Logic ---
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOMContentLoaded 이벤트 발생: 페이지 초기화 시작');
+    console.log('DOMContentLoaded event fired: Starting page initialization.');
 
-    // ThemeManager 초기화 (window.themeManager가 다른 곳에 정의되어 있다고 가정)
+    // ThemeManager initialization (assuming window.themeManager is defined elsewhere)
     if (window.themeManager) window.themeManager.initialize();
 
-    // 각 모듈 초기화 (의존성에 따라 순서 중요)
-    // core-utilities는 함수를 바로 노출하므로 별도의 initialize 함수는 필요 없음.
+    // Initialize other core modules
+    if (window.initializePreloader) window.initializePreloader(); // Preloader (UI components)
+    if (window.initializeAIAssistantButton) window.initializeAIAssistantButton(); // AI FAB (UI components)
+    if (window.updateCursorVarsByTheme) window.updateCursorVarsByTheme(); // Initial cursor settings (UI components)
+    if (window.updateAIAssistantAskImage) window.updateAIAssistantAskImage(); // Initial AI FAB image settings (UI components)
+    if (window.initializeVisualEffects) window.initializeVisualEffects(); // Visual effects initialization
+    if (window.initializeNavigation) window.initializeNavigation(); // Navigation (depends on utils, visual-effects)
+    if (window.initializeFooterImageShake) window.initializeFooterImageShake(); // Footer image shake (UI components)
 
-    if (window.initializePreloader) window.initializePreloader(); // 프리로더 (UI 컴포넌트)
-    if (window.initializeAIAssistantButton) window.initializeAIAssistantButton(); // AI FAB (UI 컴포넌트)
-    if (window.updateCursorVarsByTheme) window.updateCursorVarsByTheme(); // 초기 커서 설정 (UI 컴포넌트)
-    if (window.updateAIAssistantAskImage) window.updateAIAssistantAskImage(); // 초기 AI FAB 이미지 설정 (UI 컴포넌트)
-    if (window.initializeVisualEffects) window.initializeVisualEffects(); // 시각 효과 초기화
-    if (window.initializeNavigation) window.initializeNavigation(); // 내비게이션 (utils, visual-effects에 의존)
-    if (window.initializeFooterImageShake) window.initializeFooterImageShake(); // 푸터 이미지 흔들기 (UI 컴포넌트)
+    // AI Assistant FAB click listener
+    const aiAssistantFAB = document.getElementById('ai-assistant-FAB');
+    if (aiAssistantFAB) {
+        aiAssistantFAB.addEventListener('click', async () => {
+            console.log("[CommonJS] AI Assistant FAB clicked. Triggering lazy load.");
+            try {
+                // Await backgroundLoadAiChatAssets() ensures only one load process
+                // It will either start a new load or return an existing promise.
+                await backgroundLoadAiChatAssets();
+                // Open modal after scripts are guaranteed to be loaded and initialized
+                // window.openPortfolioChatModal is now available and defined in ai_chat_ui.js
+                if (typeof window.openPortfolioChatModal === 'function') {
+                    window.openPortfolioChatModal();
+                }
+            } catch (error) {
+                console.error("[CommonJS] Error during FAB click handler:", error);
+                // Additional error handling for FAB click if loading fails (e.g., show a user message)
+            }
+        });
+    } else {
+        console.warn("[CommonJS] AI Assistant FAB element not found.");
+    }
 
-    // highlighter.js는 자체적으로 DOMContentLoaded 리스너를 가지거나,
-    // 만약 initializeHighlighter 함수를 노출한다면 여기서 호출:
-    // if (window.initializeHighlighter) window.initializeHighlighter();
+    // Passive lazy loading (preload during idle time)
+    // If AI scripts are not loaded after 2 seconds, start preloading in the background.
+    setTimeout(() => {
+        // Only start idle preload if no load is already in progress AND not already loaded
+        if (!aiScriptsLoaded && !aiScriptsLoadPromise) {
+            console.log("[CommonJS] Idle time detected. Initiating background AI script preload.");
+            backgroundLoadAiChatAssets().catch(error => {
+                console.error("[CommonJS] Idle preload failed:", error);
+            });
+        }
+    }, 2000); // 2 seconds delay
 
-    console.log('페이지 초기화 완료');
+    console.log('Page initialization complete, AI scripts will lazy load on interaction or idle time.');
 });

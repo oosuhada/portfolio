@@ -1,88 +1,142 @@
-// common/ai_chat_logic.js
-// Transformers.js 라이브러리에서 필요한 함수를 동적으로 임포트
-const { pipeline, cos_sim } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.1');
+// js/ai_chat_logic.js
+/*
+* AI Portfolio Chat - Core Logic (Lazy Loaded)
+* This script contains the core AI logic for processing user queries,
+* searching the knowledge base, and generating structured responses.
+* It does NOT interact with the DOM directly.
+*/
 
-const AIPortfolioLogic = (() => {
-    let knowledgeBase = null; // JSON 데이터를 캐싱할 변수
-    let currentLanguage = 'en'; // 현재 언어 설정
+// Dynamically import pipeline and cos_sim from Transformers.js as this is a module script.
+// This ensures these functions are available within this module's scope before its code executes.
+let pipeline, cos_sim;
+try {
+    const transformersModule = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.1');
+    pipeline = transformersModule.pipeline;
+    cos_sim = transformersModule.cos_sim;
+    console.log("[AIPortfolioLogic] Transformers.js functions imported successfully.");
+} catch (error) {
+    console.error("[AIPortfolioLogic] Failed to import Transformers.js functions:", error);
+    // Provide dummy functions or handle gracefully if transformers fail to load
+    pipeline = async () => { console.error("Transformers.js pipeline not available."); return null; };
+    cos_sim = () => { console.error("Transformers.js cos_sim not available."); return 0; };
+}
 
-    // 로컬 라이브러리 인스턴스
-    let fuse;
-    let extractor; // Transformers.js 모델
-    let dbEmbeddings;
-    let documents;
+
+window.AIPortfolioLogic = (() => {
+    let knowledgeBase = null; // JSON data cache
+    let currentLanguage = navigator.language.startsWith('ko') ? 'ko' : 'en'; // Current language setting
+
+    // Local library instances
+    let fuse; // Instance of Fuse.js
+    let extractor; // Transformers.js model for feature extraction
+    let dbEmbeddings; // Stored embeddings of our knowledge base documents
+    let documents; // Reference to the search_documents from the knowledge base
+
+    // Track if the knowledge base has been loaded and initialized
+    let isKnowledgeBaseLoaded = false;
 
     /**
-     * 포트폴리오 지식 베이스(JSON)를 비동기적으로 로드하고 캐싱하며,
-     * Fuse.js 및 Transformers.js 모델을 초기화합니다.
-     * @returns {Promise<void>}
+     * Helper to check if external global libraries (Fuse, nlp) are loaded.
+     * `pipeline` and `cos_sim` are handled by the top-level import in this module.
+     * @returns {void}
+     * @throws {Error} if a required global library is not found.
      */
-    async function loadKnowledgeBase() {
-        if (knowledgeBase) return; // 이미 로드되었으면 실행하지 않음
-        try {
-            const response = await fetch('../common/ai_chat_data.json');
-            if (!response.ok) throw new Error('Knowledge base file not found or failed to fetch.');
-            knowledgeBase = await response.json();
-            documents = knowledgeBase.search_documents;
-
-            if (!documents || !Array.isArray(documents) || documents.length === 0) {
-                console.warn("[AI_Portfolio_Logic] No search documents found in knowledgeBase. Fuse.js and Transformers.js will not be fully functional.");
-                documents = []; // 문서가 없으면 빈 배열로 초기화하여 이후 오류 방지
-            }
-
-            // Fuse.js 초기화
-            fuse = new Fuse(documents, {
-                keys: ['query_phrases'],
-                threshold: 0.6, // 0에 가까울수록 엄격, 1에 가까울수록 관대
-                includeScore: true // 점수 포함
-            });
-            console.log("[AI_Portfolio_Logic] Fuse.js initialized.");
-
-            // Transformers.js 모델 로드 및 임베딩 생성
-            console.log("[AI_Portfolio_Logic] Loading Transformers.js model...");
-            extractor = await pipeline('feature-extraction', 'Xenova/multilingual-e5-small');
-            console.log("[AI_Portfolio_Logic] Transformers.js model loaded.");
-
-            const itemsToEmbed = documents.map(doc => {
-                // Ensure text_for_embedding is a string, handling localization
-                const text = doc.text_for_embedding && typeof doc.text_for_embedding === 'object' ?
-                    doc.text_for_embedding[currentLanguage] || doc.text_for_embedding['en'] :
-                    doc.text_for_embedding;
-                return typeof text === 'string' ? text : ''; // Ensure it's a string
-            }).filter(Boolean); // Filter out empty strings
-
-            if (itemsToEmbed.length > 0) {
-                 dbEmbeddings = await extractor(itemsToEmbed, { pooling: 'mean', normalize: true });
-                 console.log("[AI_Portfolio_Logic] Document embeddings created.");
-            } else {
-                 console.warn("[AI_Portfolio_Logic] No valid text to create embeddings from. Transformers.js semantic search may not work.");
-                 dbEmbeddings = null;
-            }
-
-            console.log("[AI_Portfolio_Logic] Local libraries and knowledge base ready.");
-
-        } catch (error) {
-            console.error("[AI_Portfolio_Logic] Critical error during knowledge base load or library initialization:", error);
-            knowledgeBase = null; // 오류 발생 시 knowledgeBase를 null로 설정하여 이후 접근 시 오류 명확화
-            fuse = null;
-            extractor = null;
-            dbEmbeddings = null;
+    function checkExternalLibraries() {
+        if (typeof Fuse === 'undefined') {
+            console.error("[AIPortfolioLogic] Fuse.js is not loaded.");
+            throw new Error("Required library Fuse.js not available.");
+        }
+        if (typeof nlp === 'undefined') {
+            console.warn("[AIPortfolioLogic] Compromise.js (nlp) is not loaded. English NLP might be limited.");
         }
     }
 
     /**
-     * 현재 언어를 설정합니다.
-     * @param {string} lang - 'en' 또는 'ko'
+     * Asynchronously loads and caches the portfolio knowledge base (JSON),
+     * and initializes Fuse.js and Transformers.js model and embeddings.
+     * This function ensures external libraries are loaded before proceeding.
+     * @returns {Promise<void>}
+     */
+    async function loadKnowledgeBase() {
+        if (isKnowledgeBaseLoaded) {
+            console.log("[AIPortfolioLogic] Knowledge base already loaded.");
+            return; // Already loaded, do nothing
+        }
+
+        try {
+            // First, ensure all necessary external JS libraries (non-module globals) are loaded.
+            checkExternalLibraries();
+
+            // Fetch the knowledge base JSON
+            console.log("[AIPortfolioLogic] Fetching knowledge base...");
+            const response = await fetch('../common/ai_chat_data.json');
+            if (!response.ok) throw new Error(`Knowledge base file not found or failed to fetch: ${response.status}`);
+            knowledgeBase = await response.json();
+            documents = knowledgeBase.search_documents; // Array of documents for Fuse.js and Transformers.js
+
+            if (!documents || !Array.isArray(documents) || documents.length === 0) {
+                console.warn("[AIPortfolioLogic] No search documents found in knowledgeBase. Fuse.js and Transformers.js will have limited functionality.");
+                documents = []; // Ensure it's an empty array to prevent errors
+            }
+
+            // Initialize Fuse.js
+            fuse = new Fuse(documents, {
+                keys: ['query_phrases'],
+                threshold: 0.6, // Adjust for stricter/looser matching
+                includeScore: true // Include score for filtering
+            });
+            console.log("[AIPortfolioLogic] Fuse.js initialized.");
+
+            // Create embeddings for Transformers.js if pipeline is available
+            if (typeof pipeline === 'function' && pipeline !== null) {
+                const itemsToEmbed = documents.map(doc => {
+                    const text = doc.text_for_embedding && typeof doc.text_for_embedding === 'object' ?
+                        doc.text_for_embedding[currentLanguage] || doc.text_for_embedding['en'] :
+                        doc.text_for_embedding;
+                    return typeof text === 'string' ? text : ''; // Ensure it's a string
+                }).filter(Boolean); // Filter out empty strings that cause issues for the model
+
+                if (itemsToEmbed.length > 0) {
+                     extractor = await pipeline('feature-extraction', 'Xenova/multilingual-e5-small');
+                     dbEmbeddings = await extractor(itemsToEmbed, { pooling: 'mean', normalize: true });
+                     console.log("[AIPortfolioLogic] Document embeddings created.");
+                } else {
+                     console.warn("[AIPortfolioLogic] No valid text to create embeddings from. Semantic search may not work.");
+                     dbEmbeddings = null;
+                }
+            } else {
+                console.warn("[AIPortfolioLogic] Transformers.js pipeline is not available. Semantic search will be disabled.");
+            }
+
+            isKnowledgeBaseLoaded = true; // Mark as loaded successfully
+            console.log("[AIPortfolioLogic] Knowledge base and local libraries ready.");
+
+        } catch (error) {
+            console.error("[AIPortfolioLogic] Critical error during knowledge base load or library initialization:", error);
+            knowledgeBase = null; // Clear on error
+            fuse = null;
+            extractor = null;
+            dbEmbeddings = null;
+            isKnowledgeBaseLoaded = false; // Mark as failed
+            throw error; // Re-throw to propagate the error
+        }
+    }
+
+
+    /**
+     * Sets the current language for responses.
+     * @param {string} lang - 'en' or 'ko'.
      */
     function setLanguage(lang) {
         currentLanguage = lang;
-        console.log(`[AI_Portfolio_Logic] Language set to: ${currentLanguage}`);
+        console.log(`[AIPortfolioLogic] Language set to: ${currentLanguage}`);
     }
 
+
     /**
-     * Knowledge Base에서 다국어 필드를 현재 언어에 맞게 추출합니다.
-     * @param {string|object} field - 다국어 객체 또는 단일 문자열
-     * @returns {string} 현재 언어에 맞는 텍스트 또는 영어 기본값
+     * Extracts localized text from an object or returns the string directly.
+     * @param {string|object} field - Multi-language object or a single string.
+     * @returns {string} Text in the current language or fallback to English/empty string.
      */
     function getLocalizedText(field) {
         if (typeof field === 'object' && field !== null) {
@@ -91,13 +145,13 @@ const AIPortfolioLogic = (() => {
         return field || '';
     }
 
+
     /**
-     * 특정 쿼리가 키워드 목록 중 하나라도 포함하는지 확인합니다.
-     * 동의어 맵을 활용하여 유연성을 높입니다.
-     * @param {string} query - 사용자 쿼리 (소문자)
-     * @param {Array<string>} keywords - 매칭할 키워드 배열 (이미 소문자)
-     * @param {Object} synonymsMap - 현재 언어의 동의어 맵
-     * @returns {boolean} 일치 여부
+     * Checks if a query contains any of the provided keywords, including synonyms.
+     * @param {string} query - User query (should be lowercase).
+     * @param {Array<string>} keywords - Array of keywords to match (should be lowercase).
+     * @param {Object} synonymsMap - Synonyms map for the current language.
+     * @returns {boolean} True if a match is found, false otherwise.
      */
     function matchesKeyword(query, keywords, synonymsMap) {
         for (const keyword of keywords) {
@@ -113,96 +167,116 @@ const AIPortfolioLogic = (() => {
         return false;
     }
 
-    // 1. Fuse.js 검색 로직
+    // 1. Fuse.js search logic (keyword/phrase matching)
     function runFuseSearch(query) {
         if (!fuse || !documents || documents.length === 0) {
-            console.warn("[AI_Portfolio_Logic] Fuse.js not initialized or no documents to search.");
+            console.warn("[AIPortfolioLogic] Fuse.js not initialized or no documents to search.");
             return null;
         }
         const results = fuse.search(query);
-        if (results.length > 0 && results[0].score < 0.6) { // 임계값 조정
-            console.log(`[AI_Portfolio_Logic] Fuse.js matched: ${results[0].item.id} with score ${results[0].score}`);
-            return results[0].item.response; // 매칭된 문서의 응답 템플릿 반환
+        // Only consider a match if the score is below a certain threshold (lower score is better)
+        if (results.length > 0 && results[0].score < 0.3) { // Stricter threshold for direct matches
+            console.log(`[AIPortfolioLogic] Fuse.js matched: ${results[0].item.id} with score ${results[0].score}`);
+            return results[0].item.response; // Return the response template from the matched document
         }
         return null;
     }
 
-    // 2. Compromise.js (영어 전용) 로직
+
+    // 2. Compromise.js (English only) for advanced NLP/intent detection
     function runCompromise(query) {
-        if (typeof nlp === 'undefined') {
-            console.warn("[AI_Portfolio_Logic] Compromise.js (nlp) is not loaded or available.");
+        if (typeof nlp === 'undefined' || currentLanguage !== 'en') {
             return null;
         }
 
         const doc = nlp(query.toLowerCase());
 
-        // 특정 엔티티나 패턴을 찾아서 의도 파악
-        // 예시: "projects about AI", "tell me about your skills"
-        if (doc.has('project') || doc.has('projects') || doc.has('work')) {
-            if (doc.has('ai') || doc.has('machine learning')) {
+        // Check for specific entities or patterns to infer intent
+        if (doc.has('(project|projects|work)')) {
+            if (doc.has('(ai|machine learning|ml)')) {
                 const aiRelated = knowledgeBase.response_categories.projects.items.filter(p =>
                     (p.tags && p.tags.some(tag => tag.toLowerCase().includes('ai') || tag.toLowerCase().includes('machine learning'))) ||
                     (p.keywords && p.keywords.some(kw => kw.toLowerCase().includes('ai') || kw.toLowerCase().includes('machine learning')))
                 );
                 if (aiRelated.length > 0) {
-                    return { category: 'projects', item: aiRelated[0].id };
+                    // Return the first AI-related project as a specific item match
+                    return { category: 'projects', item: aiRelated[0].id, aiInsight: { en: `Here's a project related to AI or data analysis: ${aiRelated[0].title.en || aiRelated[0].title}` } };
                 }
-                return { category: 'no_ai_projects' };
+                return { category: 'no_ai_projects' }; // Specific response for no AI projects
             }
-            return { category: 'projects', item: null }; // 일반 프로젝트 질문
+            return { category: 'projects', item: null }; // General project query
         }
-        if (doc.has('skill') || doc.has('skills') || doc.has('tech stack')) {
-            return { category: 'skills', item: null }; // 스킬 질문
+        if (doc.has('(skill|skills|tech stack)')) {
+            return { category: 'skills', item: null }; // General skills query
         }
-        if (doc.has('career') || doc.has('experience') || doc.has('job')) {
-            return { category: 'career', item: null }; // 경력 질문
+        if (doc.has('(career|experience|job)')) {
+            return { category: 'career', item: null }; // General career query
         }
-        if (doc.has('contact') || doc.has('connect') || doc.has('email')) {
-            return { category: 'connect', item: null }; // 연락 질문
+        if (doc.has('(contact|connect|email)')) {
+            return { category: 'connect', item: null }; // Connect query
         }
-        if (doc.has('oosu') || doc.has('about you')) {
-            return { category: 'about_me_deep_dive', item: null }; // Oosu에 대한 질문
+        if (doc.has('(oosu|about you|who are you)')) {
+            return { category: 'about_me_deep_dive', item: null }; // About Oosu query
+        }
+        if (doc.has('(what if)')) {
+            // Simple "what if" detection, further refinement would need specific scenario detection
+            return { category: 'what_if', item: 'example_scenario_id' }; // Example scenario
+        }
+        if (doc.has('(thank you|thanks)')) {
+            return { category: 'thank_you' };
+        }
+        if (doc.has('(hello|hi|hey)')) {
+            return { category: 'greeting' };
+        }
+        if (doc.has('(sorry|apologize|my bad)')) {
+            return { category: 'empathetic', trigger_keywords: ['sorry'] };
         }
 
-        return null; // 매칭되는 의도가 없을 경우
+        return null; // No matching intent
     }
 
-    // 3. Transformers.js 의미 검색 로직
+    // 3. Transformers.js for semantic search
     async function runTransformers(query) {
-        if (!extractor || !dbEmbeddings) {
-            console.warn("[AI_Portfolio_Logic] Transformers.js model or embeddings not ready.");
+        if (!extractor || !dbEmbeddings || typeof cos_sim === 'undefined' || pipeline === null) { // Added pipeline check
+            console.warn("[AIPortfolioLogic] Transformers.js model, embeddings, or cos_sim not ready, or pipeline is null. Semantic search skipped.");
             return null;
         }
 
-        const queryEmbedding = await extractor(query, { pooling: 'mean', normalize: true });
-        let bestMatch = { score: -1, index: -1 };
+        try {
+            const queryEmbedding = await extractor(query, { pooling: 'mean', normalize: true });
+            let bestMatch = { score: -1, index: -1 };
 
-        for (let i = 0; i < dbEmbeddings.dims[0]; ++i) {
-            const docEmbedding = dbEmbeddings.slice([i, i + 1]);
-            const score = (queryEmbedding.dot(docEmbedding.T)).data[0];
-            if (score > bestMatch.score) {
-                bestMatch = { score, index: i };
+            for (let i = 0; i < dbEmbeddings.dims[0]; ++i) {
+                const docEmbedding = dbEmbeddings.slice([i, i + 1]);
+                const score = (queryEmbedding.dot(docEmbedding.T)).data[0]; // cos_sim for Float32Array
+                if (score > bestMatch.score) {
+                    bestMatch = { score, index: i };
+                }
             }
-        }
 
-        // 0.75 이상의 높은 유사도일 때만 유효하다고 판단
-        if (bestMatch.score > 0.75) {
-            console.log(`[AI_Portfolio_Logic] Transformers.js matched: ${documents[bestMatch.index].id} with score ${bestMatch.score}`);
-            return documents[bestMatch.index].response; // 매칭된 문서의 응답 템플릿 반환
+            // Consider a match only if similarity score is high enough (e.g., > 0.75)
+            if (bestMatch.score > 0.75) {
+                console.log(`[AIPortfolioLogic] Transformers.js matched: ${documents[bestMatch.index].id} with score ${bestMatch.score}`);
+                return documents[bestMatch.index].response; // Return response template
+            }
+        } catch (e) {
+            console.error("[AIPortfolioLogic] Error during Transformers.js processing:", e);
         }
         return null;
     }
 
-    // 4. Korean.js (한국어 전용) - Placeholder
-    // 실제 Korean.js 라이브러리에 따라 구현 필요
+    // 4. Korean NLP/Keyword Matching (Placeholder for actual Korean.js)
     function runKoreanJs(query) {
-        // 이 부분은 Korean.js의 실제 기능에 따라 구현되어야 합니다.
-        // 예: 형태소 분석, 키워드 추출 등을 통해 의도 파악
-        // 현재는 더미 로직으로 구성
+        if (currentLanguage !== 'ko') {
+            console.log("[AIPortfolioLogic] Skipping Korean.js as current language is not Korean.");
+            return null;
+        }
+        // This part needs to be implemented based on the actual Korean.js library functionality.
+        // For now, it's a dummy logic based on keyword matching.
         const normalizedQuery = query.toLowerCase();
         const synonymsMap = knowledgeBase.synonyms_map[currentLanguage] || knowledgeBase.synonyms_map['en'];
 
-        if (matchesKeyword(normalizedQuery, ["프로젝트", "작품"], synonymsMap)) {
+        if (matchesKeyword(normalizedQuery, ["프로젝트", "작품", "포트폴리오"], synonymsMap)) {
             if (matchesKeyword(normalizedQuery, ["ai", "인공지능", "머신러닝"], synonymsMap)) {
                 const aiRelated = knowledgeBase.response_categories.projects.items.filter(p =>
                     (p.tags && p.tags.some(tag => matchesKeyword(tag.toLowerCase(), ["ai", "인공지능"], synonymsMap))) ||
@@ -215,62 +289,101 @@ const AIPortfolioLogic = (() => {
             }
             return { category: 'projects', item: null };
         }
-        if (matchesKeyword(normalizedQuery, ["스킬", "기술", "기술 스택"], synonymsMap)) {
+        if (matchesKeyword(normalizedQuery, ["스킬", "기술", "기술 스택", "능력"], synonymsMap)) {
             return { category: 'skills', item: null };
         }
-        if (matchesKeyword(normalizedQuery, ["경력", "경험", "직무"], synonymsMap)) {
+        if (matchesKeyword(normalizedQuery, ["경력", "경험", "직무", "이력"], synonymsMap)) {
             return { category: 'career', item: null };
         }
-        if (matchesKeyword(normalizedQuery, ["연락", "컨택"], synonymsMap)) {
+        if (matchesKeyword(normalizedQuery, ["연락", "컨택", "문의", "이메일"], synonymsMap)) {
             return { category: 'connect', item: null };
         }
-        if (matchesKeyword(normalizedQuery, ["오수", "oosu", "오수에 대해"], synonymsMap)) {
+        if (matchesKeyword(normalizedQuery, ["오수", "oosu", "오수에 대해", "누구", "자기소개"], synonymsMap)) {
             return { category: 'about_me_deep_dive', item: null };
         }
-        return null;
+        if (matchesKeyword(normalizedQuery, ["감사합니다", "고마워", "수고했어"], synonymsMap)) {
+            return { category: 'thank_you' };
+        }
+        if (matchesKeyword(normalizedQuery, ["안녕", "안녕하세요", "헬로"], synonymsMap)) {
+            return { category: 'greeting' };
+        }
+        if (matchesKeyword(normalizedQuery, ["죄송", "미안", "실수"], synonymsMap)) {
+            return { category: 'empathetic', trigger_keywords: ["죄송", "미안", "실수"] };
+        }
+        if (matchesKeyword(normalizedQuery, ["만약", "가정", "만약에"], synonymsMap)) {
+            return { category: 'what_if', item: 'example_scenario_id' };
+        }
+
+        return null; // No matching intent
     }
 
-    // 5. 서버리스 API 프록시 호출
+    // 5. Serverless API Proxy Call (Highest fallback)
     async function callApiProxy(query) {
         try {
-            console.log("[AI_Portfolio_Logic] Calling API Proxy...");
-            const response = await fetch('/api/chat', {
+            console.log("[AIPortfolioLogic] Calling API Proxy...");
+            const payload = {
+                contents: [{ role: "user", parts: [{ text: query }] }],
+                generationConfig: {
+                    // You might add a responseSchema here if you expect structured JSON from the LLM
+                    // For now, let's assume it returns a general text response or simple JSON.
+                }
+            };
+            const apiKey = ""; // Canvas will automatically provide this at runtime
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query: query, language: currentLanguage })
+                body: JSON.stringify(payload)
             });
 
             if (!response.ok) {
-                const errorText = await response.text();
-                console.error(`API Proxy error: ${response.status} - ${errorText}`);
+                const errorData = await response.json();
+                console.error(`API Proxy error: ${response.status} -`, errorData);
                 return null;
             }
-            const data = await response.json();
-            console.log("[AI_Portfolio_Logic] API Proxy response:", data);
 
-            if (data && data.aiInsight) {
+            const result = await response.json();
+            if (result.candidates && result.candidates.length > 0 &&
+                result.candidates[0].content && result.candidates[0].content.parts &&
+                result.candidates[0].content.parts.length > 0) {
+                const textResponse = result.candidates[0].content.parts[0].text;
+                console.log("[AIPortfolioLogic] API Proxy raw response:", textResponse);
+
+                // Attempt to parse as JSON if it looks like JSON
+                try {
+                    const jsonResponse = JSON.parse(textResponse);
+                    // If the LLM returns a structured response matching expected format
+                    if (jsonResponse.aiInsight || jsonResponse.results || jsonResponse.followUpActions) {
+                        return jsonResponse;
+                    }
+                } catch (e) {
+                    // Not a JSON response, treat as plain text
+                }
+
+                // If it's plain text, wrap it in a simple response object
                 return {
-                    aiInsight: data.aiInsight, // API에서 이미 로컬라이즈된 텍스트나 객체 형태로 반환한다고 가정
-                    results: data.results || [],
-                    followUpActions: data.followUpActions || [],
-                    response_type: data.response_type || 'text_only',
-                    action: data.action,
-                    target_page: data.target_page,
-                    url_fragment: data.url_fragment,
-                    additionalInfo: data.additionalInfo || ''
+                    aiInsight: { [currentLanguage]: textResponse, en: textResponse }, // Assuming LLM gives general text
+                    results: [],
+                    followUpActions: []
                 };
+
+            } else {
+                console.warn("[AIPortfolioLogic] API Proxy response structure unexpected or empty.");
+                return null;
             }
-            return null;
+
         } catch (error) {
-            console.error("[AI_Portfolio_Logic] API Proxy call failed:", error);
+            console.error("[AIPortfolioLogic] API Proxy call failed:", error);
             return null;
         }
     }
 
+
     /**
-     * 인텐트 키워드를 사용자 친화적인 라벨로 변환합니다.
-     * @param {string} intentKey - 인텐트 키 (예: 'general_info', 'challenges')
-     * @returns {string} 사용자 친화적인 라벨
+     * Formats an intent key into a user-friendly localized label.
+     * @param {string} intentKey - The intent key (e.g., 'general_info', 'challenges').
+     * @returns {string} User-friendly localized label.
      */
     function formatIntentLabel(intentKey) {
         const labels = {
@@ -300,11 +413,13 @@ const AIPortfolioLogic = (() => {
         return labels[intentKey] ? labels[intentKey][currentLanguage] : intentKey;
     }
 
+
     /**
-     * 분석된 의도(match 객체)와 rawQuery를 기반으로 최종 AI 응답 객체를 생성합니다.
-     * @param {object} match - 로컬 라이브러리/API에서 반환된 매칭 객체
-     * @param {string} rawQuery - 사용자의 원본 쿼리
-     * @returns {object} UI 렌더링을 위한 포맷된 응답 객체
+     * Generates the final AI response object based on the detected intent (match object) and raw query.
+     * This function formats the data into a structure suitable for UI rendering.
+     * @param {object} match - The matching object returned from local libraries or API.
+     * @param {string} rawQuery - The original user query.
+     * @returns {object} Formatted response object for UI rendering.
      */
     function generateFinalResponse(match, rawQuery) {
         let response = {
@@ -312,17 +427,21 @@ const AIPortfolioLogic = (() => {
             results: [],
             followUpActions: [],
             additionalInfo: '',
-            response_type: 'text_only', // 기본값
-            action: match.action,
-            target_page: match.target_page,
-            url_fragment: match.url_fragment
+            response_type: 'text_only', // Default response type
+            action: match.action || null, // Action to take (e.g., 'navigate')
+            target_page: match.target_page || null, // Target page for navigation
+            url_fragment: match.url_fragment || null // URL fragment for navigation
         };
 
-        // 매칭 객체에 aiInsight가 직접 포함된 경우 (예: API 응답)
-        if (match.aiInsight) {
+        // If the match already contains a full structured response (e.g., from API proxy), use it directly.
+        if (match.aiInsight !== undefined || match.results.length > 0 || match.followUpActions.length > 0) {
             response.aiInsight = getLocalizedText(match.aiInsight);
             response.results = match.results || [];
-            response.followUpActions = match.followUpActions || [];
+            response.followUpActions = (match.followUpActions || []).map(action => ({
+                ...action,
+                label: getLocalizedText(action.label),
+                query: getLocalizedText(action.query) // Query for AI logic, usually English
+            }));
             response.response_type = match.response_type || 'text_only';
             response.action = match.action;
             response.target_page = match.target_page;
@@ -331,12 +450,12 @@ const AIPortfolioLogic = (() => {
             return response;
         }
 
-        // --- 상호작용 문구 처리 (highest priority) ---
-        if (['greeting', 'thank_you', 'celebratory', 'empathetic'].includes(match.category)) {
+        // --- Handle specific interactive phrases/categories (highest priority if not from API) ---
+        if (['greeting', 'thank_you', 'empathetic'].includes(match.category)) {
             const prompts = knowledgeBase.interactive_phrases[`${match.category}_responses`]?.prompts;
             if (prompts) {
                 let selectedPrompt;
-                if (match.category === 'empathetic') {
+                if (match.category === 'empathetic' && match.trigger_keywords) {
                     selectedPrompt = prompts.find(p => p.trigger_keywords && p.trigger_keywords.some(kw => rawQuery.toLowerCase().includes(getLocalizedText(kw).toLowerCase())));
                 }
                 if (!selectedPrompt) {
@@ -352,6 +471,7 @@ const AIPortfolioLogic = (() => {
                         }));
                     }
                 } else if (match.category === 'empathetic' || match.category === 'thank_you') {
+                    // Provide some general follow-ups for empathetic/thank you responses
                     response.followUpActions = knowledgeBase.interactive_phrases.no_results_follow_up.prompts.slice(0, 2).map(s => ({
                         label: getLocalizedText(s),
                         query: getLocalizedText(s)
@@ -361,7 +481,7 @@ const AIPortfolioLogic = (() => {
             return response;
         }
 
-        // --- 'What If' 시나리오 처리 ---
+        // --- 'What If' scenario handling ---
         if (match.category === 'what_if' && match.item) {
             const scenario = knowledgeBase.what_if_scenarios.scenarios.find(s => s.id === match.item);
             if (scenario) {
@@ -380,14 +500,14 @@ const AIPortfolioLogic = (() => {
             return response;
         }
 
-        // --- 특정 페이지 이동 (`navigation` 카테고리) ---
+        // --- Specific page navigation (`navigation` category) ---
         if (match.category === 'navigation') {
             const pageData = knowledgeBase.navigation_map[match.target_page];
             if (pageData) {
                 response.aiInsight = getLocalizedText(knowledgeBase.interactive_phrases.navigation_confirmations.navigating).replace('{page_name}', getLocalizedText(pageData.name));
                 response.action = 'navigate';
                 response.target_page = match.target_page;
-                response.url_fragment = pageData.page.split('#')[1] || null;
+                response.url_fragment = pageData.page.split('#')[1] || null; // Extract fragment if exists
                 response.response_type = 'text_only';
             } else {
                 return getDefaultResponse();
@@ -395,7 +515,7 @@ const AIPortfolioLogic = (() => {
             return response;
         }
 
-        // --- AI 관련 프로젝트가 없다는 특별 응답 처리 ---
+        // --- Special response for no AI projects ---
         if (match.category === 'no_ai_projects') {
             response.aiInsight = getLocalizedText({
                 en: "Oosu doesn't have a dedicated project purely focused on AI or Machine Learning in the portfolio. However, many projects involve data-driven insights and problem-solving, which are foundational to AI thinking.",
@@ -414,12 +534,12 @@ const AIPortfolioLogic = (() => {
             return response;
         }
 
-        // --- 메인 카테고리별 응답 처리 (knowledgeBase.response_categories 참조) ---
+        // --- Handle main categories (projects, skills, career etc.) from knowledgeBase.response_categories ---
         const categoryBaseData = knowledgeBase.response_categories && knowledgeBase.response_categories[match.category] ?
                                  knowledgeBase.response_categories[match.category] : null;
 
         if (!categoryBaseData) {
-            console.warn(`[AI_Portfolio_Logic] No category data found for '${match.category}'. Falling back to default response.`);
+            console.warn(`[AIPortfolioLogic] No category data found for '${match.category}'. Falling back to default response.`);
             return getDefaultResponse();
         }
 
@@ -428,6 +548,7 @@ const AIPortfolioLogic = (() => {
 
         if (categoryBaseData.items) {
             if (match.item) {
+                // If a specific item ID is matched within a category
                 const specificItem = categoryBaseData.items.find(i => i.id === match.item);
                 if (specificItem) {
                     let itemInsight = `<h4>${getLocalizedText(specificItem.title || specificItem.name)}</h4><p>${getLocalizedText(specificItem.description)}</p>`;
@@ -456,38 +577,43 @@ const AIPortfolioLogic = (() => {
                     }
                     response.aiInsight = itemInsight;
                     response.results = [{
-                        type: match.category.slice(0, -1),
+                        type: match.category.slice(0, -1), // e.g., 'projects' -> 'project'
                         title: getLocalizedText(specificItem.title || specificItem.name),
                         description: getLocalizedText(specificItem.description),
                         tags: specificItem.tags || specificItem.keywords || [],
                         link: specificItem.link,
-                        keywords: specificItem.keywords || []
+                        keywords: specificItem.keywords || [],
+                        id: specificItem.id // Include ID for project modal
                     }];
                     response.response_type = 'cards_and_link';
                 } else {
-                    console.warn(`[AI_Portfolio_Logic] Specific item '${match.item}' not found in category '${match.category}'. Listing all.`);
+                    // Fallback if specific item not found but category has items
+                    console.warn(`[AIPortfolioLogic] Specific item '${match.item}' not found in category '${match.category}'. Listing all items in category.`);
                     response.results = categoryBaseData.items.map(item => ({
                         type: match.category.slice(0, -1),
                         title: getLocalizedText(item.title || item.name),
                         description: getLocalizedText(item.description),
                         tags: item.tags || item.keywords || [],
                         link: item.link,
-                        keywords: item.keywords || []
+                        keywords: item.keywords || [],
+                        id: item.id
                     }));
                     response.response_type = 'cards_and_link';
                 }
-            } else { // 특정 아이템이 지정되지 않았으면 모든 아이템 목록을 보여줌
+            } else { // No specific item, list all items in the category
                 response.results = categoryBaseData.items.map(item => ({
                     type: match.category.slice(0, -1),
                     title: getLocalizedText(item.title || item.name),
                     description: getLocalizedText(item.description),
                     tags: item.tags || item.keywords || [],
                     link: item.link,
-                    keywords: item.keywords || []
+                    keywords: item.keywords || [],
+                    id: item.id
                 }));
                 response.response_type = 'cards_and_link';
             }
         } else if (match.category === 'career' && match.subSection) {
+            // Handle specific career subsections
             const subSectionData = categoryBaseData.sections[match.subSection];
             if (subSectionData) {
                 let sectionHtml = `<h4>${getLocalizedText(subSectionData.title)}</h4><ul>`;
@@ -508,6 +634,7 @@ const AIPortfolioLogic = (() => {
                 return getDefaultResponse();
             }
         } else if (match.category === 'about_me_deep_dive') {
+            // General "about me" information
             let aboutMeText = '';
             for (const key in categoryBaseData.content) {
                 aboutMeText += `<p>${getLocalizedText(categoryBaseData.content[key])}</p>`;
@@ -515,6 +642,7 @@ const AIPortfolioLogic = (() => {
             response.aiInsight += aboutMeText;
             response.response_type = 'text_and_link';
         } else if (match.category === 'portfolio_building_tips') {
+            // Tips for building a portfolio
             let tipsHtml = '';
             categoryBaseData.items.forEach(tip => {
                 tipsHtml += `<p>${getLocalizedText(tip)}</p>`;
@@ -525,6 +653,7 @@ const AIPortfolioLogic = (() => {
             response.aiInsight += tipsHtml;
             response.response_type = 'list_and_text';
         } else if (match.category === 'site_structure_overview') {
+            // Website structure overview
             let structureHtml = '<ul>';
             categoryBaseData.items.forEach(section => {
                 structureHtml += `<li><strong>${getLocalizedText(section.name)}</strong>: ${getLocalizedText(section.description)}</li>`;
@@ -533,15 +662,16 @@ const AIPortfolioLogic = (() => {
             response.aiInsight += structureHtml;
             response.response_type = 'list_and_link';
         } else if (match.category === 'connect') {
+            // Contact information
             response.aiInsight += `<p>${getLocalizedText(categoryBaseData.contact_details)}</p>`;
             response.response_type = 'text_and_link';
         } else {
-            // 카테고리 데이터는 있지만 items가 없는 경우 (예: career_availability, about_ai_assistant)
+            // Default handling for categories with just an insight (e.g., career_availability, about_ai_assistant)
             response.aiInsight = getLocalizedText(categoryBaseData.aiInsight);
             response.response_type = categoryBaseData.response_type;
         }
 
-        // 팔로우업 액션 추가 (기본 카테고리의 followUpActions)
+        // Add follow-up actions from the base category data
         if (categoryBaseData && categoryBaseData.followUpActions && categoryBaseData.followUpActions.length > 0) {
             response.followUpActions = [...response.followUpActions, ...categoryBaseData.followUpActions.map(action => ({
                 label: getLocalizedText(action.label),
@@ -554,17 +684,18 @@ const AIPortfolioLogic = (() => {
             }))];
         }
 
-        // 특정 아이템의 내러티브 Q&A에 따른 추가 팔로우업 액션
+        // Add specific item's narrative Q&A as follow-up actions (if not already the intent)
         if (match.item && categoryBaseData && categoryBaseData.items) {
             const specificItem = categoryBaseData.items.find(i => i.id === match.item);
             if (specificItem && specificItem.details && specificItem.details.narrative_qna) {
                 const narrativeQna = specificItem.details.narrative_qna;
                 for (const qnaKey in narrativeQna) {
-                    if (qnaKey !== '_label' && qnaKey !== match.intent && typeof narrativeQna[qnaKey] === 'object' && narrativeQna[qnaKey][currentLanguage]) {
+                    // Add as follow-up if it's a valid Q&A key and not the current intent
+                    if (qnaKey !== '_label' && qnaKey !== match.intent && typeof narrativeQna[qnaKey] === 'object' && (narrativeQna[qnaKey][currentLanguage] || narrativeQna[qnaKey]['en'])) {
                         const queryLabel = formatIntentLabel(qnaKey);
                         response.followUpActions.push({
-                            label: `${queryLabel} (${getLocalizedText(specificItem.title)})`,
-                            query: `${qnaKey} ${getLocalizedText(specificItem.title).toLowerCase()}`,
+                            label: `${queryLabel} (${getLocalizedText(specificItem.title || specificItem.name)})`,
+                            query: `${qnaKey} ${getLocalizedText(specificItem.title || specificItem.name).toLowerCase()}`,
                             action: 'show_specific_item_details',
                             target_id: specificItem.id,
                             category: match.category,
@@ -572,7 +703,7 @@ const AIPortfolioLogic = (() => {
                         });
                     }
                 }
-                // 중복 제거
+                // Remove duplicates in follow-up actions
                 response.followUpActions = Array.from(new Set(response.followUpActions.map(a => JSON.stringify(a))))
                     .map(s => JSON.parse(s));
             }
@@ -581,23 +712,24 @@ const AIPortfolioLogic = (() => {
         return response;
     }
 
+
     /**
-     * 어떤 키워드에도 매칭되지 않을 때 기본 응답을 반환합니다.
-     * @returns {object} - 포맷된 기본 응답 객체
+     * Provides a default response when no specific information or intent is matched.
+     * @returns {object} Formatted default response object.
      */
     function getDefaultResponse() {
-        // knowledgeBase가 로드되지 않았을 경우를 대비한 최후의 방어
         if (!knowledgeBase || !knowledgeBase.default_response || !knowledgeBase.interactive_phrases) {
-            console.error("[AI_Portfolio_Logic] Default response data missing from knowledgeBase or knowledgeBase not loaded.");
+            console.error("[AIPortfolioLogic] Default response data missing or knowledge base not loaded.");
             return {
                 aiInsight: {
-                    en: "Sorry, I'm currently unable to provide a response. Please check the console for errors.",
-                    ko: "죄송합니다. 현재 응답을 제공할 수 없습니다. 콘솔에서 오류를 확인해주세요."
+                    en: "Sorry, I'm currently unable to provide a response. Please try rephrasing your question.",
+                    ko: "죄송합니다. 현재 응답을 제공할 수 없습니다. 질문을 다르게 바꿔서 다시 시도해주세요."
                 },
                 results: [],
                 followUpActions: []
             };
         }
+
         const defaultData = knowledgeBase.default_response;
         let response = {
             aiInsight: getLocalizedText(defaultData.aiInsight),
@@ -609,21 +741,38 @@ const AIPortfolioLogic = (() => {
             additionalInfo: '',
             response_type: 'text_only'
         };
+
         const clarificationPrompts = knowledgeBase.interactive_phrases.clarification_requests.prompts;
         const randomPrompt = clarificationPrompts[Math.floor(Math.random() * clarificationPrompts.length)];
         response.additionalInfo = getLocalizedText(randomPrompt);
         return response;
     }
 
-    // Public API
+
+    // Public API exposed via window.AIPortfolioLogic
     return {
+        /**
+         * Initiates the loading of the knowledge base and necessary AI libraries.
+         * This can be called multiple times; it will only load once.
+         * @returns {Promise<void>}
+         */
         loadKnowledgeBase: async function() {
             await loadKnowledgeBase();
         },
+
+        /**
+         * Sets the current language for the AI assistant.
+         * @param {string} lang - 'en' or 'ko'.
+         */
         setLanguage: function(lang) {
-            setLanguage(lang);
+            currentLanguage = lang;
+            console.log(`[AIPortfolioLogic] Language set to: ${currentLanguage}`);
         },
-        // 초기 제안을 가져오는 새로운 공개 메서드 추가
+
+        /**
+         * Retrieves initial suggestion queries for display in the UI.
+         * @returns {Array<object>} An array of suggestion objects {label, query}.
+         */
         getInitialSuggestions: function() {
             if (knowledgeBase && knowledgeBase.assistant_info && knowledgeBase.assistant_info.user_guidance_examples) {
                 return knowledgeBase.assistant_info.user_guidance_examples.initial_suggestions.map(s => ({
@@ -633,61 +782,77 @@ const AIPortfolioLogic = (() => {
             }
             return [];
         },
+
+        /**
+         * Main function to get an AI-generated response for a given user query.
+         * It tries different AI layers in sequence until a suitable response is found.
+         * @param {string} query - The user's query.
+         * @returns {Promise<object>} A structured response object.
+         */
         getAIResponse: async function(query) {
-            if (!knowledgeBase) {
-                console.error("[AI_Portfolio_Logic] Knowledge Base not loaded. Cannot process query.");
-                return {
-                    aiInsight: getLocalizedText({en: 'My knowledge base is not ready yet. Please try again in a moment.', ko: '아직 지식 베이스가 준비되지 않았습니다. 잠시 후 다시 시도해주세요.'}),
-                    results: [],
-                    followUpActions: []
-                };
+            if (!isKnowledgeBaseLoaded) {
+                console.error("[AIPortfolioLogic] Knowledge Base not loaded. Attempting to load...");
+                try {
+                    await loadKnowledgeBase(); // Try to load it if not already
+                } catch (e) {
+                    return getDefaultResponse(); // Return default if loading fails
+                }
             }
 
             let responseTemplate = null;
 
-            console.log("Attempting Level 1: Fuse.js");
-            responseTemplate = runFuseSearch(query);
+            // Normalize query for internal processing (lowercase)
+            const processedQuery = query.toLowerCase();
+
+            // Layer 1: Direct keyword matching (Fuse.js)
+            console.log("[AIPortfolioLogic] Attempting Level 1: Fuse.js search...");
+            responseTemplate = runFuseSearch(processedQuery);
             if (responseTemplate) {
-                console.log("Fuse.js successful.");
-                return generateFinalResponse(responseTemplate, query);
+                console.log("[AIPortfolioLogic] Level 1 (Fuse.js) successful.");
+                return generateFinalResponse(responseTemplate, query); // Pass original query for localized text in UI
             }
 
+            // Layer 2: NLP-based intent detection (Compromise.js for English, custom for Korean)
             if (currentLanguage === 'en') {
-                console.log("Attempting Level 2 (EN): compromise.js");
-                responseTemplate = runCompromise(query);
+                console.log("[AIPortfolioLogic] Attempting Level 2 (EN): Compromise.js...");
+                responseTemplate = runCompromise(processedQuery);
                 if (responseTemplate) {
-                    console.log("Compromise.js successful.");
+                    console.log("[AIPortfolioLogic] Level 2 (Compromise.js) successful.");
                     return generateFinalResponse(responseTemplate, query);
                 }
             } else if (currentLanguage === 'ko') {
-                console.log("Attempting Level 2 (KO): Korean.js (Placeholder)");
-                responseTemplate = runKoreanJs(query); // Korean.js 로직 호출
+                console.log("[AIPortfolioLogic] Attempting Level 2 (KO): Korean.js (Placeholder Logic)...");
+                responseTemplate = runKoreanJs(processedQuery); // Calls our custom Korean logic
                 if (responseTemplate) {
-                    console.log("Korean.js (Placeholder) successful.");
+                    console.log("[AIPortfolioLogic] Level 2 (Korean.js) successful.");
                     return generateFinalResponse(responseTemplate, query);
                 }
             }
 
-            console.log("Attempting Level 3: Transformers.js");
-            responseTemplate = await runTransformers(query);
+            // Layer 3: Semantic search (Transformers.js)
+            console.log("[AIPortfolioLogic] Attempting Level 3: Transformers.js semantic search...");
+            responseTemplate = await runTransformers(query); // Use original query for embedding
             if (responseTemplate) {
-                console.log("Transformers.js successful.");
+                console.log("[AIPortfolioLogic] Level 3 (Transformers.js) successful.");
                 return generateFinalResponse(responseTemplate, query);
             }
 
-            console.log("Falling back to API Proxy (Gemini/Grok/OpenAI)...");
-            responseTemplate = await callApiProxy(query);
+            // Layer 4: Fallback to Serverless API Proxy (LLM)
+            console.log("[AIPortfolioLogic] Attempting Level 4: Serverless API Proxy (LLM)...");
+            responseTemplate = await callApiProxy(query); // Pass original query to LLM
             if (responseTemplate) {
-                console.log("API Proxy successful.");
+                console.log("[AIPortfolioLogic] Level 4 (API Proxy) successful.");
                 return generateFinalResponse(responseTemplate, query);
             }
 
-            // 최종 실패
-            console.warn("All AI logic layers failed. Returning default response.");
+            // If all layers fail, return a default "I don't understand" response
+            console.warn("[AIPortfolioLogic] All AI logic layers failed to find a specific response. Returning default.");
             return getDefaultResponse();
+        },
+
+        // Expose knowledgeBase for UI to access navigation_map if needed (e.g., for navigation actions)
+        get knowledgeBase() {
+            return knowledgeBase;
         }
     };
 })();
-
-// `export` 대신 전역 스코프나 다른 방식으로 `ai_chat.js`에서 접근할 수 있도록 합니다.
-window.AIPortfolioLogic = AIPortfolioLogic;
