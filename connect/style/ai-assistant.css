@@ -63,7 +63,7 @@ body[data-theme="light"] #ai-assistant-section {
 .connect-ai-buttons-grid button {
     padding: 10px;
     border: 1px solid var(--glass-border); /* Changed to glass-border */
-    background-color: var(--secondary-bg); /* Changed to secondary-bg */
+    background-color: var(--primary-bg-opacity); /* CHANGED: Now uses primary-bg-opacity for glassmorphism effect */
     color: var(--subheading-color); /* Changed to subheading-color */
     border-radius: 5px;
     cursor: pointer;
@@ -166,7 +166,7 @@ body[data-theme="light"] #ai-assistant-section {
 
 #connect-ai-regenerate-btn {
     flex: 1;
-    background-color: var(--secondary-bg); /* Changed to secondary-bg */
+    background-color: var(--primary-bg-opacity); /* CHANGED: Now uses primary-bg-opacity for glassmorphism effect */
     color: var(--text-color); /* Changed to text-color */
     border: 1px solid var(--glass-border); /* Added glass-border */
     backdrop-filter: var(--glass-blur); /* Added glassmorphism blur */
@@ -237,9 +237,10 @@ body[data-theme="light"] #ai-assistant-section {
         font-size: 0.8em;
         padding: 8px;
     }
-    .scroll-down-arrow.ai-assistant-arrow {
+    /* 이 아래 'scroll-down-arrow.ai-assistant-arrow' 스타일은 'connect.css'의 중앙 정의로 이동되었으므로 이 파일에서는 삭제됩니다. */
+    /* .scroll-down-arrow.ai-assistant-arrow {
         bottom: 40px;
         left: 50%;
         transform: translateX(-50%) !important;
-    }
+    } */
 }

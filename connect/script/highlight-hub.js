@@ -1,16 +1,14 @@
 // highlight-hub.js
 document.addEventListener('DOMContentLoaded', () => {
     // --- 1. ELEMENT SELECTORS ---
-    // ✅ 모든 선택자를 원래 클래스/ID 이름으로 복구
     const hubGreeting = document.getElementById('hub-greeting');
     if (!hubGreeting) return; // hubGreeting이 없으면 로직을 실행하지 않음
     const topInterestPlaceholder = document.getElementById('top-interest-placeholder');
     const hubTabs = document.querySelector('.hub-tabs');
     const cardsContainer = document.getElementById('highlight-cards-container');
     const timelineContainer = document.getElementById('timeline-container');
-    const postcardMessageTextarea = document.getElementById('message'); // Postcard 섹션의 textarea ID는 그대로 'message'
+    const postcardMessageTextarea = document.getElementById('message');
     
-    // ✅ AI Assistant 섹션의 요소들은 이제 'connect-' 접두사를 사용
     const connectAiInsightsOutput = document.getElementById('connect-ai-insights-output');
     const connectAiTemplateButtons = document.querySelectorAll('.connect-ai-template-btn');
     const connectAiToneButtons = document.querySelectorAll('.connect-ai-tone-btn');
@@ -53,38 +51,20 @@ document.addEventListener('DOMContentLoaded', () => {
             "I have a few questions about the items I highlighted. Could we discuss them further?"
         ]
     };
-
-    /**
-     * [수정됨] 타임스탬프를 상대 시간 문자열로 변환하고 디버깅 로그를 추가합니다.
-     * @param {number|string} timestamp - 변환할 타임스탬프
-     * @returns {string} 변환된 상대 시간 문자열
-     */
+    
     function formatRelativeTime(timestamp) {
-        // 콘솔 로그 추가: 함수에 전달된 원본 타임스탬프 확인
-        // console.log(`[formatRelativeTime] Received timestamp: ${timestamp} (Type: ${typeof timestamp})`); // ✅ 디버그 로그는 배포 시 제거
-
-        // 1. timestamp가 유효한 값인지 먼저 확인하고, 명시적으로 숫자형으로 변환합니다.
         if (!timestamp) return 'Recent';
         const numericTimestamp = Number(timestamp);
-
-        // 2. 변환된 숫자형 타임스탬프가 유효한 숫자인지 확인합니다.
         if (isNaN(numericTimestamp)) {
             console.error(`[formatRelativeTime] Failed to convert timestamp to a valid number. Input was: ${timestamp}`);
             return 'Recent';
         }
-
         const now = new Date();
-        const past = new Date(numericTimestamp); // 숫자형 타임스탬프를 사용하여 Date 객체 생성
+        const past = new Date(numericTimestamp);
         const diffInSeconds = Math.floor((now - past) / 1000);
-
-        // 콘솔 로그 추가: 계산된 시간 차이(초) 확인
-        // console.log(`[formatRelativeTime] Calculated difference in seconds: ${diffInSeconds}`); // ✅ 디버그 로그는 배포 시 제거
-
-        // 3. 시간 차이가 음수(미래)이거나 매우 작은 경우 '방금 전'으로 처리합니다.
         if (diffInSeconds < 1) {
             return currentLang === 'en' ? 'Just now' : '방금 전';
         }
-
         const rtf = new Intl.RelativeTimeFormat(currentLang, { numeric: 'auto' });
         const intervals = [
             { unit: 'year', seconds: 31536000 },
@@ -93,7 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
             { unit: 'hour', seconds: 3600 },
             { unit: 'minute', seconds: 60 }
         ];
-
         for (let i = 0; i < intervals.length; i++) {
             const interval = intervals[i];
             if (diffInSeconds >= interval.seconds) {
@@ -101,8 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return rtf.format(-count, interval.unit);
             }
         }
-
-        // 4. 모든 구간에 해당하지 않는 작은 시간 차이(1초 이상, 60초 미만) 처리
         return rtf.format(-diffInSeconds, 'second');
     }
 
@@ -138,6 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
             latestTimestamp: latestTimestamp
         };
     }
+    
     // --- 3. RENDERING LOGIC ---
     function renderTimeline() {
         if (!timelineContainer) return;
@@ -174,6 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
         timelineContainer.appendChild(farewellItem);
         gsap.to('.timeline-item', { opacity: 1, x: 0, duration: 0.6, stagger: 0.1, ease: 'power2.out' });
     }
+    
     function renderCards(viewType) {
         if (!cardsContainer) return;
         cardsContainer.innerHTML = '';
@@ -213,7 +192,30 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         gsap.to('.highlight-card', { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power2.out' });
     }
+
     function renderContent() {
+        const highlights = getHighlightData();
+        const analysis = analyzeInterests(highlights);
+        
+        updateGreeting(userName);
+        
+        const subGreeting = document.getElementById('hub-sub-greeting');
+        if (subGreeting) {
+            if (analysis.totalHighlights > 0 && analysis.topKeywords.length > 0) {
+                // 하이라이트가 있을 때의 메시지
+                const message = currentLang === 'en'
+                    ? `It seems you were particularly interested in <strong id="top-interest-placeholder">${analysis.topKeywords.join(', ')}</strong>. Let's craft a message together.`
+                    : `<strong>${analysis.topKeywords.join(', ')}</strong>에 특히 관심이 많으시군요. 함께 메시지를 작성해볼까요?`;
+                subGreeting.innerHTML = message;
+            } else {
+                // 하이라이트가 없을 때의 안내 메시지
+                const message = currentLang === 'en'
+                    ? 'As you explore and highlight your interests, your analysis will be displayed here.'
+                    : '포트폴리오를 둘러보며 관심사를 하이라이트하면, 이곳에 분석 결과가 표시됩니다.';
+                subGreeting.innerHTML = message;
+            }
+        }
+
         switch (currentView) {
             case 'timeline':
                 cardsContainer.classList.add('hidden');
@@ -228,13 +230,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
         }
     }
+
     // --- 4. AI SIMULATION LOGIC ---
     function generateAndDisplayInsights() {
         const highlights = getHighlightData();
         if (Object.keys(highlights).length === 0) {
-            // ✅ aiInsightsOutput -> connectAiInsightsOutput
             connectAiInsightsOutput.innerHTML = 'Highlight items from the portfolio to see your interest analysis.';
-            if (topInterestPlaceholder) topInterestPlaceholder.textContent = 'various topics';
             return;
         }
         const analysis = analyzeInterests(highlights);
@@ -250,12 +251,9 @@ document.addEventListener('DOMContentLoaded', () => {
             insightsHTML += `<p>Specifically, phrases like "**${analysis.topNGrams.join('", "')}**" caught your attention more than once.</p>`;
         }
         insightsHTML += `<p>Based on your **${analysis.totalHighlights}** highlights, I can help you draft a message.</p>`;
-        // ✅ aiInsightsOutput -> connectAiInsightsOutput
         connectAiInsightsOutput.innerHTML = insightsHTML;
-        if (topInterestPlaceholder) {
-            topInterestPlaceholder.textContent = analysis.topKeywords.join(', ') || 'your interests';
-        }
     }
+    
     function generateDraftText() {
         const highlights = getHighlightData();
         const analysis = analyzeInterests(highlights);
@@ -288,6 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return `${greeting}\n\n${body}\n\n${closing}`;
     }
+
     // --- 5. EVENT HANDLERS ---
     function updateGreeting(name) {
         userName = name;
@@ -295,26 +294,24 @@ document.addEventListener('DOMContentLoaded', () => {
             ? `Welcome, ${userName}! Here is your journey.`
             : `${userName}님, 반갑습니다! 당신의 여정을 확인해보세요.`;
     }
+    
     function handleGenerateClick() {
         const highlights = getHighlightData();
         if (Object.keys(highlights).length === 0) {
-            // ✅ aiOutput -> connectAiOutput
             connectAiOutput.textContent = "Please highlight items first to generate a message.";
             return;
         }
-        // ✅ aiOutput -> connectAiOutput
         connectAiOutput.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Crafting message...`;
         setTimeout(() => {
             const draftText = generateDraftText();
-            // ✅ aiOutput -> connectAiOutput
             connectAiOutput.textContent = draftText;
-            // ✅ generateBtn -> connectGenerateBtn, postGenerateControls -> connectPostGenerateControls
             connectGenerateBtn.classList.add('hidden');
             connectPostGenerateControls.classList.remove('hidden');
+            document.dispatchEvent(new CustomEvent('aiMessageGenerated'));
         }, 1200);
     }
+    
     function handleGoToPostcardClick() {
-        // ✅ aiOutput -> connectAiOutput
         const draft = connectAiOutput.textContent;
         gsap.to(window, {
             duration: 1.5,
@@ -325,20 +322,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     postcardMessageTextarea.value = draft;
                     postcardMessageTextarea.focus();
                     gsap.from(postcardMessageTextarea, { opacity: 0, duration: 0.5 });
+                    document.dispatchEvent(new CustomEvent('postcardInputChanged'));
                 }
             }
         });
     }
+
     // --- 6. EVENT LISTENERS BINDING ---
     document.addEventListener('userLoggedIn', (e) => {
         updateGreeting(e.detail.username);
         generateAndDisplayInsights();
     });
+
     document.addEventListener('highlightDataChanged', () => {
         renderContent();
         generateAndDisplayInsights();
     });
-    // hubTabs는 highlight-hub.css에 있으므로 그대로 둡니다.
+
+    document.addEventListener('languageChanged', (e) => {
+        currentLang = e.detail.lang;
+        userName = localStorage.getItem('currentUser') || (currentLang === 'en' ? 'Visitor' : '방문자');
+        renderContent();
+    });
+    
     hubTabs.addEventListener('click', (e) => {
         if (e.target.classList.contains('hub-tab-btn')) {
             currentView = e.target.dataset.view;
@@ -347,7 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderContent();
         }
     });
-    // cardsContainer는 highlight-hub.css에 있으므로 그대로 둡니다.
+    
     cardsContainer.addEventListener('click', e => {
         const button = e.target.closest('button');
         if (!button) return;
@@ -364,15 +370,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
-    // ✅ aiTemplateButtons -> connectAiTemplateButtons
+    
     connectAiTemplateButtons.forEach(button => {
         button.addEventListener('click', () => {
             connectAiTemplateButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
             aiState.template = button.dataset.template;
+            document.dispatchEvent(new CustomEvent('templateSelected'));
         });
     });
-    // ✅ aiToneButtons -> connectAiToneButtons
+    
     connectAiToneButtons.forEach(button => {
         button.addEventListener('click', () => {
             connectAiToneButtons.forEach(btn => btn.classList.remove('active'));
@@ -380,17 +387,14 @@ document.addEventListener('DOMContentLoaded', () => {
             aiState.tone = button.dataset.tone;
         });
     });
-    // ✅ generateBtn -> connectGenerateBtn
+    
     connectGenerateBtn.addEventListener('click', handleGenerateClick);
-    // ✅ regenerateBtn -> connectRegenerateBtn
     connectRegenerateBtn.addEventListener('click', handleGenerateClick);
-    // ✅ goToPostcardBtn -> connectGoToPostcardBtn
     connectGoToPostcardBtn.addEventListener('click', handleGoToPostcardClick);
+    
     // --- 7. INITIALIZATION ---
-    updateGreeting(userName);
     renderContent();
     generateAndDisplayInsights();
-    // ✅ ai-template-btn -> connect-ai-template-btn, ai-tone-btn -> connect-ai-tone-btn
     document.querySelector('.connect-ai-template-btn[data-template="general"]').classList.add('active');
     document.querySelector('.connect-ai-tone-btn[data-tone="professional"]').classList.add('active');
 });

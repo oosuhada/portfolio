@@ -1,4 +1,3 @@
-<!-- connect.html -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -146,7 +145,8 @@
 
         <section id="highlight-hub-section" class="connect-section highlight-hub-section">
             <div class="connect-highlight-hub-content">
-                <header class="hub-header"> <h1 id="hub-greeting">Your Journey with Oosu's Portfolio</h1> 
+                <header class="hub-header">
+                    <h1 id="hub-greeting">Your Journey with Oosu's Portfolio</h1> 
                     <p id="hub-sub-greeting">It seems you were particularly interested in <strong id="top-interest-placeholder">various topics</strong>. Let's craft a message together.</p>
                 </header>
 
@@ -168,26 +168,45 @@
             <div class="scroll-down-arrow hub-arrow" data-scroll-target="#ai-assistant-section">
                  <img src="img/arrow_down.svg" alt="Scroll Down" class="custom-scroll-arrow">
             </div>
+            <div class="scroll-up-arrow hub-arrow-up" data-scroll-target="#hero-section">
+                <img src="img/arrow_down.svg" alt="Scroll Up" class="custom-scroll-arrow-up">
+            </div>
         </section>
 
-        <section id="ai-assistant-section" class="connect-section connect-ai-assistant-section"> <div class="connect-ai-assistant-content"> <h2><i class="fas fa-robot"></i> Smart Assistant</h2>
-                <div id="connect-ai-insights-section" class="connect-ai-module"> <h3><i class="fas fa-chart-pie"></i> Your Interest Insights</h3>
-                    <div id="connect-ai-insights-output" class="connect-ai-output-box">Your key interests will appear here.</div> </div>
-                <div id="connect-ai-template-section" class="connect-ai-module"> <h3><i class="fas fa-pen-nib"></i> 1. Choose Inquiry Type</h3>
+        <section id="ai-assistant-section" class="connect-section connect-ai-assistant-section">
+                <header class="section-header">
+                    <h2 id="ai-assistant-greeting"><i class="fas fa-robot"></i> Smart Assistant</h2>
+                    <p id="ai-assistant-sub-greeting">Let's translate your interests into a clear message.</p>
+                </header>
+            <div class="connect-ai-assistant-content">
+                <div id="connect-ai-insights-section" class="connect-ai-module">
+                    <h3><i class="fas fa-chart-pie"></i> Your Interest Insights</h3>
+                    <div id="connect-ai-insights-output" class="connect-ai-output-box">Your key interests will appear here.</div>
+                </div>
+                <div id="connect-ai-template-section" class="connect-ai-module">
+                    <h3><i class="fas fa-pen-nib"></i> 1. Choose Inquiry Type</h3>
                     <div class="connect-ai-buttons-grid"> <button class="connect-ai-template-btn" data-template="collaboration">Project Collaboration</button> <button class="connect-ai-template-btn" data-template="technical">Technical Question</button> <button class="connect-ai-template-btn" data-template="recruiting">Recruiting Inquiry</button> <button class="connect-ai-template-btn" data-template="general">General Comment</button> </div>
                     <h3><i class="fas fa-smile"></i> 2. Select Tone & Manner</h3>
                     <div class="connect-ai-buttons-grid"> <button class="connect-ai-tone-btn" data-tone="professional">Professional</button> <button class="connect-ai-tone-btn" data-tone="friendly">Friendly</button> <button class="connect-ai-tone-btn" data-tone="direct">Direct</button> <button class="connect-ai-tone-btn" data-tone="curious">Curious</button> </div>
                 </div>
-                <div id="connect-ai-drafting-section" class="connect-ai-module"> <h3><i class="fas fa-magic-wand-sparkles"></i> 3. Draft with AI</h3>
+                <div id="connect-ai-drafting-section" class="connect-ai-module">
+                    <h3><i class="fas fa-magic-wand-sparkles"></i> 3. Draft with AI</h3>
                     <div id="connect-ai-output" class="connect-ai-output-box" placeholder="AI-generated content will appear here...">Click the button below to generate a draft.</div> <button id="connect-ai-generate-btn"><i class="fas fa-pen-alt"></i> Generate</button> <div id="connect-ai-post-generate-controls" class="hidden"> <button id="connect-ai-regenerate-btn"><i class="fas fa-sync-alt"></i> Re-generate</button> <button id="connect-ai-go-to-postcard-btn"><i class="fas fa-arrow-right"></i> Go to Postcard</button> </div>
                 </div>
             </div>
             <div class="scroll-down-arrow ai-assistant-arrow" data-scroll-target="#postcard-section">
                 <img src="img/arrow_down.svg" alt="Scroll Down" class="custom-scroll-arrow">
             </div>
+            <div class="scroll-up-arrow ai-assistant-arrow-up" data-scroll-target="#highlight-hub-section">
+                <img src="img/arrow_down.svg" alt="Scroll Up" class="custom-scroll-arrow-up">
+            </div>
         </section>
 
         <section class="connect-section postcard-section" id="postcard-section">
+            <header class="section-header">
+                <h2 id="postcard-greeting">Time to Send Your Postcard</h2>
+                <p id="postcard-sub-greeting">Review your message and send it on its way.</p>
+            </header>
             <div class="connect-postcard-content">
                 <div class="connect-floating-menu1"> <button id="pen-theme-btn" title="Western Theme"><i class="fa-solid fa-landmark"></i> <span class="theme-style-text">Western</span></button>
                     <button id="brush-theme-btn" title="Eastern Theme"><i class="fa-solid fa-torii-gate"></i> <span class="theme-style-text">Eastern</span></button>

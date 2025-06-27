@@ -425,7 +425,8 @@ body[data-theme="light"] #highlight-hub-section {
     padding-left: 25px;
 }
 
-.scroll-down-arrow.hub-arrow {
+/* 아래 'scroll-down-arrow.hub-arrow' 스타일은 'connect.css'의 중앙 정의로 이동되었으므로 이 파일에서는 삭제됩니다. */
+/* .scroll-down-arrow.hub-arrow {
     position: absolute;
     bottom: 80px;
     left: 25px;
@@ -440,8 +441,7 @@ body[data-theme="light"] #highlight-hub-section {
 }
 .scroll-down-arrow.hub-arrow.hidden {
     display: none;
-}
-
+} */
 
 
 /* ==========================================================================
@@ -515,11 +515,12 @@ body[data-theme="light"] #highlight-hub-section {
         font-size: 0.75em;
         padding: 5px 10px;
     }
-    .scroll-down-arrow.hub-arrow {
+    /* 이 아래 'scroll-down-arrow.hub-arrow' 스타일은 'connect.css'의 중앙 정의로 이동되었으므로 이 파일에서는 삭제됩니다. */
+    /* .scroll-down-arrow.hub-arrow {
         bottom: 40px;
         left: 50%;
         transform: translateX(-50%) !important;
-    }
+    } */
     .hub-container {
         margin: 20px auto;
         padding: 10px;
