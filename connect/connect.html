@@ -116,6 +116,8 @@
                     What name should I remember?
                 </label>
                 <input id="username" name="username" class="input--username js-input--username" type="text" maxlength="15" required autofocus placeholder="Your shining name" />
+                <!-- Error message span for username input -->
+                <span class="error-message"></span>
                 <button class="btn--signin js-btn--signin" type="submit">Begin Our Journey</button>
             </form>
 
@@ -136,7 +138,7 @@
                     <span></span>
                 </div>
             </div>
-            <!-- ↓↓↓ 추가된 arrow: highlight-hub-section으로 이동 -->
+            <!-- Arrow to scroll to highlight-hub-section -->
             <div class="scroll-down-arrow hub-arrow" data-scroll-target="#highlight-hub-section">
                 <img src="img/arrow_down.svg" alt="Scroll Down" class="custom-scroll-arrow">
             </div>
@@ -169,7 +171,7 @@
                     </div>
                 </main>
             </div>
-            <!-- ↓↓↓ 추가된 arrow: ai-assistant-section으로 이동 및 hero-section으로 위로 이동 -->
+            <!-- Arrow to scroll to ai-assistant-section and up to hero-section -->
             <div class="scroll-down-arrow hub-arrow" data-scroll-target="#ai-assistant-section">
                  <img src="img/arrow_down.svg" alt="Scroll Down" class="custom-scroll-arrow">
             </div>
@@ -181,7 +183,6 @@
         <!-- AI ASSISTANT SECTION -->
         <section id="ai-assistant-section" class="connect-section connect-ai-assistant-section">
             <div class="ai-assistant-layout-wrapper">
-                <!-- ... 기존 내용 ... -->
                 <div class="ai-assistant-column-left">
                     <header class="section-header">
                         <div class="greeting-wrapper">
@@ -233,7 +234,7 @@
                     </div>
                 </div>
             </div>
-            <!-- ↓↓↓ 추가된 arrow: postcard-section으로 이동 및 highlight-hub-section으로 위로 이동 -->
+            <!-- Arrow to scroll to postcard-section and up to highlight-hub-section -->
             <div class="scroll-down-arrow hub-arrow" data-scroll-target="#postcard-section">
                 <img src="img/arrow_down.svg" alt="Scroll Down" class="custom-scroll-arrow">
             </div>
@@ -281,6 +282,7 @@
                     </div>
                 </div>
             </div>
+            <!-- Arrow to scroll up to ai-assistant-section -->
             <div class="scroll-up-arrow hub-arrow-up" data-scroll-target="#ai-assistant-section">
                 <img src="img/arrow_down.svg" alt="Scroll Up" class="custom-scroll-arrow-up">
             </div>

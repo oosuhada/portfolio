@@ -10,7 +10,6 @@ const setBodyScroll = (canScroll) => {
     document.body.style.overflow = canScroll ? "auto" : "hidden";
 };
 
-// --- Momentum Clone Functions (사용자 세션, 날씨, 시계, 명언 관련 코드 - 유지) ---
 const showGreeting = (username) => {
     const $greeting = document.querySelector(".js-greeting");
     const date = new Date();
@@ -36,7 +35,6 @@ function showWeatherInfo(data) {
         $temper.textContent = `${Math.round(data.temp)}°C`;
         $weatherIcon.textContent = data.icon || '';
     } else {
-        // Display placeholders if no data
         $location.textContent = "Loading...";
         $temper.textContent = "--°C";
         $weatherIcon.textContent = "";
@@ -44,7 +42,7 @@ function showWeatherInfo(data) {
 }
 
 const fetchWeather = async (lat, lon) => {
-    const API_KEY = "a155f00c11c73a1d9b10cc6ab623767b"; // Replace with your API key
+    const API_KEY = "a155f00c11c73a1d9b10cc6ab623767b";
     try {
         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`);
         if (!response.ok) {
@@ -81,11 +79,10 @@ const fetchWeather = async (lat, lon) => {
         return cache;
     } catch (error) {
         console.error("Failed to fetch weather info:", error);
-        throw error; // Re-throw to be caught by the caller
+        throw error;
     }
 };
 
-// New function to defer the weather data fetching
 const fetchWeatherDataDeferred = () => {
     const $location = document.querySelector(".js-location");
     const $temper = document.querySelector(".js-temper");
@@ -114,34 +111,27 @@ const fetchWeatherDataDeferred = () => {
 
 const weatherApp = () => {
     const $weatherSection = document.querySelector(".js-weather-section");
-
-    // Make sure the weather section is visible as soon as weatherApp is called
     if ($weatherSection) {
         showUi($weatherSection);
     }
-
-    // 1. Show from cache first
     const cacheRaw = localStorage.getItem(WEATHER_KEY);
     let cache = null;
     if (cacheRaw) {
         cache = JSON.parse(cacheRaw);
         if (cache && Date.now() - cache.time < WEATHER_CACHE_TIME) {
             showWeatherInfo(cache);
-            return; // If cache is fresh, don't call API
+            return;
         }
     }
-
-    // If no fresh cache, show initial loading state and then defer the fetch
-    showWeatherInfo(null); // Display 'Loading...' or similar
+    showWeatherInfo(null);
     if ('requestIdleCallback' in window) {
         window.requestIdleCallback(() => {
             fetchWeatherDataDeferred();
         });
     } else {
-        // Fallback for browsers that don't support requestIdleCallback
         setTimeout(() => {
             fetchWeatherDataDeferred();
-        }, 500); // Small delay to prioritize main content
+        }, 500);
     }
 };
 
@@ -173,8 +163,7 @@ const randomBg = () => {
         "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png", "13.png", "14.png", "15.png", "16.png", "17.png"
     ];
     const chosenImage = images[Math.floor(Math.random() * images.length)];
-    // Changed .intro-section to .hero-section
-    document.querySelector('.hero-section').style.backgroundImage = `url("img/${chosenImage}")`;
+    document.querySelector('.hero-section').style.backgroundImage = `url("img/herobg/${chosenImage}")`;
 };
 
 const quotesApp = () => {
@@ -232,7 +221,6 @@ const quotesApp = () => {
 const showUi = (element) => {
     element.classList.remove(HIDDEN_CLASSNAME);
 };
-
 const hideUi = (element) => {
     element.classList.add(HIDDEN_CLASSNAME);
 };
@@ -253,33 +241,26 @@ const signOutProcess = () => {
 const initHomeUi = (username) => {
     const $home = document.querySelector(".js-home-wrap");
     const $quoteSection = document.querySelector(".js-quote-section");
-    // 변경: id로 Hero 섹션 화살표를 명확하게 선택합니다.
     const $heroScrollArrow = document.getElementById("hero-scroll-arrow");
 
     hideSignInForm();
-    weatherApp(); // This will handle showing the weather section and deferring fetch
+    weatherApp();
     clockApp();
     showGreeting(username);
     quotesApp();
-    showUi($home); // Show the main home wrap
-    showUi($quoteSection); // Ensure quote section is visible
+    showUi($home);
+    showUi($quoteSection);
 
-    // Hero 섹션 화살표만 제어합니다.
     if ($heroScrollArrow) {
-        showUi($heroScrollArrow); // 로그인 후 Hero 섹션 화살표를 표시합니다.
+        showUi($heroScrollArrow);
     }
-    
     signOutProcess();
-    setBodyScroll(true); // Enable scrolling after login
-    if (window.releaseIntroScrollLock) window.releaseIntroScrollLock(); // Release scroll lock
+    setBodyScroll(true);
+    if (window.releaseIntroScrollLock) window.releaseIntroScrollLock();
 };
 
-// Global validation function moved here from connect.js
-// This function will handle adding/removing the 'invalid' class
-// and triggering the shake animation.
 const validateField = (field) => {
-    // Prevent browser's default validation message
-    field.reportValidity(); // This forces validation check without showing pop-up
+    field.reportValidity();
     if (field.validity.valueMissing || field.validity.typeMismatch) {
         field.classList.add('invalid');
         return false;
@@ -288,76 +269,66 @@ const validateField = (field) => {
         return true;
     }
 };
-window.validateField = validateField; // Make it globally accessible
+window.validateField = validateField;
 
 const signInProcess = () => {
     const $signInForm = document.querySelector(".js-signin-form");
     const $usernameInput = document.querySelector(".js-input--username");
-    // 변경: id로 Hero 섹션 화살표를 명확하게 선택합니다.
     const $heroScrollArrow = document.getElementById("hero-scroll-arrow");
 
-    // Add an event listener to prevent the default browser validation message
-    // for the username input field.
     $usernameInput.addEventListener('invalid', (event) => {
-        event.preventDefault(); // Stop the default browser pop-up
-        // Immediately apply the invalid class to trigger the animation
+        event.preventDefault();
         event.target.classList.add('invalid');
     });
 
-    // 1. Show weather and quote sections and run their apps even before login
-    // weatherApp() will show the weather section itself
-    weatherApp(); // Call weatherApp here to display weather text immediately (or loading state)
+    weatherApp();
     showUi(document.querySelector('.js-quote-section'));
-    quotesApp(); // Call quotesApp here to display quotes immediately
+    quotesApp();
 
-    // Hero 섹션 화살표만 숨깁니다.
     if ($heroScrollArrow) {
-        hideUi($heroScrollArrow); // 초기에는 Hero 섹션 화살표를 숨깁니다.
+        hideUi($heroScrollArrow);
     }
     setBodyScroll(false);
 
     const handleSignIn = (e) => {
         e.preventDefault();
-        // Manually validate the username input using the custom validateField
         if (!validateField($usernameInput)) {
-            // If validation fails, the shake animation will trigger, and we stop here.
             return;
         }
         const username = $usernameInput.value;
         localStorage.setItem(CURRENTUSER_KEY, username);
         initHomeUi(username);
+
+        // 👇 [추가] 로그인 직후, userLoggedIn 이벤트 발생
+        document.dispatchEvent(new Event('userLoggedIn'));
     };
     $signInForm.addEventListener("submit", handleSignIn);
 };
 
-// --- Connect Page Specific Functions and Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
-    randomBg(); // Set initial background first
+    randomBg();
     let currentUser = localStorage.getItem(CURRENTUSER_KEY);
     if (currentUser !== null) {
         initHomeUi(currentUser);
+        // 👇 [추가] 새로고침 로그인 상태에서도 연결용 이벤트 발생
+        document.dispatchEvent(new Event('userLoggedIn'));
     } else {
         showUi(document.querySelector(".js-signin-form"));
-        signInProcess(); // This will handle showing weather/quotes and disabling scroll
+        signInProcess();
     }
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Login check
     const $signInForm = document.querySelector('.js-signin-form');
     const $usernameInput = document.querySelector('.js-input--username');
 
-    // Function to trigger invalid animation on the input field
     function triggerInvalidInput() {
         if ($signInForm && !$signInForm.classList.contains('hidden')) {
             $usernameInput.classList.add('invalid');
             setTimeout(() => $usernameInput.classList.remove('invalid'), 350);
         }
     }
-
-    // Function to block scroll and animate input
     function blockScrollAndAnimate(e) {
-        // Only trigger if signInForm is visible
         if ($signInForm && !$signInForm.classList.contains('hidden')) {
             triggerInvalidInput();
             e.preventDefault();
@@ -365,16 +336,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return false;
         }
     }
-
-    // Attach scroll blocking listeners if signInForm is visible initially
     if ($signInForm && !$signInForm.classList.contains('hidden')) {
         window.addEventListener('wheel', blockScrollAndAnimate, { passive: false });
         window.addEventListener('touchmove', blockScrollAndAnimate, { passive: false });
-        // Using scroll event on window, not document, as body overflow is hidden
         window.addEventListener('scroll', blockScrollAndAnimate, { passive: false });
     }
-
-    // Expose a function to release the scroll lock
     window.releaseIntroScrollLock = function() {
         window.removeEventListener('wheel', blockScrollAndAnimate, { passive: false });
         window.removeEventListener('touchmove', blockScrollAndAnimate, { passive: false });

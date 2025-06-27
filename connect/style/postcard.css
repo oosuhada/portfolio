@@ -83,14 +83,14 @@ body[data-theme="light"] #postcard-section {
     height: 100%;
     backface-visibility: hidden;
     border-radius: 10px;
-    box-shadow: 0 8px 32px var(--glass-shadow);
+    box-shadow: 0 8px 32px var(--glass-shadow2);
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    background-color: var(--primary-bg-opacity);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
+    background-color: var(--primary-bg-opacity2);
+    backdrop-filter: var(--glass-blur2);
+    -webkit-backdrop-filter: var(--glass-blur2);
+    border: 1px solid var(--glass-border2);
 }
 
 .postcard-front {
@@ -101,22 +101,6 @@ body[data-theme="light"] #postcard-section {
     transform: rotateY(0deg);
     padding: 20px;
     box-sizing: border-box;
-}
-
-@keyframes fly-to-footer {
-    0% {
-        transform: translate(0, 0) scale(1) rotateY(0deg);
-        opacity: 1;
-    }
-    100% {
-        transform: translate(calc(50vw - 100%), calc(100vh - 50%), 500px) scale(0.1) rotateY(720deg);
-        opacity: 0;
-    }
-}
-
-.postcard-container.is-flying {
-    animation: fly-to-footer 2s ease-in-out forwards;
-    pointer-events: none;
 }
 
 /* ==========================================================================
@@ -146,13 +130,13 @@ body[data-theme="light"] #postcard-section {
     top: -20px;
     right: -20px;
     z-index: 10;
-    background-color: var(--primary-bg-opacity);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
+    background-color: var(--primary-bg-opacity2);
+    backdrop-filter: var(--glass-blur2);
+    -webkit-backdrop-filter: var(--glass-blur2);
     padding: 8px 12px;
     border-radius: 20px;
-    box-shadow: 0 8px 32px var(--glass-shadow);
-    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px var(--glass-shadow2);
+    border: 1px solid var(--glass-border2);
     display: flex;
     align-items: flex-start;
     gap: 10px;
@@ -168,7 +152,7 @@ body[data-theme="light"] #postcard-section {
 
 .connect-floating-menu button {
     padding: 6px 10px;
-    border: 1px solid var(--glass-border);
+    border: 1px solid var(--glass-border2);
     border-radius: 15px;
     cursor: pointer;
     background-color: var(--secondary-bg);
@@ -186,8 +170,8 @@ body[data-theme="light"] #postcard-section {
 }
 
 .connect-floating-menu button.active {
-    background: var(--point-gradient);
-    color: #FFF !important;
+    background: var(--point-gradient2);
+    color: var(--text-color);
     border-color: transparent;
     font-weight: bold;
 }
@@ -216,6 +200,14 @@ body[data-theme="light"] #postcard-section {
 
 .brush-cursor {
     cursor: url('../img/brush.png') 0 32, auto;
+}
+
+/* 다크 모드에서만 별도 이미지 사용 */
+body[data-theme="dark"] .pen-cursor {
+    cursor: url('../img/pen2.png') 0 32, auto;
+}
+body[data-theme="dark"] .brush-cursor {
+    cursor: url('../img/brush2.png') 0 32, auto;
 }
 
 .form-container {
@@ -249,7 +241,7 @@ body[data-theme="light"] #postcard-section {
     width: 100%;
     padding: 10px 12px;
     border: none;
-    border-bottom: 1.5px solid var(--glass-border);
+    border-bottom: 1.5px solid var(--glass-border2);
     border-radius: 0;
     box-sizing: border-box;
     background-color: transparent;
@@ -273,15 +265,33 @@ body[data-theme="light"] #postcard-section {
 }
 
 .error-message {
-    display: none;
-    color: var(--error-color);
-    font-size: 0.85em;
-    padding-top: 5px;
-    font-family: 'Poppins', sans-serif;
-}
-
-.error-message.visible {
     display: block;
+    margin-top: 4px;
+    margin-left: 0;
+    color: #e63a3a;
+    font-size: 0.95rem;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    opacity: 0;
+    transition: opacity 0.18s;
+    pointer-events: none;
+    visibility: hidden;
+    position: absolute;
+    left: 0;
+    bottom: -22px;
+    background: rgba(255,255,255,0.85);
+    padding: 3px 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px 0 rgba(230,58,58,0.08);
+    z-index: 2;
+}
+body[data-theme="dark"] .error-message {
+    background: rgba(40, 0, 0, 0.90);
+    color: #ff6b6b;
+}
+.error-message.visible {
+    opacity: 1;
+    visibility: visible;
 }
 
 .form-container textarea {
@@ -293,8 +303,8 @@ body[data-theme="light"] #postcard-section {
     display: block;
     width: 100%;
     padding: 12px 15px;
-    background: var(--point-gradient);
-    color: #FFF;
+    background: var(--point-gradient2);
+    color: var(--text-color);
     border: none;
     border-radius: 5px;
     cursor: pointer;

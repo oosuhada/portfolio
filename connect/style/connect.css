@@ -2,7 +2,6 @@
 /* ==========================================================================
    1. THEME COLOR VARIABLES (LIGHT & DARK) - GLOBAL
    ========================================================================== */
-
 :root {
     /* Font & Transition */
     --western-font: 'Caveat', cursive;
@@ -86,6 +85,28 @@ body[data-theme="dark"] {
 
     --scroll-arrow-opacity-other: 0.4;
     --scroll-arrow-filter-other: invert(100%) brightness(200%) contrast(100%) drop-shadow(0 0 5px rgba(255,255,255,0.8)); /* 흰색 반전 후 밝은 흰색 그림자 */
+}
+
+/* ==========================================================================
+   이 페이지 전용으로 사용할 새로운 변수 세트
+   ========================================================================== */
+
+:root {
+    /* --- 페이지 전용: 라이트 모드 --- */
+    --glass-blur2: blur(1px);
+    --primary-bg-opacity2: #ffffff2c;
+    --glass-border2: rgba(255, 255, 255, 0.3);
+    --glass-shadow2: rgba(165, 165, 165, 0.1);
+    --point-gradient2: linear-gradient(90deg, #1986fa77, #10c2a180);
+}
+
+body[data-theme="dark"] {
+    /* --- 페이지 전용: 다크 모드 --- */
+    --glass-blur2: blur(1px);
+    --primary-bg-opacity2: #00000049;
+    --glass-border2: rgba(255, 255, 255, 0.1);
+    --glass-shadow2: rgba(0, 0, 0, 0.4);
+    --point-gradient2: linear-gradient(90deg, #1986fa77, #10c2a180);
 }
 
 /* ==========================================================================
