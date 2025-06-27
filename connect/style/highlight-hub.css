@@ -17,7 +17,7 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    /* padding: 60px 0; */
+    padding: 80px 0;
     min-height: 100vh;
     box-sizing: border-box;
     overflow-x: hidden;
@@ -31,13 +31,14 @@ body[data-theme="light"] #highlight-hub-section {
 .connect-highlight-hub-content {
     width: 100%;
     max-width: 1200px;
+    margin: 0 auto;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 30px;
-    padding: 0 40px;
+    gap: 40px;
+    padding: 0 60px; /* ★★★ 기본 여백 (481px ~ 767px) 적용 ★★★ */
 }
 
 /* ==========================================================================
@@ -60,23 +61,21 @@ body[data-theme="light"] #highlight-hub-section {
     gap: 0 0.5em; 
 }
 
-/* --- 수정: 두 h1 태그가 동일한 스타일을 공유하도록 통합 --- */
 #hub-greeting-main,
 #hub-greeting-sub {
-    font-size: 2.2em;
+    font-size: 2.5em;
     color: var(--text-color);
     font-weight: 700;
     margin: 10px 0 0 0;
     padding: 0;
 }
 
-/* 헤더 아래 설명 텍스트 */
 #hub-sub-greeting {
     width: 100%;
-    font-size: 1.1em;
+    font-size: 1.2em;
     color: var(--subheading-color);
-    margin-top: 15px;
-    line-height: 1.7; /* 줄 간격을 위해 이 줄을 추가하세요. */
+    margin-top: 20px;
+    line-height: 1.7;
 }
 
 .hub-header strong {
@@ -87,7 +86,6 @@ body[data-theme="light"] #highlight-hub-section {
 .hub-container {
     display: flex;
     width: 100%;
-    max-width: 900px;
     margin: 0;
     min-height: auto;
     justify-content: center;
@@ -273,14 +271,30 @@ body[data-theme="light"] #highlight-hub-section {
 .timeline-item.farewell-timeline-item .timeline-dot { display: none; }
 .timeline-item.farewell-timeline-item { padding-left: 25px; }
 
-
 /* ==========================================================================
    4. RESPONSIVE MEDIA QUERIES (HIGHLIGHT HUB SECTION)
    ========================================================================== */
 
+@media (min-width: 768px) {
+    .connect-highlight-hub-content {
+        padding: 0 100px;
+    }
+}
+
 @media (min-width: 1100px) {
+    .connect-highlight-hub-content {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 80px;
+        padding: 0 120px;
+    }
+    
     .hub-header {
+        flex: 1;
+        max-width: 350px;
         text-align: left;
+        margin-top: 20px;
     }
     
     .hub-greeting-wrapper {
@@ -288,34 +302,18 @@ body[data-theme="light"] #highlight-hub-section {
         text-align: left;
     }
   
-    .connect-highlight-hub-content {
-        flex-direction: row;
-        align-items: flex-start;
-        justify-content: center;
-        gap: 50px;
-    }
-
-    .hub-header {
-        flex: 1;
-        max-width: 350px;
-        text-align: left;
-        margin-top: 20px;
-    }
-
     .hub-container {
         flex: 2;
         max-width: 800px;
         margin: 0;
     }
 
-     /* 1. 두 번째 h1(#hub-greeting-sub)의 상단 마진을 줄여 첫 번째 h1과의 간격을 좁힙니다. */
     #hub-greeting-sub {
         margin-top: 0;
     }
 
-    /* 2. 설명 텍스트(#hub-sub-greeting)의 상단 여백을 늘려 제목과의 거리를 확보합니다. */
     #hub-sub-greeting {
-        margin-top: 25px; /* 기존 15px에서 25px로 늘렸습니다. 원하시는 만큼 조절하세요. */
+        margin-top: 25px;
     }
 }
 
@@ -331,17 +329,13 @@ body[data-theme="light"] #highlight-hub-section {
         max-height: none;
         margin-bottom: 20px;
     }
-    /* --- 수정: 두 h1 태그가 동일한 스타일을 공유하도록 통합 --- */
     #hub-greeting-main,
     #hub-greeting-sub {
         font-size: 2em;
     }
 }
 
-@media (max-width: 768px) {
-    #highlight-hub-section {
-        padding: 40px 0;
-    }
+@media (max-width: 767px) {
     .panel-header h2 { font-size: 1.3em; }
     .hub-tab-btn { font-size: 0.9em; padding: 6px 12px; }
     .cards-container { grid-template-columns: 1fr; }
@@ -352,13 +346,9 @@ body[data-theme="light"] #highlight-hub-section {
 }
 
 @media (max-width: 480px) {
-    #highlight-hub-section {
-        padding: 30px 0;
-    }
     .connect-highlight-hub-content {
-        padding: 0 15px;
+        padding: 0 40px;
     }
-    /* --- 수정: 두 h1 태그가 동일한 스타일을 공유하도록 통합 --- */
     #hub-greeting-main,
     #hub-greeting-sub {
         font-size: 1.8em;

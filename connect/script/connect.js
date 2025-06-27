@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const aiHeaderData = getAIAssistantHeaderText(userName, highlights);
         const aiGreetingEl = document.getElementById('ai-assistant-greeting');
         const aiSubGreetingEl = document.getElementById('ai-assistant-sub-greeting');
-        if (aiGreetingEl) aiGreetingEl.innerHTML = `<i class="fas fa-robot"></i> ${aiHeaderData.title}`;
+        if (aiGreetingEl) aiGreetingEl.innerHTML = `${aiHeaderData.title}`;
         if (aiSubGreetingEl) aiSubGreetingEl.innerHTML = aiHeaderData.subtitle;
 
         // Update Postcard Section Header

@@ -1,8 +1,6 @@
-/* ai-assistant.css */
 /* ==========================================================================
    1. THEME COLOR VARIABLES (LIGHT & DARK)
    ========================================================================== */
-
 /* Theme variables are now integrated into a central connect.css */
 
 /* ==========================================================================
@@ -18,27 +16,28 @@
     transition: background-color var(--transition-duration), color var(--transition-duration), border-color var(--transition-duration);
     display: flex;
     justify-content: center;
-    /* Default padding for mobile */
-    padding: 60px 20px;
+    padding: 80px 0;
     min-height: 100vh;
     box-sizing: border-box;
-}
-
-/* Layout wrapper for dynamic arrangement */
-.ai-assistant-layout-wrapper {
-    width: 100%;
-    max-width: 1200px;
-    display: flex;
-    flex-direction: column; /* Mobile-first: default to vertical stacking */
-}
-
-.ai-assistant-column-left {
-    margin-bottom: 30px;
 }
 
 body[data-theme="light"] #ai-assistant-section {
     background-image: url('../img/Nebulae-bright.png');
     background-color: var(--primary-bg);
+}
+
+.ai-assistant-layout-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    padding: 0 60px; /* ★★★ 기본 여백 (481px ~ 767px) 적용 ★★★ */
+    box-sizing: border-box;
+}
+
+.ai-assistant-column-left {
+    margin-bottom: 40px;
 }
 
 /* ==========================================================================
@@ -51,11 +50,6 @@ body[data-theme="light"] #ai-assistant-section {
     margin-bottom: 30px;
 }
 
-/* Hide the original robot icon if it exists */
-#ai-assistant-greeting .fa-robot {
-    display: none;
-}
-
 .greeting-wrapper {
     display: flex;
     justify-content: center;
@@ -66,7 +60,7 @@ body[data-theme="light"] #ai-assistant-section {
 
 #ai-assistant-greeting,
 #ai-assistant-greeting + h1 {
-    font-size: 2.2em;
+    font-size: 2.5em;
     color: var(--text-color);
     font-weight: 700;
     margin: 10px 0 0 0;
@@ -74,11 +68,16 @@ body[data-theme="light"] #ai-assistant-section {
 }
 
 #ai-assistant-sub-greeting {
-    font-size: 1.1em;
+    font-size: 1.2em;
     color: var(--subheading-color);
-    margin-top: 15px;
+    margin-top: 20px;
     line-height: 1.7;
 }
+
+#connect-ai-insights-section {
+    margin-top: 60px;
+}
+
 
 /* ==========================================================================
    3. AI ASSISTANT PANEL STYLES
@@ -94,14 +93,12 @@ body[data-theme="light"] #ai-assistant-section {
     font-weight: 600;
 }
 
-/* Wrapper for side-by-side options */
 .template-options-wrapper {
     display: flex;
-    flex-direction: column; /* Default stack for narrow screens */
+    flex-direction: column;
     gap: 30px;
 }
 
-/* Styles for individual option blocks */
 .template-option h3 {
     margin-top: 0;
 }
@@ -191,62 +188,44 @@ body[data-theme="light"] #ai-assistant-section {
    4. RESPONSIVE MEDIA QUERIES
    ========================================================================== */
 
-@media (max-width: 480px) {
-    .connect-ai-buttons-grid {
-        grid-template-columns: 1fr; /* Stack buttons on very narrow screens */
-    }
-}
-
-/* For medium screens and wider: side-by-side buttons */
 @media (min-width: 600px) {
     .template-options-wrapper {
-        flex-direction: row; /* Place Inquiry and Tone side-by-side */
+        flex-direction: row;
         align-items: flex-start;
         gap: 25px;
     }
 
     .template-option {
-        flex: 1; /* Make them share space equally */
+        flex: 1;
     }
 }
 
-/* For tablet screens */
 @media (min-width: 768px) {
-    #ai-assistant-section {
-        padding-left: 40px;
-        padding-right: 40px;
+    .ai-assistant-layout-wrapper {
+        padding: 0 100px;
     }
 }
 
-/* For large screens: 2-column layout */
 @media (min-width: 1100px) {
-    #ai-assistant-section {
-        padding-left: 60px;
-        padding-right: 60px;
-    }
-    
     .ai-assistant-layout-wrapper {
-        flex-direction: row; /* Main layout becomes 2 columns */
-        align-items: flex-start; /* Aligns top of columns */
-        gap: 50px;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 80px;
+        padding: 0 120px;
     }
 
     .ai-assistant-column-left {
-        flex: 1; /* Ratio for left column */
+        flex: 1;
         max-width: 350px;
         margin-bottom: 0;
-        margin-left: 0.5rem;
+        margin-left: 0;
     }
 
     .ai-assistant-column-right {
-        flex: 2; /* Ratio for right column */
+        flex: 2;
         max-width: 800px;
-        /* * CORRECTED: Add top margin to the entire right column.
-         * This value is calculated to approximate the height of the .section-header
-         * in the left column, ensuring the content in both columns is visually aligned.
-        */
         margin-top: 100px;
-        margin-right: 1.5rem;
+        margin-right: 0;
     }
 
     .section-header {
@@ -255,5 +234,14 @@ body[data-theme="light"] #ai-assistant-section {
     
     .greeting-wrapper {
         justify-content: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .ai-assistant-layout-wrapper {
+        padding: 0 40px;
+    }
+    .connect-ai-buttons-grid {
+        grid-template-columns: 1fr;
     }
 }
