@@ -243,60 +243,49 @@
         </section>
 
         <!-- POSTCARD SECTION -->
-      <section class="connect-section postcard-section" id="postcard-section">
-    <header class="section-header">
-        <h2 id="postcard-greeting">Time to Send Your Postcard</h2>
-        <p id="postcard-sub-greeting">Review your message and send it on its way.</p>
-    </header>
-    <div class="connect-postcard-content">
-        <div class="postcard-front-wrapper">
-            <div class="connect-floating-menu1">
-                <button id="pen-theme-btn" title="Western Theme"><i class="fa-solid fa-landmark"></i> <span class="theme-style-text">Western</span></button>
-                <button id="brush-theme-btn" title="Eastern Theme"><i class="fa-solid fa-torii-gate"></i> <span class="theme-style-text">Eastern</span></button>
-            </div>
-            <div class="postcard-front western-theme">
-                <div class="postcard-image-container"><img src="img/western/ezgif-frame-001.jpg" alt="Western Postcard Theme" class="postcard-cover-img" id="western-front-img"></div>
-            </div>
-            <div class="postcard-front eastern-theme hidden">
-                <div class="postcard-image-container"><img src="img/eastern/ezgif-frame-001.jpg" alt="Eastern Postcard Theme" class="postcard-cover-img" id="eastern-front-img"></div>
-                <!-- <div class="postcard-info">
-                    <img src="img/qr-code.png" alt="QR Code" class="qr-code">
-                    <p class="info-text eastern-text" data-lang-en="Scan for more info or send a message!" data-lang-ko="QR코드를 스캔하시거나 메시지를 보내주세요!">Scan for more info or send a message!</p>
-                </div> -->
-            </div>
-        </div>
-        <div class="postcard-back-wrapper">
-            <div class="connect-floating-menu2">
-                <button id="pen-style-indicator-btn" title="Pen Style"><i class="fa-solid fa-pen-fancy"></i><span class="theme-style-text">Pen</span></button>
-                <button id="brush-style-indicator-btn" title="Brush-Style"><i class="fa-solid fa-brush"></i><span class="theme-style-text">Brush</span></button>
-                <div class="connect-language-controls-inline">
-                    <button id="lang-en-btn" title="Switch to English">English</button>
-                    <button id="lang-ko-btn" title="한국어로 변경">한국어</button>
-                </div>
-                <div class="connect-font-size-options-inline">
-                    <button id="font-size-small" aria-label="Decrease font size">A-</button>
-                    <button id="font-size-medium" aria-label="Default font size">A</button>
-                    <button id="font-size-large" aria-label="Increase font size">A+</button>
-                </div>
-            </div>
-            <div class="postcard-back western-theme" id="main-postcard-back">
-                <div class="stamp-area"><div class="stamp western-stamp" id="main-stamp" data-lang-en="oosu hada" data-lang-ko="우수하다">oosu hada</div></div>
-                <div class="form-container">
-                    <h3 class="western-text" data-lang-en="Inquiries" data-lang-ko="문의사항">Inquiries</h3>
-                    <form id="inquiry-form" novalidate>
-                        <div class="form-group"><label for="name" class="western-text" data-lang-en="Name:" data-lang-ko="이름:">Name:</label><input type="text" id="name" name="name" required class="western-text"><span class="error-message"></span></div>
-                        <div class="form-group"><label for="email" class="western-text" data-lang-en="Email:" data-lang-ko="이메일:">Email:</label><input type="email" id="email" name="email" required class="western-text"><span class="error-message"></span></div>
-                        <div class="form-group"><label for="message" class="western-text" data-lang-en="Message:" data-lang-ko="메시지:">Message:</label><textarea id="message" name="message" rows="4" required class="western-text"></textarea><span class="error-message"></span></div>
-                        <button type="submit" class="send-button western-text" data-lang-en="Send" data-lang-ko="보내기">Send</button>
-                    </form>
+        <section class="connect-section postcard-section" id="postcard-section">
+            <header class="section-header">
+                <h2 id="postcard-greeting">Time to Send Your Postcard</h2>
+                <p id="postcard-sub-greeting">Review your message and send it on its way.</p>
+            </header>
+            <div class="connect-postcard-content">
+                <div class="postcard-container" id="postcard-container">
+                     <div class="connect-floating-menu">
+                        <div class="connect-writing-style-controls">
+                           <button id="pen-style-indicator-btn" title="Pen Style"><i class="fa-solid fa-pen-fancy"></i><span class="theme-style-text">Pen</span></button>
+                           <button id="brush-style-indicator-btn" title="Brush Style"><i class="fa-solid fa-brush"></i><span class="theme-style-text">Brush</span></button>
+                        </div>
+                        <div class="connect-language-controls-inline">
+                            <button id="lang-en-btn" title="Switch to English">English</button>
+                            <button id="lang-ko-btn" title="한국어로 변경">한국어</button>
+                        </div>
+                    </div>
+                    <div class="postcard-flipper" id="postcard-flipper">
+                        <!-- Postcard Front (Initially Hidden by rotation) -->
+                        <div class="postcard-face postcard-front">
+                             <div class="postcard-image-container">
+                                <img src="img/western/ezgif-frame-001.jpg" alt="Western Postcard Theme" class="postcard-cover-img" id="postcard-front-img">
+                            </div>
+                        </div>
+                        <!-- Postcard Back (Initially Visible) -->
+                        <div class="postcard-face postcard-back">
+                            <div class="form-container">
+                                <h3 class="western-text" data-lang-en="Inquiries" data-lang-ko="문의사항">Inquiries</h3>
+                                <form id="inquiry-form" novalidate>
+                                    <div class="form-group"><label for="name" class="western-text" data-lang-en="Name:" data-lang-ko="이름:">Name:</label><input type="text" id="name" name="name" required class="western-text"><span class="error-message"></span></div>
+                                    <div class="form-group"><label for="email" class="western-text" data-lang-en="Email:" data-lang-ko="이메일:">Email:</label><input type="email" id="email" name="email" required class="western-text"><span class="error-message"></span></div>
+                                    <div class="form-group"><label for="message" class="western-text" data-lang-en="Message:" data-lang-ko="메시지:">Message:</label><textarea id="message" name="message" rows="4" required class="western-text"></textarea><span class="error-message"></span></div>
+                                    <button type="submit" class="send-button western-text" data-lang-en="Send" data-lang-ko="보내기">Send</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="scroll-up-arrow hub-arrow-up" data-scroll-target="#ai-assistant-section">
-        <img src="img/arrow_down.svg" alt="Scroll Up" class="custom-scroll-arrow-up">
-    </div>
-</section>
+            <div class="scroll-up-arrow hub-arrow-up" data-scroll-target="#ai-assistant-section">
+                <img src="img/arrow_down.svg" alt="Scroll Up" class="custom-scroll-arrow-up">
+            </div>
+        </section>
     </main>
 
  <div id="ai-assistant-FAB" aria-label="Open AI Assistant" role="button" tabindex="0">

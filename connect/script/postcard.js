@@ -1,50 +1,38 @@
-// postcard.js
 document.addEventListener('DOMContentLoaded', () => {
     // --- 1. ELEMENT SELECTORS ---
-    const westernThemeBtn = document.getElementById('pen-theme-btn');
-    const easternThemeBtn = document.getElementById('brush-theme-btn');
+    const postcardContainer = document.getElementById('postcard-container');
     const penStyleBtn = document.getElementById('pen-style-indicator-btn');
     const brushStyleBtn = document.getElementById('brush-style-indicator-btn');
     const langEnBtn = document.getElementById('lang-en-btn');
     const langKoBtn = document.getElementById('lang-ko-btn');
-    const fontSizeSmallBtn = document.getElementById('font-size-small');
-    const fontSizeMediumBtn = document.getElementById('font-size-medium');
-    const fontSizeLargeBtn = document.getElementById('font-size-large');
-    const postcardFronts = document.querySelectorAll('.postcard-front');
-    const postcardBack = document.getElementById('main-postcard-back');
+    const postcardBack = document.querySelector('.postcard-back');
+    const frontImage = document.getElementById('postcard-front-img');
     const formInputs = postcardBack.querySelectorAll('input, textarea');
     const langDataElements = document.querySelectorAll('[data-lang-en], [data-lang-ko]');
-    const bodyElement = document.body;
     const inquiryForm = document.getElementById('inquiry-form');
-    const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
-    const messageTextarea = document.getElementById('message');
 
-    // --- 2. INITIALIZATION ---
-    if (!westernThemeBtn || !easternThemeBtn || !postcardBack) {
+    // --- 2. CONFIGURATION ---
+    const postcardImageSequence = [ // Assumed image sequence for animation
+        'img/western/ezgif-frame-001.jpg',
+        'img/western/ezgif-frame-002.jpg',
+        'img/western/ezgif-frame-003.jpg',
+        'img/western/ezgif-frame-004.jpg',
+        'img/western/ezgif-frame-005.jpg',
+    ];
+    let imageInterval; // To hold the interval timer
+
+    // --- 3. HELPER FUNCTIONS ---
+    if (!postcardContainer || !inquiryForm) {
         console.warn("Postcard section elements not found. Postcard logic not fully initialized.");
         return;
-    }
-
-    // --- 3. EVENT LISTENERS FOR FORM INPUTS ---
-    if (nameInput) nameInput.addEventListener('input', () => document.dispatchEvent(new CustomEvent('postcardInputChanged')));
-    if (emailInput) emailInput.addEventListener('input', () => document.dispatchEvent(new CustomEvent('postcardInputChanged')));
-    if (messageTextarea) messageTextarea.addEventListener('input', () => document.dispatchEvent(new CustomEvent('postcardInputChanged')));
-
-    // --- 4. THEME & STYLE HANDLERS ---
-    function applyFrontTheme(theme) {
-        postcardFronts.forEach(front => {
-            front.classList.toggle('hidden', !front.classList.contains(theme + '-theme'));
-        });
-        westernThemeBtn.classList.toggle('active', theme === 'western');
-        easternThemeBtn.classList.toggle('active', theme === 'eastern');
-        localStorage.setItem('oosuPortfolioFrontTheme', theme);
     }
 
     function applyCursorStyle(style) {
         formInputs.forEach(input => {
             input.classList.remove('pen-cursor', 'brush-cursor');
-            input.classList.add(`${style}-cursor`);
+            if (style === 'pen' || style === 'brush') {
+                 input.classList.add(`${style}-cursor`);
+            }
         });
         penStyleBtn.classList.toggle('active', style === 'pen');
         brushStyleBtn.classList.toggle('active', style === 'brush');
@@ -69,64 +57,74 @@ document.addEventListener('DOMContentLoaded', () => {
         document.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang: lang } }));
     }
 
-    function applyFontSize(size) {
-        bodyElement.classList.remove('font-size-small', 'font-size-medium', 'font-size-large');
-        bodyElement.classList.add(`font-size-${size}`);
-        fontSizeSmallBtn.classList.toggle('active', size === 'small');
-        fontSizeMediumBtn.classList.toggle('active', size === 'medium');
-        fontSizeLargeBtn.classList.toggle('active', size === 'large');
-        localStorage.setItem('oosuPortfolioFontSize', size);
+    function resetPostcardState() {
+        inquiryForm.reset();
+        inquiryForm.querySelectorAll('.error-message.visible').forEach(el => el.classList.remove('visible'));
+        inquiryForm.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+
+        postcardContainer.style.opacity = '1';
+        postcardContainer.classList.remove('is-flipped', 'is-flying');
+        frontImage.src = postcardImageSequence[0]; // Reset to first image
     }
 
-    // --- 5. FORM VALIDATION & SUBMISSION ---
-    if (inquiryForm) {
-        inquiryForm.querySelectorAll('[required]').forEach(field => {
-            if (typeof window.validateField === 'function') {
-                field.addEventListener('input', () => window.validateField(field));
-                field.addEventListener('blur', () => window.validateField(field));
-            } else {
-                console.warn("window.validateField is not defined. Form validation may not work.");
-            }
-        });
+    // --- 4. FORM VALIDATION & SUBMISSION ---
+    inquiryForm.querySelectorAll('[required]').forEach(field => {
+        if (typeof window.validateField === 'function') {
+            field.addEventListener('input', () => window.validateField(field));
+            field.addEventListener('blur', () => window.validateField(field));
+        } else {
+            console.warn("window.validateField is not defined. Form validation may not work.");
+        }
+    });
 
-        inquiryForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            let isFormValid = true;
-            if (typeof window.validateField === 'function') {
-                isFormValid = Array.from(inquiryForm.querySelectorAll('[required]')).every(field => window.validateField(field));
-            } else {
-                console.warn("Skipping form validation as window.validateField is not defined.");
-            }
-            if (!isFormValid) return;
-            const postcardClone = postcardBack.cloneNode(true);
-            const rect = postcardBack.getBoundingClientRect();
-            postcardClone.style.cssText = `position: fixed; left: ${rect.left}px; top: ${rect.top}px; width: ${rect.width}px; height: ${rect.height}px; margin: 0; z-index: 1001;`;
-            document.body.appendChild(postcardClone);
-            postcardBack.style.visibility = 'hidden';
-            postcardClone.classList.add('postcard-falling-3d');
-            postcardClone.addEventListener('animationend', () => {
-                postcardClone.remove();
-                postcardBack.style.visibility = 'visible';
-                inquiryForm.reset();
-                inquiryForm.querySelectorAll('.error-message.visible').forEach(el => el.classList.remove('visible'));
-            });
-        });
-    }
+    inquiryForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        let isFormValid = Array.from(inquiryForm.querySelectorAll('[required]')).every(field => window.validateField(field));
+        
+        if (!isFormValid) return;
 
-    // --- 6. EVENT LISTENERS ---
-    westernThemeBtn.addEventListener('click', () => applyFrontTheme('western'));
-    easternThemeBtn.addEventListener('click', () => applyFrontTheme('eastern'));
+        // 1. Flip the card
+        postcardContainer.classList.add('is-flipped');
+    });
+
+    // --- 5. ANIMATION SEQUENCE LISTENERS ---
+    
+    // Listen for the flip to finish
+    postcardContainer.querySelector('.postcard-flipper').addEventListener('transitionend', () => {
+        // Check if the card is flipped (and not in the middle of flipping back)
+        if (postcardContainer.classList.contains('is-flipped')) {
+            // 2. Start cycling through front images
+            let imageIndex = 0;
+            imageInterval = setInterval(() => {
+                imageIndex = (imageIndex + 1) % postcardImageSequence.length;
+                frontImage.src = postcardImageSequence[imageIndex];
+            }, 400); // Change image every 400ms
+
+            // 3. Wait a bit, then start the fly-away animation
+            setTimeout(() => {
+                clearInterval(imageInterval); // Stop image cycling
+                postcardContainer.classList.add('is-flying');
+            }, 2500); // Fly away after 2.5 seconds of image cycling
+        }
+    });
+
+    // Listen for the flying animation to finish
+    postcardContainer.addEventListener('animationend', (e) => {
+        // Make sure it's the 'fly-to-footer' animation
+        if (e.animationName === 'fly-to-footer') {
+            // 4. Hide the card and reset its state for next time
+            postcardContainer.style.opacity = '0'; // Hide it
+            setTimeout(resetPostcardState, 500); // Reset after a short delay
+        }
+    });
+
+    // --- 6. UI CONTROL EVENT LISTENERS ---
     penStyleBtn.addEventListener('click', () => applyCursorStyle('pen'));
     brushStyleBtn.addEventListener('click', () => applyCursorStyle('brush'));
     langEnBtn.addEventListener('click', () => applyLanguage('en'));
     langKoBtn.addEventListener('click', () => applyLanguage('ko'));
-    fontSizeSmallBtn.addEventListener('click', () => applyFontSize('small'));
-    fontSizeMediumBtn.addEventListener('click', () => applyFontSize('medium'));
-    fontSizeLargeBtn.addEventListener('click', () => applyFontSize('large'));
 
     // --- 7. INITIALIZATION ---
-    applyFrontTheme(localStorage.getItem('oosuPortfolioFrontTheme') || 'western');
     applyCursorStyle(localStorage.getItem('oosuPortfolioCursorStyle') || 'pen');
     applyLanguage(localStorage.getItem('oosuPortfolioLang') || 'en');
-    applyFontSize(localStorage.getItem('oosuPortfolioFontSize') || 'medium');
 });

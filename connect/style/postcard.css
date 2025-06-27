@@ -2,8 +2,6 @@
    1. THEME COLOR VARIABLES (LIGHT & DARK) - POSTCARD SPECIFIC
    ========================================================================== */
 
-/* Theme variables are now integrated into connect.css */
-
 :root {
     --western-font: 'Caveat', cursive;
     --eastern-font: 'Nanum Myeongjo', serif;
@@ -21,13 +19,13 @@
     color: var(--text-color);
     transition: background-color var(--transition-duration), color var(--transition-duration);
     display: flex;
-    flex-direction: column; /* Default for smaller screens */
+    flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     min-height: 100vh;
     box-sizing: border-box;
     overflow-x: hidden;
-    padding: 60px 20px; /* Match ai-assistant.css mobile padding */
+    padding: 60px 20px;
 }
 
 body[data-theme="light"] #postcard-section {
@@ -38,60 +36,107 @@ body[data-theme="light"] #postcard-section {
 /* Content wrapper */
 .connect-postcard-content {
     width: 100%;
-    max-width: 1200px; /* Match ai-assistant max-width */
+    max-width: 450px;
     box-sizing: border-box;
     display: flex;
-    flex-direction: row; /* Default for postcards side by side */
-    flex-wrap: wrap; /* Allow wrapping if needed */
-    align-items: flex-start;
-    gap: 30px; /* Match ai-assistant gap */
+    justify-content: center;
+    align-items: center;
+    position: relative; /* Context for the floating menu */
 }
 
 /* ==========================================================================
-   3. POSTCARD HEADER & CONTENT STYLES
+   3. POSTCARD FLIP & ANIMATION STYLES
+   ========================================================================== */
+.postcard-container {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    height: 650px;
+    perspective: 1500px;
+    background-color: transparent;
+    transition: transform 1.5s ease-in-out, opacity 1s ease-in-out;
+}
+
+.postcard-flipper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    transform-style: preserve-3d;
+}
+
+.postcard-container.is-flipped .postcard-flipper {
+    transform: rotateY(180deg);
+}
+
+.postcard-face {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 10px;
+    box-shadow: 0 8px 32px var(--glass-shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--primary-bg-opacity);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+}
+
+.postcard-front {
+    transform: rotateY(180deg);
+}
+
+.postcard-back {
+    transform: rotateY(0deg);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+@keyframes fly-to-footer {
+    0% {
+        transform: translate(0, 0) scale(1) rotateY(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(calc(50vw - 100%), calc(100vh - 50%), 500px) scale(0.1) rotateY(720deg);
+        opacity: 0;
+    }
+}
+
+.postcard-container.is-flying {
+    animation: fly-to-footer 2s ease-in-out forwards;
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   4. POSTCARD HEADER & CONTENT STYLES
    ========================================================================== */
 
-/* Header styling to match ai-assistant */
 .section-header {
     width: 100%;
     text-align: center;
     word-break: break-word;
-    margin-bottom: 30px; /* Match ai-assistant section-header */
-}
-
-.postcard-greeting-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 0 0.5em; /* Match ai-assistant greeting-wrapper */
+    margin-bottom: 30px;
 }
 
 #postcard-greeting {
-    font-size: 2.2em; /* Match ai-assistant-greeting */
-    color: var(--text-color);
-    font-weight: 700;
-    margin: 10px 0 0 0;
-    padding: 0;
+    font-size: 2.2em;
 }
 
 #postcard-sub-greeting {
-    font-size: 1.1em; /* Match ai-assistant-sub-greeting */
-    color: var(--subheading-color);
-    margin-top: 15px; /* Match ai-assistant-sub-greeting */
-    line-height: 1.7;
+    font-size: 1.1em;
 }
 
-.section-header strong {
-    color: var(--text-color);
-    font-weight: 700;
-}
-
-/* Floating menus */
-.connect-floating-menu1,
-.connect-floating-menu2 {
+.connect-floating-menu {
     position: absolute;
-    top: -40px; /* Position above postcard elements */
+    top: -20px;
+    right: -20px;
+    z-index: 10;
     background-color: var(--primary-bg-opacity);
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
@@ -99,27 +144,20 @@ body[data-theme="light"] #postcard-section {
     border-radius: 20px;
     box-shadow: 0 8px 32px var(--glass-shadow);
     border: 1px solid var(--glass-border);
-    z-index: 100;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    transition: all var(--transition-duration);
+}
+
+.connect-writing-style-controls,
+.connect-language-controls-inline {
     display: flex;
     gap: 8px;
     align-items: center;
-    transition: background-color var(--transition-duration), border-color var(--transition-duration), box-shadow var(--transition-duration);
 }
 
-.connect-floating-menu1 {
-    left: 0; /* Align with postcard-front */
-}
-
-.connect-floating-menu2 {
-    right: 0; /* Align with postcard-back */
-    flex-wrap: wrap;
-    justify-content: flex-end;
-}
-
-.connect-floating-menu1 button,
-.connect-floating-menu2 > button,
-.connect-language-controls-inline button,
-.connect-font-size-options-inline button {
+.connect-floating-menu button {
     padding: 6px 10px;
     border: 1px solid var(--glass-border);
     border-radius: 15px;
@@ -132,71 +170,17 @@ body[data-theme="light"] #postcard-section {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    box-shadow: 0 2px 8px var(--glass-shadow);
 }
 
-.connect-floating-menu1 button:hover,
-.connect-floating-menu2 > button:hover,
-.connect-language-controls-inline button:hover,
-.connect-font-size-options-inline button:hover {
+.connect-floating-menu button:hover {
     border-color: var(--primary-accent);
-    box-shadow: 0 4px 12px var(--glass-shadow);
-    transform: translateY(-2px);
 }
 
-.connect-floating-menu1 button.active,
-.connect-floating-menu2 > button.active,
-.connect-language-controls-inline button.active,
-.connect-font-size-options-inline button.active {
+.connect-floating-menu button.active {
     background: var(--point-gradient);
     color: #FFF !important;
     border-color: transparent;
     font-weight: bold;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    transform: translateY(-1px);
-}
-
-.connect-floating-menu1 button.active i,
-.connect-floating-menu1 button.active .theme-style-text,
-.connect-floating-menu2 > button.active i,
-.connect-floating-menu2 > button.active .theme-style-text {
-    color: #FFF !important;
-}
-
-.connect-language-controls-inline,
-.connect-font-size-options-inline {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-/* Postcard wrappers */
-.postcard-front-wrapper,
-.postcard-back-wrapper {
-    position: relative; /* For positioning floating menus */
-    flex: 1;
-    width: 100%; /* Fill available width */
-    min-width: 0;
-}
-
-/* Postcard front and back */
-.postcard-front,
-.postcard-back {
-    width: 100%; /* Fill container width */
-    min-height: 550px;
-    height: 650px;
-    border-radius: 10px;
-    box-shadow: 0 8px 32px var(--glass-shadow);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.5s ease-out, opacity 0.5s ease-out, background-color var(--transition-duration), border-color var(--transition-duration);
-    background-color: var(--primary-bg-opacity);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
 }
 
 .postcard-image-container {
@@ -211,70 +195,10 @@ body[data-theme="light"] #postcard-section {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-bottom: 1px solid var(--glass-border);
-}
-
-.postcard-info {
-    padding: 15px;
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.6);
-    border-top: 1px solid var(--glass-border);
-    color: var(--text-color);
-}
-
-.qr-code {
-    width: 70px;
-    height: 70px;
-    margin: 0 auto 10px;
-    display: block;
-    border-radius: 4px;
-    background-color: #FFF;
-    padding: 4px;
-}
-
-.info-text {
-    font-size: 0.9em;
-    color: #fff;
 }
 
 .western-text {
     font-family: var(--western-font), sans-serif;
-}
-
-.eastern-text {
-    font-family: var(--eastern-font), serif;
-}
-
-.postcard-back {
-    padding: 20px;
-    box-sizing: border-box;
-    background: var(--primary-bg-opacity);
-}
-
-.stamp-area {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-}
-
-.stamp {
-    width: 80px;
-    height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    font-weight: bold;
-    font-size: 0.9em;
-    line-height: 1.2;
-    padding: 5px;
-    box-sizing: border-box;
-    word-wrap: break-word;
-    overflow: hidden;
-    color: var(--subheading-color);
-    border: 2px dashed var(--subheading-color);
-    background: none;
-    transition: color var(--transition-duration), border-color var(--transition-duration);
 }
 
 .pen-cursor {
@@ -285,14 +209,9 @@ body[data-theme="light"] #postcard-section {
     cursor: url('../img/brush.png') 0 32, auto;
 }
 
-.western-stamp,
-.eastern-stamp {
-    font-family: 'Times New Roman', Times, serif;
-}
-
 .form-container {
-    margin-top: 30px;
-    height: calc(100% - 30px);
+    padding-top: 20px;
+    height: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -311,7 +230,6 @@ body[data-theme="light"] #postcard-section {
 .form-group label {
     display: block;
     margin-bottom: 6px;
-    font-weight: normal;
     color: var(--subheading-color);
     font-size: 0.95em;
 }
@@ -327,16 +245,16 @@ body[data-theme="light"] #postcard-section {
     box-sizing: border-box;
     background-color: transparent;
     color: var(--text-color);
-    font-size: 1em;
     transition: border-bottom-color var(--transition-duration) ease;
+    font-family: var(--western-font);
+    font-size: 1.3em;
+    line-height: 1.6;
 }
 
 .form-container input:focus,
 .form-container textarea:focus {
     outline: none;
     border-bottom-color: var(--primary-accent);
-    background-color: var(--input-focus-bg);
-    box-shadow: 0 0 0 3px var(--input-focus-shadow);
 }
 
 .form-container input.invalid,
@@ -351,33 +269,15 @@ body[data-theme="light"] #postcard-section {
     font-size: 0.85em;
     padding-top: 5px;
     font-family: 'Poppins', sans-serif;
-    font-weight: 500;
 }
 
 .error-message.visible {
     display: block;
-    animation: fadeIn 0.3s ease-in;
-}
-
-.western-theme .form-container input[type="text"],
-.western-theme .form-container input[type="email"],
-.western-theme .form-container textarea {
-    font-family: var(--western-font);
-    font-size: 1.3em;
-    line-height: 1.6;
-}
-
-.eastern-theme .form-container input[type="text"],
-.eastern-theme .form-container input[type="email"],
-.eastern-theme .form-container textarea {
-    font-family: var(--eastern-font);
-    font-size: 1.15em;
-    line-height: 1.7;
 }
 
 .form-container textarea {
     resize: none;
-    min-height: 100px;
+    flex-grow: 1;
 }
 
 .send-button {
@@ -391,45 +291,35 @@ body[data-theme="light"] #postcard-section {
     cursor: pointer;
     font-size: 1.1em;
     font-weight: bold;
-    transition: background-color var(--transition-duration) ease, transform 0.2s ease, color var(--transition-duration) ease;
+    transition: all 0.2s ease;
     margin-top: auto;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .send-button:hover {
     filter: brightness(1.15);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-}
-
-body[data-theme="dark"] .send-button {
-    color: #FFF;
 }
 
 .hidden {
     display: none !important;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
 }
 
 /* ==========================================================================
-   4. RESPONSIVE MEDIA QUERIES
+   5. RESPONSIVE MEDIA QUERIES
    ========================================================================== */
 
-/* Large screens (1100px and above): section-header on left, postcards on right */
 @media (min-width: 1100px) {
     #postcard-section {
-        padding: 60px; /* Match ai-assistant.css */
-        flex-direction: row; /* Header and content side by side */
+        flex-direction: row;
         align-items: flex-start;
-        gap: 50px; /* Match ai-assistant gap */
+        justify-content: center;
+        gap: 50px;
     }
 
     .section-header {
-        text-align: left;
         flex: 1;
-        max-width: 350px; /* Match ai-assistant-column-left */
+        max-width: 350px;
+        text-align: left;
         margin-bottom: 0;
     }
 
@@ -438,158 +328,27 @@ body[data-theme="dark"] .send-button {
     }
 
     .connect-postcard-content {
-        flex: 2; /* Take remaining space */
-        max-width: 800px; /* Match ai-assistant-column-right */
-        flex-direction: row; /* Postcards side by side */
-        align-items: flex-start;
-        gap: 20px;
-    }
-
-    .postcard-front-wrapper,
-    .postcard-back-wrapper {
-        flex: 1; /* Share space equally */
-        max-width: none;
-    }
-
-    .postcard-front,
-    .postcard-back {
-        width: 100%; /* Fill wrapper width */
-        max-width: none;
+        flex: 2;
+        max-width: 500px;
+        justify-content: flex-start;
     }
 }
 
-/* Medium screens (481px to 1099px): postcards side by side under header */
-@media (min-width: 481px) and (max-width: 1099px) {
-    #postcard-section {
-        padding: 40px 20px; /* Match ai-assistant tablet padding */
-        flex-direction: column;
-    }
-
-    .connect-postcard-content {
-        flex-direction: row; /* Postcards side by side */
-        align-items: flex-start;
-        gap: 25px; /* Match ai-assistant mobile gap */
-    }
-
-    .section-header {
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
-    .postcard-front-wrapper,
-    .postcard-back-wrapper {
-        flex: 1;
-        width: 100%;
-    }
-
-    .postcard-front,
-    .postcard-back {
-        width: 100%;
-        max-width: none;
-    }
-}
-
-/* Very small screens (480px and below): stack everything vertically */
 @media (max-width: 480px) {
     #postcard-section {
-        padding: 20px 10px; /* Match ai-assistant mobile padding */
-        flex-direction: column;
+        padding: 20px 10px;
     }
-
-    .connect-postcard-content {
-        flex-direction: column;
-        align-items: center;
-        padding: 10px;
-        gap: 20px;
+    
+    .postcard-container {
+        height: 600px;
     }
-
-    .section-header {
-        margin-bottom: 20px;
+    
+    .connect-floating-menu {
+        top: 10px;
+        right: 10px;
     }
 
     #postcard-greeting {
-        font-size: 1.8em; /* Match ai-assistant */
-    }
-
-    .postcard-front-wrapper,
-    .postcard-back-wrapper {
-        width: 100%;
-        max-width: 400px; /* Limit max width for readability */
-    }
-
-    .postcard-front,
-    .postcard-back {
-        width: 100%;
-        max-width: none;
-        height: auto;
-        min-height: 500px;
-    }
-
-    .connect-floating-menu1,
-    .connect-floating-menu2 {
-        width: calc(100% - 20px); /* Adjust for padding */
-        left: 10px;
-        right: 10px;
-        top: -40px;
-        justify-content: center;
-    }
-
-    .connect-floating-menu2 {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .connect-floating-menu1 button,
-    .connect-floating-menu2 > button,
-    .connect-language-controls-inline button,
-    .connect-font-size-options-inline button {
-        font-size: 0.75em;
-        padding: 5px 8px;
-    }
-
-    .postcard-info {
-        padding: 10px;
-    }
-
-    .qr-code {
-        width: 60px;
-        height: 60px;
-    }
-
-    .info-text {
-        font-size: 0.8em;
-    }
-
-    .form-container h3 {
-        font-size: 1.1em;
-        margin-bottom: 15px;
-    }
-
-    .form-group label {
-        font-size: 0.9em;
-    }
-
-    .form-container input[type="text"],
-    .form-container input[type="email"],
-    .form-container textarea {
-        font-size: 0.95em;
-        padding: 8px 10px;
-    }
-
-    .western-theme .form-container input[type="text"],
-    .western-theme .form-container input[type="email"],
-    .western-theme .form-container textarea {
-        font-size: 1.1em;
-    }
-
-    .eastern-theme .form-container input[type="text"],
-    .eastern-theme .form-container input[type="email"],
-    .eastern-theme .form-container textarea {
-        font-size: 1em;
-    }
-
-    .send-button {
-        font-size: 1em;
-        padding: 10px 12px;
+        font-size: 1.8em;
     }
 }
