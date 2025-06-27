@@ -12,17 +12,13 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             const observerCallback = (entries) => {
                 entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        pageHeader.classList.add('hidden');
-                    } else {
-                        pageHeader.classList.remove('hidden');
-                    }
+                    pageHeader.classList.toggle('hidden', entry.isIntersecting);
                 });
             };
             const heroObserver = new IntersectionObserver(observerCallback, observerOptions);
             heroObserver.observe(heroSection);
         } else {
-            console.warn("Header or Hero section not found for observer initialization. Header visibility observer not initialized.");
+            console.warn("Header or Hero section not found for observer initialization.");
         }
     }
 
@@ -33,7 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
-        document.querySelectorAll('.scroll-down-arrow').forEach(arrow => {
+
+        document.querySelectorAll('.scroll-down-arrow, .scroll-up-arrow').forEach(arrow => {
             arrow.addEventListener('click', () => {
                 const targetSelector = arrow.dataset.scrollTarget;
                 if (targetSelector) {
@@ -45,57 +42,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         });
-        
-        document.querySelectorAll('.scroll-up-arrow').forEach(arrow => {
-            arrow.addEventListener('click', () => {
-                const targetSelector = arrow.dataset.scrollTarget;
-                if (targetSelector) {
-                    gsap.to(window, {
-                        duration: 1.5,
-                        scrollTo: { y: targetSelector, offsetY: 70 },
-                        ease: 'power3.inOut'
-                    });
-                }
+
+        ['highlight-hub-section', 'ai-assistant-section', 'postcard-section'].forEach(sectionId => {
+            gsap.to(`#${sectionId}`, {
+                scrollTrigger: {
+                    trigger: `#${sectionId}`,
+                    start: 'top 85%',
+                    toggleActions: 'play none none none',
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1.2,
+                ease: 'power3.out'
             });
         });
-        gsap.to('#highlight-hub-section', {
-            scrollTrigger: {
-                trigger: '#highlight-hub-section',
-                start: 'top 85%', 
-                toggleActions: 'play none none none',
-            },
-            opacity: 1,
-            y: 0,
-            duration: 1.2,
-            ease: 'power3.out'
-        });
-        gsap.to('#ai-assistant-section', {
-            scrollTrigger: {
-                trigger: '#ai-assistant-section',
-                start: 'top 85%',
-                toggleActions: 'play none none none',
-            },
-            opacity: 1,
-            y: 0,
-            duration: 1.2,
-            ease: 'power3.out'
-        });
-        gsap.to('#postcard-section', {
-            scrollTrigger: {
-                trigger: '#postcard-section',
-                start: 'top 85%',
-                toggleActions: 'play none none none',
-            },
-            opacity: 1,
-            y: 0,
-            duration: 1.2,
-            ease: 'power3.out'
-        });
+
         document.body.addEventListener('mouseenter', (e) => {
             if (e.target.matches('.highlight-card')) {
                 gsap.to(e.target, { y: -5, boxShadow: '0 8px 16px rgba(0,0,0,0.1)', duration: 0.3, ease: 'power2.out' });
             }
         }, true);
+
         document.body.addEventListener('mouseleave', (e) => {
             if (e.target.matches('.highlight-card')) {
                 gsap.to(e.target, { y: 0, boxShadow: '0 1px 3px rgba(0,0,0,0.1)', duration: 0.3, ease: 'power2.out' });
@@ -103,133 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, true);
     }
 
-    // --- 3. POSTCARD SECTION LOGIC ---
-    function initPostcardSection() {
-        const westernThemeBtn = document.getElementById('pen-theme-btn');
-        const easternThemeBtn = document.getElementById('brush-theme-btn');
-        const penStyleBtn = document.getElementById('pen-style-indicator-btn');
-        const brushStyleBtn = document.getElementById('brush-style-indicator-btn');
-        const langEnBtn = document.getElementById('lang-en-btn');
-        const langKoBtn = document.getElementById('lang-ko-btn');
-        const fontSizeSmallBtn = document.getElementById('font-size-small');
-        const fontSizeMediumBtn = document.getElementById('font-size-medium');
-        const fontSizeLargeBtn = document.getElementById('font-size-large');
-        const postcardFronts = document.querySelectorAll('.postcard-front');
-        const postcardBack = document.getElementById('main-postcard-back');
-        const formInputs = postcardBack.querySelectorAll('input, textarea');
-        const langDataElements = document.querySelectorAll('[data-lang-en], [data-lang-ko]');
-        const bodyElement = document.body;
-        const inquiryForm = document.getElementById('inquiry-form');
-        const nameInput = document.getElementById('name');
-        const emailInput = document.getElementById('email');
-        const messageTextarea = document.getElementById('message');
-
-        if (!westernThemeBtn || !easternThemeBtn || !postcardBack) {
-            console.warn("Postcard section elements not found. Postcard logic not fully initialized.");
-            return;
-        }
-
-        if(nameInput) nameInput.addEventListener('input', () => document.dispatchEvent(new CustomEvent('postcardInputChanged')));
-        if(emailInput) emailInput.addEventListener('input', () => document.dispatchEvent(new CustomEvent('postcardInputChanged')));
-        if(messageTextarea) messageTextarea.addEventListener('input', () => document.dispatchEvent(new CustomEvent('postcardInputChanged')));
-
-        function applyFrontTheme(theme) {
-            postcardFronts.forEach(front => {
-                front.classList.toggle('hidden', !front.classList.contains(theme + '-theme'));
-            });
-            westernThemeBtn.classList.toggle('active', theme === 'western');
-            easternThemeBtn.classList.toggle('active', theme === 'eastern');
-            localStorage.setItem('oosuPortfolioFrontTheme', theme);
-        }
-        function applyCursorStyle(style) {
-            formInputs.forEach(input => {
-                input.classList.remove('pen-cursor', 'brush-cursor');
-                input.classList.add(`${style}-cursor`);
-            });
-            penStyleBtn.classList.toggle('active', style === 'pen');
-            brushStyleBtn.classList.toggle('active', style === 'brush');
-            localStorage.setItem('oosuPortfolioCursorStyle', style);
-        }
-        function applyLanguage(lang) {
-            langDataElements.forEach(el => {
-                const textKey = `lang${lang.charAt(0).toUpperCase() + lang.slice(1)}`;
-                const text = el.dataset[textKey];
-                if (text) {
-                     if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                        el.placeholder = text;
-                    } else {
-                        el.innerHTML = text;
-                    }
-                }
-            });
-            langEnBtn.classList.toggle('active', lang === 'en');
-            langKoBtn.classList.toggle('active', lang === 'ko');
-            localStorage.setItem('oosuPortfolioLang', lang);
-            document.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang: lang } }));
-        }
-        function applyFontSize(size) {
-            bodyElement.classList.remove('font-size-small', 'font-size-medium', 'font-size-large');
-            bodyElement.classList.add(`font-size-${size}`);
-            fontSizeSmallBtn.classList.toggle('active', size === 'small');
-            fontSizeMediumBtn.classList.toggle('active', size === 'medium');
-            fontSizeLargeBtn.classList.toggle('active', size === 'large');
-            localStorage.setItem('oosuPortfolioFontSize', size);
-        }
-
-        westernThemeBtn.addEventListener('click', () => applyFrontTheme('western'));
-        easternThemeBtn.addEventListener('click', () => applyFrontTheme('eastern'));
-        penStyleBtn.addEventListener('click', () => applyCursorStyle('pen'));
-        brushStyleBtn.addEventListener('click', () => applyCursorStyle('brush'));
-        langEnBtn.addEventListener('click', () => applyLanguage('en'));
-        langKoBtn.addEventListener('click', () => applyLanguage('ko'));
-        fontSizeSmallBtn.addEventListener('click', () => applyFontSize('small'));
-        fontSizeMediumBtn.addEventListener('click', () => applyFontSize('medium'));
-        fontSizeLargeBtn.addEventListener('click', () => applyFontSize('large'));
-
-        if (inquiryForm) {
-            inquiryForm.querySelectorAll('[required]').forEach(field => {
-                if (typeof window.validateField === 'function') { 
-                    field.addEventListener('input', () => window.validateField(field));
-                    field.addEventListener('blur', () => window.validateField(field));
-                } else {
-                    console.warn("window.validateField is not defined. Form validation may not work.");
-                }
-            });
-            inquiryForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                let isFormValid = true;
-                if (typeof window.validateField === 'function') {
-                    isFormValid = Array.from(inquiryForm.querySelectorAll('[required]')).every(field => window.validateField(field));
-                } else {
-                    console.warn("Skipping form validation as window.validateField is not defined.");
-                }
-                if (!isFormValid) return;
-                const postcardClone = postcardBack.cloneNode(true);
-                const rect = postcardBack.getBoundingClientRect();
-                postcardClone.style.cssText = `position: fixed; left: ${rect.left}px; top: ${rect.top}px; width: ${rect.width}px; height: ${rect.height}px; margin: 0; z-index: 1001;`;
-                document.body.appendChild(postcardClone);
-                postcardBack.style.visibility = 'hidden';
-                postcardClone.classList.add('postcard-falling-3d');
-                postcardClone.addEventListener('animationend', () => {
-                    postcardClone.remove();
-                    postcardBack.style.visibility = 'visible';
-                    inquiryForm.reset();
-                    inquiryForm.querySelectorAll('.error-message.visible').forEach(el => el.classList.remove('visible'));
-                });
-            });
-        }
-        
-        applyFrontTheme(localStorage.getItem('oosuPortfolioFrontTheme') || 'western');
-        applyCursorStyle(localStorage.getItem('oosuPortfolioCursorStyle') || 'pen');
-        applyLanguage(localStorage.getItem('oosuPortfolioLang') || 'en');
-        applyFontSize(localStorage.getItem('oosuPortfolioFontSize') || 'medium');
-    }
-
-    // ===================================================
-    // --- 4. DYNAMIC SECTION HEADER LOGIC ---
-    // ===================================================
-
-    // --- Helper Functions ---
+    // --- 3. SHARED UTILITIES ---
     function getUserName() {
         return localStorage.getItem('currentUser') || 'Visitor';
     }
@@ -258,8 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }, {});
         return Object.keys(frequency).sort((a, b) => frequency[b] - frequency[a]).slice(0, 3);
     }
-    
-    // --- State Determination Functions ---
+
+    // --- 4. DYNAMIC SECTION HEADER LOGIC ---
     function determineAIAssistantState(highlights) {
         const highlightCount = highlights.length;
         const hasSelectedTemplate = document.querySelector('.connect-ai-template-btn.active');
@@ -286,7 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'initial';
     }
 
-    // --- Header Content Generators ---
     function getAIAssistantHeaderText(userName, highlights) {
         const state = determineAIAssistantState(highlights);
         const topKeywords = extractTopKeywords(highlights).map(k => `<strong>${k}</strong>`);
@@ -330,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             highlightsOnly: {
                 title: `${userName}, ready to put pen to paper?`,
-                subtitle: `Your focus on ${topKeywords.join(' and ')} is clear. Draft a message below or use the AI to help.`
+                subtitle: `Your focus on ${topKeywords.join(' and ')} is clear. Draft a message or use the AI to help.`
             },
             aiMessageReady: {
                 title: `Your message is here, ${userName}`,
@@ -348,10 +188,24 @@ document.addEventListener('DOMContentLoaded', () => {
         return headers[state];
     }
 
-    // --- Main Update Function ---
     function updateAllSectionHeaders() {
         const userName = getUserName();
         const highlights = getStoredHighlights();
+
+        // Update Highlight Hub Section Header
+        const hubGreeting = document.getElementById('hub-greeting');
+        const hubSubGreeting = document.getElementById('hub-sub-greeting');
+        const analysis = extractTopKeywords(highlights);
+        if (hubGreeting) {
+            hubGreeting.textContent = `Welcome, ${userName}! Here is your journey.`;
+        }
+        if (hubSubGreeting) {
+            if (analysis.length > 0) {
+                hubSubGreeting.innerHTML = `It seems you were particularly interested in <strong>${analysis.join(', ')}</strong>. Let's craft a message together.`;
+            } else {
+                hubSubGreeting.textContent = 'As you explore and highlight your interests, your analysis will be displayed here.';
+            }
+        }
 
         // Update AI Assistant Section Header
         const aiHeaderData = getAIAssistantHeaderText(userName, highlights);
@@ -375,14 +229,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('templateSelected', updateAllSectionHeaders);
         document.addEventListener('postcardInputChanged', updateAllSectionHeaders);
         document.addEventListener('userLoggedIn', updateAllSectionHeaders);
-        // Initial call to set headers on page load
         updateAllSectionHeaders();
     }
 
-
-    // --- 6. MAIN INITIALIZATION CALL ---
+    // --- 6. MAIN INITIALIZATION ---
     initHeaderObserver();
     initAnimations();
-    initPostcardSection();
     initHeaderUpdaters();
 });
