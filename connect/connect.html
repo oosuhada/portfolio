@@ -1,3 +1,4 @@
+<!-- connect.html -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,14 +9,16 @@
 
     <link rel="icon" type="image/png" href="../apple-touch-icon.png">
     <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-    <link rel="stylesheet" href="style/connect.css">
-    <link rel="stylesheet" href="style/hero.css">
-    <link rel="stylesheet" href="style/highlight-hub.css">
+
     <link rel="stylesheet" href="../common/common.css">
     <link rel="stylesheet" href="../common/fixed_icons.css" />
     <link rel="stylesheet" href="../common/ai_chat.css" />
     
-    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/hero.css">
+    <link rel="stylesheet" href="style/highlight-hub.css">
+    <link rel="stylesheet" href="style/ai-assistant.css">
+    <link rel="stylesheet" href="style/postcard.css">
+    <link rel="stylesheet" href="style/connect.css"> <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Caveat&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css">
@@ -82,8 +85,21 @@
             </div>
         </div>
     </header>
+<svg id="svg-filters" style="display: none;">
+    <filter id="grainy">
+        <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+        <feColorMatrix type="saturate" values="0" />
+        <feComponentTransfer>
+            <feFuncA type="linear" slope="0.5" />
+        </feComponentTransfer>
+        <feMerge>
+            <feMergeNode/>
+            <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+    </filter>
+</svg>
     <main class="main">
-        <section class="intro-section" id="hero-section">
+        <section class="hero-section" id="hero-section">
             <div class="weather-section js-weather-section hidden">
                 <div class="weather js-weather">
                     <div class="txt-wrap">
@@ -121,90 +137,67 @@
                 </div>
             </div>
 
-            <div class="scroll-down-arrow hidden" data-scroll-target="#highlight-hub-section">
+            <div class="scroll-down-arrow hidden" id="hero-scroll-arrow" data-scroll-target="#highlight-hub-section">
                 <img src="img/arrow_down.svg" alt="Scroll Down" class="custom-scroll-arrow">
             </div>
         </section>
 
         <div id="top-sentinel"></div>
-        
-        <div class="connect-main">
-            <section id="highlight-hub-section">
-                <header class="hub-header">
-                    <h1 id="hub-greeting">Your Journey with Oosu's Portfolio</h1>
+
+        <section id="highlight-hub-section" class="connect-section highlight-hub-section">
+            <div class="connect-highlight-hub-content">
+                <header class="hub-header"> <h1 id="hub-greeting">Your Journey with Oosu's Portfolio</h1> 
                     <p id="hub-sub-greeting">It seems you were particularly interested in <strong id="top-interest-placeholder">various topics</strong>. Let's craft a message together.</p>
                 </header>
 
-                <main class="hub-container">
-                    <div class="highlights-panel">
-                        <div class="panel-header">
+                <main class="hub-container"> 
+                    <div class="highlights-panel"> 
+                        <div class="panel-header"> 
                             <h2><i class="fas fa-highlighter"></i> Your Highlight Collection</h2>
-                            <div class="hub-tabs">
-                                <button class="hub-tab-btn active" data-view="timeline">Journey</button>
-                                <button class="hub-tab-btn" data-view="active">Active</button>
-                                <button class="hub-tab-btn" data-view="archived">Archived</button>
+                            <div class="hub-tabs"> 
+                                <button class="hub-tab-btn active" data-view="timeline">Journey</button> 
+                                <button class="hub-tab-btn" data-view="active">Active</button> 
+                                <button class="hub-tab-btn" data-view="archived">Archived</button> 
                             </div>
                         </div>
-                        <div id="highlight-cards-container" class="cards-container"></div>
-                        <div id="timeline-container" class="timeline-container hidden"></div>
-                    </div>
-
-                    <div class="actions-panel">
-                        <div class="ai-assistant-section">
-                            <h2><i class="fas fa-robot"></i> Smart Assistant</h2>
-                            <div id="ai-insights-section" class="ai-module">
-                                <h3><i class="fas fa-chart-pie"></i> Your Interest Insights</h3>
-                                <div id="ai-insights-output" class="ai-output-box">Your key interests will appear here.</div>
-                            </div>
-                            <div id="ai-template-section" class="ai-module">
-                                <h3><i class="fas fa-pen-nib"></i> 1. Choose Inquiry Type</h3>
-                                <div class="ai-buttons-grid">
-                                    <button class="ai-template-btn" data-template="collaboration">Project Collaboration</button>
-                                    <button class="ai-template-btn" data-template="technical">Technical Question</button>
-                                    <button class="ai-template-btn" data-template="recruiting">Recruiting Inquiry</button>
-                                    <button class="ai-template-btn" data-template="general">General Comment</button>
-                                </div>
-                                <h3><i class="fas fa-smile"></i> 2. Select Tone & Manner</h3>
-                                <div class="ai-buttons-grid">
-                                    <button class="ai-tone-btn" data-tone="professional">Professional</button>
-                                    <button class="ai-tone-btn" data-tone="friendly">Friendly</button>
-                                    <button class="ai-tone-btn" data-tone="direct">Direct</button>
-                                    <button class="ai-tone-btn" data-tone="curious">Curious</button>
-                                </div>
-                            </div>
-                            <div id="ai-drafting-section" class="ai-module">
-                                <h3><i class="fas fa-magic-wand-sparkles"></i> 3. Draft with AI</h3>
-                                <div id="ai-output" class="ai-output-box" placeholder="AI-generated content will appear here...">Click the button below to generate a draft.</div>
-                                
-                                <button id="ai-generate-btn"><i class="fas fa-pen-alt"></i> Generate</button>
-                                <div id="ai-post-generate-controls" class="hidden">
-                                    <button id="ai-regenerate-btn"><i class="fas fa-sync-alt"></i> Re-generate</button>
-                                    <button id="ai-go-to-postcard-btn"><i class="fas fa-arrow-right"></i> Go to Postcard</button>
-                                </div>
-                            </div>
-                        </div>
+                        <div id="highlight-cards-container" class="cards-container"></div> 
+                        <div id="timeline-container" class="timeline-container hidden"></div> 
                     </div>
                 </main>
-                
-                <div class="scroll-down-arrow hub-arrow" data-scroll-target="#postcard-section">
-                     <img src="img/arrow_down.svg" alt="Scroll Down" class="custom-scroll-arrow">
-                </div>
-            </section>
+            </div>
+            <div class="scroll-down-arrow hub-arrow" data-scroll-target="#ai-assistant-section">
+                 <img src="img/arrow_down.svg" alt="Scroll Down" class="custom-scroll-arrow">
+            </div>
+        </section>
 
-            <section class="postcard-section" id="postcard-section">
-                 <div class="floating-menu1">
-                    <button id="pen-theme-btn" title="Western Theme"><i class="fa-solid fa-landmark"></i> <span class="theme-style-text">Western</span></button>
+        <section id="ai-assistant-section" class="connect-section connect-ai-assistant-section"> <div class="connect-ai-assistant-content"> <h2><i class="fas fa-robot"></i> Smart Assistant</h2>
+                <div id="connect-ai-insights-section" class="connect-ai-module"> <h3><i class="fas fa-chart-pie"></i> Your Interest Insights</h3>
+                    <div id="connect-ai-insights-output" class="connect-ai-output-box">Your key interests will appear here.</div> </div>
+                <div id="connect-ai-template-section" class="connect-ai-module"> <h3><i class="fas fa-pen-nib"></i> 1. Choose Inquiry Type</h3>
+                    <div class="connect-ai-buttons-grid"> <button class="connect-ai-template-btn" data-template="collaboration">Project Collaboration</button> <button class="connect-ai-template-btn" data-template="technical">Technical Question</button> <button class="connect-ai-template-btn" data-template="recruiting">Recruiting Inquiry</button> <button class="connect-ai-template-btn" data-template="general">General Comment</button> </div>
+                    <h3><i class="fas fa-smile"></i> 2. Select Tone & Manner</h3>
+                    <div class="connect-ai-buttons-grid"> <button class="connect-ai-tone-btn" data-tone="professional">Professional</button> <button class="connect-ai-tone-btn" data-tone="friendly">Friendly</button> <button class="connect-ai-tone-btn" data-tone="direct">Direct</button> <button class="connect-ai-tone-btn" data-tone="curious">Curious</button> </div>
+                </div>
+                <div id="connect-ai-drafting-section" class="connect-ai-module"> <h3><i class="fas fa-magic-wand-sparkles"></i> 3. Draft with AI</h3>
+                    <div id="connect-ai-output" class="connect-ai-output-box" placeholder="AI-generated content will appear here...">Click the button below to generate a draft.</div> <button id="connect-ai-generate-btn"><i class="fas fa-pen-alt"></i> Generate</button> <div id="connect-ai-post-generate-controls" class="hidden"> <button id="connect-ai-regenerate-btn"><i class="fas fa-sync-alt"></i> Re-generate</button> <button id="connect-ai-go-to-postcard-btn"><i class="fas fa-arrow-right"></i> Go to Postcard</button> </div>
+                </div>
+            </div>
+            <div class="scroll-down-arrow ai-assistant-arrow" data-scroll-target="#postcard-section">
+                <img src="img/arrow_down.svg" alt="Scroll Down" class="custom-scroll-arrow">
+            </div>
+        </section>
+
+        <section class="connect-section postcard-section" id="postcard-section">
+            <div class="connect-postcard-content">
+                <div class="connect-floating-menu1"> <button id="pen-theme-btn" title="Western Theme"><i class="fa-solid fa-landmark"></i> <span class="theme-style-text">Western</span></button>
                     <button id="brush-theme-btn" title="Eastern Theme"><i class="fa-solid fa-torii-gate"></i> <span class="theme-style-text">Eastern</span></button>
                 </div>
-                <div class="floating-menu2">
-                    <button id="pen-style-indicator-btn" title="Pen Style"><i class="fa-solid fa-pen-fancy"></i><span class="theme-style-text">Pen</span></button>
-                    <button id="brush-style-indicator-btn" title="Brush Style"><i class="fa-solid fa-brush"></i><span class="theme-style-text">Brush</span></button>
-                    <div class="language-controls-inline">
-                        <button id="lang-en-btn" title="Switch to English">English</button>
+                <div class="connect-floating-menu2"> <button id="pen-style-indicator-btn" title="Pen Style"><i class="fa-solid fa-pen-fancy"></i><span class="theme-style-text">Pen</span></button>
+                    <button id="brush-style-indicator-btn" title="Brush-Style"><i class="fa-solid fa-brush"></i><span class="theme-style-text">Brush</span></button>
+                    <div class="connect-language-controls-inline"> <button id="lang-en-btn" title="Switch to English">English</button>
                         <button id="lang-ko-btn" title="한국어로 변경">한국어</button>
                     </div>
-                    <div class="font-size-options-inline">
-                        <button id="font-size-small" aria-label="Decrease font size">A-</button>
+                    <div class="connect-font-size-options-inline"> <button id="font-size-small" aria-label="Decrease font size">A-</button>
                         <button id="font-size-medium" aria-label="Default font size">A</button>
                         <button id="font-size-large" aria-label="Increase font size">A+</button>
                     </div>
@@ -212,10 +205,6 @@
 
                 <div class="postcard-front western-theme">
                     <div class="postcard-image-container"><img src="img/western/ezgif-frame-001.jpg" alt="Western Postcard Theme" class="postcard-cover-img" id="western-front-img"></div>
-                    <div class="postcard-info">
-                        <img src="img/qr-code.png" alt="QR Code" class="qr-code">
-                        <p class="info-text western-text" data-lang-en="Scan for more info or send a message!" data-lang-ko="QR코드를 스캔하시거나 메시지를 보내주세요!">Scan for more info or send a message!</p>
-                    </div>
                 </div>
 
                 <div class="postcard-front eastern-theme hidden">
@@ -238,15 +227,10 @@
                         </form>
                     </div>
                 </div>
-            </section>
-
-            <!-- <div class="connect-social-links">
-                 <a href="https://www.linkedin.com/in/oosujang/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                <a href="https://www.instagram.com/oosu.hada/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="mailto:oosu.salon@gmail.com" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
-            </div> -->
-        </div>
+            </div>
+        </section>
     </main>
+
  <div id="ai-assistant-FAB" aria-label="Open AI Assistant" role="button" tabindex="0">
     <img id="ai-assistant-ask-image" src="../../img/asklightmode.png" alt="Ask AI">
 </div>
@@ -290,7 +274,7 @@
             </div>
         </div>
 
-        <div class="ai-portfolio-results" id="aiPortfolioResults" style="display: none;">
+        <div id="ai-portfolio-results" class="ai-portfolio-results" style="display: none;">
             <div class="ai-insight">
                 <span class="ai-insight-badge">INSIGHT</span>
                 <p id="portfolioInsightText"></p>
@@ -333,7 +317,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
     <script>
         lottie.loadAnimation({

@@ -1,0 +1,245 @@
+/* ai-assistant.css */
+/* ==========================================================================
+   1. THEME COLOR VARIABLES (LIGHT & DARK) - AI ASSISTANT SPECIFIC
+   ========================================================================== */
+
+/* This section is removed as theme variables are now integrated into connect.css */
+
+/* ==========================================================================
+   2. MAIN CONTAINER & SECTION STYLES
+   ========================================================================== */
+
+/* Specific background for AI Assistant section */
+#ai-assistant-section {
+    background-image: url('../img/Nebulae-dark.png'); /* Default for dark theme */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: var(--text-color); /* Changed to text-color */
+    transition: background-color var(--transition-duration), color var(--transition-duration), border-color var(--transition-duration);
+    display: flex; /* Added for centering content wrapper */
+    justify-content: center; /* Added for centering content wrapper */
+    align-items: center; /* Added for centering content wrapper */
+    padding: 0; /* Remove padding from section itself */
+    min-height: 100vh; /* Ensure section is tall enough */
+    box-sizing: border-box;
+}
+
+body[data-theme="light"] #ai-assistant-section {
+    background-image: url('../img/Nebulae-bright.png');  /* Invert for light mode */
+    background-color: var(--primary-bg); /* Changed to primary-bg */
+}
+
+/* ==========================================================================
+   3. AI ASSISTANT PANEL STYLES
+   ========================================================================== */
+
+.connect-ai-assistant-content { /* Class name confirmed */
+    transition: background-color var(--transition-duration), border-color var(--transition-duration); /* Added border-color to transition */
+    max-width: 900px;
+    width: calc(100% - 40px); /* Ensured side margins with 20px on each side */
+    box-sizing: border-box;
+    margin: 80px auto; /* Added vertical and horizontal auto margins for centering */
+}
+
+.connect-ai-assistant-content h2,
+.connect-ai-assistant-content h3 {
+    color: var(--text-color); /* Changed to text-color */
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--glass-border); /* Changed to glass-border */
+    word-break: break-word; /* Ensure long titles wrap */
+}
+.connect-ai-assistant-content h2 { font-size: 1.4em; }
+.connect-ai-assistant-content h3 { font-size: 1.1em; font-weight: 600; margin-top: 20px; }
+.connect-ai-assistant-content h3:first-child { margin-top: 0; }
+
+.connect-ai-module { margin-bottom: 20px; } /* Class name confirmed */
+.connect-ai-buttons-grid { /* Class name confirmed */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.connect-ai-buttons-grid button {
+    padding: 10px;
+    border: 1px solid var(--glass-border); /* Changed to glass-border */
+    background-color: var(--secondary-bg); /* Changed to secondary-bg */
+    color: var(--subheading-color); /* Changed to subheading-color */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    text-align: center;
+    transition: all var(--transition-duration) ease-out; /* Changed to transition-duration */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    backdrop-filter: var(--glass-blur); /* Added glassmorphism blur */
+    -webkit-backdrop-filter: var(--glass-blur); /* Added glassmorphism blur */
+    box-shadow: 0 2px 8px var(--glass-shadow); /* Added glass-shadow */
+    word-break: break-word; /* Allow button text to wrap */
+    min-width: 0; /* Allow buttons to shrink below content size if necessary */
+}
+.connect-ai-buttons-grid button.active {
+    background: var(--point-gradient); /* Changed to point-gradient */
+    color: #FFF; /* Hardcoded white for active buttons on gradient */
+    border-color: transparent; /* Border will be handled by the gradient */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Adjusted shadow for active */
+}
+
+.connect-ai-output-box { /* Class name confirmed */
+    margin-top: 15px;
+    padding: 15px;
+    background: var(--primary-bg-opacity); /* Changed to primary-bg-opacity */
+    backdrop-filter: var(--glass-blur); /* Added glassmorphism blur */
+    -webkit-backdrop-filter: var(--glass-blur); /* Added glassmorphism blur */
+    border: 1px solid var(--glass-border); /* Changed to glass-border */
+    border-radius: 5px;
+    min-height: 100px;
+    font-size: 0.9em;
+    color: var(--text-color); /* Changed to text-color */
+    white-space: pre-wrap;
+    line-height: 1.6;
+    transition: background-color var(--transition-duration), color var(--transition-duration), border-color var(--transition-duration); /* Added border-color to transition */
+    box-shadow: 0 2px 8px var(--glass-shadow); /* Added glass-shadow */
+    overflow-wrap: break-word; /* Ensure long words break and don't cause overflow */
+    word-wrap: break-word; /* Old standard */
+}
+
+.connect-ai-output-box strong { color: var(--text-color); } /* Changed to text-color */
+.connect-ai-output-box ul { padding-left: 20px; margin-top: 10px; }
+.connect-ai-output-box .keyword-tag {
+    display: inline-block;
+    background-color: var(--secondary-bg); /* Changed to secondary-bg */
+    color: var(--primary-accent); /* Changed to primary-accent */
+    padding: 3px 8px;
+    border-radius: 12px;
+    margin: 3px;
+    font-weight: 500;
+    white-space: nowrap; /* Keep tags from breaking words, let flex/wrap handle overflow */
+}
+
+#connect-ai-generate-btn, /* ID confirmed */
+#connect-ai-regenerate-btn, /* ID confirmed */
+#connect-ai-go-to-postcard-btn { /* ID confirmed */
+    width: 100%;
+    padding: 10px;
+    border: none; /* Border handled by background */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    transition: all var(--transition-duration) ease-out; /* Changed to transition-duration */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Added general button shadow */
+    box-sizing: border-box; /* Ensure padding is included */
+}
+
+#connect-ai-generate-btn {
+    background: var(--point-gradient); /* Changed to point-gradient */
+    color: #FFF; /* Hardcoded white for buttons on gradient */
+}
+
+#connect-ai-generate-btn:hover {
+    filter: brightness(1.15); /* Adjusted hover effect for gradient */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25); /* Adjusted shadow for hover */
+}
+
+#connect-ai-post-generate-controls { /* ID confirmed */
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#connect-ai-post-generate-controls.hidden {
+    display: none;
+}
+
+#connect-ai-regenerate-btn {
+    flex: 1;
+    background-color: var(--secondary-bg); /* Changed to secondary-bg */
+    color: var(--text-color); /* Changed to text-color */
+    border: 1px solid var(--glass-border); /* Added glass-border */
+    backdrop-filter: var(--glass-blur); /* Added glassmorphism blur */
+    -webkit-backdrop-filter: var(--glass-blur); /* Added glassmorphism blur */
+    box-shadow: 0 2px 8px var(--glass-shadow); /* Added glass-shadow */
+    min-width: 0; /* Allow button to shrink */
+}
+#connect-ai-regenerate-btn:hover {
+    background-color: var(--secondary-hover-bg); /* Changed to secondary-hover-bg */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--glass-shadow);
+}
+
+
+#connect-ai-go-to-postcard-btn {
+    flex: 2;
+    background: var(--point-gradient); /* Changed to point-gradient */
+    color: #FFF; /* Hardcoded white for buttons on gradient */
+    border: none; /* Border handled by background */
+    min-width: 0; /* Allow button to shrink */
+}
+#connect-ai-go-to-postcard-btn:hover {
+    filter: brightness(1.15);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+/* ==========================================================================
+   4. RESPONSIVE MEDIA QUERIES (AI ASSISTANT SECTION)
+   ========================================================================== */
+
+@media (max-width: 900px) {
+    .connect-ai-assistant-content { /* Class name confirmed */
+        padding: 15px;
+        width: calc(100% - 30px); /* Adjust for smaller side margins */
+    }
+    .connect-ai-assistant-content h2 { font-size: 1.3em; }
+    .connect-ai-assistant-content h3 { font-size: 1.1em; }
+}
+
+@media (max-width: 600px) {
+    .connect-ai-buttons-grid { grid-template-columns: 1fr; } /* Class name confirmed */
+    #connect-ai-post-generate-controls { /* ID confirmed */
+        flex-direction: column;
+        gap: 8px;
+    }
+    #connect-ai-generate-btn, /* ID confirmed */
+    #connect-ai-regenerate-btn, /* ID confirmed */
+    #connect-ai-go-to-postcard-btn { /* ID confirmed */
+        font-size: 0.9em;
+        padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .connect-ai-assistant-content { /* Class name confirmed */
+        padding: 10px;
+        width: calc(100% - 20px); /* Adjust for even smaller side margins */
+        margin: 40px auto; /* Adjust vertical margin for very small screens */
+    }
+    .connect-ai-assistant-content h2 { font-size: 1.2em; }
+    .connect-ai-assistant-content h3 { font-size: 0.9em; }
+    .connect-ai-output-box { /* Class name confirmed */
+        font-size: 0.85em;
+        min-height: 80px;
+    }
+    .connect-ai-buttons-grid button { /* Class name confirmed */
+        font-size: 0.8em;
+        padding: 8px;
+    }
+    .scroll-down-arrow.ai-assistant-arrow {
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%) !important;
+    }
+}

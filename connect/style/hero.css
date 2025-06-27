@@ -1,12 +1,11 @@
-@charset "UTF-8";
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;700&display=swap");
+/* hero.css */
+/* ==========================================================================
+   1. THEME COLOR VARIABLES (LIGHT & DARK) - HERO SECTION SPECIFIC
+   ========================================================================== */
+
+/* ✅ 이 변수들은 이제 connect.css에 통합되었습니다. 여기서는 제거합니다. */
 
 :root {
-    --intro-bg-color: rgba(0, 0, 0, 0.5);
-    --text-color: #fff;
-    --button-border-color: #fff;
-    --button-hover-bg: rgba(255, 255, 255, 0.25);
-
     /* ✨ Hero Section Colors (Light Theme) */
     --hero-text-color: #ffffff;
     --hero-text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
@@ -21,7 +20,7 @@
 }
 
 body[data-theme="dark"] {
-    /* ✨ Hero Section Colors (Dark Theme) */
+    /* ✨ Hero Section Colors (Dark Theme) - Same for this design */
     --hero-text-color: #ffffff;
     --hero-text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     --hero-overlay-background: rgba(0, 0, 0, 0.4);
@@ -34,16 +33,27 @@ body[data-theme="dark"] {
     --hero-button-border-color: #ffffff;
 }
 
+
+/* ==========================================================================
+   2. GLOBAL FONT (FOR HERO SECTION)
+   ========================================================================== */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;700&display=swap");
+
 body, button, input, textarea, ::placeholder {
     font-family: "Roboto", sans-serif;
 }
 
-.intro-section {
+/* ==========================================================================
+   3. HERO SECTION STYLES
+   ========================================================================== */
+
+.hero-section {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    min-height: 100vh;
+    height: 100vh;
+    /* ✅ background-image는 JS에서 동적으로 설정하므로 여기서 제거합니다. */
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -51,20 +61,28 @@ body, button, input, textarea, ::placeholder {
     z-index: 1;
     padding: 0 16px;
     box-sizing: border-box;
-    color: var(--hero-text-color); /* 테마 변수 사용 */
+    color: var(--hero-text-color);
 }
 
-/* JS 문제를 해결했던 오버레이를 그대로 사용하고, 색상만 변수로 변경 */
-.intro-section::before {
+/* Add a pseudo-element overlay to fix the JS background image issue */
+.hero-section::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    background-color: var(--hero-overlay-background); /* 테마 변수 사용 */
+    height: 100vh;
+    background-color: var(--hero-overlay-background);
     transition: background-color var(--transition-duration);
-    z-index: -1; /* 이제 이 오버레이가 z-index를 담당 */
+    z-index: -1; /* Position below text content */
+    /* ✅ Add the grainy filter here */
+    /* filter: url(#grainy); */
+}
+
+/* Ensure all content inside hero section is above the overlay */
+.hero-section > * {
+    position: relative;
+    z-index: 2;
 }
 
 /* Weather Section */
@@ -81,10 +99,10 @@ body, button, input, textarea, ::placeholder {
 }
 
 .weather {
-    display: flex;
+    display: flex; /* ✅ 이 줄이 누락되어 있었네요. 추가했습니다. */
     align-items: center;
     padding: 11px;
-    background: var(--hero-button-background); /* 테마 변수 사용 */
+    background: var(--hero-button-background);
     border-radius: 20px;
     transition: background-color var(--transition-duration);
 }
@@ -114,7 +132,7 @@ body, button, input, textarea, ::placeholder {
     margin-left: 4px;
 }
 
-/* Main */
+/* Main Content (Forms, Clock, Greeting) */
 .signin-form {
     display: flex;
     flex-direction: column;
@@ -133,7 +151,7 @@ body, button, input, textarea, ::placeholder {
     font-size: 1.6rem;
     line-height: 1.5;
     font-weight: 400;
-    text-shadow: var(--hero-text-shadow); /* 테마 변수 사용 */
+    text-shadow: var(--hero-text-shadow);
 }
 
 .input--username {
@@ -145,21 +163,21 @@ body, button, input, textarea, ::placeholder {
     border: none;
     border-radius: 24px;
     font-size: 1.5rem;
-    background: var(--hero-input-background); /* 테마 변수 사용 */
-    color: var(--hero-text-color); /* 테마 변수 사용 */
+    background: var(--hero-input-background);
+    color: var(--hero-text-color);
     box-shadow: 0 2px 16px 0 rgba(30,40,110,0.09);
     transition: all 0.2s;
     outline: 2px solid transparent;
 }
 
 .input--username:focus {
-    outline: 2px solid var(--hero-input-focus-outline); /* 테마 변수 사용 */
-    background: var(--hero-input-focus-background); /* 테마 변수 사용 */
+    outline: 2px solid var(--hero-input-focus-outline);
+    background: var(--hero-input-focus-background);
     box-shadow: 0 4px 24px 0 rgba(40,100,220,0.13);
 }
 
 .input--username::placeholder {
-    color: var(--hero-input-placeholder-color); /* 테마 변수 사용 */
+    color: var(--hero-input-placeholder-color);
     opacity: 0.8;
     font-style: italic;
 }
@@ -181,27 +199,27 @@ body[data-theme="light"] .input--username:-webkit-autofill {
     -webkit-text-fill-color: var(--hero-text-color) !important;
 }
 
-
 .btn--signin, .btn--signout {
     margin-top: 2rem;
     padding: 10px 24px;
-    border: 1px solid var(--hero-button-border-color); /* 테마 변수 사용 */
+    border: 1px solid var(--hero-button-border-color);
     border-radius: 40px;
     font-size: 1rem;
     line-height: 1.5;
     text-align: center;
     cursor: pointer;
-    background: var(--hero-button-background); /* 테마 변수 사용 */
-    color: var(--hero-text-color); /* 테마 변수 사용 */
+    background: var(--hero-button-background);
+    color: var(--hero-text-color);
     transition: background-color 0.2s ease-in-out;
 }
 
 .btn--signin:hover, .btn--signin:focus,
 .btn--signout:hover, .btn--signout:focus {
-    background-color: var(--hero-button-hover-background); /* 테마 변수 사용 */
+    background-color: var(--hero-button-hover-background);
 }
 
 .home-wrap {
+    margin-top: 5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -283,30 +301,6 @@ body[data-theme="light"] .input--username:-webkit-autofill {
     margin-top: 16px;
 }
 
-/* Scroll Down Arrow */
-.scroll-down-arrow {
-    position: absolute;
-    bottom: 80px;
-    left: 25px;
-    transform: none;
-    animation: bounce-left 2s infinite;
-    font-size: 2.5rem;
-    color: var(--hero-text-color); /* 테마 변수 사용 */
-    text-shadow: var(--hero-text-shadow); /* 테마 변수 사용 */
-    opacity: 0.7;
-    cursor: pointer;
-    z-index: 10;
-}
-
-.scroll-down-arrow.hub-arrow {
-    color: var(--text-primary); /* 다른 섹션에선 일반 텍스트 색상 사용 */
-    text-shadow: none;
-}
-
-.scroll-down-arrow.hidden {
-    display: none;
-}
-
 .error-message {
     display: block;
     margin-top: 4px;
@@ -344,4 +338,73 @@ body[data-theme="light"] .input--username:-webkit-autofill {
     20%, 80% { transform: translate3d(2px, 0, 0); }
     30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
     40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+/* ==========================================================================
+   4. RESPONSIVE MEDIA QUERIES (HERO SECTION)
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .question {
+        font-size: 1.4rem;
+    }
+    .time {
+        font-size: 3rem;
+    }
+    .midday {
+        font-size: 2.5rem;
+    }
+    .greeting {
+        font-size: 1.8rem;
+    }
+    .quote q {
+        padding: 0 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .question {
+        font-size: 1.2rem;
+        margin: 1.5rem;
+    }
+    .input--username {
+        font-size: 1.2rem;
+        padding: 10px 15px;
+    }
+    .btn--signin, .btn--signout {
+        font-size: 0.9rem;
+        padding: 8px 20px;
+    }
+    .time {
+        font-size: 2.5rem;
+    }
+    .midday {
+        font-size: 2rem;
+    }
+    .greeting {
+        font-size: 1.5rem;
+    }
+    .weather__txt {
+        font-size: 1rem;
+    }
+    .weather .material-symbols-outlined {
+        width: 20px;
+        height: 20px;
+    }
+    .scroll-down-arrow {
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%) !important; /* Center on mobile */
+    }
+    @keyframes bounce-left { /* Adjust for centered arrow */
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateX(-50%) translateY(0);
+        }
+        40% {
+            transform: translateX(-50%) translateY(-10px);
+        }
+        60% {
+            transform: translateX(-50%) translateY(-5px);
+        }
+    }
 }

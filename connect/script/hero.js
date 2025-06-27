@@ -35,6 +35,11 @@ function showWeatherInfo(data) {
         $location.textContent = `${data.name},`;
         $temper.textContent = `${Math.round(data.temp)}°C`;
         $weatherIcon.textContent = data.icon || '';
+    } else {
+        // Display placeholders if no data
+        $location.textContent = "Loading...";
+        $temper.textContent = "--°C";
+        $weatherIcon.textContent = "";
     }
 }
 
@@ -80,23 +85,12 @@ const fetchWeather = async (lat, lon) => {
     }
 };
 
-const weatherApp = () => {
+// New function to defer the weather data fetching
+const fetchWeatherDataDeferred = () => {
     const $location = document.querySelector(".js-location");
     const $temper = document.querySelector(".js-temper");
     const $weatherIcon = document.querySelector(".js-weather-icon");
 
-    // 1. Show from cache first
-    const cacheRaw = localStorage.getItem(WEATHER_KEY);
-    let cache = null;
-    if (cacheRaw) {
-        cache = JSON.parse(cacheRaw);
-        if (cache && Date.now() - cache.time < WEATHER_CACHE_TIME) {
-            showWeatherInfo(cache);
-            return; // If cache is fresh, don't call API
-        }
-    }
-
-    // 2. Otherwise, fetch new data
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
             fetchWeather(position.coords.latitude, position.coords.longitude)
@@ -115,6 +109,39 @@ const weatherApp = () => {
         $location.textContent = "Geo not supported";
         $temper.textContent = "N/A";
         $weatherIcon.textContent = "Error";
+    }
+};
+
+const weatherApp = () => {
+    const $weatherSection = document.querySelector(".js-weather-section");
+
+    // Make sure the weather section is visible as soon as weatherApp is called
+    if ($weatherSection) {
+        showUi($weatherSection);
+    }
+
+    // 1. Show from cache first
+    const cacheRaw = localStorage.getItem(WEATHER_KEY);
+    let cache = null;
+    if (cacheRaw) {
+        cache = JSON.parse(cacheRaw);
+        if (cache && Date.now() - cache.time < WEATHER_CACHE_TIME) {
+            showWeatherInfo(cache);
+            return; // If cache is fresh, don't call API
+        }
+    }
+
+    // If no fresh cache, show initial loading state and then defer the fetch
+    showWeatherInfo(null); // Display 'Loading...' or similar
+    if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(() => {
+            fetchWeatherDataDeferred();
+        });
+    } else {
+        // Fallback for browsers that don't support requestIdleCallback
+        setTimeout(() => {
+            fetchWeatherDataDeferred();
+        }, 500); // Small delay to prioritize main content
     }
 };
 
@@ -146,7 +173,8 @@ const randomBg = () => {
         "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png", "13.png", "14.png", "15.png", "16.png", "17.png"
     ];
     const chosenImage = images[Math.floor(Math.random() * images.length)];
-    document.querySelector('.intro-section').style.backgroundImage = `url("img/${chosenImage}")`;
+    // Changed .intro-section to .hero-section
+    document.querySelector('.hero-section').style.backgroundImage = `url("img/${chosenImage}")`;
 };
 
 const quotesApp = () => {
@@ -223,20 +251,24 @@ const signOutProcess = () => {
 };
 
 const initHomeUi = (username) => {
-    const $weatherSection = document.querySelector(".js-weather-section");
     const $home = document.querySelector(".js-home-wrap");
     const $quoteSection = document.querySelector(".js-quote-section");
-    const $scrollArrow = document.querySelector(".scroll-down-arrow");
+    // 변경: id로 Hero 섹션 화살표를 명확하게 선택합니다.
+    const $heroScrollArrow = document.getElementById("hero-scroll-arrow");
 
     hideSignInForm();
-    showUi($weatherSection);
-    showUi($home);
-    weatherApp();
+    weatherApp(); // This will handle showing the weather section and deferring fetch
     clockApp();
     showGreeting(username);
     quotesApp();
-    showUi($quoteSection);
-    showUi($scrollArrow);
+    showUi($home); // Show the main home wrap
+    showUi($quoteSection); // Ensure quote section is visible
+
+    // Hero 섹션 화살표만 제어합니다.
+    if ($heroScrollArrow) {
+        showUi($heroScrollArrow); // 로그인 후 Hero 섹션 화살표를 표시합니다.
+    }
+    
     signOutProcess();
     setBodyScroll(true); // Enable scrolling after login
     if (window.releaseIntroScrollLock) window.releaseIntroScrollLock(); // Release scroll lock
@@ -261,7 +293,8 @@ window.validateField = validateField; // Make it globally accessible
 const signInProcess = () => {
     const $signInForm = document.querySelector(".js-signin-form");
     const $usernameInput = document.querySelector(".js-input--username");
-    const $scrollArrow = document.querySelector(".scroll-down-arrow");
+    // 변경: id로 Hero 섹션 화살표를 명확하게 선택합니다.
+    const $heroScrollArrow = document.getElementById("hero-scroll-arrow");
 
     // Add an event listener to prevent the default browser validation message
     // for the username input field.
@@ -272,13 +305,15 @@ const signInProcess = () => {
     });
 
     // 1. Show weather and quote sections and run their apps even before login
-    showUi(document.querySelector('.js-weather-section'));
-    weatherApp(); // Call weatherApp here to display weather text immediately
+    // weatherApp() will show the weather section itself
+    weatherApp(); // Call weatherApp here to display weather text immediately (or loading state)
     showUi(document.querySelector('.js-quote-section'));
     quotesApp(); // Call quotesApp here to display quotes immediately
 
-    // Hide the scroll arrow and disable body scroll until login
-    hideUi($scrollArrow);
+    // Hero 섹션 화살표만 숨깁니다.
+    if ($heroScrollArrow) {
+        hideUi($heroScrollArrow); // 초기에는 Hero 섹션 화살표를 숨깁니다.
+    }
     setBodyScroll(false);
 
     const handleSignIn = (e) => {

@@ -1,71 +1,135 @@
 /* highlight-hub.css */
-/* :root 변수는 connect.css에 정의된 것을 상속받아 사용합니다. */
+/* ==========================================================================
+   1. THEME COLOR VARIABLES (LIGHT & DARK) - HIGHLIGHT HUB SPECIFIC
+   ========================================================================== */
+/* This section is removed as theme variables are now integrated into connect.css */
+
+/* ==========================================================================
+   2. MAIN CONTAINER & SECTION STYLES
+   ========================================================================== */
+   
+/* Specific background for highlight-hub section */
 #highlight-hub-section {
-    width: 100%;
-    background-color: transparent;
-    color: var(--text-primary);
-    padding: 60px 20px;
-    border-bottom: 1px solid var(--border-color, #e0e0e0);
-    box-sizing: border-box;
-    position: relative;
-    opacity: 0;
-    transform: translateY(40px);
-    transition: color 0.3s, border-color 0.3s;
+    background-image: url('../img/Sunset-dark.png'); /* Default for dark theme */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: var(--text-color); /* Changed to text-color */
+    transition: background-color var(--transition-duration), color var(--transition-duration), border-color var(--transition-duration);
+    display: flex; /* Added for centering content wrapper */
+    justify-content: center; /* Added for centering content wrapper */
+    align-items: flex-start; /* Aligns to top, allowing margin on .hub-container to push it down */
+    padding: 0; /* Remove padding from section itself */
+    min-height: 100vh; /* Ensure section is tall enough to allow vertical centering/spacing */
+    box-sizing: border-box; /* Include padding/border in element's total width and height */
+    overflow-x: hidden; /* Prevent horizontal scroll on the section itself */
 }
 
-.hub-header {
-    max-width: 1200px;
-    margin: 0 auto 30px auto;
+body[data-theme="light"] #highlight-hub-section {
+    background-image: url('../img/Sunset-bright.png');/* Invert for light mode */
+    background-color: var(--primary-bg); /* Changed to primary-bg */
+}
+
+/* Updated: Wrapper for highlight hub content. Its primary role is to simply contain
+   the hub-container and allow it to be centered with auto margins. */
+.connect-highlight-hub-content {
+    /* This wrapper mostly provides a flex context for hub-container to center itself vertically */
+    width: 100%; /* Allows hub-container to take up available width within it */
+    box-sizing: border-box;
+    display: flex; /* Makes it a flex container */
+    flex-direction: column; /* Stacks children vertically */
+    align-items: center; /* Centers children horizontally */
+    /* Removed padding, background, border, shadow, blur from here as they are now on .hub-container */
+    /* We'll use margin on .hub-container itself for vertical spacing within the section */
+}
+
+/* ==========================================================================
+   3. HIGHLIGHT HUB SECTION
+   ========================================================================== */
+
+.hub-header { /* Class name confirmed */
+    max-width: 100%; /* Allow header to take full width of .hub-container's content area */
+    margin: 30px auto 0px auto;
     text-align: center;
+    padding: 0 10px; /* Added internal padding to header to prevent text overflow */
+    box-sizing: border-box;
+    word-break: break-word; /* Ensure long titles wrap */
 }
 
 .hub-header h1 {
     font-size: 2.5em;
-    color: var(--text-primary, #172b4d);
+    color: var(--text-color);
     margin-bottom: 10px;
     font-weight: 700;
 }
 
 .hub-header p {
     font-size: 1.2em;
-    color: var(--text-secondary, #5e6c84);
+    color: var(--subheading-color);
 }
 
 .hub-header strong {
-    color: var(--accent-color, #0052cc);
+    color: var(--primary-accent);
     font-weight: 600;
 }
 
-.hub-container {
+.hub-container { /* Class name confirmed */
     display: flex;
-    max-width: 1200px;
-    margin: 0 auto;
-    background: transparent;
-    min-height: 90vh;
+    /* This is the key change: max-width and auto margins */
+    max-width: 900px; /* Set a specific max-width, similar to connect-ai-assistant-content */
+    width: calc(100% - 40px); /* Take 100% of parent width, minus 20px on each side for margin */
+    margin: 40px auto; /* Top/bottom margin for spacing, auto for horizontal centering */
+    
+    min-height: 70vh; /* Adjust for header/footer */
+    justify-content: center; /* Center horizontally */
+    align-items: flex-start; /* Align items to the top */
+    flex-direction: column; /* Ensure content stacks vertically within the container */
+
+    /* Applying glassmorphism styles directly to hub-container */
+    transition: background-color var(--transition-duration), border-color var(--transition-duration), box-shadow var(--transition-duration);
+    box-sizing: border-box; /* Include padding in width calculation */
+    overflow-x: hidden; /* Ensure content inside does not cause overflow for this container */
 }
 
-.highlights-panel {
+.highlights-panel { /* Class name confirmed */
     flex: 2;
-    padding: 20px;
+    padding: 0; /* Removed internal padding as it's on .hub-container now */
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    max-height: 70vh; /* Limit height and allow scrolling */
+    background-color: transparent; /* Changed to transparent */
+    border-radius: 8px;
+    box-shadow: none;
+    border: none;
+    width: 100%; /* Ensure it takes full width of .hub-container's content area */
+    box-sizing: border-box;
+    overflow-x: hidden; /* Prevent horizontal scroll within panel */
 }
 
-.panel-header {
+.panel-header { /* Class name confirmed */
     margin-bottom: 25px;
+    width: 100%; /* Ensure it spans the width of its parent */
+    box-sizing: border-box;
 }
 
 .panel-header h2 {
     font-size: 1.5em;
-    color: var(--text-primary, #172b4d);
+    color: var(--text-color);
     margin-bottom: 5px;
+    word-break: break-word; /* Ensure titles wrap */
 }
 
-.hub-tabs {
+.hub-tabs { /* Class name confirmed */
     margin-top: 15px;
-    border-bottom: 1px solid var(--border-color, #e0e0e0);
+    border-bottom: 1px solid var(--glass-border);
     padding-bottom: 5px;
+    display: flex; /* Make it a flex container to manage tab buttons */
+    flex-wrap: wrap; /* Allow tabs to wrap */
+    gap: 5px; /* Small gap between tabs */
+    width: 100%; /* Ensure it takes full width */
+    box-sizing: border-box;
+    overflow-x: hidden; /* Prevent tabs line from overflowing */
 }
 
 .hub-tab-btn {
@@ -74,15 +138,19 @@
     padding: 8px 16px;
     font-size: 1em;
     font-weight: 600;
-    color: var(--text-secondary, #5e6c84);
+    color: var(--subheading-color);
     cursor: pointer;
     position: relative;
     border-radius: 5px;
-    transition: background-color 0.2s, color 0.2s;
+    transition: background-color var(--transition-duration), color var(--transition-duration);
+    flex-shrink: 0; /* Prevent tabs from shrinking too much */
+    min-width: fit-content; /* Allow content to dictate min width */
+    box-sizing: border-box; /* Ensure padding is included */
+    white-space: nowrap; /* Keep tab text on one line */
 }
 
 .hub-tab-btn.active {
-    color: var(--text-primary, #172b4d);
+    color: var(--text-color);
 }
 
 .hub-tab-btn.active::after {
@@ -92,52 +160,147 @@
     left: 0;
     width: 100%;
     height: 3px;
-    background-color: var(--accent-color, #0052cc);
+    background-color: var(--primary-accent);
     border-radius: 2px;
 }
 
 .timeline-container {
     flex-grow: 1;
+    /* Adjust width to account for `margin-left` relative to parent's padding */
+    width: calc(100% - 20px); /* Original left margin was 20px, reducing available width */
+    margin-left: 0; /* Reset margin-left, handle padding from timeline-item */
+    box-sizing: border-box;
+    overflow-x: hidden; /* Hide horizontal overflow within timeline */
+    position: relative; /* Needed for absolute ::before */
+    padding: 20px 0 20px 20px; /* Add padding here to simulate original margin-left effect */
+}
+
+/* Vertical line for timeline */
+.timeline-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20px; /* Position relative to timeline-container's padding */
+    height: 100%;
+    width: 4px;
+    background: var(--glass-border);
+    border-radius: 2px;
+    transition: background-color var(--transition-duration);
+}
+
+.timeline-item {
+    margin: 20px 0;
+    padding-left: 30px; /* Adjust padding-left to compensate for dot and line */
+    position: relative;
+    opacity: 0;
+    transform: translateX(-20px);
+    box-sizing: border-box;
+    width: 100%; /* Ensure item doesn't overflow */
+    word-break: break-word; /* Ensure text wraps */
+}
+.timeline-dot {
+    content: '';
+    position: absolute;
+    left: 11px; /* Position relative to timeline-item's padding-left start (50px originally, now adjusted) */
+    top: 5px;
+    height: 20px;
+    width: 20px;
+    background: var(--primary-bg-opacity);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 4px solid var(--primary-accent);
+    border-radius: 50%;
+    z-index: 1;
+    transition: background-color var(--transition-duration), border-color var(--transition-duration);
+}
+.timeline-content {
+    background: var(--primary-bg-opacity);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px var(--glass-shadow);
+    border: 1px solid var(--glass-border);
+    transition: box-shadow var(--transition-duration), background-color var(--transition-duration), border-color var(--transition-duration);
+    box-sizing: border-box;
+    width: 100%; /* Ensure content doesn't overflow */
+    word-break: break-word; /* Allow text to wrap */
+}
+.timeline-content:hover {
+    box-shadow: 0 12px 40px var(--glass-shadow);
+}
+.timeline-date {
+    display: block;
+    font-weight: 600;
+    color: var(--subheading-color);
+    margin-bottom: 5px;
+    font-size: 0.9em;
+}
+.timeline-page {
+    font-weight: bold;
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+.timeline-text {
+    font-size: 0.95em;
+    line-height: 1.5;
+    color: var(--text-color);
 }
 
 .cards-container {
-    /* REMOVED flex-grow: 1; to fix card height issue */
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
     padding-top: 20px;
+    width: 100%; /* Ensure it takes full width of its parent */
+    box-sizing: border-box;
+    overflow-x: hidden; /* Hide horizontal overflow in grid */
 }
 
 .no-highlights {
     font-size: 1.1em;
     font-weight: 500;
-    color: var(--text-secondary, #5e6c84);
+    color: var(--subheading-color);
     text-align: center;
     grid-column: 1 / -1;
     padding: 40px 20px;
-    background-color: var(--card-bg, #fff);
+    background-color: var(--primary-bg-opacity);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
     border-radius: 8px;
-    border: 2px dashed var(--border-color, #e0e0e0);
+    border: 2px dashed var(--glass-border);
+    box-shadow: 0 4px 12px var(--glass-shadow);
+    word-break: break-word; /* Ensure text wraps */
+    max-width: 100%; /* Prevent from exceeding parent */
+    box-sizing: border-box;
 }
 
 .highlight-card {
-    background: var(--card-bg, #fff);
+    background: var(--primary-bg-opacity);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
     border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 32px var(--glass-shadow);
     padding: 15px;
-    border-left: 5px solid;
+    border-left: 5px solid var(--primary-accent);
     cursor: grab;
-    transition: box-shadow 0.3s, transform 0.3s, opacity 0.3s, background-color 0.3s, border-color 0.3s;
+    transition: box-shadow var(--transition-duration), transform var(--transition-duration), opacity var(--transition-duration), background-color var(--transition-duration), border-color var(--transition-duration);
     position: relative;
     display: flex;
     flex-direction: column;
     opacity: 0;
     transform: translateY(30px);
+    border-right: 1px solid var(--glass-border);
+    border-top: 1px solid var(--glass-border);
+    border-bottom: 1px solid var(--glass-border);
+    box-sizing: border-box;
+    min-width: 0; /* Allow cards to shrink */
+    word-break: break-word; /* Ensure text wraps */
 }
 
 .highlight-card:active {
     cursor: grabbing;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 12px 40px var(--glass-shadow);
     transform: scale(1.03);
 }
 
@@ -146,40 +309,48 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+    flex-wrap: wrap; /* Allow header content to wrap */
+    gap: 5px; /* Small gap for wrapped items */
+    width: 100%; /* Ensure it takes full width */
+    box-sizing: border-box;
 }
 
 .card-page-source {
     font-size: 0.8em;
     font-weight: 600;
-    color: var(--text-secondary, #5e6c84);
-    background-color: var(--tag-bg, #f0f0f0);
+    color: var(--subheading-color);
+    background-color: var(--secondary-bg);
     padding: 3px 8px;
     border-radius: 10px;
+    white-space: nowrap; /* Keep tag on one line */
+    flex-shrink: 0;
 }
 
 .unhighlight-card-btn {
     background: none;
     border: none;
     font-size: 1.2em;
-    color: #ccc;
+    color: var(--placeholder-color);
     cursor: pointer;
     padding: 5px;
     border-radius: 50%;
     line-height: 1;
-    transition: color 0.2s, background-color 0.2s, transform 0.2s;
+    transition: color var(--transition-duration), background-color var(--transition-duration), transform var(--transition-duration);
+    flex-shrink: 0; /* Prevent button from shrinking */
 }
 
 .unhighlight-card-btn:hover {
-    color: #e74c3c;
-    background-color: #fbecec;
+    color: var(--error-color);
+    background-color: color-mix(in srgb, var(--error-color) 10%, transparent);
     transform: scale(1.1);
 }
 
 .card-text {
     font-size: 0.95em;
-    color: var(--text-primary, #172b4d);
+    color: var(--text-color);
     line-height: 1.5;
     flex-grow: 1;
+    word-break: break-word; /* Ensure text wraps */
 }
 
 .card-actions {
@@ -187,200 +358,65 @@
     display: flex;
     gap: 10px;
     justify-content: flex-end;
+    flex-wrap: wrap; /* Allow buttons to wrap */
+    width: 100%; /* Ensure it takes full width */
+    box-sizing: border-box;
 }
 
 .card-actions button {
-    background-color: var(--tag-bg, #f0f0f0);
-    border: 1px solid var(--border-color);
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--glass-border);
     border-radius: 5px;
     padding: 6px 12px;
     font-size: 0.85em;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    color: var(--text-secondary);
+    transition: all var(--transition-duration) ease-in-out;
+    color: var(--text-color);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: 0 2px 8px var(--glass-shadow);
+    box-sizing: border-box;
+    min-width: 0; /* Allow buttons to shrink */
 }
 .card-actions button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px var(--glass-shadow);
+    background-color: var(--secondary-hover-bg);
 }
 
 .card-actions button.restore-btn {
-    background-color: #e6f7ff;
-    border-color: #91d5ff;
-    color: #0052cc;
+    background-color: var(--secondary-bg);
+    border-color: var(--primary-accent);
+    color: var(--primary-accent);
 }
-.card-actions button.restore-btn:hover { background-color: #d9f0ff; }
+.card-actions button.restore-btn:hover { background-color: var(--secondary-hover-bg); }
 
 .card-actions button.delete-btn {
-    background-color: #ffeded;
-    border-color: #ffb8b8;
-    color: #d32f2f;
+    background-color: var(--secondary-bg);
+    border-color: var(--error-color);
+    color: var(--error-color);
 }
-.card-actions button.delete-btn:hover { background-color: #ffdddd; }
-
-.timeline-container {
-    position: relative;
-    padding: 20px 0;
-    list-style: none;
-}
-/* .timeline-container.hidden { display: none; }
-.timeline-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 20px;
-    height: 100%;
-    width: 4px;
-    background: var(--border-color);
-    border-radius: 2px;
-    transition: background-color 0.3s;
-} */
-.timeline-item {
-    margin: 20px 0;
-    padding-left: 50px;
-    position: relative;
-    opacity: 0;
-    transform: translateX(-20px);
-}
-.timeline-dot {
-    content: '';
-    position: absolute;
-    left: 11px;
-    top: 5px;
-    height: 20px;
-    width: 20px;
-    background: var(--card-bg);
-    border: 4px solid;
-    border-radius: 50%;
-    z-index: 1;
-    transition: background-color 0.3s;
-}
-.timeline-content {
-    /* background: var(--card-bg, #fff); */
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    transition: box-shadow 0.2s, background-color 0.3s;
-}
-.timeline-content:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-.timeline-date {
-    display: block;
-    font-weight: 600;
-    color: var(--text-secondary, #5e6c84);
-    margin-bottom: 5px;
-    font-size: 0.9em;
-}
-.timeline-page {
-    font-weight: bold;
-    color: var(--text-primary, #172b4d);
-    margin-bottom: 10px;
-}
-.timeline-text {
-    font-size: 0.95em;
-    line-height: 1.5;
-}
-
-.actions-panel {
-    flex: 2;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    /* border-left: 1px solid var(--border-color, #e0e0e05c); */
-    transition: border-color 0.3s;
-}
-
-.ai-assistant-section {
-    background: var(--panel-bg, transparent);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    transition: background-color 0.3s;
-}
-
-.actions-panel h2, .actions-panel h3 {
-    color: var(--text-primary, #172b4d);
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border-color, #e0e0e0);
-}
-.actions-panel h2 { font-size: 1.4em; }
-.actions-panel h3 { font-size: 1.1em; font-weight: 600; margin-top: 20px; }
-.actions-panel h3:first-child { margin-top: 0; }
-
-.ai-module { margin-bottom: 20px; }
-.ai-buttons-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-}
-.ai-buttons-grid button {
-    padding: 10px;
-    /* border: 1px solid var(--border-color, #ccc);
-    background-color: var(--tag-bg, #f5f5f5); */
-    color: var(--text-secondary);
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9em;
-    font-weight: 500;
-    text-align: center;
-    transition: all 0.2s ease-out;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-.ai-buttons-grid button.active {
-    background-color: var(--accent-color, #0052cc);
-    color: white;
-    border-color: var(--accent-color, #0052cc);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 82, 204, 0.2);
-}
-
-.ai-output-box {
-    margin-top: 15px;
-    padding: 15px;
-    /* background: var(--ai-output-bg, #fafafb); */
-    /* border: 1px solid var(--border-color, #e0e0e0); */
-    border-radius: 5px;
-    min-height: 100px;
-    font-size: 0.9em;
-    color: var(--text-secondary, #5e6c84);
-    white-space: pre-wrap;
-    line-height: 1.6;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.ai-output-box strong { color: var(--text-primary, #172b4d); }
-.ai-output-box ul { padding-left: 20px; margin-top: 10px; }
-.ai-output-box .keyword-tag {
-    display: inline-block;
-    background-color: var(--accent-color-light-bg, #e6f7ff);
-    color: var(--accent-color, #0052cc);
-    padding: 3px 8px;
-    border-radius: 12px;
-    margin: 3px;
-    font-weight: 500;
-}
+.card-actions button.delete-btn:hover { background-color: var(--secondary-hover-bg); }
 
 .farewell-message {
     text-align: center;
     padding: 20px;
+    box-sizing: border-box;
+    width: 100%;
 }
 .farewell-message p {
     font-size: 1.2em;
-    color: var(--text-secondary, #5e6c84);
+    color: var(--subheading-color);
     font-style: italic;
     margin: 0;
+    word-break: break-word; /* Ensure text wraps */
 }
 .farewell-message i {
     font-size: 1.5em;
     margin-bottom: 10px;
     animation: star-twinkle 2s infinite ease-in-out;
+    color: var(--text-color);
 }
 .timeline-item.farewell-timeline-item .timeline-dot {
     display: none;
@@ -389,77 +425,104 @@
     padding-left: 25px;
 }
 
-@keyframes star-twinkle {
-    0%, 100% { transform: scale(1); opacity: 0.7; }
-    50% { transform: scale(1.2); opacity: 1; }
-}
-
-#ai-generate-btn, 
-#ai-regenerate-btn,
-#ai-go-to-postcard-btn {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--border-color, #ccc);
-    border-radius: 5px;
+.scroll-down-arrow.hub-arrow {
+    position: absolute;
+    bottom: 80px;
+    left: 25px;
+    transform: none;
+    animation: bounce-left 2s infinite;
+    font-size: 2.5rem;
+    color: var(--text-color);
+    text-shadow: none;
+    opacity: 0.1;
     cursor: pointer;
-    font-size: 1em;
-    font-weight: bold;
-    text-align: center;
-    transition: all 0.2s ease-out;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 10px;
+    z-index: 10;
 }
-
-#ai-generate-btn {
-    background-color: var(--accent-color-dark, #2684ff);
-    color: white;
-    border-color: var(--accent-color-dark, #2684ff);
-}
-
-#ai-generate-btn:hover {
-    background-color: var(--accent-color-hover, #0065ff);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 82, 204, 0.2);
-}
-
-#ai-post-generate-controls {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-}
-
-#ai-post-generate-controls.hidden {
+.scroll-down-arrow.hub-arrow.hidden {
     display: none;
 }
 
-#ai-regenerate-btn {
-    flex: 1;
-    background-color: var(--tag-bg, #f5f5f5);
-    color: var(--text-secondary);
-}
 
-#ai-go-to-postcard-btn {
-    flex: 2;
-    background-color: var(--accent-color, #0052cc);
-    color: white;
-    border-color: var(--accent-color, #0052cc);
-}
+
+/* ==========================================================================
+   4. RESPONSIVE MEDIA QUERIES (HIGHLIGHT HUB SECTION)
+   ========================================================================== */
 
 @media (max-width: 900px) {
     .hub-container {
         flex-direction: column;
+        min-height: auto;
+        padding: 15px; /* Adjust padding for smaller screens */
+        width: calc(100% - 30px); /* Adjust side margins */
+        margin: 40px auto; /* Adjust vertical margin for smaller screens */
     }
-    .actions-panel {
-        border-left: none;
-        border-top: 1px solid var(--border-color, #e0e0e0);
+    .highlights-panel {
+        max-height: none;
+        margin-bottom: 20px;
     }
     .hub-header h1 { font-size: 2em; }
     .hub-header p { font-size: 1em; }
 }
 
-@media (max-width: 600px) {
-    .ai-buttons-grid { grid-template-columns: 1fr; }
+@media (max-width: 768px) {
+    .highlights-panel {
+        padding: 15px;
+    }
+    .panel-header h2 {
+        font-size: 1.3em;
+    }
+    .hub-tab-btn {
+        font-size: 0.9em;
+        padding: 6px 12px;
+    }
+    .cards-container {
+        grid-template-columns: 1fr;
+    }
+    .timeline-container {
+        padding: 15px 0 15px 10px; /* Adjust padding for smaller screens */
+    }
+    .timeline-container::before {
+        left: 10px; /* Adjust line position */
+    }
+    .timeline-dot {
+        left: 1px; /* Adjust dot position */
+    }
+    .timeline-item {
+        padding-left: 40px; /* Adjust item padding */
+    }
+    .hub-container {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hub-header h1 { font-size: 1.8em; }
+    .hub-header p { font-size: 0.9em; }
+    .highlight-card {
+        padding: 12px;
+    }
+    .card-page-source {
+        font-size: 0.7em;
+        padding: 2px 6px;
+    }
+    .unhighlight-card-btn {
+        font-size: 1em;
+    }
+    .card-text {
+        font-size: 0.85em;
+    }
+    .card-actions button {
+        font-size: 0.75em;
+        padding: 5px 10px;
+    }
+    .scroll-down-arrow.hub-arrow {
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%) !important;
+    }
+    .hub-container {
+        margin: 20px auto;
+        padding: 10px;
+        width: calc(100% - 20px); /* Adjust side margins for very small screens */
+    }
 }

@@ -1,21 +1,32 @@
+// connect.js
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- 1. THEME MANAGEMENT (Dark/Light Mode) ---
+    // 이 함수 정의 전체를 connect.js에서 삭제합니다.
+    /*
     function initThemeManager() {
-        const themeToggleButton = document.getElementById('theme-toggle-btn');
+        const themeToggleButton = document.querySelector('.connect-page-header .theme-toggle-button');
         const sunIcon = document.getElementById('sun-icon');
         const moonIcon = document.getElementById('moon-icon');
 
-        if (!themeToggleButton) return;
+        if (!themeToggleButton) {
+            console.error("Error: Theme toggle button not found. Please check HTML for '.connect-page-header .theme-toggle-button'. Theme manager not initialized.");
+            return;
+        }
+        if (!sunIcon || !moonIcon) {
+            console.warn("Warning: Sun or Moon icon not found. Theme toggle visual might not work correctly.");
+        }
 
         const applyTheme = (theme) => {
             document.body.setAttribute('data-theme', theme);
-            if (theme === 'dark') {
-                sunIcon?.classList.add('hidden');
-                moonIcon?.classList.remove('hidden');
-            } else {
-                sunIcon?.classList.remove('hidden');
-                moonIcon?.classList.add('hidden');
+            if (sunIcon && moonIcon) {
+                if (theme === 'dark') {
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
+                } else {
+                    sunIcon.classList.remove('hidden');
+                    moonIcon.classList.add('hidden');
+                }
             }
         };
 
@@ -31,8 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const savedTheme = localStorage.getItem('oosuPortfolioTheme') || 'light';
         applyTheme(savedTheme);
     }
+    */ // initThemeManager 함수 끝
 
-    // --- 2. HEADER VISIBILITY OBSERVER (UPDATED) ---
+    // --- 2. HEADER VISIBILITY OBSERVER ---
     function initHeaderObserver() {
         const pageHeader = document.getElementById('connect-page-header');
         const heroSection = document.getElementById('hero-section');
@@ -56,13 +68,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const heroObserver = new IntersectionObserver(observerCallback, observerOptions);
             heroObserver.observe(heroSection);
+        } else {
+            console.warn("Header or Hero section not found for observer initialization. Header visibility observer not initialized.");
         }
     }
 
     // --- 3. GSAP & ANIMATION INITIALIZATION ---
     function initAnimations() {
-        if (typeof gsap === 'undefined') {
-            console.error("GSAP not loaded!");
+        if (typeof gsap === 'undefined' || typeof ScrollToPlugin === 'undefined' || typeof ScrollTrigger === 'undefined') {
+            console.error("GSAP or its plugins not loaded! Animations will not work.");
             return;
         }
         gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
@@ -80,19 +94,40 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
         
-        const sections = ['#highlight-hub-section', '#postcard-section'];
-        sections.forEach(sec => {
-            gsap.to(sec, {
-                scrollTrigger: {
-                    trigger: sec,
-                    start: 'top 85%',
-                    toggleActions: 'play none none none',
-                },
-                opacity: 1,
-                y: 0,
-                duration: 1.2,
-                ease: 'power3.out'
-            });
+        gsap.to('#highlight-hub-section', {
+            scrollTrigger: {
+                trigger: '#highlight-hub-section',
+                start: 'top 85%', 
+                toggleActions: 'play none none none',
+            },
+            opacity: 1,
+            y: 0,
+            duration: 1.2,
+            ease: 'power3.out'
+        });
+
+        gsap.to('#ai-assistant-section', {
+            scrollTrigger: {
+                trigger: '#ai-assistant-section',
+                start: 'top 85%',
+                toggleActions: 'play none none none',
+            },
+            opacity: 1,
+            y: 0,
+            duration: 1.2,
+            ease: 'power3.out'
+        });
+
+        gsap.to('#postcard-section', {
+            scrollTrigger: {
+                trigger: '#postcard-section',
+                start: 'top 85%',
+                toggleActions: 'play none none none',
+            },
+            opacity: 1,
+            y: 0,
+            duration: 1.2,
+            ease: 'power3.out'
         });
 
         document.body.addEventListener('mouseenter', (e) => {
@@ -125,7 +160,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const bodyElement = document.body;
         const inquiryForm = document.getElementById('inquiry-form');
 
-        if (!westernThemeBtn) return;
+        if (!westernThemeBtn || !easternThemeBtn || !postcardBack) {
+            console.warn("Postcard section elements (e.g., theme buttons or postcard back) not found. Postcard logic not fully initialized.");
+            return;
+        }
 
         function applyFrontTheme(theme) {
             postcardFronts.forEach(front => {
@@ -185,13 +223,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (inquiryForm) {
             inquiryForm.querySelectorAll('[required]').forEach(field => {
-                field.addEventListener('input', () => window.validateField(field));
-                field.addEventListener('blur', () => window.validateField(field));
+                if (typeof window.validateField === 'function') { 
+                    field.addEventListener('input', () => window.validateField(field));
+                    field.addEventListener('blur', () => window.validateField(field));
+                } else {
+                    console.warn("window.validateField is not defined. Form validation may not work.");
+                }
             });
 
             inquiryForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                let isFormValid = Array.from(inquiryForm.querySelectorAll('[required]')).every(field => window.validateField(field));
+                let isFormValid = true;
+                if (typeof window.validateField === 'function') {
+                    isFormValid = Array.from(inquiryForm.querySelectorAll('[required]')).every(field => window.validateField(field));
+                } else {
+                    console.warn("Skipping form validation as window.validateField is not defined.");
+                }
+
                 if (!isFormValid) return;
 
                 const postcardClone = postcardBack.cloneNode(true);
@@ -217,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 5. MAIN INITIALIZATION CALL ---
-    initThemeManager();
+    // initThemeManager(); // 이 줄을 삭제합니다.
     initHeaderObserver();
     initAnimations();
     initPostcardSection();
