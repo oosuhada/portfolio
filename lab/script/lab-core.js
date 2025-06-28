@@ -140,6 +140,10 @@ function renderCarouselCategoryJumpButtons(mode) {
     carouselCategoryJump.innerHTML = categoryButtonsHTML;
     console.log(`[Core] Category jump buttons rendered for mode: ${mode}.`);
 
+    // *** 핵심 수정 부분 1: 카테고리 점프 섹션을 DOM에 추가된 직후 초기에 숨기고 약간 아래로 이동시킵니다. ***
+    gsap.set(carouselCategoryJump, { opacity: 0, y: 20 });
+
+
     // If ModernCarousel instance exists, re-setup category jump events
     // This is called within switchProjectMode, so it will pick up new buttons
     if (window.modernCarouselInstanceForHobby) {
@@ -179,7 +183,7 @@ function generatePosterCards(mode, onReady) {
                 <div class="binding-line binding-top"></div>
                 <div class="binding-line binding-front-1"></div>
                 <div class="binding-line binding-front-2"></div>
-                <div class="binding-line binding-front-3"></div>
+                <div glines="binding-line binding-front-3"></div>
                 <div class="binding-line binding-side-1"></div>
                 <div class="binding-line binding-side-2"></div>
                 <div class="binding-line binding-side-3"></div>
@@ -350,7 +354,7 @@ window.initBackgroundSlideshow = function() {
     let currentImagePaths = [];
     let currentIntroImagePaths = [];
     const imageBaseUrl = './images/';
-    const totalAvailableBgImages = 150; // Max number of background images available
+    const totalAvailableBgImages = 50; // Max number of background images available
 
     const generateImagePaths = (themePrefix) => {
         const extension = themePrefix === 'bgdark' ? 'png' : 'jpg';
@@ -470,7 +474,7 @@ window.initBackgroundSlideshow = function() {
         const paths = generateImagePaths(theme === 'dark' ? 'bgdark' : 'bglight');
         let loaded = 0;
         // Don't rely on labGlobalState.totalImages here for preloading all 150 BGs
-        const totalToPreload = paths.length; 
+        const totalToPreload = paths.length;
         if (totalToPreload === 0) return;
 
         paths.forEach(path => {
@@ -487,7 +491,7 @@ window.initBackgroundSlideshow = function() {
         // Ensure visualIndex wraps correctly based on totalAvailableBgImages
         const safeVisualIndex = (visualIndex % totalAvailableBgImages + totalAvailableBgImages) % totalAvailableBgImages;
         const pathForCarousel = currentImagePaths[safeVisualIndex];
-        
+
         if (!pathForCarousel) {
             console.warn(`Path for carousel background not found at index ${safeVisualIndex}. Skipping background update.`);
             return;
@@ -528,6 +532,9 @@ window.initBackgroundSlideshow = function() {
  * This is where the initial carousel appearance is orchestrated.
  */
 window.startApplicationVisuals = () => {
+    // *** 핵심 수정 부분 1: 이제 .carousel-category-jump는 renderCarouselCategoryJumpButtons에서 초기에 숨겨지므로 여기서는 제거합니다. ***
+    // gsap.set('.carousel-category-jump', { opacity: 0, y: 20 });
+
     gsap.to(['main', '.carousel-hero'], { opacity: 1, duration: 0.8, ease: "power2.out", stagger: 0.1 });
     const backgroundSlideshow = document.getElementById('background-slideshow');
     if (backgroundSlideshow) {
