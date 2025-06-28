@@ -254,75 +254,83 @@ const animationTimeline = () => {
         .to(".idea-2", 0.7, ideaTextTransLeave, "+=2.5")
         .addLabel("idea2Done")
 
-        // 채팅 박스 섹션: 초기 등장
-        .from(".chatbox-section", 0.7, {
-            scale: 0.2,
-            opacity: 0,
-            onStart: () => {
-                gsap.set(".chatbox-section", { visibility: "visible" });
-            }
-        })
-        .from(".fake-btn", 0.3, { scale: 0.2, opacity: 0 })
-        .staggerTo(".portfolio-chatbox span", 0.5, { visibility: "visible" }, 0.05)
-        .addLabel("chatboxTextComplete")
+     // 채팅 박스 섹션: 초기 등장
+    .from(".chatbox-section", 0.7, {
+        scale: 0.2,
+        opacity: 0,
+        onStart: () => {
+            gsap.set(".chatbox-section", { visibility: "visible" });
+        }
+    })
+    .from(".fake-btn", 0.3, { 
+        scale: 0.2, 
+        opacity: 0, 
+        backgroundColor: "#CCCCCC",   // 밝은 회색
+        color: "#FFFFFF"              // 흰 텍스트
+    })
+    .staggerTo(".portfolio-chatbox span", 0.5, { visibility: "visible" }, 0.05)
+    .addLabel("chatboxTextComplete")
 
-        // 채팅 박스: "Ask AI" 단계 (초기 텍스트 설정 및 색상 설정)
-        .set(".fake-btn", {
-            onStart: () => {
-                document.querySelector("[data-node-name='sendButtonLabel']").innerText = customizeData.sendButtonLabel;
-                gsap.set(".fake-btn", {
-                    backgroundColor: "#888888", // Ask AI: Dark grey background
-                    color: "#ffffff"             // Ask AI: White text
-                });
-            }
-        })
-        .addLabel("chatboxAskAI")
+    // "Ask AI" 단계 (밝은 회색 배경 + 흰색 텍스트)
+    .set(".fake-btn", {
+        onStart: () => {
+            document.querySelector("[data-node-name='sendButtonLabel']").innerText = customizeData.sendButtonLabel;
+            gsap.set(".fake-btn", {
+                backgroundColor: "#CCCCCC",
+                color: "#FFFFFF"
+            });
+        }
+    })
+    .addLabel("chatboxAskAI")
 
-        // 텍스트 전환 시점 명확히 분리 및 .set() 사용
-        // 1. fake-btn opacity 0으로 페이드아웃
-        .to(".fake-btn", 0.3, { opacity: 0 })
-        // 2. opacity 0인 상태에서 텍스트를 "Let's Talk"로 변경 (역방향 시 "Ask AI"로 복구)
-        .set(".fake-btn", {
+    // *** 여기서 1초 이상 딜레이로 Ask AI 상태 충분히 노출 ***
+    .to({}, {duration: 1.2}) // 1.2초(원하는대로 조정), 빈 tween으로 딜레이
+
+    // 1. fake-btn opacity 0으로 페이드아웃
+    .to(".fake-btn", 0.3, { opacity: 0 })
+
+    // 2. opacity 0인 상태에서 텍스트를 "Let's Talk"로 변경 (역방향 시 "Ask AI"로 복구)
+    .set(".fake-btn", {
+        onStart: () => {
+            document.querySelector("[data-node-name='sendButtonLabel']").innerText = customizeData.sendButtonLabelAlt;
+        },
+        onReverseComplete: () => {
+            document.querySelector("[data-node-name='sendButtonLabel']").innerText = customizeData.sendButtonLabel;
+            gsap.set(".fake-btn", {
+                backgroundColor: "#CCCCCC",
+                color: "#FFFFFF"
+            });
+        }
+    })
+
+    // 3. 다시 opacity 1로 나타나면서 "Let's Talk" 텍스트 보장 및 어두운 회색 배경으로 변경
+    .fromTo(".fake-btn", 0.3,
+        { opacity: 0 },
+        {
+            opacity: 1,
+            backgroundColor: "#333333", // 어두운 회색
+            color: "#FFFFFF",           // 흰 텍스트
             onStart: () => {
-                document.querySelector("[data-node-name='sendButtonLabel']").innerText = customizeData.sendButtonLabelAlt;
+                const target = document.querySelector("[data-node-name='sendButtonLabel']");
+                if (target.innerText !== customizeData.sendButtonLabelAlt)
+                    target.innerText = customizeData.sendButtonLabelAlt;
             },
             onReverseComplete: () => {
                 document.querySelector("[data-node-name='sendButtonLabel']").innerText = customizeData.sendButtonLabel;
-                // 역방향으로 돌아올 때 버튼 색상도 초기 상태로 복구
-                gsap.set(".fake-btn", {
-                    backgroundColor: "#888888", // Reset to Ask AI background
-                    color: "#ffffff"             // Reset to Ask AI text color
-                });
             }
-        })
-        // 3. 다시 opacity 1로 나타나면서 "Let's Talk" 텍스트 보장 및 배경색 변경
-        .fromTo(".fake-btn", 0.3,
-            { opacity: 0 },
-            {
-                opacity: 1,
-                backgroundColor: "#333333", // Let's Talk: Darker background
-                color: "#ffffff",            // Let's Talk: White text
-                onStart: () => {
-                    const target = document.querySelector("[data-node-name='sendButtonLabel']");
-                    if (target.innerText !== customizeData.sendButtonLabelAlt)
-                        target.innerText = customizeData.sendButtonLabelAlt;
-                },
-                onReverseComplete: () => {
-                    document.querySelector("[data-node-name='sendButtonLabel']").innerText = customizeData.sendButtonLabel;
-                }
-            }
-        )
-        .addLabel("chatboxLetsTalk") // "Let's Talk" 상태가 완전히 확립된 지점
+        }
+    )
+    .addLabel("chatboxLetsTalk")
 
-        .to(".chatbox-section", 0.5, {
-            scale: 0.2,
-            opacity: 0,
-            y: -150,
-            onComplete: () => {
-                gsap.set(".chatbox-section", { visibility: "hidden" });
-            }
-        }, "+=0.7")
-        .addLabel("chatboxDone")
+    .to(".chatbox-section", 0.5, {
+        scale: 0.2,
+        opacity: 0,
+        y: -150,
+        onComplete: () => {
+            gsap.set(".chatbox-section", { visibility: "hidden" });
+        }
+    }, "+=0.7")
+    .addLabel("chatboxDone")
 
         // 아이디어 3
         .from(".idea-3", 0.7, ideaTextTrans)

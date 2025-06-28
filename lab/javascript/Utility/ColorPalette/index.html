@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Your Own Color Palette</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Poppins&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="bg">
+        <h1 style="font-variant: small-caps;">Create Your Own<br>Color Palette</h1>
+        <img src="https://assets.codepen.io/4970299/hsl.png" alt="" />
+        <div id="main">
+            <ul class="colors">
+                <li class="base-color color1">rgb(87, 96, 219)<br>#5760DB</li>
+                <li class="base-color color2">rgb(219, 87, 184)<br>#DB57B8</li>
+                <li class="base-color color3">rgb(219, 87, 96)<br>#DB5760</li>
+                <li class="base-color color4">rgb(219, 166, 87)<br>#DBA657</li>
+                <li class="base-color color5">rgb(184, 219, 87)<br>#B8DB57</li>
+            </ul>
+
+            <div class="inputs-container">
+                <div class="input-group">
+                    <label for="baseHue">Base Color</label>
+                    <input id="baseHue" type="range" min="0" max="360" value="236" data-prop="baseHue">
+                    <input id="baseHueValue" type="number" min="0" max="360" placeholder="236" step="1" data-prop="baseHue">
+                </div>
+
+                <div class="input-group">
+                    <label for="saturation">Saturation</label>
+                    <input id="saturation" type="range" min="0" max="100" value="65" data-prop="saturation">
+                    <input id="saturationValue" type="number" min="0" max="100" placeholder="65" step="1" data-prop="saturation">
+                </div>
+
+                <div class="input-group">
+                    <label for="lightness">Lightness</label>
+                    <input id="lightness" type="range" min="0" max="100" value="60" data-prop="lightness">
+                    <input id="lightnessValue" type="number" min="0" max="100" placeholder="60" step="1" data-prop="lightness">
+                </div>
+
+                <div class="input-group">
+                    <label for="rotation">Step To Next Color</label>
+                    <input id="rotation" type="range" min="0" max="360" value="40" data-prop="rotation">
+                    <input id="rotationValue" type="number" min="0" max="360" placeholder="40" step="1" data-prop="rotation">
+                </div>
+            </div>
+        </div>
+        <div style="width: fit-content; height: fit-content; margin: auto;">
+            <button id="saveButton">Download This Beauty</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

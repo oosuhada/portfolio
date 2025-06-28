@@ -857,25 +857,6 @@
                             <i class="fa-solid fa-paper-plane"></i>
                         </a>
                     </div>
-<!-- AI Assistant Loading Overlay - Hidden by default -->
-<div id="ai-loading-overlay" class="ai-loading-overlay">
-    <div class="ai-loading-content">
-        <div id="ai-loading-lottie-overlay"></div>
-        <p id="ai-loading-text-overlay">AI 어시스턴트 준비 중...</p>
-        <div class="ai-loading-progress-overlay">
-            <div class="step" data-status="">
-                <span class="circle">1</span> Analyzing your question
-            </div>
-            <div class="step" data-status="">
-                <span class="circle">2</span> Searching portfolio data
-            </div>
-            <div class="step" data-status="">
-                <span class="circle">3</span> Generating a tailored response
-            </div>
-        </div>
-    </div>
-</div>
-
 <div id="ai-assistant-FAB" aria-label="Open AI Assistant" role="button" tabindex="0">
     <img id="ai-assistant-ask-image" src="../../img/asklightmode.png" alt="Ask AI">
 </div>
@@ -885,25 +866,17 @@
 <div id="ai-portfolio-chat-modal" class="ai-portfolio-chat-modal" aria-modal="true" role="dialog">
     <div class="ai-portfolio-chat-modal-content">
         <span class="close-button" aria-label="Close chat modal">×</span>
-
         <div class="chat-scroll-area">
             <div class="chat-header">
                 <div id="aiAssistantHeaderLottie" class="ai-header-lottie-container"></div>
                 <strong>AI Portfolio Assistant</strong>
             </div>
-            <div class="chat-messages" id="portfolioChatMessages">
-                <!-- Chat messages will be dynamically added here -->
-            </div>
+            <div class="chat-messages" id="portfolioChatMessages"></div>
         </div>
-
         <div class="chat-input-area">
             <input type="text" id="aiPortfolioChatInput" placeholder="Ask me anything..." />
-            <button id="aiPortfolioChatSendBtn" class="ai-chat-send-btn">
-                <!-- Lottie animation for send button will be inserted here by JS -->
-            </button>
+            <button id="aiPortfolioChatSendBtn" class="ai-chat-send-btn"></button>
         </div>
-
-        <!-- This loading status element will be moved inside chat messages when active -->
         <div id="portfolioLoadingStatus" style="display: none;">
             <div class="loading-wrapper">
                 <div id="portfolioLoadingLottie"></div>
@@ -921,8 +894,7 @@
                 </div>
             </div>
         </div>
-
-        <div class="ai-portfolio-results" id="aiPortfolioResults" style="display: none;">
+        <div id="ai-portfolio-results" class="ai-portfolio-results" style="display: none;">
             <div class="ai-insight">
                 <span class="ai-insight-badge">INSIGHT</span>
                 <p id="portfolioInsightText"></p>

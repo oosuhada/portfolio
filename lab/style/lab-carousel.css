@@ -2,40 +2,59 @@
   padding-top: 100vh;
   box-sizing: border-box;
 }
+
 .carousel-hero {
   position: absolute;
   top: 6rem;
   left: 0;
   width: 100vw;
   z-index: 900;
-  text-align: center;
-  opacity: 0;
+  display: flex;
+  justify-content: space-between;
+  /* ⬇️ [수정] align-items를 'center'에서 'flex-start'로 변경하여 자식 요소들을 상단에 정렬합니다. */
+  align-items: flex-start;
+  padding: 0 6vw;
+  box-sizing: border-box;
   pointer-events: none;
 }
+
 .big-hero-desc {
-  font-size: 1.4rem;
+  /* ⬇️ [수정] font-size를 1.4rem에서 1.8rem으로 변경합니다. */
+  font-size: 1.8rem;
   font-weight: 600;
   color: var(--poster-text-color);
   letter-spacing: -0.01em;
   line-height: 1.3;
   margin-bottom: 1.8rem;
+  text-align: left;
+  flex-basis: 60%;
+  pointer-events: auto;
 }
+
+/* ⬇️ [수정] 기존 flex-direction: column 설정을 Grid 레이아웃으로 변경합니다. */
 .carousel-category-jump {
-  display: flex;
-  gap: 3.5rem;
-  justify-content: center;
-  margin-bottom: 0.2rem;
-  align-items: flex-start;
-  height: 80px; /* Provide space for labels */
+  /* ⬇️ [추가] display를 grid로 설정합니다. */
+  display: grid;
+  /* ⬇️ [추가] 3개의 열을 만들고, 각 열의 너비는 내용에 맞게 자동으로 조절되도록 합니다. */
+  grid-template-columns: repeat(2, auto);
+  /* ⬇️ [추가] 행(row)과 열(column)의 간격을 설정합니다. */
+  gap: 1rem 1rem; /* 세로(row) 간격 1.5rem, 가로(column) 간격 2.5rem */
+  pointer-events: auto;
+  /* ⬇️ [제거] flex-direction, align-items 등 기존 flexbox 속성은 제거합니다. */
 }
+
 .category-jump-item {
   position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row-reverse; 
   align-items: center;
+  gap: 0.5rem;
   transition: transform 0.3s ease-out;
   filter: grayscale(80%);
+  /* ⬇️ [추가] Grid 레이아웃의 자식 요소로서 정렬 방식을 지정합니다. */
+  justify-self: end; /* 아이템을 그리드 셀의 오른쪽 끝에 배치 */
 }
+
 .category-jump-btn {
   width: 2.8rem;
   height: 2.8rem;
@@ -49,75 +68,68 @@
   align-items: center;
   justify-content: center;
   padding: 0;
-
+  flex-shrink: 0;
+    scale: 0.8;
 }
-/* 첫 번째와 마지막 아이템을 가장 많이 내립니다 */
+
+/* 주석 처리된 기존 스타일 */
 /* .category-jump-item:nth-child(1),
 .category-jump-item:nth-child(6) {
   transform: translateY(25px);
 } */
-
-/* 두 번째와 다섯 번째 아이템을 중간 정도로 내립니다 */
 /* .category-jump-item:nth-child(2),
 .category-jump-item:nth-child(5) {
   transform: translateY(10px);
 } */
+
 .category-jump-btn img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
 }
+
 .category-jump-label {
-  position: absolute;
-  top: 100%;
-  margin-top: 13px;
   color: var(--poster-text-color);
   font-size: 15px;
   font-weight: 600;
   white-space: nowrap;
-  text-align: center;
+  text-align: right;
   pointer-events: none;
-  /* 기본적으로 라벨이 보이도록 opacity를 0.7로 설정하고, 위치 이동(transform) 제거 */
   opacity: 0.6;
-  transform: translateY(0);
-  /* 부드러운 전환 효과를 위해 transition 속성 수정 */
-  transition: opacity 0.2s ease-out;
-}
-.category-jump-item:hover {
-  filter: grayscale(0%); /* Full color on hover */
+  transition: opacity 0.2s ease-out, color 0.2s ease-out;
 }
 
-/* If you have an active state that should also be full color */
+.category-jump-item:hover {
+  filter: grayscale(0%);
+}
+
 .category-jump-item.active {
-  filter: grayscale(0%); /* Full color when active */
-  /* transform: scale(1.12); */
+  filter: grayscale(0%);
 }
 
 .category-jump-item:hover .category-jump-btn {
   transform: scale(1.12);
   background: #ffd166;
   color: #24243e;
-  transform: translateY(0px);
 }
 
 .category-jump-item:hover .category-jump-label {
   opacity: 1;
-  /* transform: translateY(-4px); */
 }
 
 .category-jump-btn.active {
   background: #ffd166;
   color: #24243e;
-  transform: scale(1.12) translateY(-4px); /* Apply translateY for active button */
+  transform: scale(1.12);
 }
 
-/* Corrected typo: changed '.category-jump-item:actic' to '.category-jump-item.active' */
 .category-jump-item.active .category-jump-label {
   opacity: 1;
-  transform: translateY(-4px); /* Apply translateY for active label */
-  color: var(--primary-color); /* Set active label color to --primary-color */
+  transform: translateY(0);
+  color: var(--primary-color);
 }
+
 .carousel-section {
   display: flex;
   flex-direction: column;
@@ -125,6 +137,7 @@
   min-height: 90vh;
   justify-content: flex-end;
 }
+
 .initial-carousel-space {
   min-height: calc(160px + 340px + 50px + 20px);
   display: flex;
@@ -134,6 +147,7 @@
   width: 100vw;
   position: relative;
 }
+
 .carousel {
   position: relative;
   width: 98vw;
@@ -144,6 +158,7 @@
   pointer-events: auto;
   z-index: 1;
 }
+
 .poster {
   opacity: 0;
   width: 200px;
@@ -166,8 +181,8 @@
   border-radius: 7px;
   overflow: hidden;
   background-color: #fdfaf3;
-  /* The paper texture is now on the overlay, but keeping a base color is good practice. */
 }
+
 .poster-preview-container {
   position: absolute;
   top: 0;
@@ -177,6 +192,7 @@
   z-index: 1;
   background-color: transparent;
 }
+
 .poster-iframe {
   width: 1000px;
   height: 1400px;
@@ -188,6 +204,7 @@
   transition: opacity 0.3s;
   z-index: 1;
 }
+
 .poster-paper-overlay {
     position: absolute;
     top: 0;
@@ -201,6 +218,7 @@
     transition: opacity 0.8s ease-in-out;
     border-radius: 7px;
 }
+
 .poster-dim-overlay {
   position: absolute;
   top: 0;
@@ -212,9 +230,11 @@
   pointer-events: none;
   transition: background-color 0.3s ease;
 }
+
 body[data-theme='dark'] .poster-dim-overlay {
   background-color: rgba(0, 0, 0, 0.4);
 }
+
 .poster-text-overlay {
   position: relative;
   z-index: 4;
@@ -233,6 +253,7 @@ body[data-theme='dark'] .poster-dim-overlay {
   box-sizing: border-box;
   color: #fff;
 }
+
 body[data-theme='light'] .poster {
   filter: sepia(20%);
   background-blend-mode: multiply;
@@ -240,10 +261,12 @@ body[data-theme='light'] .poster {
   background-size: cover;
   background-position: center;
 }
+
 body[data-theme='dark'] .poster {
   filter: none;
   background-image: none;
 }
+
 .poster::before {
   content: '';
   position: absolute;
@@ -254,6 +277,7 @@ body[data-theme='dark'] .poster {
   height: 100%;
   transform: translateZ(-10px);
 }
+
 .poster::after {
   content: '';
   position: absolute;
@@ -264,16 +288,20 @@ body[data-theme='dark'] .poster {
   height: 6px;
   transform: translateZ(-10px);
 }
+
 body[data-theme='light'] .poster::before {
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2));
 }
+
 body[data-theme='light'] .poster::after {
   background: linear-gradient(to right, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2));
 }
+
 body[data-theme='dark'] .poster::before,
 body[data-theme='dark'] .poster::after {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
 }
+
 .book-binding {
   position: absolute;
   left: 10px;
@@ -283,15 +311,18 @@ body[data-theme='dark'] .poster::after {
   z-index: 5;
   transition: opacity 0.3s ease;
 }
+
 body[data-theme='light'] .book-binding {
   opacity: 1;
   display: block;
 }
+
 body[data-theme='dark'] .book-binding {
   opacity: 0;
   pointer-events: none;
   display: none;
 }
+
 .binding-line {
   position: absolute;
   filter: url(#yarnFilter);
@@ -300,6 +331,7 @@ body[data-theme='dark'] .book-binding {
   background-blend-mode: multiply;
   box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
+
 .carousel-labels {
   pointer-events: none;
   width: 100vw;
@@ -308,11 +340,11 @@ body[data-theme='dark'] .book-binding {
   margin-top: 20px;
   position: relative;
 }
+
 .carousel-labels .label {
   position: absolute;
   left: 50%;
   top: 0;
-  /* ▼▼▼ [수정] 정의되지 않은 --gray-dark 대신 --poster-text-color 변수 사용 ▼▼▼ */
   color: var(--poster-text-color);
   font-size: 1.05em;
   font-family: 'Georgia', serif;
@@ -320,15 +352,18 @@ body[data-theme='dark'] .book-binding {
   transform-origin: bottom center;
   pointer-events: none;
 }
+
 .footer-spacer-hobby {
   height: 21rem;
   width: 100%;
 }
+
 #hobbyPageStandardFooter {
   min-height: 350px;
   padding-top: 3rem;
   padding-bottom: 4rem;
 }
+
 #background-slideshow {
   position: absolute;
   top: 0px;
@@ -342,6 +377,7 @@ body[data-theme='dark'] .book-binding {
   backface-visibility: hidden;
   transition: background-color 0.3s ease;
 }
+
 #background-slideshow img {
   position: absolute;
   top: 0;
@@ -354,6 +390,7 @@ body[data-theme='dark'] .book-binding {
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
 }
+
 #bgImageA,
 #bgImageB {
   position: absolute;

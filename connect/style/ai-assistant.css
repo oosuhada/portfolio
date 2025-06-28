@@ -129,6 +129,7 @@ body[data-theme="light"] #ai-assistant-section {
     box-shadow: 0 2px 8px var(--glass-shadow2); 
     word-break: break-word;
     min-width: 0;
+    min-height: 4rem; /* 버튼의 최소 높이를 지정합니다. (약 64px) */
 }
 .connect-ai-buttons-grid button.active {
     background: var(--point-gradient2); 
@@ -210,12 +211,12 @@ body[data-theme="light"] #ai-assistant-section {
     }
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 900px) {
     .ai-assistant-layout-wrapper {
         flex-direction: row;
         align-items: flex-start;
-        gap: 80px;
-        padding: 0 120px;
+        gap: clamp(2.5rem, 5vw, 5rem);
+        padding: 0 clamp(2.5rem, 7.5vw, 5rem);
     }
 
     .ai-assistant-column-left {

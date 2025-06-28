@@ -247,12 +247,12 @@ body {
 .connect-page-header .theme-icon.hidden { transform: translate(-50%, -50%) rotate(-90deg); opacity: 0; }
 
 /* Light Theme Header Button Styles */
-body[data-theme="light"] .connect-page-header .button { color: #333; background: transparent; border: 1px solid #333; }
+body[data-theme="light"] .connect-page-header .button { color: #333; background: var(--primary-bg-opacity); border: 1px solid #333; }
 body[data-theme="light"] .connect-page-header .button:hover { background-color: #333; color: #fff; border-color: #333; }
 body[data-theme="light"] .connect-page-header .theme-icon { stroke: #333; }
 
 /* Dark Theme Header Button Styles */
-body[data-theme="dark"] .connect-page-header .button { color: #eee; background: transparent; border: 1px solid #eee; }
+body[data-theme="dark"] .connect-page-header .button { color: #eee; background: var(--primary-bg-opacity); border: 1px solid #eee; }
 body[data-theme="dark"] .connect-page-header .button:hover { background-color: #eee; color: #111; border-color: #eee; }
 body[data-theme="dark"] .connect-page-header .theme-icon { stroke: #eee; }
 

@@ -333,13 +333,25 @@ body[data-theme="dark"] .error-message {
     }
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 900px) {
     .connect-postcard-layout-wrapper {
         display: flex;
         align-items: flex-start;
         justify-content: center;
-        gap: 80px;
-        padding: 0 120px;
+        
+        /* gap 동적 값 설정:
+          - 최소 gap: 2.5rem (40px)
+          - 선호하는 gap: 뷰포트 너비의 5% (5vw)
+          - 최대 gap: 5rem (80px)
+        */
+        gap: clamp(2.5rem, 5vw, 5rem);
+        
+        /* 좌우 padding 동적 값 설정:
+          - 최소 padding: 2.5rem (40px)
+          - 선호하는 padding: 뷰포트 너비의 7.5% (7.5vw)
+          - 최대 padding: 7.5rem (120px)
+        */
+        padding: 0 clamp(2.5rem, 7.5vw, 5rem);
     }
 
     .section-header {

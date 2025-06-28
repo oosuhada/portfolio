@@ -1,0 +1,205 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    display: grid;
+    font-family: system-ui;
+    font-size: 30px;
+    text-shadow:
+        3px 3px 2px #000,
+        -3px 3px 2px #000,
+        -3px -3px 0 #000,
+        3px -3px 0 #000;
+    font-weight: 400;
+    color: #fff;
+}
+
+canvas {
+    z-index: -1;
+}
+
+input {
+    display: none;
+}
+
+#menus {
+    justify-self: end;
+    position: absolute;
+    display: grid;
+    margin: 15px;
+    gap: 15px;
+}
+
+label {
+    justify-self: end;
+}
+
+section {
+    display: grid;
+    grid-auto-flow: row-reverse;
+    width: fit-content;
+    justify-self: end;
+    position: absolute;
+    align-self: end;
+}
+
+.icon {
+    display: block;
+    width: 100px;
+    aspect-ratio: 1;
+}
+
+#camLabel {
+    justify-self: center;
+    position: absolute;
+    display: grid;
+    margin: 20px;
+    grid-auto-flow: column;
+    place-items: center;
+    /* gap: 15px; */
+}
+
+#camLabel span {
+    width: fit-content;
+    text-align: center;
+}
+
+.setLabel {
+    background: #f80;
+    margin: 0 20px 20px 0;
+    order: 2;
+    border-width: 2px 0 0 2px;
+    border-style: solid;
+    border-color: #fdb;
+    border-radius: 10px;
+    position: relative;
+    transition: all .25s ease-in-out;
+    filter: grayscale(1);
+}
+
+.setLabel:hover {
+    filter: grayscale(0);
+}
+
+.wrench {
+    position: absolute;
+    inset: 0;
+    display: grid;
+}
+
+.wrench > * {
+    position: absolute;
+}
+
+.head {
+    width: 33.33%;
+    aspect-ratio: 1;
+    margin: 8.33%;
+    border-radius: 50%;
+    box-shadow: inset 3px 3px 3px #fdb, inset -3px -3px 3px #420;
+    display: grid;
+}
+
+.head:nth-child(1) div {
+    justify-self: center;
+    transform-origin: 50% 100%;
+    rotate: -45deg;
+    width: 25%;
+    height: 38%;
+    bottom: 50%;
+    background-color: #f80;
+    border: 4px solid rgba(68, 34, 0, 0.5);
+    border-top: none;
+    border-bottom-color: #fdb;
+    position: absolute;
+}
+
+.head:nth-child(2) {
+    place-self: end;
+    background-image: radial-gradient(transparent 0%, rgba(68, 68, 68, 0.5) 30%, transparent 0);
+}
+
+.shaft {
+    place-self: center;
+    width: 42%;
+    aspect-ratio: 1;
+    background-image: linear-gradient(45deg, transparent 37.5%, #420 0, #f80 45% 55%, #fdb 62.75%, transparent 0);
+}
+
+#phongLbl { --clr: 10deg; --nth: 1; }
+#linesLbl { --clr: 50deg; --nth: 2; }
+#ombraLbl { --clr: 120deg; --nth: 3; }
+#knobsLbl { --clr: 260deg; --nth: 4; }
+
+#settings {
+    margin-right: 15px;
+    width: 20ch;
+    pointer-events: none;
+}
+
+#settings > * {
+    display: block;
+    text-align: center;
+    transition: font-weight .5s ease-in-out;
+    padding-block: 15px;
+    box-shadow: inset 2px 2px 0 0 rgba(255, 255, 255, 0.5);
+    background-color: hsl(var(--clr) 100% 50%);
+    border-radius: 5px;
+    position: relative;
+}
+
+#settings > *::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    inset-inline: 0;
+    height: 15px;
+    --studW: 20%;
+    z-index: -1;
+    background-image: repeating-linear-gradient(90deg, transparent 0 calc(var(--studW)/6), hsl(var(--clr) 100% 85%) 0, hsl(var(--clr) 100% 50%), hsl(var(--clr) 100% 50%), hsl(var(--clr) 100% 25%) calc(var(--studW)/6*5), transparent 0 var(--studW));
+}
+
+#settings label {
+    opacity: 0;
+    z-index: calc(5 - var(--nth));
+}
+
+#settings .camType { font-weight: 700; }
+
+/* #setOn:not(:checked) ~ section & { display: none; } */
+#setOn:checked ~ section #settings label {
+    pointer-events: all;
+    animation: build .01s linear forwards calc(.25s*(4 - var(--nth)));
+}
+
+@keyframes build {
+    100% { opacity: 1; }
+}
+
+#camPrev, #camNext {
+    width: 50px;
+    aspect-ratio: 1;
+    background-color: gray;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5) rgba(0, 0, 0, 0.5) rgba(255, 255, 255, 0.5);
+    display: grid;
+    place-items: center;
+    position: relative;
+    clip-path: polygon(0% 0%, calc(50%*(1 - var(--dir))) calc(50%*(1 + var(--dir))), 100% 100%);
+    rotate: 45deg;
+    --dir: 1;
+    transition: all .25s ease-in-out;
+}
+
+#camPrev:hover, #camNext:hover { background-color: #f80; }
+
+#camNext { --dir: -1; }
+
+.stud {
+    width: 66%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    box-shadow: inset 3px 0 3px rgba(255, 255, 255, 0.5), inset -3px 0 3px rgba(0, 0, 0, 0.5);
+}
+
+.checked { font-weight: 700; }

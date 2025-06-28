@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f4f4f4, #e0e0e0);
+            min-height: 100vh;
+        }
+        .converter-container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            width: 95%;
+            padding: 25px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 25px;
+            color: #222;
+        }
+        select, input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        select:focus, input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 1em;
+            color: white;
+            background: #007bff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+        }
+        .result {
+            font-size: 1.3em;
+            margin-top: 20px;
+            color: #333;
+            font-weight: 500;
+        }
+        .history {
+            margin-top: 20px;
+            text-align: left;
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 6px;
+        }
+        .history-item {
+            font-size: 0.9em;
+            color: #555;
+            margin: 5px 0;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="converter-container">
+        <h1>Unit Converter</h1>
+        <select id="conversion-type" onchange="updateConverter()">
+            <option value="currency">Currency</option>
+            <option value="temperature">Temperature</option>
+            <option value="weight">Weight</option>
+            <option value="length">Length</option>
+        </select>
+        <div id="converter"></div>
+        <div class="button-container">
+            <button onclick="convert()">Convert</button>
+            <button onclick="clearInputs()">Clear</button>
+        </div>
+        <div id="result" class="result"></div>
+        <div id="history" class="history"></div>
+    </div>
+
+    <script>
+        const converter = document.getElementById("converter");
+        const result = document.getElementById("result");
+        const history = document.getElementById("history");
+        let conversionHistory = [];
+
+        function updateConverter() {
+            const conversionType = document.getElementById("conversion-type").value;
+            let html = `
+                <input type="number" id="input-value" placeholder="Enter value" step="any">
+                <select id="from-unit">
+            `;
+            
+            if (conversionType === "currency") {
+                html += `
+                    <option value="USD">USD (US Dollar)</option>
+                    <option value="EUR">EUR (Euro)</option>
+                    <option value="GBP">GBP (British Pound)</option>
+                    <option value="INR">INR (Indian Rupee)</option>
+                    <option value="JPY">JPY (Japanese Yen)</option>
+                    <option value="KRW">KRW (South Korean Won)</option>
+                    <option value="CNY">CNY (Chinese Yuan)</option>
+                </select>
+                <select id="to-unit">
+                    <option value="USD">USD (US Dollar)</option>
+                    <option value="EUR">EUR (Euro)</option>
+                    <option value="GBP">GBP (British Pound)</option>
+                    <option value="INR">INR (Indian Rupee)</option>
+                    <option value="JPY">JPY (Japanese Yen)</option>
+                    <option value="KRW">KRW (South Korean Won)</option>
+                    <option value="CNY">CNY (Chinese Yuan)</option>
+                `;
+            } else if (conversionType === "temperature") {
+                html += `
+                    <option value="Celsius">Celsius</option>
+                    <option value="Fahrenheit">Fahrenheit</option>
+                    <option value="Kelvin">Kelvin</option>
+                </select>
+                <select id="to-unit">
+                    <option value="Celsius">Celsius</option>
+                    <option value="Fahrenheit">Fahrenheit</option>
+                    <option value="Kelvin">Kelvin</option>
+                `;
+            } else if (conversionType === "weight") {
+                html += `
+                    <option value="Kilograms">Kilograms</option>
+                    <option value="Pounds">Pounds</option>
+                    <option value="Ounces">Ounces</option>
+                    <option value="Grams">Grams</option>
+                    <option value="Metric Tons">Metric Tons</option>
+                </select>
+                <select id="to-unit">
+                    <option value="Kilograms">Kilograms</option>
+                    <option value="Pounds">Pounds</option>
+                    <option value="Ounces">Ounces</option>
+                    <option value="Grams">Grams</option>
+                    <option value="Metric Tons">Metric Tons</option>
+                `;
+            } else if (conversionType === "length") {
+                html += `
+                    <option value="Meters">Meters</option>
+                    <option value="Kilometers">Kilometers</option>
+                    <option value="Feet">Feet</option>
+                    <option value="Miles">Miles</option>
+                    <option value="Centimeters">Centimeters</option>
+                    <option value="Inches">Inches</option>
+                </select>
+                <select id="to-unit">
+                    <option value="Meters">Meters</option>
+                    <option value="Kilometers">Kilometers</option>
+                    <option value="Feet">Feet</option>
+                    <option value="Miles">Miles</option>
+                    <option value="Centimeters">Centimeters</option>
+                    <option value="Inches">Inches</option>
+                `;
+            }
+
+            html += `</select>`;
+            converter.innerHTML = html;
+            result.innerHTML = "";
+        }
+
+        function convert() {
+            const conversionType = document.getElementById("conversion-type").value;
+            const inputValue = parseFloat(document.getElementById("input-value").value);
+            const fromUnit = document.getElementById("from-unit").value;
+            const toUnit = document.getElementById("to-unit").value;
+
+            if (isNaN(inputValue)) {
+                result.innerHTML = "Please enter a valid number.";
+                return;
+            }
+
+            if (fromUnit === toUnit) {
+                result.innerHTML = `Result: ${inputValue.toFixed(4)} ${toUnit}`;
+                addToHistory(inputValue, fromUnit, inputValue, toUnit);
+                return;
+            }
+
+            let conversionResult = 0;
+
+            if (conversionType === "currency") {
+                // Mock currency rates (real implementations use APIs)
+                const rates = {
+                    USD: 1,
+                    EUR: 0.89,
+                    GBP: 0.78,
+                    INR: 83.5,
+                    JPY: 147.2,
+                    KRW: 1380,
+                    CNY: 7.25
+                };
+                conversionResult = (inputValue / rates[fromUnit]) * rates[toUnit];
+            } else if (conversionType === "temperature") {
+                if (fromUnit === "Celsius") {
+                    if (toUnit === "Fahrenheit") conversionResult = (inputValue * 9/5) + 32;
+                    else if (toUnit === "Kelvin") conversionResult = inputValue + 273.15;
+                } else if (fromUnit === "Fahrenheit") {
+                    if (toUnit === "Celsius") conversionResult = (inputValue - 32) * 5/9;
+                    else if (toUnit === "Kelvin") conversionResult = ((inputValue - 32) * 5/9) + 273.15;
+                } else if (fromUnit === "Kelvin") {
+                    if (toUnit === "Celsius") conversionResult = inputValue - 273.15;
+                    else if (toUnit === "Fahrenheit") conversionResult = ((inputValue - 273.15) * 9/5) + 32;
+                }
+                if (toUnit === "Kelvin" && conversionResult < 0) {
+                    result.innerHTML = "Error: Temperature cannot be below 0 Kelvin.";
+                    return;
+                }
+            } else if (conversionType === "weight") {
+                const weights = {
+                    Kilograms: 1,
+                    Pounds: 2.20462,
+                    Ounces: 35.274,
+                    Grams: 1000,
+                    "Metric Tons": 0.001
+                };
+                conversionResult = (inputValue / weights[fromUnit]) * weights[toUnit];
+            } else if (conversionType === "length") {
+                const lengths = {
+                    Meters: 1,
+                    Kilometers: 0.001,
+                    Feet: 3.28084,
+                    Miles: 0.000621371,
+                    Centimeters: 100,
+                    Inches: 39.3701
+                };
+                conversionResult = (inputValue / lengths[fromUnit]) * lengths[toUnit];
+            }
+
+            const formattedResult = conversionResult.toFixed(4).replace(/\.?0+$/, "");
+            result.innerHTML = `Result: ${formattedResult} ${toUnit}`;
+            addToHistory(inputValue, fromUnit, conversionResult, toUnit);
+        }
+
+        function addToHistory(inputValue, fromUnit, outputValue, toUnit) {
+            const formattedInput = inputValue.toFixed(4).replace(/\.?0+$/, "");
+            const formattedOutput = outputValue.toFixed(4).replace(/\.?0+$/, "");
+            const historyItem = `${formattedInput} ${fromUnit} = ${formattedOutput} ${toUnit}`;
+            conversionHistory.unshift(historyItem);
+            if (conversionHistory.length > 5) conversionHistory.pop();
+            history.innerHTML = conversionHistory.map(item => `<div class="history-item">${item}</div>`).join("");
+        }
+
+        function clearInputs() {
+            document.getElementById("input-value").value = "";
+            result.innerHTML = "";
+            conversionHistory = [];
+            history.innerHTML = "";
+        }
+
+        // Initialize with default converter
+        updateConverter();
+    </script>
+</body>
+</html>

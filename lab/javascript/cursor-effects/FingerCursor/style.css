@@ -1,0 +1,255 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    /* 변경점: 배경색을 어두운 회색으로 설정 */
+    background-color: #404040; 
+    overflow: hidden;
+    cursor: none !important;
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    /* 변경점: 배경 이미지 속성 제거 */
+    user-select: none;
+}
+
+#hand {
+    cursor: pointer;
+    position: absolute;
+    /* 변경점: 커서 크기를 120px로 늘림 */
+    width: 200px; 
+    height: auto;
+    pointer-events: none;
+    transform-origin: 50% -15%;
+    transform: translate(-22%, -16%);
+    z-index: 1000;
+}
+
+#clicked-icon {
+    display: none;
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    pointer-events: none;
+    transform-origin: 50% -15%;
+    transform: translate(-47%, -30%);
+    z-index: 500;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: translate(-47%, -30%) rotate(0deg); }
+    to { transform: translate(-47%, -30%) rotate(360deg); }
+}
+
+
+.element-box {
+    position: absolute;
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    width: auto;
+    min-width: 150px;
+    cursor: none !important;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    cursor: none !important;
+}
+
+/* Slider styling */
+.slider {
+    width: 200px;
+    height: 25px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+    border-radius: 5px;
+    cursor: none !important;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+/* Button styling */
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: all 0.3s;
+    margin: 5px;
+    cursor: none !important;
+}
+
+.btn-primary {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #2196F3;
+    color: white;
+}
+
+.btn-danger {
+    background-color: #f44336;
+    color: white;
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Knob styling */
+.knob {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+    border: 8px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), inset 0 -2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+    margin: 5px auto;
+    display: block;
+    cursor: none !important;
+}
+
+.knob::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 30px;
+    background-color: #666;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 4px;
+}
+
+.knob-value {
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* Checkbox styling */
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.custom-checkbox input {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    cursor: none !important;
+}
+
+/* Select styling */
+select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    cursor: none !important;
+}
+
+/* Color picker */
+.color-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.color-picker {
+    height: 40px;
+    width: 80px;
+    padding: 2px;
+    border: none;
+    border-radius: 5px;
+    cursor: none !important;
+}
+
+.color-display {
+    height: 40px;
+    width: 80px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+/* Toggle switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider-switch {
+    position: absolute;
+    cursor: none !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider-switch:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked+.slider-switch {
+    background-color: #2196F3;
+}
+
+input:checked+.slider-switch:before {
+    transform: translateX(26px);
+}
+
+.switch-label {
+    margin-left: 10px;
+}
+
+/* Radio buttons */
+.radio-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+}
+
+.radio-option input {
+    margin-right: 10px;
+    cursor: none !important;
+}

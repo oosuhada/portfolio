@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon Battle Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="game-container">
+    <h1>Pokemon Battle</h1>
+
+    <div class="selection-screen" id="selection-screen">
+        <h2>Select Your Pokemon</h2>
+        <div class="pokemon-selection" id="pokemon-selection">
+            </div>
+        <button id="start-battle" class="button" disabled>Start Battle</button>
+    </div>
+
+    <div class="battle-screen" id="battle-screen" style="display: none">
+        <div class="battle-field">
+            <div class="opponent-area">
+                <div class="health-bar-container">
+                    <div class="pokemon-name" id="opponent-name"></div>
+                    <div class="health-bar">
+                        <div class="health-fill" id="opponent-health"></div>
+                    </div>
+                    <div class="health-text" id="opponent-health-text">100/100</div>
+                </div>
+                <div class="pokemon opponent" id="opponent-pokemon"></div>
+            </div>
+
+            <div class="player-area">
+                <div class="pokemon player" id="player-pokemon"></div>
+                <div class="health-bar-container">
+                    <div class="pokemon-name" id="player-name"></div>
+                    <div class="health-bar">
+                        <div class="health-fill" id="player-health"></div>
+                    </div>
+                    <div class="health-text" id="player-health-text">100/100</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="battle-controls">
+            <div class="message-box" id="message-box">Choose your move!</div>
+            <div class="moves-container" id="moves-container">
+                </div>
+        </div>
+    </div>
+
+    <div class="battle-result" id="battle-result" style="display: none">
+        <h2 id="result-message"></h2>
+        <button id="play-again" class="button">Play Again</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

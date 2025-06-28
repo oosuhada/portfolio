@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Ink Blob Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ===== [Monochrome & Spacious Design] ===== */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            background: linear-gradient(145deg, #f0f0f0, #e0e0e0);
+            margin: 0;
+            color: #333333;
+            overflow-x: hidden;
+            position: relative;
+            background-attachment: fixed;
+            padding: 2.5rem 6rem;
+        }
+
+        body::before, body::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        body::before {
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(190, 190, 190, 0.3), transparent 75%);
+            top: -40px;
+            left: -10%;
+        }
+
+        body::after {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(200, 200, 200, 0.3), transparent 75%);
+            bottom: -40px;
+            right: -10%;
+        }
+
+        .container {
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.25);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08), 0 2px 10px rgba(0,0,0,0.03);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 40px 50px;
+            width: 98%;
+            max-width: 780px;
+            margin: 30px auto 20px auto;
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+            box-sizing: border-box;
+        }
+
+        .container:hover {
+            transform: translateY(-5px) scale(1.005);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1), 0 3px 12px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            color: #1a1a1a;
+            margin-bottom: 30px;
+            font-size: 2em;
+            font-weight: 700;
+            text-shadow: 0 1.5px 5px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 0.005em;
+        }
+
+        /* Ink Blob Preview */
+        .ink-blob-preview {
+            width: 100%;
+            height: 200px;
+            border: none;
+            border-radius: 45% 58% 62% 37% / 52% 38% 67% 49%;
+            margin-bottom: 30px;
+            background-color: #2a2a2a; /* Default dark gray ink color */
+            box-shadow: 0 4px 20px 0 rgba(0,0,0,0.08) inset, 0 8px 25px rgba(0,0,0,0.06);
+            transition: border-radius 0.3s ease, filter 0.3s ease, background-color 0.3s ease, width 0.3s ease, height 0.3s ease; /* Smooth transition for all properties */
+            filter: url(#classicWetInk);
+            transform: translateZ(0);
+            position: relative;
+            overflow: hidden;
+            display: flex; /* Centering content, though not strictly needed here */
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Controls Grid */
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr; /* Always stack the main control sections vertically */
+            gap: 30px;
+            margin-bottom: 0;
+        }
+
+        .control-section {
+            background: rgba(255,255,255,0.18);
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.22);
+            padding: 20px 18px 16px 18px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.2s ease-out;
+            flex: 1 1 100%;
+            min-width: 0;
+        }
+
+        .control-section h2 {
+            color: #2a2a2a;
+            font-size: 1.1em;
+            margin: 0 0 14px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        }
+
+        .control-group {
+            display: flex;
+            flex-wrap: wrap; /* Changed from nowrap to wrap for general control groups */
+            align-items: center;
+            gap: 16px 10px;
+            padding: 12px 0 14px 0;
+            border-bottom: 1px solid rgba(220,220,240,0.08);
+        }
+
+        .control-group:last-of-type {
+            border-bottom: none;
+        }
+
+        .control-group label {
+            font-weight: 500;
+            color: #3a3a3a;
+            min-width: 65px;
+            flex-shrink: 0;
+            font-size: 0.9em;
+            margin-right: 4px;
+        }
+
+        .control-group select,
+        .control-group input[type="range"],
+        .control-group .number-input,
+        .control-group input[type="color"] { /* Added color input */
+            flex-grow: 1;
+            padding: 8px 9px;
+            border: 1px solid rgba(200, 210, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.25);
+            font-size: 0.9em;
+            color: #2a2a2a;
+            box-shadow: 0 1.5px 6px rgba(0,0,0,0.03) inset;
+            transition: all 0.15s ease-out;
+            min-width: 0; /* Ensure inputs can shrink */
+        }
+
+        .control-group select:focus,
+        .control-group input[type="range"]:focus,
+        .control-group .number-input:focus,
+        .control-group input[type="color"]:focus {
+            outline: none;
+            border-color: #555555;
+            box-shadow: 0 0 0 2.5px rgba(85, 85, 85, 0.1);
+        }
+
+        .control-group .number-input {
+            width: 58px;
+            flex-grow: 0;
+            flex-shrink: 0; /* Prevent it from shrinking if it's explicitly sized */
+        }
+
+        .control-group span {
+            min-width: 40px;
+            text-align: right;
+            font-weight: 500;
+            color: #2a2a2a;
+            font-variant-numeric: tabular-nums;
+            font-size: 0.9em;
+            margin-left: 6px;
+            flex-shrink: 0;
+        }
+        
+        /* Radius controls grid - 2x2 by default for larger screens */
+        .radius-controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .radius-corner-group {
+            border: 1px solid rgba(220,220,240,0.08);
+            border-radius: 8px;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+        }
+        .radius-corner-group label {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #4a4a4a;
+            margin-bottom: 5px;
+            display: block;
+        }
+        /* Specific styling for control-group inside radius-corner-group for compactness */
+        .radius-corner-group .control-group {
+            padding: 5px 0; /* Reduced padding */
+            margin: 0;
+            border-bottom: none;
+            flex-wrap: wrap; /* Changed to wrap to prevent overflow within small corner groups */
+            gap: 5px; /* Smaller internal gap */
+        }
+        .radius-corner-group .control-group:first-of-type { margin-bottom: 5px;}
+        .radius-corner-group .control-group label {
+            flex-shrink: 0;
+            width: 30px; /* Fixed width for H/V labels */
+            font-size: 0.8em;
+            text-align: left;
+            margin-right: 0;
+        }
+        .radius-corner-group .control-group input[type="range"] {
+            flex-grow: 1; /* Allow to fill space */
+            flex-shrink: 1; /* Allow to shrink */
+            min-width: 30px; /* Minimum size for range input */
+            margin-right: 5px; /* Space between range and number input */
+        }
+        .radius-corner-group .control-group .number-input {
+            flex-shrink: 0;
+            width: 50px; /* Fixed width for number input */
+            font-size: 0.8em;
+            padding: 5px; /* Smaller padding */
+        }
+        .radius-corner-group .control-group span {
+            flex-shrink: 0;
+            width: 30px; /* Fixed width for percentage text */
+            text-align: right;
+            font-size: 0.8em;
+            margin-left: 0;
+        }
+
+
+        /* Ink Splash effect */
+        .ink-splash-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .ink-splash-drop {
+            position: absolute;
+            background-color: rgb(20, 20, 20); /* Darker ink color */
+            border-radius: 50%;
+            opacity: 0;
+            filter: url(#classicWetInk); /* Apply ink filter to drops */
+            animation: inkSplash 0.8s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes inkSplash {
+            0% {
+                transform: scale(0);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1);
+                opacity: 0.4;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Icon Buttons */
+        .icon-button {
+            background: rgba(255,255,255,0.25);
+            border: 1px solid rgba(220,220,255,0.28);
+            cursor: pointer;
+            font-size: 0.9em;
+            color: #555555;
+            padding: 7px 14px;
+            border-radius: 7px;
+            box-shadow: 0 2px 7px rgba(0,0,0,0.07);
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.15s ease-out;
+            margin-bottom: 8px;
+        }
+
+        .icon-button:hover {
+            color: #333333;
+            background: rgba(255,255,255,0.35);
+            transform: translateY(-1px) scale(1.02);
+            box-shadow: 0 3px 9px rgba(0,0,0,0.1);
+        }
+
+        .icon-button:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+
+        /* Primary Action Buttons (Monochrome) */
+        button {
+            background: #444444;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            padding: 9px 18px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 600;
+            box-shadow: 0 2.5px 8px rgba(0,0,0,0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.17s ease-out;
+            letter-spacing: 0.05px;
+        }
+
+        button:hover {
+            background: #222222;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        /* Output Area */
+        .output-area {
+            margin-top: 40px;
+            text-align: right;
+        }
+
+        #cssOutput {
+            width: calc(100% - 8px);
+            min-height: 120px;
+            padding: 10px 8px 10px 14px;
+            border: 1px solid rgba(220, 220, 255, 0.25);
+            border-radius: 10px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+            background: rgba(255,255,255,0.15);
+            color: #2a2a2a;
+            resize: vertical;
+            margin-bottom: 10px;
+            box-shadow: 0 1.5px 7px rgba(0,0,0,0.05) inset;
+        }
+
+        .output-buttons {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(40,40,40,0.9);
+            color: white;
+            padding: 11px 28px;
+            border-radius: 11px;
+            font-size: 0.95em;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease-out;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.18);
+            pointer-events: none;
+        }
+
+        .notification.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(-5px);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            body {
+                padding: 2rem 4rem;
+            }
+            .container {
+                max-width: 90vw;
+                padding: 30px 40px;
+            }
+            /* Main .controls grid remains 1fr, no change here */
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 1.5rem 2rem;
+            }
+            .container {
+                padding: 25px 25px;
+                margin: 20px auto 10px auto;
+                border-radius: 15px;
+            }
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+                gap: 10px;
+            }
+            .ink-blob-preview {
+                height: 150px;
+                margin-bottom: 20px;
+                border-radius: 12px;
+            }
+            .control-section {
+                padding: 18px 15px 14px 15px;
+                border-radius: 12px;
+            }
+            .control-group {
+                gap: 12px 8px;
+                padding: 10px 0 12px 0;
+            }
+            .control-group label {
+                min-width: 55px;
+                font-size: 0.88em;
+            }
+            .control-group select,
+            .control-group input[type="range"],
+            .control-group .number-input,
+            .control-group input[type="color"] {
+                padding: 7px 8px;
+                font-size: 0.85em;
+            }
+            .control-group span {
+                min-width: 35px;
+                font-size: 0.88em;
+            }
+            /* Keep radius-controls-grid as 2x2 on screens > 600px, including 768px breakpoint */
+            .radius-controls-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .radius-corner-group label { font-size: 0.8em; }
+            .radius-corner-group .control-group label { width: 25px; font-size: 0.75em; }
+            .radius-corner-group .control-group input[type="range"] { min-width: 25px;}
+            .radius-corner-group .control-group .number-input { width: 45px; }
+            .radius-corner-group .control-group span { width: 25px; font-size: 0.75em; }
+
+
+            .icon-button {
+                padding: 6px 12px;
+                font-size: 0.85em;
+                gap: 6px;
+                border-radius: 6px;
+            }
+            button {
+                padding: 8px 16px;
+                font-size: 0.9em;
+                border-radius: 8px;
+            }
+            .output-area {
+                margin-top: 30px;
+            }
+            #cssOutput {
+                min-height: 80px;
+                padding: 9px 7px 9px 12px;
+                font-size: 0.85em;
+                border-radius: 9px;
+            }
+            .output-buttons {
+                gap: 12px;
+            }
+            .notification {
+                padding: 10px 20px;
+                font-size: 0.9em;
+                bottom: 20px;
+                border-radius: 10px;
+            }
+        }
+        @media (max-width: 600px) { /* Breakpoint for radius-controls-grid to stack */
+            .radius-controls-grid {
+                grid-template-columns: 1fr; /* Stack into 1 column on smaller mobiles */
+            }
+            .radius-corner-group .control-group label { width: 30px; } /* Adjust label width for single column */
+            .radius-corner-group .control-group input[type="range"] { min-width: 30px;}
+            .radius-corner-group .control-group .number-input { width: 50px; } /* Adjust number input width for single column */
+            .radius-corner-group .control-group span { width: 30px; } /* Adjust span width for single column */
+        }
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem;
+            }
+            .container {
+                padding: 20px;
+                margin: 10px auto;
+                border-radius: 12px;
+            }
+            h1 {
+                font-size: 1.5em;
+                margin-bottom: 15px;
+            }
+            .ink-blob-preview {
+                height: 120px;
+                margin-bottom: 15px;
+                border-radius: 10px;
+            }
+            .control-section {
+                padding: 15px 12px 10px 12px;
+                border-radius: 10px;
+            }
+            .control-group {
+                gap: 10px 6px;
+                padding: 8px 0 10px 0;
+            }
+            .control-group label {
+                min-width: 45px;
+                font-size: 0.8em;
+            }
+            .control-group select,
+            .control-group input[type="range"],
+            .control-group .number-input,
+            .control-group input[type="color"] {
+                padding: 6px 7px;
+                font-size: 0.8em;
+            }
+            .control-group span {
+                min-width: 30px;
+                font-size: 0.8em;
+            }
+            .icon-button {
+                padding: 5px 10px;
+                font-size: 0.8em;
+                gap: 5px;
+                border-radius: 5px;
+            }
+            button {
+                padding: 7px 14px;
+                font-size: 0.85em;
+                border-radius: 7px;
+            }
+            .output-area {
+                margin-top: 20px;
+            }
+            #cssOutput {
+                min-height: 70px;
+                padding: 8px 6px 8px 10px;
+                font-size: 0.8em;
+                border-radius: 8px;
+            }
+            .output-buttons {
+                gap: 10px;
+            }
+            .notification {
+                padding: 8px 16px;
+                font-size: 0.8em;
+                bottom: 15px;
+                border-radius: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- SVG Filters for Ink Effects -->
+    <svg style="position:absolute; width:0; height:0; overflow:hidden;" aria-hidden="true">
+        <defs>
+            <filter id="classicWetInk">
+                <feTurbulence type="fractalNoise" baseFrequency="0.02 0.04" numOctaves="3" seed="1" result="noise"/>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="15" xChannelSelector="R" yChannelSelector="G" result="displaced"/>
+                <feGaussianBlur in="displaced" stdDeviation="2" result="blurred"/>
+            </filter>
+            <filter id="heavyBleed">
+                <feTurbulence type="fractalNoise" baseFrequency="0.015 0.015" numOctaves="4" seed="4" result="bleedNoise"/>
+                <feDisplacementMap in="SourceGraphic" in2="bleedNoise" scale="35" xChannelSelector="R" yChannelSelector="G" result="heavyDisplaced"/>
+                <feGaussianBlur in="heavyDisplaced" stdDeviation="5" result="heavyBlurred"/>
+            </filter>
+            <filter id="stormCloud">
+                <feTurbulence type="fractalNoise" baseFrequency="0.005 0.01" numOctaves="6" seed="12" result="stormNoise"/>
+                <feDisplacementMap in="SourceGraphic" in2="stormNoise" scale="60" xChannelSelector="R" yChannelSelector="G" result="stormy"/>
+                <feGaussianBlur in="stormy" stdDeviation="3" result="stormBlur"/>
+            </filter>
+            <filter id="ink-bleed-blur">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+            </filter>
+            <!-- Additional Filters for variety -->
+            <filter id="smudge">
+                <feTurbulence type="fractalNoise" baseFrequency="0.03 0.05" numOctaves="2" seed="5" result="smudgeNoise"/>
+                <feDisplacementMap in="SourceGraphic" in2="smudgeNoise" scale="10" xChannelSelector="R" yChannelSelector="G" result="smudged"/>
+                <feGaussianBlur in="smudged" stdDeviation="1.5" result="smudgeBlurred"/>
+            </filter>
+            <filter id="grainy">
+                <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="1" result="grainNoise"/>
+                <feComposite in="SourceGraphic" in2="grainNoise" operator="arithmetic" k1="0" k2="1" k3="0.5" k4="0" result="grained"/>
+            </filter>
+            <filter id="distortedWater">
+                <feTurbulence type="fractalNoise" baseFrequency="0.01 0.02" numOctaves="5" seed="8" result="turb"/>
+                <feDisplacementMap in="SourceGraphic" in2="turb" scale="25" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+        </defs>
+    </svg>
+
+    <div class="container">
+        <h1><i class="fas fa-droplet"></i> Ultimate Ink Blob Generator</h1>
+
+        <div class="ink-blob-preview" id="inkBlobPreview"></div>
+
+        <div class="controls">
+            <!-- Ink Blob Appearance section (now first) -->
+            <div class="control-section">
+                <h2><i class="fas fa-palette"></i> Ink Blob Appearance</h2>
+                 <div class="control-group">
+                    <label for="blobColor">색상:</label>
+                    <input type="color" id="blobColor" value="#2a2a2a">
+                </div>
+                <div class="control-group">
+                    <label for="inkFilter">필터:</label>
+                    <select id="inkFilter">
+                        <option value="classicWetInk">클래식 젖은 잉크</option>
+                        <option value="heavyBleed">강한 번짐</option>
+                        <option value="stormCloud">폭풍 구름</option>
+                        <option value="ink-bleed-blur">잉크 번짐 블러</option>
+                        <option value="smudge">얼룩</option>
+                        <option value="grainy">거친</option>
+                        <option value="distortedWater">왜곡된 물결</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="blobWidth">너비:</label>
+                    <input type="range" id="blobWidth" min="100" max="400" value="200">
+                    <input type="number" id="blobWidthNumber" min="100" max="400" value="200" class="number-input">
+                    <span id="blobWidthValue">200px</span>
+                </div>
+                <div class="control-group">
+                    <label for="blobHeight">높이:</label>
+                    <input type="range" id="blobHeight" min="100" max="400" value="200">
+                    <input type="number" id="blobHeightNumber" min="100" max="400" value="200" class="number-input">
+                    <span id="blobHeightValue">200px</span>
+                </div>
+                <button id="randomizeBlob" class="icon-button" style="width: 100%; justify-content: center; margin-top: 15px;">
+                    <i class="fas fa-dice"></i> 랜덤 블롭 생성
+                </button>
+            </div>
+
+            <!-- Blob Shape Controls section (now second) -->
+            <div class="control-section">
+                <h2><i class="fas fa-brush"></i> 블롭 형태 조절</h2>
+                <div class="radius-controls-grid">
+                    <div class="radius-corner-group">
+                        <label>좌측 상단</label>
+                        <div class="control-group">
+                            <label for="tlh">H:</label>
+                            <input type="range" id="tlh" min="0" max="100" value="45">
+                            <input type="number" id="tlhNumber" min="0" max="100" value="45" class="number-input">
+                            <span id="tlhValue">45%</span>
+                        </div>
+                        <div class="control-group">
+                            <label for="tlv">V:</label>
+                            <input type="range" id="tlv" min="0" max="100" value="52">
+                            <input type="number" id="tlvNumber" min="0" max="100" value="52" class="number-input">
+                            <span id="tlvValue">52%</span>
+                        </div>
+                    </div>
+
+                    <div class="radius-corner-group">
+                        <label>우측 상단</label>
+                        <div class="control-group">
+                            <label for="trh">H:</label>
+                            <input type="range" id="trh" min="0" max="100" value="58">
+                            <input type="number" id="trhNumber" min="0" max="100" value="58" class="number-input">
+                            <span id="trhValue">58%</span>
+                        </div>
+                        <div class="control-group">
+                            <label for="trv">V:</label>
+                            <input type="range" id="trv" min="0" max="100" value="38">
+                            <input type="number" id="trvNumber" min="0" max="100" value="38" class="number-input">
+                            <span id="trvValue">38%</span>
+                        </div>
+                    </div>
+
+                    <div class="radius-corner-group">
+                        <label>우측 하단</label>
+                        <div class="control-group">
+                            <label for="brh">H:</label>
+                            <input type="range" id="brh" min="0" max="100" value="62">
+                            <input type="number" id="brhNumber" min="0" max="100" value="62" class="number-input">
+                            <span id="brhValue">62%</span>
+                        </div>
+                        <div class="control-group">
+                            <label for="brv">V:</label>
+                            <input type="range" id="brv" min="0" max="100" value="67">
+                            <input type="number" id="brvNumber" min="0" max="100" value="67" class="number-input">
+                            <span id="brvValue">67%</span>
+                        </div>
+                    </div>
+
+                    <div class="radius-corner-group">
+                        <label>좌측 하단</label>
+                        <div class="control-group">
+                            <label for="blh">H:</label>
+                            <input type="range" id="blh" min="0" max="100" value="37">
+                            <input type="number" id="blhNumber" min="0" max="100" value="37" class="number-input">
+                            <span id="blhValue">37%</span>
+                        </div>
+                        <div class="control-group">
+                            <label for="blv">V:</label>
+                            <input type="range" id="blv" min="0" max="100" value="49">
+                            <input type="number" id="blvNumber" min="0" max="100" value="49" class="number-input">
+                            <span id="blvValue">49%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="output-area">
+            <textarea id="cssOutput" rows="6" readonly></textarea>
+            <div class="output-buttons">
+                <label for="prefixing" class="checkbox-label">
+                    <input type="checkbox" id="prefixing" checked> 자동 접두사
+                </label>
+                <button id="copyCss"><i class="fas fa-copy"></i> CSS 복사</button>
+                <button id="copySettings" class="icon-button"><i class="fas fa-code"></i> 설정값 복사</button>
+                <button id="exportCss"><i class="fas fa-file-export"></i> CSS 내보내기</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const inkBlobPreview = document.getElementById('inkBlobPreview');
+            const inkFilterSelect = document.getElementById('inkFilter');
+            const randomizeBlobBtn = document.getElementById('randomizeBlob');
+            const blobColorInput = document.getElementById('blobColor');
+            const blobWidthRange = document.getElementById('blobWidth');
+            const blobWidthNumber = document.getElementById('blobWidthNumber');
+            const blobWidthValueSpan = document.getElementById('blobWidthValue');
+            const blobHeightRange = document.getElementById('blobHeight');
+            const blobHeightNumber = document.getElementById('blobHeightNumber');
+            const blobHeightValueSpan = document.getElementById('blobHeightValue');
+            
+            // Border Radius Input Elements
+            const radiusInputs = {
+                tlh: { range: document.getElementById('tlh'), number: document.getElementById('tlhNumber'), value: document.getElementById('tlhValue') },
+                tlv: { range: document.getElementById('tlv'), number: document.getElementById('tlvNumber'), value: document.getElementById('tlvValue') },
+                trh: { range: document.getElementById('trh'), number: document.getElementById('trhNumber'), value: document.getElementById('trhValue') },
+                trv: { range: document.getElementById('trv'), number: document.getElementById('trvNumber'), value: document.getElementById('trvValue') },
+                brh: { range: document.getElementById('brh'), number: document.getElementById('brhNumber'), value: document.getElementById('brhValue') },
+                brv: { range: document.getElementById('brv'), number: document.getElementById('brvNumber'), value: document.getElementById('brvValue') },
+                blh: { range: document.getElementById('blh'), number: document.getElementById('blhNumber'), value: document.getElementById('blhValue') },
+                blv: { range: document.getElementById('blv'), number: document.getElementById('blvNumber'), value: document.getElementById('blvValue') },
+            };
+
+            const cssOutput = document.getElementById('cssOutput');
+            const copyCssBtn = document.getElementById('copyCss');
+            const copySettingsBtn = document.getElementById('copySettings');
+            const exportCssBtn = document.getElementById('exportCss');
+            const prefixingCheckbox = document.getElementById('prefixing');
+            const notificationElem = document.getElementById('notification');
+
+            // Available Ink Filters
+            const inkFilters = [
+                "classicWetInk", "heavyBleed", "stormCloud", "ink-bleed-blur",
+                "smudge", "grainy", "distortedWater"
+            ];
+
+            // Show Notification
+            function showNotification(message, duration = 2500) {
+                notificationElem.textContent = message;
+                notificationElem.classList.add('show');
+                setTimeout(() => {
+                    notificationElem.classList.remove('show');
+                }, duration);
+            }
+
+            // Generate CSS with Prefixes
+            function getPrefixedCss(cssProperty, value) {
+                if (!prefixingCheckbox.checked) {
+                    return `${cssProperty}: ${value};`;
+                }
+                let prefixed = '';
+                if (cssProperty === 'border-radius') {
+                    prefixed += `-webkit-${cssProperty}: ${value};\n`;
+                    prefixed += `-moz-${cssProperty}: ${value};\n`;
+                } else if (cssProperty === 'filter') {
+                    prefixed += `-webkit-${cssProperty}: ${value};\n`;
+                }
+                return `${prefixed}${cssProperty}: ${value};`;
+            }
+
+            // Ink Splash effect function (reused from previous code)
+            function createInkSplash(element) {
+                let splashContainer = element.querySelector('.ink-splash-container');
+                if (!splashContainer) {
+                    splashContainer = document.createElement('div');
+                    splashContainer.className = 'ink-splash-container';
+                    element.appendChild(splashContainer);
+                }
+
+                const numberOfDrops = Math.floor(Math.random() * 3) + 3; // 3 to 5 drops
+                for (let i = 0; i < numberOfDrops; i++) {
+                    const drop = document.createElement('div');
+                    drop.className = 'ink-splash-drop';
+                    const size = Math.random() * 50 + 30; // 30 to 80px
+                    drop.style.width = `${size}px`;
+                    drop.style.height = `${size * (Math.random() * 0.4 + 0.8)}px`; // Make it slightly elliptical
+
+                    const elementRect = element.getBoundingClientRect();
+                    // Positioning relative to the element
+                    const blotCenterXInContainer = elementRect.width / 2;
+                    const blotCenterYInContainer = elementRect.height / 2;
+
+                    drop.style.left = `calc(${blotCenterXInContainer}px + ${(Math.random() - 0.5) * (elementRect.width * 0.3)}px - ${size/2}px)`;
+                    drop.style.top = `calc(${blotCenterYInContainer}px + ${(Math.random() - 0.5) * (elementRect.height * 0.3)}px - ${size/2}px)`;
+
+                    drop.style.animationDelay = `${Math.random() * 0.1}s`;
+                    const baseShade = Math.floor(Math.random() * 20) + 20; // 20 to 39 for gray shades
+                    drop.style.backgroundColor = `rgb(${baseShade}, ${baseShade}, ${baseShade})`;
+                    splashContainer.appendChild(drop);
+
+                    // Remove drop after animation
+                    drop.addEventListener('animationend', () => {
+                        drop.remove();
+                        // Clean up container if empty
+                        if (splashContainer.children.length === 0) {
+                            splashContainer.remove();
+                        }
+                    });
+                }
+            }
+
+            // Update Ink Blob
+            function updateInkBlob() {
+                const tlh = radiusInputs.tlh.range.value;
+                const trh = radiusInputs.trh.range.value;
+                const brh = radiusInputs.brh.range.value;
+                const blh = radiusInputs.blh.range.value;
+                const tlv = radiusInputs.tlv.range.value;
+                const trv = radiusInputs.trv.range.value;
+                const brv = radiusInputs.brv.range.value;
+                const blv = radiusInputs.blv.range.value;
+
+                const selectedFilterId = inkFilterSelect.value;
+                const blobColor = blobColorInput.value;
+                const blobWidth = blobWidthRange.value;
+                const blobHeight = blobHeightRange.value;
+
+                const borderRadiusString = `${tlh}% ${trh}% ${brh}% ${blh}% / ${tlv}% ${trv}% ${brv}% ${blv}%`;
+                
+                inkBlobPreview.style.borderRadius = borderRadiusString;
+                inkBlobPreview.style.filter = `url(#${selectedFilterId})`;
+                inkBlobPreview.style.backgroundColor = blobColor;
+                
+                // Set the size for the preview (responsive up to its max value)
+                const containerWidth = inkBlobPreview.parentElement.offsetWidth;
+                const containerPadding = 50; // padding of the container div (left+right)
+                const maxContentWidth = 780; // max-width of the container
+                
+                const availableWidth = Math.min(containerWidth - (containerPadding * 2), maxContentWidth - (containerPadding * 2));
+                const dynamicWidth = Math.min(blobWidth, availableWidth);
+                
+                inkBlobPreview.style.width = `${dynamicWidth}px`;
+                inkBlobPreview.style.height = `${blobHeight}px`;
+
+                // Center the blob horizontally
+                inkBlobPreview.style.marginLeft = 'auto';
+                inkBlobPreview.style.marginRight = 'auto';
+
+
+                let cssOutputString = getPrefixedCss('background-color', blobColor) + '\n';
+                cssOutputString += getPrefixedCss('width', `${blobWidth}px`) + '\n';
+                cssOutputString += getPrefixedCss('height', `${blobHeight}px`) + '\n';
+                cssOutputString += getPrefixedCss('border-radius', borderRadiusString) + '\n';
+                cssOutputString += getPrefixedCss('filter', `url(#${selectedFilterId})`);
+                
+                cssOutput.value = cssOutputString;
+            }
+
+            // Sync Range and Number Inputs
+            function syncInputs(rangeInput, numberInput, valueSpan, unit = '%') {
+                rangeInput.addEventListener('input', () => {
+                    numberInput.value = rangeInput.value;
+                    valueSpan.textContent = `${rangeInput.value}${unit}`;
+                    updateInkBlob();
+                });
+                numberInput.addEventListener('input', () => {
+                    let val = parseInt(numberInput.value);
+                    if (isNaN(val)) val = parseInt(numberInput.min);
+                    if (val < parseInt(numberInput.min)) val = parseInt(numberInput.min);
+                    if (val > parseInt(numberInput.max)) val = parseInt(numberInput.max);
+                    rangeInput.value = val;
+                    valueSpan.textContent = `${val}${unit}`;
+                    updateInkBlob();
+                });
+            }
+
+            // Attach listeners to all 8 radius inputs
+            for (const key in radiusInputs) {
+                syncInputs(radiusInputs[key].range, radiusInputs[key].number, radiusInputs[key].value);
+            }
+
+            // Attach listeners for new width/height controls
+            syncInputs(blobWidthRange, blobWidthNumber, blobWidthValueSpan, 'px');
+            syncInputs(blobHeightRange, blobHeightNumber, blobHeightValueSpan, 'px');
+
+            // Filter select listener
+            inkFilterSelect.addEventListener('change', updateInkBlob);
+            prefixingCheckbox.addEventListener('change', updateInkBlob);
+            blobColorInput.addEventListener('input', updateInkBlob); // New: Color input listener
+
+            // Randomize Blob button
+            randomizeBlobBtn.addEventListener('click', () => {
+                // Set random border-radius values
+                for (const key in radiusInputs) {
+                    const randomValue = Math.floor(Math.random() * 101); // 0-100
+                    radiusInputs[key].range.value = randomValue;
+                    radiusInputs[key].number.value = randomValue;
+                    radiusInputs[key].value.textContent = `${randomValue}%`;
+                }
+
+                // Select a random filter
+                const randomFilterIndex = Math.floor(Math.random() * inkFilters.length);
+                inkFilterSelect.value = inkFilters[randomFilterIndex];
+
+                // Randomize blob size
+                const randomWidth = Math.floor(Math.random() * (400 - 100 + 1)) + 100;
+                const randomHeight = Math.floor(Math.random() * (400 - 100 + 1)) + 100;
+                blobWidthRange.value = randomWidth;
+                blobWidthNumber.value = randomWidth;
+                blobWidthValueSpan.textContent = `${randomWidth}px`;
+                blobHeightRange.value = randomHeight;
+                blobHeightNumber.value = randomHeight;
+                blobHeightValueSpan.textContent = `${randomHeight}px`;
+
+                // Randomize blob color (grayscale for ink blob feel)
+                const randomGray = Math.floor(Math.random() * 150); // 0-149 for darker grays
+                const randomColor = `rgb(${randomGray}, ${randomGray}, ${randomGray})`;
+                blobColorInput.value = `#${randomGray.toString(16).padStart(2, '0')}${randomGray.toString(16).padStart(2, '0')}${randomGray.toString(16).padStart(2, '0')}`;
+                
+                createInkSplash(inkBlobPreview); // Create splash effect on randomize
+                updateInkBlob();
+                showNotification("새로운 잉크 블롭이 생성되었습니다!"); // New ink blob generated!
+            });
+
+            // Copy CSS
+            copyCssBtn.addEventListener('click', () => {
+                cssOutput.select();
+                document.execCommand('copy'); // Use execCommand for broader compatibility in iframes
+                showNotification('CSS가 클립보드에 복사되었습니다!'); // CSS copied to clipboard!
+            });
+
+            // Copy Settings as Code (JSON-like structure)
+            copySettingsBtn.addEventListener('click', () => {
+                const settings = {
+                    borderRadius: {
+                        topLeft: { h: parseInt(radiusInputs.tlh.range.value), v: parseInt(radiusInputs.tlv.range.value) },
+                        topRight: { h: parseInt(radiusInputs.trh.range.value), v: parseInt(radiusInputs.trv.range.value) },
+                        bottomRight: { h: parseInt(radiusInputs.brh.range.value), v: parseInt(radiusInputs.brv.range.value) },
+                        bottomLeft: { h: parseInt(radiusInputs.blh.range.value), v: parseInt(radiusInputs.blv.range.value) }
+                    },
+                    filter: inkFilterSelect.value,
+                    color: blobColorInput.value,
+                    width: parseInt(blobWidthRange.value),
+                    height: parseInt(blobHeightRange.value)
+                };
+                
+                const settingsString = JSON.stringify(settings, null, 2); // Pretty print JSON
+                navigator.clipboard.writeText(settingsString)
+                    .then(() => showNotification('설정값이 클립보드에 복사되었습니다!')) // Settings copied to clipboard!
+                    .catch(() => showNotification('설정값 복사에 실패했습니다!')); // Failed to copy settings!
+            });
+
+            // Export CSS
+            exportCssBtn.addEventListener('click', () => {
+                const cssContent = cssOutput.value;
+                const blob = new Blob([cssContent], { type: 'text/css' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'ink-blob.css';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(a.href);
+                showNotification('CSS가 성공적으로 내보내졌습니다!'); // CSS exported successfully!
+            });
+
+            // Initial call to set up the ink blob on page load
+            updateInkBlob();
+        });
+
+        // Add a resize listener to re-evaluate blob width on window resize
+        window.addEventListener('resize', () => {
+            const inkBlobPreview = document.getElementById('inkBlobPreview');
+            const blobWidthRange = document.getElementById('blobWidth');
+            // const blobHeightRange = document.getElementById('blobHeight'); // Not directly used in width calculation here
+
+            const containerWidth = inkBlobPreview.parentElement.offsetWidth;
+            const containerPadding = 50; // padding of the container div (left+right)
+            const maxContentWidth = 780; // max-width of the container
+            
+            const availableWidth = Math.min(containerWidth - (containerPadding * 2), maxContentWidth - (containerPadding * 2));
+            const dynamicWidth = Math.min(blobWidthRange.value, availableWidth);
+            
+            inkBlobPreview.style.width = `${dynamicWidth}px`;
+            // Re-center the blob
+            inkBlobPreview.style.marginLeft = 'auto';
+            inkBlobPreview.style.marginRight = 'auto';
+        });
+
+    </script>
+</body>
+</html>

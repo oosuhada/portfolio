@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate CSS Gradient Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+/* ===== [Monochrome & Spacious Design] ===== */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    /* Soft grayscale background gradient */
+    background: linear-gradient(145deg, #f0f0f0, #e0e0e0);
+    margin: 0;
+    color: #333333; /* Darker default text color */
+    overflow-x: hidden;
+    position: relative;
+    background-attachment: fixed;
+    padding: 2.5rem 6rem; /* Increased horizontal padding */
+}
+
+/* Background blur circles - adjusted for monochrome */
+body::before, body::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px); /* Slightly less blur */
+    z-index: -1;
+    opacity: 0.3; /* Reduced opacity */
+}
+
+body::before {
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(190, 190, 190, 0.3), transparent 75%); /* Grayish blur */
+    top: -40px;
+    left: -10%;
+}
+
+body::after {
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(200, 200, 200, 0.3), transparent 75%); /* Grayish blur */
+    bottom: -40px;
+    right: -10%;
+}
+
+/* Main Container - Adjusted for minimalism and space */
+.container {
+    background: rgba(255,255,255,0.15); /* More transparent white */
+    border-radius: 20px; /* Slightly less rounded */
+    border: 1px solid rgba(255,255,255,0.25); /* Subtler border */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08), 0 2px 10px rgba(0,0,0,0.03); /* More subtle shadows */
+    backdrop-filter: blur(14px); /* Slightly less blur */
+    -webkit-backdrop-filter: blur(14px);
+    padding: 40px 50px; /* Adjusted padding */
+    width: 98%;
+    max-width: 780px; /* Reduced max-width for more horizontal space */
+    margin: 30px auto 20px auto; /* Adjusted margins */
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; /* Simpler transition */
+    box-sizing: border-box;
+}
+
+.container:hover {
+    transform: translateY(-5px) scale(1.005); /* More subtle hover effect */
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1), 0 3px 12px rgba(0,0,0,0.05);
+}
+
+/* Heading */
+h1 {
+    color: #1a1a1a; /* Very dark gray for prominent text */
+    margin-bottom: 30px; /* Adjusted margin */
+    font-size: 2em; /* Reduced font size */
+    font-weight: 700; /* Adjusted font weight */
+    text-shadow: 0 1.5px 5px rgba(0,0,0,0.05); /* Subtler text shadow */
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Adjusted gap */
+    letter-spacing: 0.005em; /* Reduced letter spacing */
+}
+
+/* Gradient Preview */
+.gradient-preview {
+    width: 100%;
+    height: 140px; /* Reduced height */
+    border: none;
+    border-radius: 15px; /* Adjusted border radius */
+    margin-bottom: 30px; /* Adjusted margin */
+    /* Original colorful default gradient */
+    background: linear-gradient(90deg, #ff6b6b 0%, #4ecdc4 100%);
+    box-shadow: 0 4px 20px 0 rgba(0,0,0,0.08) inset, 0 8px 25px rgba(0,0,0,0.06); /* Subtler shadows */
+    transition: background 0.3s ease; /* Simpler transition */
+    position: relative; /* Needed for pseudo-element */
+    overflow: hidden; /* Ensure grainy filter doesn't spill */
+}
+
+/* Grainy Filter Effect */
+.gradient-preview.grainy::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Use CSS variables for dynamic control */
+    background-image: var(--grain-pattern); /* Now a variable */
+    background-size: var(--grain-bg-size, 4px) var(--grain-bg-size, 4px); /* Adjust size for desired graininess */
+    mix-blend-mode: overlay; /* Blends the noise with the gradient */
+    opacity: var(--grain-intensity, 0.7); /* Adjust opacity for intensity */
+    pointer-events: none; /* Allows clicks to pass through */
+    z-index: 1; /* Above the gradient */
+}
+
+/* Controls Grid */
+.controls {
+    display: grid;
+    /* Define grid areas for layout flexibility */
+    grid-template-areas:
+        "presets presets presets" /* Presets section at the top, spanning all columns */
+        "settings colors  colors" /* Settings in the first column, Colors spanning the next two */
+        "grainy   grainy  grainy"; /* Grainy filter section spanning all columns below */
+    grid-template-columns: 1.5fr 2.5fr 1fr; /* Keep the original column widths */
+    gap: 30px; /* Adjusted gap */
+    margin-bottom: 0;
+}
+
+/* Assign areas to specific control sections */
+.control-section:nth-child(1) { /* Settings section */
+    grid-area: settings;
+}
+
+.control-section:nth-child(2) { /* Color Stops section */
+    grid-area: colors;
+}
+
+.control-section:nth-child(3) { /* Grainy Filter section */
+    grid-area: grainy;
+}
+
+.control-section:nth-child(4) { /* Presets section */
+    grid-area: presets;
+}
+
+
+.control-section {
+    background: rgba(255,255,255,0.18); /* More transparent background */
+    border-radius: 15px; /* Adjusted border radius */
+    border: 1px solid rgba(255,255,255,0.22); /* Subtler border */
+    padding: 20px 18px 16px 18px; /* Adjusted padding */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Subtler shadow */
+    transition: all 0.2s ease-out; /* Simpler transition */
+    flex: 1 1 100%;
+    min-width: 0;
+}
+
+.control-section h2 {
+    color: #2a2a2a; /* Darker heading text */
+    font-size: 1.1em; /* Reduced font size */
+    margin: 0 0 14px; /* Adjusted margin */
+    display: flex;
+    align-items: center;
+    gap: 7px; /* Adjusted gap */
+    font-weight: 600; /* Adjusted font weight */
+    text-shadow: 0 1px 2px rgba(0,0,0,0.04); /* Subtler text shadow */
+}
+
+.control-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 10px; /* Adjusted gap */
+    padding: 12px 0 14px 0; /* Adjusted padding */
+    border-bottom: 1px solid rgba(220,220,240,0.08); /* More subtle border */
+}
+
+.control-group:last-of-type {
+    border-bottom: none;
+}
+
+.control-group label {
+    font-weight: 500; /* Adjusted font weight */
+    color: #3a3a3a; /* Darker label text */
+    min-width: 65px; /* Adjusted min-width */
+    flex-shrink: 0;
+    font-size: 0.9em; /* Reduced font size */
+    margin-right: 4px;
+}
+
+.control-group select,
+.control-group input[type="range"],
+.control-group .number-input {
+    flex-grow: 1;
+    padding: 8px 9px; /* Adjusted padding */
+    border: 1px solid rgba(200, 210, 255, 0.2); /* More subtle border */
+    border-radius: 8px; /* Slightly less rounded */
+    background: rgba(255,255,255,0.25); /* More transparent background */
+    font-size: 0.9em; /* Reduced font size */
+    color: #2a2a2a; /* Darker input text */
+    box-shadow: 0 1.5px 6px rgba(0,0,0,0.03) inset; /* Subtler inner shadow */
+    transition: all 0.15s ease-out; /* Simpler transition */
+}
+
+.control-group select:focus,
+.control-group input[type="range"]:focus,
+.control-group .number-input:focus {
+    outline: none;
+    border-color: #555555; /* Grayish border on focus */
+    box-shadow: 0 0 0 2.5px rgba(85, 85, 85, 0.1); /* Grayish shadow on focus */
+}
+
+.control-group .number-input {
+    width: 58px; /* Reduced width */
+    flex-grow: 0;
+}
+
+.control-group span {
+    min-width: 40px; /* Reduced min-width */
+    text-align: right;
+    font-weight: 500; /* Adjusted font weight */
+    color: #2a2a2a; /* Darker span text */
+    font-variant-numeric: tabular-nums;
+    font-size: 0.9em; /* Reduced font size */
+    margin-left: 6px;
+}
+
+/* Checkbox Label */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px; /* Adjusted gap */
+    cursor: pointer;
+    font-weight: 400; /* Lighter font weight */
+    color: #3a3a3a; /* Darker text */
+    user-select: none;
+    font-size: 0.9em; /* Reduced font size */
+    padding-left: 3px;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 16px; /* Reduced size */
+    height: 16px; /* Reduced size */
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.3); /* More transparent */
+    border: 1px solid rgba(255, 255, 255, 0.5); /* More subtle border */
+    border-radius: 4px; /* Slightly less rounded */
+    appearance: none;
+    transition: all 0.15s ease-out;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.checkbox-label input[type="checkbox"]:checked {
+    background: #555555; /* Darker gray when checked */
+    border-color: #444444; /* Darker border when checked */
+    box-shadow: 0 0 0 2px rgba(85, 85, 85, 0.1); /* Grayish shadow */
+}
+
+.checkbox-label input[type="checkbox"]:checked::after {
+    content: '\2713';
+    font-size: 11px; /* Smaller checkmark */
+    color: white;
+    position: absolute;
+    left: 49%;
+    top: 51%;
+    transform: translate(-50%, -50%);
+}
+
+/* Color Stops */
+.color-stops {
+    background: rgba(255,255,255,0.15); /* More transparent background */
+    border: 1px solid rgba(200, 210, 255, 0.15); /* More subtle border */
+    border-radius: 10px; /* Slightly less rounded */
+    padding: 12px 6px 8px 6px; /* Adjusted padding */
+    max-height: 150px; /* Reduced max-height */
+    overflow-y: auto;
+    box-shadow: inset 0 0 7px rgba(0,0,0,0.04); /* Subtler inner shadow */
+    margin-top: 10px; /* Adjusted margin */
+}
+
+.color-stops::-webkit-scrollbar {
+    width: 6px; /* Thinner scrollbar */
+}
+
+.color-stops::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.08); /* More transparent track */
+    border-radius: 6px;
+}
+
+.color-stops::-webkit-scrollbar-thumb {
+    background: rgba(120,120,120,0.18); /* More transparent thumb */
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.25); /* More subtle border */
+}
+
+.color-stops::-webkit-scrollbar-thumb:hover {
+    background: rgba(90, 90, 90, 0.28);
+}
+
+/* Color Stop Item */
+.color-stop-item {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Adjusted gap */
+    margin-bottom: 10px; /* Adjusted margin */
+    padding: 8px 6px; /* Adjusted padding */
+    background: rgba(255,255,255,0.22); /* More transparent background */
+    border: 1px solid rgba(220,220,255,0.15); /* More subtle border */
+    border-radius: 7px; /* Slightly less rounded */
+    box-shadow: 0 1px 7px rgba(0,0,0,0.06); /* Subtler shadow */
+    cursor: grab;
+    transition: box-shadow 0.15s ease-out, transform 0.15s ease-out; /* Simpler transition */
+}
+
+.color-stop-item.sortable-chosen {
+    background: rgba(180,180,180,0.3); /* Grayish highlight when dragging */
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15); /* Stronger shadow when dragging */
+    transform: translateY(-1.5px);
+    cursor: grabbing;
+}
+
+.color-stop-item:last-child {
+    margin-bottom: 0;
+}
+
+.color-stop-item input[type="color"] {
+    width: 30px; /* Reduced size */
+    height: 30px; /* Reduced size */
+    border: 1px solid rgba(220,220,255,0.3); /* More subtle border */
+    border-radius: 6px; /* Slightly less rounded */
+    padding: 0;
+    cursor: pointer;
+    background: none;
+    flex-shrink: 0;
+    transition: border-color 0.15s;
+}
+
+/* Icon Buttons */
+.icon-button {
+    background: rgba(255,255,255,0.25); /* More transparent */
+    border: 1px solid rgba(220,220,255,0.28); /* More subtle border */
+    cursor: pointer;
+    font-size: 0.9em; /* Reduced font size */
+    color: #555555; /* Grayish icon color */
+    padding: 7px 14px; /* Adjusted padding */
+    border-radius: 7px; /* Slightly less rounded */
+    box-shadow: 0 2px 7px rgba(0,0,0,0.07); /* Subtler shadow */
+    display: inline-flex;
+    align-items: center;
+    gap: 7px; /* Adjusted gap */
+    transition: all 0.15s ease-out; /* Simpler transition */
+    margin-bottom: 8px;
+}
+
+.icon-button:hover {
+    color: #333333; /* Darker gray on hover */
+    background: rgba(255,255,255,0.35);
+    transform: translateY(-1px) scale(1.02); /* More subtle hover */
+    box-shadow: 0 3px 9px rgba(0,0,0,0.1);
+}
+
+.icon-button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.remove-color-stop {
+    background: rgba(239,68,68,0.9); /* Keep red for removal */
+    color: white;
+    border: none;
+    border-radius: 6px; /* Slightly less rounded */
+    padding: 6px 11px; /* Adjusted padding */
+    cursor: pointer;
+    font-weight: 500; /* Adjusted font weight */
+    font-size: 0.8em; /* Reduced font size */
+    box-shadow: 0 1.5px 6px rgba(0,0,0,0.07); /* Subtler shadow */
+    transition: all 0.15s ease-out;
+}
+
+.remove-color-stop:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.09);
+}
+
+/* Primary Action Buttons (Monochrome) */
+button {
+    background: #444444; /* Dark gray */
+    color: white;
+    border: none;
+    border-radius: 9px; /* Slightly less rounded */
+    padding: 9px 18px; /* Adjusted padding */
+    cursor: pointer;
+    font-size: 0.95em; /* Reduced font size */
+    font-weight: 600;
+    box-shadow: 0 2.5px 8px rgba(0,0,0,0.1);
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: all 0.17s ease-out;
+    letter-spacing: 0.05px;
+}
+
+button:hover {
+    background: #222222; /* Darker gray on hover */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* Output Area */
+.output-area {
+    margin-top: 40px; /* Adjusted margin */
+    text-align: right;
+}
+
+#cssOutput {
+    width: calc(100% - 8px); /* Adjusted width */
+    min-height: 80px; /* Reduced min-height */
+    padding: 10px 8px 10px 14px; /* Adjusted padding */
+    border: 1px solid rgba(220, 220, 255, 0.25); /* More subtle border */
+    border-radius: 10px; /* Slightly less rounded */
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9em; /* Reduced font size */
+    background: rgba(255,255,255,0.15); /* More transparent background */
+    color: #2a2a2a; /* Darker text color */
+    resize: vertical;
+    margin-bottom: 10px; /* Adjusted margin */
+    box-shadow: 0 1.5px 7px rgba(0,0,0,0.05) inset; /* Subtler inner shadow */
+}
+
+.output-buttons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px; /* Adjusted gap */
+}
+
+/* Presets Grid */
+.presets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Adjusted minmax for smaller items */
+    gap: 10px; /* Adjusted gap */
+    margin-top: 2px;
+}
+
+.preset-item {
+    width: 100%;
+    height: 60px; /* Reduced height */
+    border-radius: 9px; /* Slightly less rounded */
+    cursor: pointer;
+    border: 1px solid transparent;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.07); /* Subtler shadow */
+    transition: all 0.17s ease-out;
+    background-size: cover;
+    position: relative;
+    overflow: hidden;
+}
+
+.preset-item:hover {
+    border-color: #555555; /* Grayish border on hover */
+    transform: translateY(-1.5px) scale(1.02); /* More subtle hover */
+    box-shadow: 0 4px 9px rgba(0,0,0,0.12);
+}
+
+.preset-item::after {
+    content: attr(data-name);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent); /* Darker overlay */
+    color: white;
+    padding: 3px 8px; /* Adjusted padding */
+    border-radius: 0 0 8px 8px; /* Adjusted border radius */
+    font-size: 0.7em; /* Reduced font size */
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.15s ease-out;
+    text-align: left;
+}
+
+.preset-item:hover::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Notification */
+.notification {
+    position: fixed;
+    bottom: 25px; /* Adjusted position */
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(40,40,40,0.9); /* Darker gray background */
+    color: white;
+    padding: 11px 28px; /* Adjusted padding */
+    border-radius: 11px; /* Slightly less rounded */
+    font-size: 0.95em; /* Reduced font size */
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease-out; /* Simpler transition */
+    box-shadow: 0 3px 15px rgba(0,0,0,0.18); /* Subtler shadow */
+    pointer-events: none;
+}
+
+.notification.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-5px); /* More subtle slide up */
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) { /* Adjusted breakpoint from 1200px */
+    body {
+        padding: 2rem 4rem; /* Reduced padding for smaller large screens */
+    }
+    .container {
+        max-width: 90vw;
+        padding: 30px 40px;
+    }
+    .controls {
+        grid-template-columns: 1fr; /* Stack columns on medium screens */
+        grid-template-areas:
+            "presets" /* Presets always at the top when stacked */
+            "settings"
+            "colors"
+            "grainy"; /* Grainy filter section at the bottom when stacked */
+        gap: 20px;
+    }
+}
+@media (max-width: 768px) { /* Adjusted breakpoint from 900px */
+    body {
+        padding: 1.5rem 2rem; /* Further reduced padding */
+    }
+    .container {
+        padding: 25px 25px;
+        margin: 20px auto 10px auto;
+        border-radius: 15px;
+    }
+    h1 {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+        gap: 10px;
+    }
+    .gradient-preview {
+        height: 100px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+    }
+    .control-section {
+        padding: 18px 15px 14px 15px;
+        border-radius: 12px;
+    }
+    .control-group {
+        gap: 12px 8px;
+        padding: 10px 0 12px 0;
+    }
+    .control-group label {
+        min-width: 55px;
+        font-size: 0.88em;
+    }
+    .control-group input[type="range"],
+    .control-group .number-input,
+    .control-group select {
+        padding: 7px 8px;
+        font-size: 0.85em;
+    }
+    .control-group span {
+        min-width: 35px;
+        font-size: 0.88em;
+    }
+    .checkbox-label {
+        font-size: 0.88em;
+    }
+    .color-stops {
+        padding: 10px 5px 7px 5px;
+        max-height: 120px;
+        border-radius: 9px;
+    }
+    .color-stop-item {
+        gap: 10px;
+        margin-bottom: 8px;
+        padding: 7px 5px;
+        border-radius: 6px;
+    }
+    .color-stop-item input[type="color"] {
+        width: 28px;
+        height: 28px;
+        border-radius: 5px;
+    }
+    .remove-color-stop {
+        padding: 5px 10px;
+        font-size: 0.78em;
+        border-radius: 5px;
+    }
+    .icon-button {
+        padding: 6px 12px;
+        font-size: 0.85em;
+        gap: 6px;
+        border-radius: 6px;
+    }
+    button {
+        padding: 8px 16px;
+        font-size: 0.9em;
+        border-radius: 8px;
+    }
+    .output-area {
+        margin-top: 30px;
+    }
+    #cssOutput {
+        min-height: 70px;
+        padding: 9px 7px 9px 12px;
+        font-size: 0.85em;
+        border-radius: 9px;
+    }
+    .output-buttons {
+        gap: 12px;
+    }
+    .presets-grid {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        gap: 8px;
+    }
+    .preset-item {
+        height: 50px;
+        border-radius: 8px;
+    }
+    .preset-item::after {
+        padding: 2px 6px;
+        font-size: 0.65em;
+    }
+    .notification {
+        padding: 10px 20px;
+        font-size: 0.9em;
+        bottom: 20px;
+        border-radius: 10px;
+    }
+}
+@media (max-width: 480px) {
+    body {
+        padding: 1rem;
+    }
+    .container {
+        padding: 20px;
+        margin: 10px auto;
+        border-radius: 12px;
+    }
+    h1 {
+        font-size: 1.5em;
+        margin-bottom: 15px;
+    }
+    .gradient-preview {
+        height: 80px;
+        margin-bottom: 15px;
+        border-radius: 10px;
+    }
+    .control-section {
+        padding: 15px 12px 10px 12px;
+        border-radius: 10px;
+    }
+    .control-group {
+        gap: 10px 6px;
+        padding: 8px 0 10px 0;
+    }
+    .control-group label {
+        min-width: 45px;
+        font-size: 0.8em;
+    }
+    .control-group input[type="range"],
+    .control-group .number-input,
+    .control-group select {
+        padding: 6px 7px;
+        font-size: 0.8em;
+    }
+    .control-group span {
+        min-width: 30px;
+        font-size: 0.8em;
+    }
+    .checkbox-label {
+        font-size: 0.8em;
+    }
+    .color-stops {
+        padding: 8px 4px 6px 4px;
+        max-height: 100px;
+        border-radius: 8px;
+    }
+    .color-stop-item {
+        gap: 8px;
+        margin-bottom: 6px;
+        padding: 6px 4px;
+        border-radius: 5px;
+    }
+    .color-stop-item input[type="color"] {
+        width: 25px;
+        height: 25px;
+        border-radius: 4px;
+    }
+    .remove-color-stop {
+        padding: 4px 8px;
+        font-size: 0.7em;
+        border-radius: 4px;
+    }
+    .icon-button {
+        padding: 5px 10px;
+        font-size: 0.8em;
+        gap: 5px;
+        border-radius: 5px;
+    }
+    button {
+        padding: 7px 14px;
+        font-size: 0.85em;
+        border-radius: 7px;
+    }
+    .output-area {
+        margin-top: 20px;
+    }
+    #cssOutput {
+        min-height: 60px;
+        padding: 8px 6px 8px 10px;
+        font-size: 0.8em;
+        border-radius: 8px;
+    }
+    .output-buttons {
+        gap: 10px;
+    }
+    .presets-grid {
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+        gap: 6px;
+    }
+    .preset-item {
+        height: 40px;
+        border-radius: 7px;
+    }
+    .preset-item::after {
+        padding: 1px 5px;
+        font-size: 0.6em;
+    }
+    .notification {
+        padding: 8px 16px;
+        font-size: 0.8em;
+        bottom: 15px;
+        border-radius: 8px;
+    }
+}
+
+/* New CSS for the grainy filter grid layout */
+.grainy-controls-grid {
+    display: grid;
+    /* First column (effect type) is 1 unit, second (intensity/size) is 2 units wide */
+    grid-template-columns: 1fr 2fr;
+    /* Define grid areas for explicit placement */
+    grid-template-areas:
+        "effectType intensity"
+        ".          grainSize"; /* The dot '.' signifies an empty cell */
+    gap: 16px 10px; /* Maintain consistent spacing between grid items */
+    padding-top: 12px; /* Add some top padding to the overall grid container */
+}
+
+/* Assign individual control groups to their grid areas */
+.control-group.grainy-effect-type {
+    grid-area: effectType;
+    /* Override default .control-group padding/border for tighter grid integration */
+    padding: 0;
+    border-bottom: none;
+}
+
+.control-group.grainy-intensity {
+    grid-area: intensity;
+    padding: 0;
+    border-bottom: none;
+}
+
+.control-group.grainy-size {
+    grid-area: grainSize;
+    padding: 0;
+    border-bottom: none;
+}
+
+/* Ensure general control-group styles are reset for these specific grid items */
+.grainy-controls-grid .control-group label {
+    min-width: unset; /* Allow labels to shrink */
+    flex-shrink: 0;
+    margin-right: 4px;
+}
+
+/* Adjustments for nested range/number inputs within the grainy grid if needed */
+.grainy-controls-grid .control-group input[type="range"],
+.grainy-controls-grid .control-group .number-input,
+.grainy-controls-grid .control-group select {
+    flex-grow: 1; /* Allow them to fill available space */
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-paint-roller"></i> Ultimate CSS Gradient Generator</h1>
+
+        <div class="gradient-preview" id="gradientPreview"></div>
+
+        <div class="controls">
+            <!-- Gradient Settings (Area: settings) -->
+            <div class="control-section">
+                <h2><i class="fas fa-cog"></i> Gradient Settings</h2>
+                <div class="control-group">
+                    <label for="type">Type:</label>
+                    <select id="type">
+                        <option value="linear">Linear Gradient</option>
+                        <option value="radial">Radial Gradient</option>
+                    </select>
+                    <label for="repeating" class="checkbox-label">
+                        <input type="checkbox" id="repeating"> Repeating
+                    </label>
+                </div>
+
+                <div class="control-group" id="linearControls">
+                    <label for="direction">Direction:</label>
+                    <input type="range" id="direction" min="0" max="360" value="90">
+                    <input type="number" id="directionNumber" min="0" max="360" value="90" class="number-input">
+                    <span id="directionValue">90°</span>
+                </div>
+
+                <div class="control-group" id="radialControls" style="display: none;">
+                    <label for="shape">Shape:</label>
+                    <select id="shape">
+                        <option value="ellipse">Ellipse</option>
+                        <option value="circle">Circle</option>
+                    </select>
+                    <label for="extent">Extent:</label>
+                    <select id="extent">
+                        <option value="farthest-corner">Farthest Corner</option>
+                        <option value="closest-corner">Closest Corner</option>
+                        <option value="farthest-side">Farthest Side</option>
+                        <option value="closest-side">Closest Side</option>
+                    </select>
+                    <label for="positionX">Pos X:</label>
+                    <input type="range" id="positionX" min="0" max="100" value="50">
+                    <input type="number" id="positionXNumber" min="0" max="100" value="50" class="number-input">
+                    <span id="positionXValue">50%</span>
+                    <label for="positionY">Pos Y:</label>
+                    <input type="range" id="positionY" min="0" max="100" value="50">
+                    <input type="number" id="positionYNumber" min="0" max="100" value="50" class="number-input">
+                    <span id="positionYValue">50%</span>
+                </div>
+            </div>
+
+            <!-- Color Stops (Area: colors) -->
+            <div class="control-section">
+                <h2><i class="fas fa-swatchbook"></i> Color Stops</h2>
+                <button id="addColorStop" class="icon-button"><i class="fas fa-plus"></i> Add Color Stop</button>
+                <div class="color-stops" id="colorStops"></div>
+            </div>
+
+            <!-- Grainy Filter Section (New Area: grainy) -->
+            <div class="control-section">
+                <h2><i class="fas fa-filter"></i> Grainy Filter</h2>
+                <div class="control-group">
+                    <label for="grainyFilterToggle" class="checkbox-label">
+                        <input type="checkbox" id="grainyFilterToggle"> Enable Filter
+                    </label>
+                </div>
+                <!-- This div is now a grid container for its children -->
+                <div class="grainy-controls-grid" id="grainyFilterControls" style="display: none;">
+                    <div class="control-group grainy-effect-type">
+                        <label for="grainyEffectType">Effect Type:</label>
+                        <select id="grainyEffectType">
+                            <option value="subtle-noise">Subtle Noise</option>
+                            <option value="rough-grain">Rough Grain</option>
+                            <option value="fine-speckle">Fine Speckle</option>
+                            <option value="dots-dither">Dots Dither</option>
+                            <option value="perlin-noise-simulated">Simulated Perlin Noise</option>
+                            <option value="light-scratches">Light Scratches</option>
+                        </select>
+                    </div>
+                    <div class="control-group grainy-intensity">
+                        <label for="grainyIntensity">Intensity:</label>
+                        <input type="range" id="grainyIntensity" min="0" max="100" value="70">
+                        <input type="number" id="grainyIntensityNumber" min="0" max="100" value="70" class="number-input">
+                        <span id="grainyIntensityValue">70%</span>
+                    </div>
+                    <!-- The empty cell is handled by grid-template-areas, no explicit div needed -->
+                    <div class="control-group grainy-size">
+                        <label for="grainySize">Grain Size:</label>
+                        <input type="range" id="grainySize" min="1" max="20" step="0.5" value="4">
+                        <input type="number" id="grainySizeNumber" min="1" max="20" step="0.5" value="4" class="number-input">
+                        <span id="grainySizeValue">4px</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Presets (Area: presets) - This section will now appear at the top due to grid-template-areas -->
+            <div class="control-section">
+                <h2><i class="fas fa-bookmark"></i> Presets</h2>
+                <div class="presets-grid" id="presetsGrid"></div>
+            </div>
+        </div>
+
+        <div class="output-area">
+            <textarea id="cssOutput" rows="6" readonly></textarea>
+            <div class="output-buttons">
+                <label for="prefixing" class="checkbox-label">
+                    <input type="checkbox" id="prefixing" checked> Auto-Prefix
+                </label>
+                <button id="copyCss"><i class="fas fa-copy"></i> Copy CSS</button>
+                <button id="exportCss"><i class="fas fa-file-export"></i> Export CSS</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const gradientPreview = document.getElementById('gradientPreview');
+            const typeSelect = document.getElementById('type');
+            const repeatingCheckbox = document.getElementById('repeating');
+            const directionRange = document.getElementById('direction');
+            const directionNumber = document.getElementById('directionNumber');
+            const directionValueSpan = document.getElementById('directionValue');
+            const linearControls = document.getElementById('linearControls');
+            const radialControls = document.getElementById('radialControls');
+            const shapeSelect = document.getElementById('shape');
+            const extentSelect = document.getElementById('extent');
+            const positionXRange = document.getElementById('positionX');
+            const positionXNumber = document.getElementById('positionXNumber');
+            const positionXValueSpan = document.getElementById('positionXValue');
+            const positionYRange = document.getElementById('positionY');
+            const positionYNumber = document.getElementById('positionYNumber');
+            const positionYValueSpan = document.getElementById('positionYValue');
+            const colorStopsContainer = document.getElementById('colorStops');
+            const addColorStopBtn = document.getElementById('addColorStop');
+            const cssOutput = document.getElementById('cssOutput');
+            const copyCssBtn = document.getElementById('copyCss');
+            const exportCssBtn = document.getElementById('exportCss');
+            const prefixingCheckbox = document.getElementById('prefixing');
+            const notificationElem = document.getElementById('notification');
+            const presetsGrid = document.getElementById('presetsGrid');
+            
+            // New Grainy Filter elements
+            const grainyFilterToggle = document.getElementById('grainyFilterToggle');
+            const grainyFilterControls = document.getElementById('grainyFilterControls'); // This is now the grid container
+            const grainyEffectTypeSelect = document.getElementById('grainyEffectType'); // New select element
+            const grainyIntensityRange = document.getElementById('grainyIntensity');
+            const grainyIntensityNumber = document.getElementById('grainyIntensityNumber');
+            const grainyIntensityValueSpan = document.getElementById('grainyIntensityValue');
+            const grainySizeRange = document.getElementById('grainySize');
+            const grainySizeNumber = document.getElementById('grainySizeNumber');
+            const grainySizeValueSpan = document.getElementById('grainySizeValue');
+
+
+            // Gradient Presets
+            const gradientPresets = [
+                {
+                    name: "Cosmic Fusion",
+                    type: "linear",
+                    direction: 135,
+                    repeating: false,
+                    colors: [{ color: "#ff6b6b", position: 0 }, { color: "#4ecdc4", position: 50 }, { color: "#1a2a44", position: 100 }]
+                },
+                {
+                    name: "Neon Pulse",
+                    type: "linear",
+                    direction: 90,
+                    repeating: false,
+                    colors: [{ color: "#ff00ff", position: 0 }, { color: "#00ffcc", position: 100 }]
+                },
+                {
+                    name: "Aurora Glow",
+                    type: "radial",
+                    shape: "ellipse",
+                    extent: "farthest-corner",
+                    positionX: 50,
+                    positionY: 50,
+                    repeating: false,
+                    colors: [{ color: "#a8e063", position: 0 }, { color: "#56ab2f", position: 100 }]
+                },
+                {
+                    name: "Midnight Sky",
+                    type: "linear",
+                    direction: 180,
+                    repeating: false,
+                    colors: [{ color: "#2c3e50", position: 0 }, { color: "#3498db", position: 50 }, { color: "#8e44ad", position: 100 }]
+                },
+                {
+                    name: "Sunset Haze",
+                    type: "linear",
+                    direction: 45,
+                    repeating: false,
+                    colors: [{ color: "#ffb347", position: 0 }, { color: "#ffcc33", position: 100 }]
+                },
+                {
+                    name: "Candy Swirl",
+                    type: "radial",
+                    shape: "circle",
+                    extent: "closest-side",
+                    positionX: 30,
+                    positionY: 70,
+                    repeating: true,
+                    colors: [{ color: "#ff9a9e", position: 0 }, { color: "#fad0c4", position: 20 }, { color: "#ff9a9e", position: 40 }]
+                },
+                // Retro Wave (Modified: last color stop to 100%)
+                {
+                    name: "Retro Wave",
+                    type: "linear",
+                    direction: 90,
+                    repeating: true,
+                    colors: [{ color: "#ff2e63", position: 0 }, { color: "#08d9d6", position: 20 }, { color: "#252a34", position: 100 }]
+                },
+                {
+                    name: "Deep Ocean",
+                    type: "radial",
+                    shape: "ellipse",
+                    extent: "farthest-side",
+                    positionX: 50,
+                    positionY: 50,
+                    repeating: false,
+                    colors: [{ color: "#0a3d62", position: 0 }, { color: "#3c6e71", position: 100 }]
+                },
+                // Six new beautiful gradients
+                {
+                    name: "Sunset Dream",
+                    type: "linear",
+                    direction: 160,
+                    repeating: false,
+                    colors: [{ color: "#FF70A6", position: 0 }, { color: "#FF9770", position: 50 }, { color: "#FFD670", position: 100 }]
+                },
+                {
+                    name: "Emerald Forest",
+                    type: "linear",
+                    direction: 225,
+                    repeating: false,
+                    colors: [{ color: "#2E8B57", position: 0 }, { color: "#4CAF50", position: 60 }, { color: "#8BC34A", position: 100 }]
+                },
+                {
+                    name: "Lavender Bliss",
+                    type: "radial",
+                    shape: "circle",
+                    extent: "closest-side",
+                    positionX: 50,
+                    positionY: 50,
+                    repeating: false,
+                    colors: [{ color: "#E6E6FA", position: 0 }, { color: "#DDA0DD", position: 100 }]
+                },
+                {
+                    name: "Ocean Depth",
+                    type: "linear",
+                    direction: 0,
+                    repeating: false,
+                    colors: [{ color: "#00008B", position: 0 }, { color: "#4682B4", position: 70 }, { color: "#87CEEB", position: 100 }]
+                },
+                {
+                    name: "Golden Hour",
+                    type: "linear",
+                    direction: 45,
+                    repeating: false,
+                    colors: [{ color: "#FFD700", position: 0 }, { color: "#FFA500", position: 50 }, { color: "#FF4500", position: 100 }]
+                },
+                {
+                    name: "Winter Chill",
+                    type: "radial",
+                    shape: "ellipse",
+                    extent: "farthest-corner",
+                    positionX: 30,
+                    positionY: 20,
+                    repeating: false,
+                    colors: [{ color: "#ADD8E6", position: 0 }, { color: "#B0E0E6", position: 70 }, { color: "#F0F8FF", position: 100 }]
+                }
+            ];
+
+            // Initial Color Stops
+            const initialColorStops = [
+                { color: "#ff6b6b", position: 0 },
+                { color: "#4ecdc4", position: 100 }
+            ];
+
+            // Show Notification
+            function showNotification(message, duration = 2500) {
+                notificationElem.textContent = message;
+                notificationElem.classList.add('show');
+                setTimeout(() => {
+                    notificationElem.classList.remove('show');
+                }, duration);
+            }
+
+            // Generate CSS with Prefixes
+            function getPrefixedCss(css) {
+                if (!prefixingCheckbox.checked) {
+                    return `background: ${css};`;
+                }
+                return `background: ${css};\nbackground: -webkit-${css};\nbackground: -moz-${css};`;
+            }
+
+            // Function to get the grainy pattern based on type
+            function getGrainyPattern(type, grainSize) {
+                // Using a light gray for grain to allow it to blend well over various colors
+                const grainColor = 'rgba(0,0,0,0.05)'; 
+                const grainColorDark = 'rgba(0,0,0,0.1)';
+                const grainColorLight = 'rgba(255,255,255,0.1)';
+
+                switch (type) {
+                    case 'subtle-noise':
+                        // A very gentle, spread-out noise
+                        return `radial-gradient(circle at 25% 25%, ${grainColor} ${grainSize / 4}px, transparent 0%),
+                                radial-gradient(circle at 75% 75%, ${grainColor} ${grainSize / 4}px, transparent 0%)`;
+                    case 'rough-grain':
+                        // More noticeable, larger, irregular spots
+                        return `radial-gradient(circle at 0% 0%, ${grainColorDark} ${grainSize}px, transparent ${grainSize + 2}px),
+                                radial-gradient(circle at 50% 50%, ${grainColorDark} ${grainSize}px, transparent ${grainSize + 2}px),
+                                radial-gradient(circle at 100% 100%, ${grainColorDark} ${grainSize}px, transparent ${grainSize + 2}px),
+                                radial-gradient(circle at 20% 80%, ${grainColorDark} ${grainSize * 0.75}px, transparent ${grainSize + 2}px),
+                                radial-gradient(circle at 80% 20%, ${grainColorDark} ${grainSize * 0.75}px, transparent ${grainSize + 2}px)`;
+                    case 'fine-speckle':
+                        // Denser, smaller, almost powdery speckles
+                        return `radial-gradient(circle at 10% 10%, ${grainColor} ${grainSize / 3}px, transparent 0%),
+                                radial-gradient(circle at 40% 60%, ${grainColor} ${grainSize / 3}px, transparent 0%),
+                                radial-gradient(circle at 70% 30%, ${grainColor} ${grainSize / 3}px, transparent 0%),
+                                radial-gradient(circle at 90% 80%, ${grainColor} ${grainSize / 3}px, transparent 0%),
+                                radial-gradient(circle at 5% 40%, ${grainColor} ${grainSize / 3}px, transparent 0%),
+                                radial-gradient(circle at 60% 15%, ${grainColor} ${grainSize / 3}px, transparent 0%)`;
+                    case 'dots-dither':
+                        // A more grid-like, pixelated dot pattern
+                        return `radial-gradient(circle at 0% 0%, ${grainColor} ${grainSize / 3}px, transparent 0%),
+                                radial-gradient(circle at 100% 0%, ${grainColor} ${grainSize / 3}px, transparent 0%),
+                                radial-gradient(circle at 0% 100%, ${grainColor} ${grainSize / 3}px, transparent 0%),
+                                radial-gradient(circle at 100% 100%, ${grainColor} ${grainSize / 3}px, transparent 0%),
+                                radial-gradient(circle at 50% 50%, ${grainColor} ${grainSize / 3}px, transparent 0%)`;
+                    case 'perlin-noise-simulated':
+                        // Simulating Perlin-like noise with overlapping radial gradients
+                        return `radial-gradient(circle at 20% 30%, ${grainColorDark} ${grainSize * 2}px, transparent ${grainSize * 3}px),
+                                radial-gradient(circle at 70% 80%, ${grainColorDark} ${grainSize * 1.8}px, transparent ${grainSize * 2.8}px),
+                                radial-gradient(circle at 45% 10%, ${grainColorLight} ${grainSize * 1.5}px, transparent ${grainSize * 2.5}px),
+                                radial-gradient(circle at 10% 60%, ${grainColorLight} ${grainSize * 1.2}px, transparent ${grainSize * 2.2}px),
+                                radial-gradient(circle at 90% 40%, ${grainColorDark} ${grainSize * 2.1}px, transparent ${grainSize * 3.1}px),
+                                radial-gradient(circle at 30% 95%, ${grainColorLight} ${grainSize * 1.9}px, transparent ${grainSize * 2.9}px)`;
+                    case 'light-scratches':
+                        // Subtle, thin line scratches
+                        return `repeating-linear-gradient(0deg, ${grainColor} 0px, transparent 1px, transparent ${grainSize / 2}px, ${grainColor} ${grainSize / 2 + 1}px),
+                                repeating-linear-gradient(90deg, ${grainColor} 0px, transparent 1px, transparent ${grainSize / 2}px, ${grainColor} ${grainSize / 2 + 1}px)`;
+                    default:
+                        return `radial-gradient(circle at 25% 25%, ${grainColor} ${grainSize / 4}px, transparent 0%),
+                                radial-gradient(circle at 75% 75%, ${grainColor} ${grainSize / 4}px, transparent 0%)`;
+                }
+            }
+
+
+            // Update Gradient
+            function updateGradient() {
+                try {
+                    const gradientType = typeSelect.value;
+                    const isRepeating = repeatingCheckbox.checked;
+                    const isGrainy = grainyFilterToggle.checked;
+                    let cssString = '';
+
+                    // Collect and sort color stops
+                    const colorStops = Array.from(colorStopsContainer.children)
+                        .map(item => ({
+                            color: item.querySelector('.color-input').value,
+                            position: parseInt(item.querySelector('.position-input').value)
+                        }))
+                        .sort((a, b) => a.position - b.position);
+
+                    if (colorStops.length === 0) {
+                        console.warn('No color stops defined. Using default white.');
+                        gradientPreview.style.background = 'linear-gradient(90deg, #ffffff 0%, #ffffff 100%)';
+                        cssOutput.value = '/* No gradient defined */';
+                        gradientPreview.classList.remove('grainy');
+                        return;
+                    }
+
+                    const colorStopsFormatted = colorStops.map(stop => `${stop.color} ${stop.position}%`).join(', ');
+                    const baseGradient = isRepeating ? `repeating-${gradientType}-gradient` : `${gradientType}-gradient`;
+
+                    if (gradientType === 'linear') {
+                        const direction = directionRange.value;
+                        cssString = `${baseGradient}(${direction}deg, ${colorStopsFormatted})`;
+                    } else {
+                        const shape = shapeSelect.value;
+                        const extent = extentSelect.value;
+                        const positionX = positionXRange.value;
+                        const positionY = positionYRange.value;
+                        cssString = `${baseGradient}(${shape} ${extent} at ${positionX}% ${positionY}%, ${colorStopsFormatted})`;
+                    }
+
+                    gradientPreview.style.background = cssString;
+
+                    // Apply/remove grainy class based on toggle and set CSS variables
+                    if (isGrainy) {
+                        const intensity = parseFloat(grainyIntensityRange.value) / 100; // Convert to 0-1
+                        const size = parseFloat(grainySizeRange.value); // In pixels
+                        const effectType = grainyEffectTypeSelect.value; // Get selected effect type
+
+                        gradientPreview.classList.add('grainy');
+                        gradientPreview.style.setProperty('--grain-intensity', intensity);
+                        // For patterns that repeat, background-size should often be twice the grain size for visual consistency
+                        const backgroundSize = (effectType === 'light-scratches') ? `${size * 2}px ${size * 2}px` : `${size * 2}px ${size * 2}px`;
+                        gradientPreview.style.setProperty('--grain-bg-size', backgroundSize); 
+                        gradientPreview.style.setProperty('--grain-pattern', getGrainyPattern(effectType, size)); // Set pattern based on type
+                    } else {
+                        gradientPreview.classList.remove('grainy');
+                        // Reset properties if filter is off
+                        gradientPreview.style.removeProperty('--grain-intensity');
+                        gradientPreview.style.removeProperty('--grain-size');
+                        gradientPreview.style.removeProperty('--grain-bg-size');
+                        gradientPreview.style.removeProperty('--grain-pattern');
+                    }
+                    
+                    cssOutput.value = getPrefixedCss(cssString);
+                } catch (error) {
+                    console.error('Error updating gradient:', error);
+                    showNotification('그라디언트 업데이트 오류!'); // Error updating gradient!
+                }
+            }
+
+            // Create Color Stop Element
+            function createColorStopElement(color, position) {
+                const div = document.createElement('div');
+                div.classList.add('color-stop-item');
+                div.setAttribute('data-id', Date.now() + Math.random());
+
+                div.innerHTML = `
+                    <input type="color" class="color-input" value="${color}">
+                    <input type="range" class="position-input" min="0" max="100" value="${position}">
+                    <span class="position-value">${position}%</span>
+                    <button class="remove-color-stop" title="Remove Color Stop"><i class="fas fa-times"></i></button>
+                `;
+
+                const colorInput = div.querySelector('.color-input');
+                const positionInput = div.querySelector('.position-input');
+                const positionValue = div.querySelector('.position-value');
+                const removeBtn = div.querySelector('.remove-color-stop');
+
+                colorInput.addEventListener('input', updateGradient);
+                positionInput.addEventListener('input', () => {
+                    positionValue.textContent = `${positionInput.value}%`;
+                    updateGradient();
+                });
+                removeBtn.addEventListener('click', () => {
+                    if (colorStopsContainer.children.length > 1) {
+                        div.remove();
+                        updateGradient();
+                    } else {
+                        showNotification("최소한 하나의 색상 정지점이 필요합니다!"); // At least one color stop is required!
+                    }
+                });
+
+                return div;
+            }
+
+            // Initialize Color Stops
+            function initializeColorStops(stops) {
+                colorStopsContainer.innerHTML = '';
+                stops.forEach(stop => {
+                    colorStopsContainer.appendChild(createColorStopElement(stop.color, stop.position));
+                });
+                updateGradient();
+            }
+
+            // Add Color Stop
+            addColorStopBtn.addEventListener('click', () => {
+                const existingPositions = Array.from(colorStopsContainer.children)
+                    .map(item => parseInt(item.querySelector('.position-input').value));
+
+                let newPosition = 50;
+                if (existingPositions.length > 0) {
+                    const sortedPositions = [...existingPositions].sort((a, b) => a - b);
+                    let maxGap = 0;
+                    let insertPos = 0;
+
+                    if (sortedPositions[0] > 0 && sortedPositions[0] > maxGap) {
+                        maxGap = sortedPositions[0];
+                        insertPos = Math.round(sortedPositions[0] / 2);
+                    }
+
+                    for (let i = 0; i < sortedPositions.length - 1; i++) {
+                        const gap = sortedPositions[i + 1] - sortedPositions[i];
+                        if (gap > maxGap) {
+                            maxGap = gap;
+                            insertPos = Math.round((sortedPositions[i] + sortedPositions[i + 1]) / 2);
+                        }
+                    }
+
+                    if (sortedPositions[sortedPositions.length - 1] < 100) {
+                        const gap = 100 - sortedPositions[sortedPositions.length - 1];
+                        if (gap > maxGap) {
+                            insertPos = Math.round((sortedPositions[sortedPositions.length - 1] + 100) / 2);
+                        }
+                    }
+                    newPosition = insertPos;
+                }
+                
+                // Set new color stop to white as a neutral default
+                const defaultNewColor = '#ffffff'; 
+
+                colorStopsContainer.appendChild(createColorStopElement(defaultNewColor, newPosition));
+                updateGradient();
+                showNotification("색상 정지점이 추가되었습니다!"); /* Color stop added! */
+            });
+
+            // SortableJS for Color Stops
+            new Sortable(colorStopsContainer, {
+                animation: 200,
+                handle: '.color-stop-item',
+                ghostClass: 'sortable-ghost',
+                onEnd: updateGradient
+            });
+
+            // Sync Range and Number Inputs
+            function syncInputs(rangeInput, numberInput, valueSpan, unit = '') {
+                rangeInput.addEventListener('input', () => {
+                    numberInput.value = rangeInput.value;
+                    valueSpan.textContent = `${rangeInput.value}${unit}`;
+                    updateGradient();
+                });
+                numberInput.addEventListener('input', () => {
+                    let val = parseFloat(numberInput.value); // Use parseFloat for step values
+                    if (isNaN(val)) val = parseFloat(numberInput.min);
+                    if (val < parseFloat(numberInput.min)) val = parseFloat(numberInput.min);
+                    if (val > parseFloat(numberInput.max)) val = parseFloat(numberInput.max);
+                    rangeInput.value = val;
+                    valueSpan.textContent = `${val}${unit}`;
+                    updateGradient();
+                });
+            }
+
+            syncInputs(directionRange, directionNumber, directionValueSpan, '°');
+            syncInputs(positionXRange, positionXNumber, positionXValueSpan, '%');
+            syncInputs(positionYRange, positionYNumber, positionYValueSpan, '%');
+
+            // Sync Grainy Filter Inputs
+            syncInputs(grainyIntensityRange, grainyIntensityNumber, grainyIntensityValueSpan, '%');
+            syncInputs(grainySizeRange, grainySizeNumber, grainySizeValueSpan, 'px');
+
+
+            // Control Event Listeners
+            typeSelect.addEventListener('change', () => {
+                linearControls.style.display = typeSelect.value === 'linear' ? 'flex' : 'none';
+                radialControls.style.display = typeSelect.value === 'radial' ? 'flex' : 'none';
+                updateGradient();
+            });
+
+            repeatingCheckbox.addEventListener('change', updateGradient);
+            shapeSelect.addEventListener('change', updateGradient);
+            extentSelect.addEventListener('change', updateGradient);
+            prefixingCheckbox.addEventListener('change', updateGradient);
+            
+            // Grainy filter toggle and controls display
+            grainyFilterToggle.addEventListener('change', () => {
+                if (grainyFilterToggle.checked) {
+                    grainyFilterControls.style.display = 'grid'; // Change to 'grid'
+                } else {
+                    grainyFilterControls.style.display = 'none';
+                }
+                updateGradient(); // Update gradient to apply/remove grainy class and properties
+            });
+
+            // Listen for changes in grainy intensity and size
+            grainyEffectTypeSelect.addEventListener('change', updateGradient); // New event listener for effect type
+            grainyIntensityRange.addEventListener('input', updateGradient);
+            grainyIntensityNumber.addEventListener('input', updateGradient);
+            grainySizeRange.addEventListener('input', updateGradient);
+            grainySizeNumber.addEventListener('input', updateGradient);
+
+
+            // Load Presets
+            function loadPresets() {
+                presetsGrid.innerHTML = '';
+                gradientPresets.forEach(preset => {
+                    const div = document.createElement('div');
+                    div.classList.add('preset-item');
+                    div.setAttribute('data-name', preset.name);
+
+                    let presetCss;
+                    const colorsFormatted = preset.colors.map(stop => `${stop.color} ${stop.position}%`).join(', ');
+                    const baseGradient = preset.repeating ? `repeating-${preset.type}-gradient` : `${preset.type}-gradient`;
+
+                    if (preset.type === 'linear') {
+                        presetCss = `${baseGradient}(${preset.direction}deg, ${colorsFormatted})`;
+                    } else {
+                        presetCss = `${baseGradient}(${preset.shape} ${preset.extent} at ${preset.positionX}% ${preset.positionY}%, ${colorsFormatted})`;
+                    }
+
+                    div.style.background = presetCss;
+
+                    div.addEventListener('click', () => {
+                        typeSelect.value = preset.type;
+                        repeatingCheckbox.checked = preset.repeating;
+                        // Do not set grainy filter from preset; it's a separate option.
+                        // grainyFilterCheckbox.checked = false; // Or maintain current state if desired
+
+                        if (preset.type === 'linear') {
+                            linearControls.style.display = 'flex';
+                            radialControls.style.display = 'none';
+                            directionRange.value = preset.direction;
+                            directionNumber.value = preset.direction;
+                            directionValueSpan.textContent = `${preset.direction}°`;
+                        } else {
+                            linearControls.style.display = 'none';
+                            radialControls.style.display = 'flex';
+                            shapeSelect.value = preset.shape;
+                            extentSelect.value = preset.extent;
+                            positionXRange.value = preset.positionX;
+                            positionXNumber.value = preset.positionX;
+                            positionXValueSpan.textContent = `${preset.positionX}%`;
+                            positionYRange.value = preset.positionY;
+                            positionYNumber.value = preset.positionY;
+                            positionYValueSpan.textContent = `${preset.positionY}%`;
+                        }
+
+                        initializeColorStops(preset.colors);
+                        showNotification(`사전 설정 "${preset.name}"이 적용되었습니다!`); /* Preset "{preset.name}" applied! */
+                    });
+
+                    presetsGrid.appendChild(div);
+                });
+            }
+
+            // Copy CSS
+            copyCssBtn.addEventListener('click', () => {
+                cssOutput.select();
+                navigator.clipboard.writeText(cssOutput.value)
+                    .then(() => showNotification('CSS가 클립보드에 복사되었습니다!')) /* CSS copied to clipboard! */
+                    .catch(() => showNotification('CSS 복사에 실패했습니다!')); /* Failed to copy CSS! */
+            });
+
+            // Export CSS
+            exportCssBtn.addEventListener('click', () => {
+                const cssContent = cssOutput.value;
+                const blob = new Blob([cssContent], { type: 'text/css' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'gradient.css';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(a.href);
+                showNotification('CSS가 성공적으로 내보내졌습니다!'); /* CSS exported successfully! */
+            });
+
+            // Initialize
+            initializeColorStops(initialColorStops);
+            loadPresets();
+            updateGradient();
+        });
+    </script>
+</body>
+</html>

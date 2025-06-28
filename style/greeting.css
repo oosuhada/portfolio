@@ -321,8 +321,8 @@ html, body {
   right: 5px;
   bottom: 5px;
   color: var(--chatbox-button-text-light); /* Use variable */
-  background-color: var(--chatbox-button-bg-dark); /* Use variable */
-  padding: 5px 8px;
+  background-color: var(--chatbox-button-bg-light); /* Use variable */
+  padding: 5px 8px; 
   border-radius: 3px;
   transition: background-color 0.5s ease, color 0.5s ease;
 }

@@ -1,0 +1,219 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    transition: background-color 0.5s ease-in-out;
+}
+
+#pomodoro-timer {
+    background-color: #DD5353; /* Default background color (Work Phase) */
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    width: 320px; /* Slightly wider */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+    min-height: 420px; /* Slightly taller */
+    justify-content: space-around;
+    color: white; /* Default text color (Work Phase) */
+    position: relative;
+}
+
+.title {
+    font-size: 2.5em;
+    text-align: center;
+    margin-bottom: 25px; /* More space */
+    font-weight: bold;
+    color: inherit;
+}
+
+.settings-row {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 30px; /* More space */
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.setting {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 1.2em;
+    color: inherit;
+    flex: 1;
+    padding: 0 10px;
+}
+
+.setting-title {
+    margin: 0 0 10px 0;
+    font-size: 1.2em;
+    color: inherit;
+    white-space: nowrap;
+}
+
+.setting-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.setting i {
+    cursor: pointer;
+    font-size: 1.6em;
+    margin: 0 8px;
+    color: inherit;
+    transition: transform 0.2s ease-in-out;
+}
+
+.setting i:hover {
+    transform: scale(1.15);
+}
+
+.setting span {
+    display: inline-block;
+    width: 35px;
+    text-align: center;
+    font-size: 1.8em;
+    font-weight: bold;
+    color: inherit;
+}
+
+.timer {
+    width: 220px;
+    height: 220px;
+    margin: 0 auto;
+    position: relative;
+}
+
+/* SVG Circular Progressbar styles */
+.circular-progress-bar {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.circular-progress-bar-trail {
+    stroke: rgba(255, 255, 255, 0.2);
+    fill: none;
+    stroke-width: 9;
+}
+
+.circular-progress-bar-path {
+    stroke: white;
+    fill: none;
+    stroke-width: 9;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.5s ease 0s, stroke 0.5s ease-in-out;
+}
+
+.timer-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers items horizontally within the column */
+    justify-content: center; /* Centers items vertically within the column */
+    width: 100%;
+    height: 100%;
+}
+
+.timer-text {
+    font-size: 3em;
+    font-weight: bold;
+    color: inherit;
+    margin-bottom: 15px;
+}
+
+.timer .controls {
+    display: flex;
+    gap: 20px;
+    font-size: 3.5em;
+    color: inherit;
+    justify-content: center; /* Centers icons horizontally within the controls div */
+    align-items: center;
+    width: 100%; /* Ensure controls takes full width of its parent to center its contents */
+}
+
+.timer .controls i {
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.timer .controls i:hover {
+    transform: scale(1.1);
+}
+
+/* Visibility classes */
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-20px);
+    height: 0;
+    margin-bottom: 0 !important;
+    overflow: hidden;
+}
+
+.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+    height: auto;
+}
+
+/* Specific adjustments for controls when hidden/visible */
+.timer .controls.hidden {
+    display: none;
+}
+.timer .controls.visible {
+    display: flex;
+}
+
+/* Responsive adjustments */
+@media (max-width: 400px) {
+    #pomodoro-timer {
+        width: 90%;
+        padding: 15px;
+        min-height: 380px;
+    }
+    .title {
+        font-size: 2em;
+    }
+    .settings-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .setting {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+    .setting-title {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    .timer {
+        width: 180px;
+        height: 180px;
+    }
+    .timer-text {
+        font-size: 2.5em;
+    }
+    .timer .controls {
+        font-size: 3em;
+        gap: 20px;
+    }
+}

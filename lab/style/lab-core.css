@@ -121,7 +121,7 @@ body {
 
 /* --- Lab Header Styles --- */
 .lab-header {
-    position: fixed;
+    position: absolute;
     top: 10px;
     width: 100%;
     background-color: transparent;

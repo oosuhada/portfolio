@@ -1,0 +1,279 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Arial", sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 800px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    color: #e53935;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #45a049;
+}
+
+.button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+/* Pokemon Selection Screen */
+.selection-screen {
+    margin-top: 20px;
+}
+
+.pokemon-selection {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.pokemon-option {
+    width: 120px;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.pokemon-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.pokemon-option.selected {
+    border-color: #e53935;
+    background-color: rgba(229, 57, 53, 0.1);
+}
+
+.pokemon-option img {
+    width: 100%;
+    height: auto;
+}
+
+.pokemon-option p {
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+/* Battle Screen */
+.battle-screen {
+    margin-top: 20px;
+}
+
+.battle-field {
+    position: relative;
+    height: 300px;
+    background-image: linear-gradient(to bottom, #87ceeb, #e0f7fa);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.battle-field::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background-color: #81c784;
+    border-top: 3px solid #66bb6a;
+}
+
+.opponent-area,
+.player-area {
+    position: absolute;
+    width: 45%;
+    z-index: 1;
+}
+
+.opponent-area {
+    top: 30px;
+    right: 50px;
+}
+
+.player-area {
+    bottom: 60px;
+    left: 50px;
+}
+
+.pokemon {
+    width: 150px;
+    height: 150px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.opponent {
+    margin-top: 40px;
+}
+
+.health-bar-container {
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.pokemon-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+.health-bar {
+    height: 12px;
+    background-color: #eee;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.health-fill {
+    height: 100%;
+    width: 100%;
+    background-color: #4caf50;
+    transition: width 0.5s;
+}
+
+.health-text {
+    font-size: 12px;
+    text-align: right;
+    margin-top: 2px;
+}
+
+/* Battle Controls */
+.battle-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.message-box {
+    background-color: #f5f5f5;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-weight: bold;
+}
+
+.moves-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.move-button {
+    background-color: #2196f3;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.move-button:hover {
+    background-color: #1976d2;
+}
+
+/* Battle Result */
+.battle-result {
+    margin-top: 20px;
+}
+
+/* Animation */
+@keyframes shake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+.shake {
+    animation: shake 0.5s;
+}
+
+@keyframes flash {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.flash {
+    animation: flash 0.5s;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .battle-field {
+        height: 250px;
+    }
+
+    .pokemon {
+        width: 100px;
+        height: 100px;
+    }
+
+    .opponent-area {
+        top: 20px;
+        right: 20px;
+    }
+
+    .player-area {
+        bottom: 50px;
+        left: 20px;
+    }
+}

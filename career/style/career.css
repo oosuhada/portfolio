@@ -215,7 +215,7 @@ body[data-theme="light"] .section-bottom-gap2 {
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
   color: var(--primary-content-color);
-  background: transparent;
+  background: var(--primary-bg-opacity);
   border: 1px solid var(--primary-content-color);
   border-radius: 0.375rem;
   text-decoration: none;

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        a{
+            color: #fff;
+            text-decoration: none;
+        }
+        body{
+            color: #fff;
+            font-weight: 300;
+            background-color: #111;
+        }
+        #parallax__cont{
+            max-width: 1600px;
+            width: 98%;
+            margin: 0 auto;
+        }
+        .parallax__item{
+            width: 1000px;
+            max-width: 70vw;
+            margin: 30vw auto;
+            text-align: left;
+            position: relative;
+        }
+        #section2,
+        #section4,
+        #section6,
+        #section8{
+            background-color: #acacac;
+        }
+
+        .parallax__item__num{
+            font-size: 35vw;
+            position: absolute;
+            left: -5vw;
+            top: -13vw;
+            opacity: 0.07;
+            font-weight: 100;
+        }
+        .parallax__item__imgWrap{
+            width: 100%;
+            padding-bottom: 56.25%;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+        .parallax__item__img{
+            position: absolute;
+            left: -5%;
+            top: -5%;
+            width: 110%;
+            height: 110%;
+            background-repeat: no-repeat;
+            background-color: #fff;
+            background-size: cover;
+            background-position: center center;
+            filter: saturate(0%);
+            transition: all 1s;
+        }
+        .parallax__item__img:hover{
+            filter: saturate(100%);
+            transform: scale(1.025);
+        }
+
+
+        #section1 .parallax__item__img{
+            background-image: url(../images/img1.jpg);
+        }
+        #section2 .parallax__item__img{
+            background-image: url(../images/img2.jpg);
+        }
+        #section3 .parallax__item__img{
+            background-image: url(../images/img3.jpg);
+        }
+        #section4 .parallax__item__img{
+            background-image: url(../images/img4.jpg);
+        }
+        #section5 .parallax__item__img{
+            background-image: url(../images/img5.jpg);
+        }
+        #section6 .parallax__item__img{
+            background-image: url(../images/img6.jpg);
+        }
+        #section7 .parallax__item__img{
+            background-image: url(../images/img1.jpg);
+        }
+        #section8 .parallax__item__img{
+            background-image: url(../images/img2.jpg);
+        }
+        #section9 .parallax__item__img{
+            background-image: url(../images/img3.jpg);
+        }
+
+        .parallax__item__desc{
+            font-size: 4vw;
+            line-height: 1.4;
+            margin-top: -5vw;
+            margin-left: -4vw;
+            z-index: 100;
+            position: relative;
+            word-break: keep-all;
+        }
+        .parallax__item:nth-child(even) .parallax__item__desc{
+            margin-left: auto;
+            margin-right: -4vw;
+        }
+
+        .split>span{
+            display: inline-block;
+        }
+    </style>
+
+</head>
+<body>
+    <main id="parallax__cont">
+        <section id="section1" class="parallax__item">
+            <span class="parallax__item__num">01</span>
+            <h2 class="parallax__item__title">section1</h2>
+            <figure class="parallax__item__imgWrap">
+                <div class="parallax__item__img"></div>
+            </figure>
+            <p class="parallax__item__desc split">Lorem ipsum dolor sit amet.</p>
+        </section>
+        <section id="section2" class="parallax__item">
+            <span class="parallax__item__num">02</span>
+            <h2 class="parallax__item__title">section2</h2>
+            <figure class="parallax__item__imgWrap">
+                <div class="parallax__item__img"></div>
+            </figure>
+            <p class="parallax__item__desc split">Lorem ipsum dolor sit amet.</p>
+        </section>
+        <section id="section3" class="parallax__item">
+            <span class="parallax__item__num">03</span>
+            <h2 class="parallax__item__title" data-delay="0.8">section3</h2>
+            <figure class="parallax__item__imgWrap">
+                <div class="parallax__item__img"></div>
+            </figure>
+            <p class="parallax__item__desc split">Lorem ipsum dolor sit amet.</p>
+        </section>
+        <section id="section4" class="parallax__item">
+            <span class="parallax__item__num">04</span>
+            <h2 class="parallax__item__title">section4</h2>
+            <figure class="parallax__item__imgWrap">
+                <div class="parallax__item__img"></div>
+            </figure>
+            <p class="parallax__item__desc split">Lorem ipsum dolor sit amet.</p>
+        </section>
+        <section id="section1" class="parallax__item">
+            <span class="parallax__item__num">05</span>
+            <h2 class="parallax__item__title">section5</h2>
+            <figure class="parallax__item__imgWrap">
+                <div class="parallax__item__img"></div>
+            </figure>
+            <p class="parallax__item__desc split">Lorem ipsum dolor sit amet.</p>
+        </section>
+        <section id="section6" class="parallax__item">
+            <span class="parallax__item__num">06</span>
+            <h2 class="parallax__item__title">section6</h2>
+            <figure class="parallax__item__imgWrap">
+                <div class="parallax__item__img"></div>
+            </figure>
+            <p class="parallax__item__desc split">Lorem ipsum dolor sit amet.</p>
+        </section>
+        <section id="section7" class="parallax__item">
+            <span class="parallax__item__num">07</span>
+            <h2 class="parallax__item__title">section7</h2>
+            <figure class="parallax__item__imgWrap">
+                <div class="parallax__item__img"></div>
+            </figure>
+            <p class="parallax__item__desc split">Lorem ipsum dolor sit amet.</p>
+        </section>
+        <section id="section8" class="parallax__item">
+            <span class="parallax__item__num">08</span>
+            <h2 class="parallax__item__title">section8</h2>
+            <figure class="parallax__item__imgWrap">
+                <div class="parallax__item__img"></div>
+            </figure>
+            <p class="parallax__item__desc split">Lorem ipsum dolor sit amet.</p>
+        </section>
+        <section id="section9" class="parallax__item">
+            <span class="parallax__item__num">09</span>
+            <h2 class="parallax__item__title">section9</h2>
+            <figure class="parallax__item__imgWrap">
+                <div class="parallax__item__img"></div>
+            </figure>
+            <p class="parallax__item__desc split">Lorem ipsum dolor sit amet.</p>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.1/ScrollToPlugin.min.js"></script>
+    <script src="https://unpkg.com/split-type"></script>
+    <script>
+        const targets=gsap.utils.toArray(".split");
+        targets.forEach(target=>{
+            let SplitClient = new SplitType(target, {type: "lines, words, chars"})
+            let lines=SplitClient.lines;
+            let words=SplitClient.words;
+            let chars=SplitClient.chars;
+
+            gsap.from(chars,{
+                yPercent: 100,
+                autoAlpha: 0,
+                duration: 1,
+                ease: 'circ.out',
+                stagger: {
+                    amount: 1,
+                    from: 'random'
+                },
+                scrollTrigger:{
+                    trigger: target,
+                    start: 'top bottom',
+                    end: '+=400',
+                    markers: true,
+                }
+            })
+        })
+    </script>
+</body>
+</html>

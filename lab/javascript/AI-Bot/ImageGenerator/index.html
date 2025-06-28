@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.453.0/lucide.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <i data-lucide="sparkles"></i>
+                        </div>
+                        <h1>AI Image Generator</h1>
+                    </div>
+                    <div class="header-actions">
+                        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                            <i data-lucide="sun" class="theme-icon-light"></i>
+                            <i data-lucide="moon" class="theme-icon-dark"></i>
+                        </button>
+                        <button class="gallery-toggle" id="galleryToggle" aria-label="Toggle gallery">
+                            <i data-lucide="image"></i>
+                            <span>Gallery</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="container">
+                <div class="main-content">
+                    <div class="mode-toggle">
+                        <button class="mode-btn active" id="generateMode" data-mode="generate">
+                            <i data-lucide="sparkles"></i>
+                            <span>Generate</span>
+                        </button>
+                        <button class="mode-btn" id="enhanceMode" data-mode="enhance">
+                            <i data-lucide="image"></i>
+                            <span>Enhance</span>
+                        </button>
+                    </div>
+
+                    <section class="generator-section" id="generatorSection">
+                        <div class="generator-card">
+                            <div class="card-header">
+                                <h2>Generate Your Image</h2>
+                                <p>Describe what you want to see and let AI create it for you</p>
+                            </div>
+                            
+                            <form class="generator-form" id="generatorForm">
+                                <div class="input-group">
+                                    <label for="promptInput" class="input-label">
+                                        Enter your prompt
+                                    </label>
+                                    <div class="input-container">
+                                        <textarea 
+                                            id="promptInput" 
+                                            class="prompt-input" 
+                                            placeholder="A beautiful sunset over mountains with clouds..."
+                                            rows="3"
+                                            maxlength="500"
+                                            required
+                                        ></textarea>
+                                        <div class="input-actions">
+                                            <span class="char-count" id="charCount">0/500</span>
+                                            <button type="submit" class="generate-btn" id="generateBtn">
+                                                <i data-lucide="sparkles"></i>
+                                                <span>Generate</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="settings-group">
+                                    <h3 class="settings-title">Image Settings</h3>
+                                    <div class="settings-row">
+                                        <div class="setting-item">
+                                            <label for="sizeSelect" class="setting-label">Resolution</label>
+                                            <select id="sizeSelect" class="setting-select">
+                                                <option value="512x512">Standard (512×512)</option>
+                                                <option value="1024x1024">HD (1024×1024)</option>
+                                                <option value="1920x1080">Full HD (1920×1080)</option>
+                                                <option value="2560x1440">2K (2560×1440)</option>
+                                                <option value="3840x2160">4K (3840×2160)</option>
+                                            </select>
+                                        </div>
+                                        <div class="setting-item">
+                                            <label for="qualitySelect" class="setting-label">Quality</label>
+                                            <select id="qualitySelect" class="setting-select">
+                                                <option value="standard">Standard</option>
+                                                <option value="enhanced" selected>Enhanced</option>
+                                                <option value="premium">Premium HD</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <div class="generation-status" id="generationStatus" style="display: none;">
+                                <div class="status-content">
+                                    <div class="loading-spinner">
+                                        <div class="spinner"></div>
+                                    </div>
+                                    <div class="status-text">
+                                        <h3>Generating your image...</h3>
+                                        <p id="statusMessage">Please wait while AI creates your masterpiece</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="image-result" id="imageResult" style="display: none;">
+                                <div class="image-container">
+                                    <img id="generatedImage" class="generated-image" alt="Generated image">
+                                    <div class="image-overlay">
+                                        <div class="image-actions">
+                                            <button class="action-btn download-btn" id="downloadBtn" title="Download">
+                                                <i data-lucide="download"></i>
+                                            </button>
+                                            <button class="action-btn fullscreen-btn" id="fullscreenBtn" title="View full size">
+                                                <i data-lucide="maximize"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="image-info">
+                                    <div class="image-meta">
+                                        <span class="generation-time" id="generationTime"></span>
+                                        <span class="image-service" id="imageService"></span>
+                                    </div>
+                                    <p class="image-prompt" id="imagePrompt"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="enhancement-section" id="enhancementSection" style="display: none;">
+                        <div class="generator-card">
+                            <div class="card-header">
+                                <h2>Enhance Your Image</h2>
+                                <p>Upload an image to enhance its quality and resolution</p>
+                            </div>
+                            
+                            <div class="upload-area" id="uploadArea">
+                                <div class="upload-content">
+                                    <i data-lucide="upload-cloud"></i>
+                                    <h3>Drop your image here</h3>
+                                    <p>or click to browse files</p>
+                                    <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                                    <button class="upload-btn" id="browseBtn">
+                                        <i data-lucide="folder-open"></i>
+                                        <span>Browse Files</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="settings-group" id="enhancementSettings" style="display: none;">
+                                <h3 class="settings-title">Enhancement Settings</h3>
+                                <div class="settings-row">
+                                    <div class="setting-item">
+                                        <label for="enhanceResolution" class="setting-label">Target Resolution</label>
+                                        <select id="enhanceResolution" class="setting-select">
+                                            <option value="2x">2x Enhancement</option>
+                                            <option value="4x" selected>4x Enhancement</option>
+                                            <option value="8x">8x Enhancement</option>
+                                        </select>
+                                    </div>
+                                    <div class="setting-item">
+                                        <label for="enhanceType" class="setting-label">Enhancement Type</label>
+                                        <select id="enhanceType" class="setting-select">
+                                            <option value="general">General</option>
+                                            <option value="photo" selected>Photo</option>
+                                            <option value="artwork">Artwork</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button class="generate-btn" id="enhanceBtn" style="margin-top: 1rem;">
+                                    <i data-lucide="zap"></i>
+                                    <span>Enhance Image</span>
+                                </button>
+                            </div>
+
+                            <div class="image-preview" id="imagePreview" style="display: none;">
+                                <h3>Original Image</h3>
+                                <div class="preview-container">
+                                    <img id="originalImage" class="preview-image" alt="Original image">
+                                    <div class="image-info">
+                                        <span id="originalDimensions"></span>
+                                        <span id="originalSize"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="gallery-section" id="gallerySection" style="display: none;">
+                        <div class="gallery-header">
+                            <h2>Your Gallery</h2>
+                            <div class="gallery-actions">
+                                <button class="clear-gallery-btn" id="clearGalleryBtn">
+                                    <i data-lucide="trash-2"></i>
+                                    <span>Clear All</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="gallery-grid" id="galleryGrid">
+                            </div>
+                        
+                        <div class="gallery-empty" id="galleryEmpty">
+                            <div class="empty-state">
+                                <i data-lucide="image-off"></i>
+                                <h3>No images yet</h3>
+                                <p>Generate your first image to see it appear here</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+
+        <div class="modal" id="imageModal" style="display: none;">
+            <div class="modal-backdrop" id="modalBackdrop"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="modal-close" id="modalClose">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <img id="modalImage" class="modal-image" alt="Full size image">
+                </div>
+                <div class="modal-footer">
+                    <div class="modal-actions">
+                        <button class="modal-action-btn" id="modalDownloadBtn">
+                            <i data-lucide="download"></i>
+                            <span>Download</span>
+                        </button>
+                    </div>
+                    <p class="modal-prompt" id="modalPrompt"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="toast-container" id="toastContainer"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

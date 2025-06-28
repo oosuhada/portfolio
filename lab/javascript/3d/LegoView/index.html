@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGL Application</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="myCanvas"></canvas>
+
+    <input type="checkbox" name="phongOn" id="phongOn" checked>
+    <input type="checkbox" name="linesOn" id="linesOn" checked>
+    <input type="checkbox" name="ombraOn" id="ombraOn" checked>
+    <input type="checkbox" name="knobsOn" id="knobsOn" checked>
+    <input type="checkbox" name="setOn" id="setOn">
+
+    <div id="camLabel">
+        <div id="camPrev" class="camSwitch">
+            <div class="stud"></div>
+        </div>
+        <span id="camType">3rd person perspective</span>
+        <div id="camNext" class="camSwitch">
+            <div class="stud"></div>
+        </div>
+    </div>
+
+    <section>
+        <label for="setOn" class="setLabel icon" title="Graphic details">
+            <div class="wrench">
+                <div class="head head1"><div></div></div>
+                <div class="head head2"></div>
+                <div class="shaft"></div>
+            </div>
+        </label>
+        <div id="settings">
+            <label for="phongOn" id="phongLbl" class="brick checked">Glossy surfaces <span>(P)</span></label>
+            <label for="linesOn" id="linesLbl" class="brick checked">Rounded edges <span>(L)</span></label>
+            <label for="ombraOn" id="ombraLbl" class="brick checked">Object shadows <span>(O)</span></label>
+            <label for="knobsOn" id="knobsLbl" class="brick checked">Floor with studs <span>(K)</span></label>
+        </div>
+    </section>
+
+    <audio id="engine" loop>
+        <source src="https://res.cloudinary.com/dojyqgmpp/video/upload/v1747510719/428466__theearthcollective__engine_7_wnkup8.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <audio id="knock">
+        <source src="https://res.cloudinary.com/dojyqgmpp/video/upload/v1747639850/625687__audacitier__knock-1_k2euif.mp3" type="audio/wav">
+        Your browser does not support the audio element.
+    </audio>
+
+    <audio id="popup">
+        <source src="https://res.cloudinary.com/dojyqgmpp/video/upload/v1747638988/4clickb_o3xjej.wav" type="audio/wav">
+        Your browser does not support the audio element.
+    </audio>
+
+    <audio id="drop">
+        <source src="https://res.cloudinary.com/dojyqgmpp/video/upload/v1747504527/233643__rioforce__lego-brick-fall-5_pijmv3.wav" type="audio/wav">
+        Your browser does not support the audio element.
+    </audio>
+
+    <audio id="twoClick">
+        <source src="https://res.cloudinary.com/dojyqgmpp/video/upload/v1747504527/233658__rioforce__lego-double-click-1_xegq0l.wav" type="audio/wav">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>

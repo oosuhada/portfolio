@@ -3,6 +3,7 @@
     constructor() {
       this.carousel = null; this.posters = []; this.labels = null;
       this.n = 0; this.center = 0; this.lastCenter = 0;
+      this.backgroundImageIndex = 0; // ADDED: 배경 이미지 인덱스 추적용 프로퍼티
       this.maxVisible = 6;
       this.isEntranceAnimation = false;
       this.isEntranceAnimationComplete = false; // Add this new property to track completion
@@ -110,7 +111,6 @@
 
     renderCarousel(centerIdx = this.center, animate = true) {
       const { R, verticalOffset, cardAngle, scaleStep } = this.animParams;
-      // Only check and load iframes during normal operation or if entrance is complete
       if (!this.isEntranceAnimation || this.isEntranceAnimationComplete) {
         this.checkAndLoadVisibleIframes(centerIdx);
       }
@@ -143,23 +143,19 @@
 
     runCarousel(isFirst = false) {
       if (!this || typeof this.playEntranceAnimation !== 'function') { return; }
-
-      // Only set to true if it's genuinely the first time to trigger the full entrance
       if (isFirst && !this.isEntranceAnimationComplete) {
           this.isEntranceAnimation = true;
           this.playEntranceAnimation();
       } else {
-          // If already complete or not the first call, just render normally
-          this.isEntranceAnimation = false; // Ensure this is false for normal rendering
+          this.isEntranceAnimation = false;
           this.renderCarousel(this.center, false);
           if (!this.isEntranceAnimationComplete) {
-              // If for some reason it wasn't marked complete, ensure it is now
               this.isEntranceAnimationComplete = true;
               this.posters.forEach(poster => {
                   poster.classList.add('entrance-complete');
                   this.tryFadeOverlay(poster);
               });
-              this.setupEvents(); // Set up events only once
+              this.setupEvents();
           }
       }
     }
@@ -187,7 +183,7 @@
         const totalSteps = (this.center - startCenter + this.n) % this.n;
         if (totalSteps === 0) {
           this.isEntranceAnimation = false;
-          this.isEntranceAnimationComplete = true; // Mark as complete
+          this.isEntranceAnimationComplete = true; 
           this.lastCenter = this.center;
           this.renderCarousel(this.center, false);
           this.posters.forEach(poster => {
@@ -196,7 +192,8 @@
           });
           this.setupEvents();
           this.checkAndLoadVisibleIframes(this.center);
-          if (window.appBackgroundChanger) window.appBackgroundChanger.initializeCarouselModeBackground(this.center);
+          this.backgroundImageIndex = (this.center * 3) % 150; // ADDED
+          if (window.appBackgroundChanger) window.appBackgroundChanger.initializeCarouselModeBackground(this.backgroundImageIndex); // CHANGED
           return;
         }
         const initialDelay = 50;
@@ -217,15 +214,16 @@
               this.renderCarousel(this.center, true);
               setTimeout(() => {
                 this.isEntranceAnimation = false;
-                this.isEntranceAnimationComplete = true; // Mark as complete
+                this.isEntranceAnimationComplete = true; 
                 this.lastCenter = this.center;
+                this.backgroundImageIndex = (this.center * 3) % 150; // ADDED
                 this.posters.forEach(poster => {
                     poster.classList.add('entrance-complete');
                     this.tryFadeOverlay(poster);
                 });
                 this.setupEvents();
                 this.checkAndLoadVisibleIframes(this.center);
-                if (window.appBackgroundChanger) window.appBackgroundChanger.initializeCarouselModeBackground(this.center);
+                if (window.appBackgroundChanger) window.appBackgroundChanger.initializeCarouselModeBackground(this.backgroundImageIndex); // CHANGED
               }, 700);
             }, 150);
           }
@@ -249,9 +247,14 @@
       this.isMoving = true;
       this.lastCenter = oldActualCenter;
       this.center = targetCenter;
-      if (window.appBackgroundChanger) {
-        window.appBackgroundChanger._setSingleBackgroundImageForCarousel(this.center, 0.8);
+      
+      // CHANGED: 배경 이미지 인덱스 계산 로직
+      if (userDirection && window.appBackgroundChanger) {
+        const totalImages = 150;
+        this.backgroundImageIndex = (this.backgroundImageIndex + (userDirection * 3) + totalImages) % totalImages;
+        window.appBackgroundChanger._setSingleBackgroundImageForCarousel(this.backgroundImageIndex, 0.8);
       }
+
       this.renderCarousel(this.center, true);
       setTimeout(() => {
         this.isMoving = false;
@@ -261,8 +264,8 @@
         }
       }, 900);
     }
+
     setupEvents() {
-      // Remove previous listeners to prevent duplicates
       if (this._wheelHandler) this.carousel.removeEventListener('wheel', this._wheelHandler);
       if (this._mouseDownHandler) this.carousel.removeEventListener('mousedown', this._mouseDownHandler);
       if (this._mouseMoveHandler) document.removeEventListener('mousemove', this._mouseMoveHandler);
@@ -270,7 +273,6 @@
       if (this._touchStartHandler) this.carousel.removeEventListener('touchstart', this._touchStartHandler);
       if (this._touchEndHandler) this.carousel.removeEventListener('touchend', this._touchEndHandler);
 
-      // Re-query posters as they might have been replaced
       this.posters = Array.from(this.carousel.querySelectorAll('.poster'));
 
       this._wheelHandler = (e) => { e.preventDefault(); if (this.isMoving) return; if (e.deltaY > 0) this.moveTo(this.center + 1, 1); else this.moveTo(this.center - 1, -1); };
@@ -300,10 +302,8 @@
         if (Math.abs(deltaX) > this.dragThreshold) { if (deltaX > 0) this.moveTo(this.center - 1, -1); else this.moveTo(this.center + 1, 1); }
       };
       this.carousel.addEventListener('touchend', this._touchEndHandler, { passive: true });
-
-      // Ensure click listeners are also properly managed to prevent duplicates if setupEvents is called multiple times
+      
       this.posters.forEach((poster, idx) => {
-        // Use a named function or check if listener already exists to prevent duplicates
         const clickHandler = () => {
           if (this.isMoving) return;
           if (idx === this.center) {
@@ -317,10 +317,9 @@
             this.performFastScroll(idx);
           }
         };
-        // Remove existing handler if it was added before
-        poster.removeEventListener('click', poster._carouselClickHandler); // Use a custom property to store the handler
-        poster._carouselClickHandler = clickHandler; // Store the handler
-        poster.addEventListener('click', poster._carouselClickHandler); // Add the new handler
+        poster.removeEventListener('click', poster._carouselClickHandler);
+        poster._carouselClickHandler = clickHandler;
+        poster.addEventListener('click', poster._carouselClickHandler);
       });
       this.carousel.style.cursor = 'grab';
     }
@@ -352,12 +351,12 @@
       const jumpItems = document.querySelectorAll('.category-jump-item');
       jumpItems.forEach(item => {
         const button = item.querySelector('.category-jump-btn');
-        const label = item.querySelector('.category-jump-label'); // 라벨 요소도 선택
+        const label = item.querySelector('.category-jump-label'); 
         
         if (button && button.dataset.category === currentCategory) {
           item.classList.add('active');
           button.classList.add('active');
-          if (label) { // 라벨이 있다면 active 클래스 추가
+          if (label) {
             label.classList.add('active');
           }
         } else {
@@ -365,7 +364,7 @@
           if (button) {
             button.classList.remove('active');
           }
-          if (label) { // 라벨이 있다면 active 클래스 제거
+          if (label) { 
             label.classList.remove('active');
           }
         }
@@ -398,39 +397,64 @@
         });
       });
     }
+    
     performFastScroll(targetCenter) {
       if (this.isMoving) return;
       this.isMoving = true;
       this.loadIframeForPoster(this.posters[targetCenter]);
       const oldCenter = this.center;
+    
+      // ADDED: 시작/끝 이미지 인덱스 계산
+      const totalImages = 150;
+      const startImageIndex = this.backgroundImageIndex;
+    
       const distForward = (targetCenter - oldCenter + this.n) % this.n;
       const distBackward = (oldCenter - targetCenter + this.n) % this.n;
+      
       let endValue;
       let direction;
       const steps = Math.min(distForward, distBackward);
+    
+      let endImageValue; // ADDED: 최종 이미지 인덱스 값
       if (distForward <= distBackward) {
         endValue = oldCenter + distForward;
         direction = 1;
+        endImageValue = startImageIndex + distForward * 3; // ADDED
       } else {
         endValue = oldCenter - distBackward;
         direction = -1;
+        endImageValue = startImageIndex - distBackward * 3; // ADDED
       }
+    
       const BACKGROUND_TRANSITION_DURATION_PER_CARD = 0.1;
       const animationDuration = Math.max(0.5, steps * BACKGROUND_TRANSITION_DURATION_PER_CARD);
+      
       const dummy = { value: oldCenter };
-      let lastRenderedBgImageIndex = oldCenter;
+      const imageDummy = { value: startImageIndex }; // ADDED: 이미지 인덱스 애니메이션용 더미 객체
+    
+      let lastRenderedBgImageIndex = startImageIndex;
+      
       const combinedTimeline = gsap.timeline({
         onUpdate: () => {
           this.renderFastScrollFrame(dummy.value);
-          const currentBgImageIndex = Math.round(dummy.value);
-          if (window.appBackgroundChanger && currentBgImageIndex !== lastRenderedBgImageIndex) {
-            window.appBackgroundChanger._setSingleBackgroundImageForCarousel(currentBgImageIndex, 0.2);
-            lastRenderedBgImageIndex = currentBgImageIndex;
+          
+          // CHANGED: imageDummy 값을 이용해 배경 업데이트
+          if (window.appBackgroundChanger) {
+            const currentBgImageIndex = Math.round(imageDummy.value);
+            if (currentBgImageIndex !== lastRenderedBgImageIndex) {
+              const wrappedIndex = (currentBgImageIndex % totalImages + totalImages) % totalImages;
+              window.appBackgroundChanger._setSingleBackgroundImageForCarousel(wrappedIndex, 0.2);
+              lastRenderedBgImageIndex = currentBgImageIndex;
+            }
           }
         },
         onComplete: () => {
           this.center = targetCenter;
           this.lastCenter = targetCenter;
+          
+          // ADDED: 애니메이션 완료 후 최종 이미지 인덱스 설정
+          this.backgroundImageIndex = (Math.round(endImageValue) % totalImages + totalImages) % totalImages;
+          
           this.updateActiveCategoryButton(this.center);
           if (this.labels) this.renderLabels(this.center, 5);
           this.checkAndLoadVisibleIframes(this.center);
@@ -502,6 +526,13 @@
       });
       combinedTimeline.to(dummy, {
         value: endValue,
+        duration: animationDuration,
+        ease: "power3.easeInOut"
+      }, 0);
+      
+      // ADDED: 이미지 인덱스 애니메이션을 타임라인에 추가
+      combinedTimeline.to(imageDummy, {
+        value: endImageValue,
         duration: animationDuration,
         ease: "power3.easeInOut"
       }, 0);

@@ -1,0 +1,37 @@
+body {
+    cursor: none;
+    height: 100vh;
+    margin: 0;
+    display: grid;
+    place-items: center;
+    background: PapayaWhip;
+    font-family: sans-serif; /* Added for better text rendering */
+}
+
+p {
+    text-align: center; /* Ensures emojis are centered */
+}
+
+.sweet-treats {
+    font-size: 5rem;
+    margin: auto;
+    cursor: none; /* Hide cursor on the treats too */
+}
+
+.cursor {
+    pointer-events: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 2rem; /* Simplified font-size */
+    width: 1rem;
+    height: 1rem;
+    transform: translate(-50%, -50%); /* Center the emoji on the pointer */
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Softened shadow */
+    transition: filter 0.2s; /* Added smooth transition for mousedown */
+}
+
+.mousedown {
+    filter: brightness(0.5);
+    transform: translate(-50%, -50%) scale(0.9); /* Add a subtle press effect */
+}

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    
+    #renderDiv {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+    
+    .filament {
+      position: absolute;
+      width: 3px;
+      height: 50px;
+      background-color: black;
+      transition: transform 0.1s linear;
+      will-change: transform;
+    }
+  </style>
+</head>
+<body>
+  <div id="renderDiv"></div>
+  
+  <script>
+    // Create the container for our filaments
+    const container = document.createElement('div');
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      overflow: hidden;
+      z-index: -1;
+    `;
+    document.getElementById('renderDiv').appendChild(container);
+    
+    // Filament class to manage each filament's behavior
+    class Filament {
+      constructor(id) {
+        this.id = id;
+        this.element = document.createElement('div');
+        this.element.className = 'filament';
+        
+        // Randomize initial positions across the screen
+        this.x = Math.random() * window.innerWidth;
+        this.y = Math.random() * window.innerHeight;
+        
+        // Randomize initial rotation
+        this.rotation = Math.random() * 360;
+        
+        // Randomize fall speed for varied movement
+        this.fallSpeed = 0.5 + Math.random() * 2;
+        
+        // Attraction parameters
+        this.attracted = false;
+        this.attractionStrength = 0.1 + Math.random() * 0.2;
+        this.attractionDistance = 150 + Math.random() * 100;
+        
+        // Apply initial position and rotation
+        this.updatePosition();
+        
+        // Add to container
+        container.appendChild(this.element);
+      }
+      
+      updatePosition() {
+        this.element.style.transform = `translate(${this.x}px, ${this.y}px) rotate(${this.rotation}deg)`;
+      }
+      
+      update(mouseX, mouseY) {
+        const dx = mouseX - this.x;
+        const dy = mouseY - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        this.attracted = distance < this.attractionDistance;
+        
+        if (this.attracted) {
+          this.x += dx * this.attractionStrength;
+          this.y += dy * this.attractionStrength;
+          this.rotation = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+        } else {
+          this.y += this.fallSpeed;
+          
+          if (this.y > window.innerHeight + 100) {
+            this.x = Math.random() * window.innerWidth;
+            this.y = -50 - Math.random() * 100;
+            this.rotation = Math.random() * 360;
+          }
+        }
+        
+        this.updatePosition();
+      }
+    }
+    
+    // Create filaments
+    const filaments = [];
+    const filamentCount = 200;
+    
+    for (let i = 0; i < filamentCount; i++) {
+      filaments.push(new Filament(i));
+    }
+    
+    // Track mouse position
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let isMouseMoving = false;
+    let lastMouseMoveTime = 0;
+    
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      isMouseMoving = true;
+      lastMouseMoveTime = Date.now();
+      
+      setTimeout(() => {
+        if (Date.now() - lastMouseMoveTime >= 100) {
+          isMouseMoving = false;
+        }
+      }, 100);
+    });
+    
+    function animate() {
+      filaments.forEach(filament => {
+        filament.update(mouseX, mouseY);
+        
+        if (isMouseMoving && filament.attracted && Math.random() < 0.05) {
+          filament.attracted = false;
+          filament.x += (Math.random() - 0.5) * 10;
+          filament.y += (Math.random() - 0.5) * 10;
+        }
+      });
+      
+      requestAnimationFrame(animate);
+    }
+    
+    window.addEventListener('resize', () => {
+      filaments.forEach((filament, index) => {
+        if (index % 3 === 0) {
+          filament.x = Math.random() * window.innerWidth;
+          filament.y = Math.random() * window.innerHeight;
+          filament.updatePosition();
+        }
+      });
+    });
+    
+    animate();
+  </script>
+</body>
+</html>

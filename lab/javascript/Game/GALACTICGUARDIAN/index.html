@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GALACTIC GUARDIAN</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="game-container">
+      <div class="stars"></div>
+      <div class="stars2"></div>
+      <div class="stars3"></div>
+      <div id="player"></div>
+      <div id="game-ui">
+        <div id="score">Score: 0</div>
+        <div id="health">
+          <div id="health-bar"></div>
+        </div>
+      </div>
+      <div id="start-screen">
+        <h1>GALACTIC GUARDIAN</h1>
+        <p>Use arrow keys or WASD to move</p>
+        <p>Space to shoot</p>
+       
+    
+        <button id="start-button">START GAME</button>
+      </div>
+      <div id="game-over-screen" class="hidden">
+        <h1>GAME OVER</h1>
+        <p id="final-score">Score: 0</p>
+        <button id="restart-button">PLAY AGAIN</button>
+      </div>
+    </div>
+    
+    <script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finger Cursor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <img id="hand" src="./finger.png" alt="Hand pointer">
+    <svg id="clicked-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width=".8" stroke-linecap="round" stroke-linejoin="round"
+        class="lucide lucide-loader-icon lucide-loader">
+        <path d="M12 2v4" />
+        <path d="m16.2 7.8 2.9-2.9" />
+        <path d="M18 12h4" />
+        <path d="m16.2 16.2 2.9 2.9" />
+        <path d="M12 18v4" />
+        <path d="m4.9 19.1 2.9-2.9" />
+        <path d="M2 12h4" />
+        <path d="m4.9 4.9 2.9 2.9" />
+    </svg>
+
+    <div class="element-box" id="slider-box">
+        <label>Slider Control</label>
+        <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+        <p>Value: <span id="sliderValue">50</span></p>
+    </div>
+
+    <div class="element-box" id="button-box">
+        <label>Button Options</label>
+        <button class="btn-primary" id="btnPrimary">Click Me</button>
+        <button class="btn-secondary" id="btnSecondary">Options</button>
+        <button class="btn-danger" id="btnDanger">Delete</button>
+        <p id="buttonResult">Press a button</p>
+    </div>
+
+    <div class="element-box" id="knob-box">
+        <label>Rotary Knob</label>
+        <div class="knob" id="knob1" data-value="0" data-min="0" data-max="100"></div>
+        <div class="knob-value" id="knob1Value">0</div>
+    </div>
+
+    <div class="element-box" id="checkbox-box">
+        <label>Checkbox Options</label>
+        <div class="custom-checkbox">
+            <input type="checkbox" id="checkbox1">
+            <label for="checkbox1">Option 1</label>
+        </div>
+        <div class="custom-checkbox">
+            <input type="checkbox" id="checkbox2">
+            <label for="checkbox2">Option 2</label>
+        </div>
+    </div>
+
+    <div class="element-box" id="dropdown-box">
+        <label for="dropdown">Select Option</label>
+        <select id="dropdown">
+            <option value="option1">Option 1</option>
+            <option value="option2">Option 2</option>
+            <option value="option3">Option 3</option>
+        </select>
+        <p>Selected: <span id="selectedOption">Option 1</span></p>
+    </div>
+
+    <div class="element-box" id="color-box">
+        <label>Color Picker</label>
+        <div class="color-container">
+            <input type="color" class="color-picker" id="colorPicker" value="#4CAF50">
+            <div class="color-display" id="colorDisplay" style="background-color: #4CAF50;"></div>
+        </div>
+    </div>
+
+    <div class="element-box" id="toggle-box">
+        <label>Toggle Switch</label>
+        <div style="display: flex; align-items: center;">
+            <label class="switch">
+                <input type="checkbox" id="toggleSwitch">
+                <span class="slider-switch"></span>
+            </label>
+            <span class="switch-label" id="toggleStatus">OFF</span>
+        </div>
+    </div>
+
+    <div class="element-box" id="radio-box">
+        <label>Radio Options</label>
+        <div class="radio-container">
+            <div class="radio-option">
+                <input type="radio" id="radio1" name="radioGroup" checked>
+                <label for="radio1">Option A</label>
+            </div>
+            <div class="radio-option">
+                <input type="radio" id="radio2" name="radioGroup">
+                <label for="radio2">Option B</label>
+            </div>
+            <div class="radio-option">
+                <input type="radio" id="radio3" name="radioGroup">
+                <label for="radio3">Option C</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="element-box" id="knob2-box">
+        <label>Volume Control</label>
+        <div class="knob" id="knob2" data-value="50" data-min="0" data-max="100"></div>
+        <div class="knob-value" id="knob2Value">50</div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

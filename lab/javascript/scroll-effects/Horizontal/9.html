@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        a{
+            color: #fff;
+            text-decoration: none;
+        }
+        body{
+            color: #fff;
+            font-weight: 300;
+            background-color: #111;
+        }
+        #parallax__cont{
+            overscroll-behavior: none;
+            width: 900%;
+            height: 100vh;
+            display: flex;
+            flex-wrap: nowrap;
+        }
+        .parallax__item{
+            width: 100%;
+            max-width: 100vw;
+            text-align: left;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .parallax__item__num{
+            font-size: 5vw;
+            position: absolute;
+            right: 20px;
+            font-weight: 100;
+            z-index: 100;
+        }
+       
+        .parallax__item__title{
+            position: fixed;
+            left: 20px;
+            top: 20px;
+            z-index: 1000;
+        }
+        .parallax__item__title h1{
+            font-size: 30px;
+            border-bottom: 1px dashed #fff;
+            margin-bottom: 10px;
+            margin-bottom: 5px;
+            font-weight: 400;
+            display: inline-block;
+        }
+
+        .parallax__item__imgWrap{
+            width: 30%;
+            padding-bottom: 18%;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+        .parallax__item__img{
+            position: absolute;
+            left: -5%;
+            top: -5%;
+            width: 110%;
+            height: 110%;
+            background-repeat: no-repeat;
+            background-color: #fff;
+            background-size: cover;
+            background-position: center center;
+            filter: saturate(0%);
+            transition: all 1s;
+        }
+        .parallax__item__img:hover{
+            filter: saturate(100%);
+            transform: scale(1.025);
+        }
+
+        .parallax__item__desc{
+            font-size: 3vw;
+            line-height: 1.4;
+            margin-top: 10vw;
+            margin-left: -4vw;
+            margin-right: 2vw;
+            z-index: 100;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            word-break: keep-all;
+        }
+        .parallax__item:nth-child(even) .parallax__item__desc{
+            margin-left: auto;
+            margin-right: -4vw;
+        }
+
+        #section1 .parallax__item__img{
+            background-image: url(../images/img1.jpg);
+        }
+        #section2 .parallax__item__img{
+            background-image: url(../images/img2.jpg);
+        }
+        #section3 .parallax__item__img{
+            background-image: url(../images/img3.jpg);
+        }
+        #section4 .parallax__item__img{
+            background-image: url(../images/img4.jpg);
+        }
+        #section5 .parallax__item__img{
+            background-image: url(../images/img5.jpg);
+        }
+        #section6 .parallax__item__img{
+            background-image: url(../images/img6.jpg);
+        }
+        #section7 .parallax__item__img{
+            background-image: url(../images/img1.jpg);
+        }
+        #section8 .parallax__item__img{
+            background-image: url(../images/img2.jpg);
+        }
+        #section9 .parallax__item__img{
+            background-image: url(../images/img3.jpg);
+        }
+
+    </style>
+
+</head>
+<body>
+    <main id="parallax__cont">
+        <section id="section1" class="parallax__item" data-bgcolor="#111111">
+            <span class="parallax__item__num">01</span>
+            <h2 class="parallax__item__title">section1</h2>
+            <figure class="parallax__item__imgWrap">
+                <div class="parallax__item__img"></div>
+            </figure>
+        </section>
+        <section id="section2" class="parallax__item" data-bgcolor="#593b22">
+            <span class="parallax__item__num">02</span>
+            <h2 class="parallax__item__title">section2</h2>
+            <figure class="parallax__item__imgWrap">
+                <div class="parallax__item__img"></div>
+            </figure>
+        </section>
+        <section id="section3" class="parallax__item" data-bgcolor="#245922">
+            <span class="parallax__item__num">03</span>
+            <h2 class="parallax__item__title" data-delay="0.8">section3</h2>
+            <figure class="parallax__item__imgWrap">
+                <div class="parallax__item__img"></div>
+            </figure>
+        </section>
+        <section id="section4" class="parallax__item" data-bgcolor="#243859">
+            <span class="parallax__item__num">04</span>
+            <h2 class="parallax__item__title">section4</h2>
+            <figure class="parallax__item__imgWrap">
+                <div class="parallax__item__img"></div>
+            </figure>
+        </section>
+        <section id="section1" class="parallax__item"data-bgcolor="#3f2459">
+            <span class="parallax__item__num">05</span>
+            <h2 class="parallax__item__title">section5</h2>
+            <figure class="parallax__item__imgWrap">
+                <div class="parallax__item__img"></div>
+            </figure>
+        </section>
+        <section id="section6" class="parallax__item" data-bgcolor="#59243c">
+            <span class="parallax__item__num">06</span>
+            <h2 class="parallax__item__title">section6</h2>
+            <figure class="parallax__item__imgWrap">
+                <div class="parallax__item__img"></div>
+            </figure>
+        </section>
+        <section id="section7" class="parallax__item" data-bgcolor="#34f459">
+            <span class="parallax__item__num">07</span>
+            <h2 class="parallax__item__title">section7</h2>
+            <figure class="parallax__item__imgWrap">
+                <div class="parallax__item__img"></div>
+            </figure>
+        </section>
+        <section id="section8" class="parallax__item"data-bgcolor="#222222">
+            <span class="parallax__item__num">08</span>
+            <h2 class="parallax__item__title">section8</h2>
+            <figure class="parallax__item__imgWrap">
+                <div class="parallax__item__img"></div>
+            </figure>
+        </section>
+        <section id="section9" class="parallax__item" data-bgcolor="#592624">
+            <span class="parallax__item__num">09</span>
+            <h2 class="parallax__item__title">section9</h2>
+            <figure class="parallax__item__imgWrap">
+                <div class="parallax__item__img"></div>
+            </figure>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.1/ScrollToPlugin.min.js"></script>
+    <script>
+        let sections=gsap.utils.toArray('.parallax__item');
+
+        gsap.to(sections,{
+            xPercent: -100 * (sections.length -1),
+            ease: 'none',
+            scrollTrigger:{
+                trigger: "#parallax__cont",
+                pin: true,
+                scrub: 1,
+                snap: 1/(sections.length -1),
+                end: "+=7000"
+            }
+        })
+    </script>
+</body>
+</html>

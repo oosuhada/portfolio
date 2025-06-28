@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="appTitle">Pencil - Minimalist Notetaking App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles */
+        :root {
+            --color-background-body: #f7f7f7;
+            --color-background-card: #ffffff;
+            --color-border-subtle: #e0e0e0;
+            --color-text-primary: #333333;
+            --color-text-secondary: #666666;
+            --color-button-dark: #444444; /* Dark gray for primary buttons */
+            --color-button-dark-hover: #222222; /* Darker gray for primary button hover */
+            --color-accent-red: #dc3545; /* Delete action */
+            --color-note-drag-bg: #f0f0f0; /* Background when dragging a note */
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+            background-color: var(--color-background-body);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            color: var(--color-text-primary);
+            line-height: 1.5;
+        }
+
+        .container {
+            background-color: var(--color-background-card);
+            border-radius: 8px; /* Slightly less rounded for minimalism */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Lighter shadow */
+            padding: 25px; /* Slightly less padding */
+            width: 100%;
+            max-width: 600px; /* Reduced max-width for a more focused view */
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            position: relative; /* For positioning the language toggle */
+        }
+
+        .lang-toggle-wrapper {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .lang-button {
+            background: none;
+            border: 1px solid var(--color-border-subtle);
+            color: var(--color-text-secondary);
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .lang-button.active {
+            background-color: var(--color-button-dark);
+            color: white;
+            border-color: var(--color-button-dark);
+        }
+
+        .lang-button:hover:not(.active) {
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            color: var(--color-text-primary);
+            margin-bottom: 5px;
+            font-size: 2.5em; /* Adjusted heading size */
+            font-weight: 500;
+            text-align: left; /* Left align the title */
+        }
+
+        [role="doc-subtitle"] {
+            color: var(--color-text-secondary);
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            display: block;
+            font-weight: 300;
+            text-align: left; /* Left align the subtitle */
+        }
+
+        p {
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+            margin: 0;
+            font-size: 0.95em;
+            text-align: left; /* Left align the introductory paragraph */
+        }
+
+        .notes-wrapper.container {
+            padding-top: 15px; /* Adjust padding for the notes section */
+        }
+
+        .notes {
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Reduced gap for a tighter look */
+            margin-top: 15px;
+        }
+
+        .note {
+            background-color: var(--color-background-card);
+            border: 1px solid var(--color-border-subtle); /* Thin, subtle border */
+            border-radius: 6px;
+            padding: 12px 18px; /* Adjusted padding */
+            text-align: left;
+            position: relative;
+            transition: transform 0.2s ease-out, background-color 0.2s ease-out, box-shadow 0.2s ease-out;
+            cursor: grab;
+            box-shadow: none; /* No shadow by default */
+        }
+
+        .note:hover {
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.08); /* Subtle shadow on hover */
+        }
+
+        .note:active {
+            cursor: grabbing;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* More prominent shadow when active */
+        }
+
+        .note-info-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px; /* Reduced margin */
+            border-bottom: 1px solid var(--color-border-subtle); /* Subtle separator */
+            padding-bottom: 6px;
+        }
+
+        .date {
+            font-size: 0.85em;
+            color: var(--color-text-secondary);
+            font-weight: 400;
+        }
+
+        .delete-button {
+            background-color: var(--color-accent-red);
+            color: white;
+            border: none;
+            padding: 6px 12px; /* Smaller, more compact button */
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: background-color 0.2s ease;
+            opacity: 0.8; /* Slightly less opaque by default */
+        }
+
+        .delete-button:hover {
+            background-color: #c82333; /* Darker red */
+            opacity: 1;
+        }
+
+        .note-body {
+            color: var(--color-text-primary);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 0;
+            font-size: 0.9em;
+        }
+
+        .new-note-wrapper {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Reduced gap */
+        }
+
+        .new-note, .new-note-submit {
+            background-color: var(--color-button-dark); /* Dark gray for new/add buttons */
+            color: white;
+            border: none;
+            padding: 12px 20px; /* Adjusted padding */
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            width: 100%;
+            font-weight: 500;
+        }
+
+        .new-note:hover, .new-note-submit:hover {
+            background-color: var(--color-button-dark-hover); /* Darker gray on hover */
+            transform: translateY(-1px);
+        }
+
+        .new-note:active, .new-note-submit:active {
+            transform: translateY(0);
+        }
+
+        .new-note-cancel {
+            background-color: var(--color-accent-red); /* Red for cancel button */
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            width: 100%;
+            font-weight: 500;
+        }
+
+        .new-note-cancel:hover {
+            background-color: #c82333; /* Darker red on hover */
+            transform: translateY(-1px);
+        }
+
+        .new-note-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--color-border-subtle);
+            border-radius: 5px;
+            font-size: 0.95em;
+            box-sizing: border-box;
+            resize: vertical;
+            min-height: 80px; /* Adjusted initial height */
+            max-height: 200px;
+            line-height: 1.4;
+            color: var(--color-text-primary);
+            background-color: var(--color-background-card);
+        }
+
+        .new-note-input::placeholder {
+            color: var(--color-text-secondary);
+            opacity: 0.7;
+        }
+
+        .pointer-div {
+            position: absolute;
+            width: calc(100% - 50px); /* Adjust based on container padding */
+            height: 3px; /* Thinner pointer */
+            background-color: var(--color-button-dark); /* Use a dark color for the pointer */
+            display: none;
+            z-index: 100;
+            border-radius: 3px;
+            transition: top 0.1s ease-out;
+            margin-left: 25px; /* Center the pointer */
+        }
+
+        /* Message box for alerts */
+        .message-box {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--color-accent-red);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .message-box.show {
+            opacity: 1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            .container {
+                padding: 20px;
+                margin-bottom: 15px;
+            }
+            .lang-toggle-wrapper {
+                top: 10px;
+                right: 10px;
+            }
+            h1 {
+                font-size: 2.2em;
+            }
+            [role="doc-subtitle"] {
+                font-size: 1em;
+                margin-bottom: 15px;
+            }
+            .note {
+                padding: 10px 15px;
+            }
+            .delete-button {
+                padding: 4px 8px;
+                font-size: 0.75em;
+            }
+            .new-note, .new-note-submit, .new-note-cancel {
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+            .new-note-input {
+                padding: 8px;
+                min-height: 70px;
+                font-size: 0.9em;
+            }
+            .pointer-div {
+                width: calc(100% - 40px);
+                margin-left: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+            .lang-toggle-wrapper {
+                top: 5px;
+                right: 5px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            [role="doc-subtitle"] {
+                font-size: 0.85em;
+                margin-bottom: 10px;
+            }
+            .notes {
+                gap: 8px;
+            }
+            .note {
+                padding: 8px 12px;
+                font-size: 0.85em;
+            }
+            .note-body {
+                font-size: 0.88em;
+            }
+            .new-note-wrapper {
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="lang-toggle-wrapper">
+            <button class="lang-button" id="lang-en" data-lang="en">EN</button>
+            <button class="lang-button" id="lang-kr" data-lang="kr">KR</button>
+        </div>
+        <h1 id="appHeader">Pencil</h1>
+        <div role="doc-subtitle" id="appSubtitle">A minimalist notetaking app</div>
+        <p id="appDescription">Make some notes and drag 'em round!</p>
+    </div>
+
+    <div class="notes-wrapper container">
+        <div class="notes" id="notes">
+            <!-- Notes will be rendered here -->
+        </div>
+        <div class="pointer-div" id="pointer-div"></div>
+        <div class="new-note-wrapper" id="new-note-wrapper">
+            <button class="new-note" id="new-note">New note</button>
+        </div>
+    </div>
+
+    <!-- Message box for alerts -->
+    <div id="messageBox" class="message-box"></div>
+
+    <script>
+        let notes = [];
+        let notesDiv = document.getElementById("notes");
+        const pointerDiv = document.getElementById("pointer-div");
+        let newNoteWrapper = document.getElementById("new-note-wrapper");
+        const messageBox = document.getElementById("messageBox");
+
+        // Language translations
+        const translations = {
+            en: {
+                appTitle: "Pencil - Minimalist Notetaking App",
+                appHeader: "Pencil",
+                appSubtitle: "A minimalist notetaking app",
+                appDescription: "Make some notes and drag 'em round!",
+                newNoteButton: "New note",
+                addNoteButton: "Add Note",
+                cancelButton: "Cancel",
+                deleteButton: "Delete",
+                inputPlaceholder: "Type your note here...",
+                noteEmptyError: "Note cannot be empty!",
+                noteAddedSuccess: "Note added!",
+                noteDeletedSuccess: "Note deleted!"
+            },
+            kr: {
+                appTitle: "Pencil - 미니멀 노트 앱",
+                appHeader: "Pencil",
+                appSubtitle: "미니멀리스트 노트 앱",
+                appDescription: "노트를 만들고 자유롭게 옮겨보세요!",
+                newNoteButton: "새 노트",
+                addNoteButton: "노트 추가",
+                cancelButton: "취소",
+                deleteButton: "삭제",
+                inputPlaceholder: "여기에 노트를 입력하세요...",
+                noteEmptyError: "노트는 비워둘 수 없습니다!",
+                noteAddedSuccess: "노트가 추가되었습니다!",
+                noteDeletedSuccess: "노트가 삭제되었습니다!"
+            }
+        };
+
+        let currentLanguage = 'kr'; // Default to Korean as per last request
+
+        // Function to set the language and update UI texts
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            document.getElementById('appTitle').textContent = translations[lang].appTitle;
+            document.getElementById('appHeader').textContent = translations[lang].appHeader;
+            document.getElementById('appSubtitle').textContent = translations[lang].appSubtitle;
+            document.getElementById('appDescription').textContent = translations[lang].appDescription;
+
+            // Update New Note button/input area
+            if (document.getElementById('new-note')) {
+                document.getElementById('new-note').textContent = translations[lang].newNoteButton;
+            } else if (document.getElementById('new-note-input')) {
+                document.getElementById('new-note-input').placeholder = translations[lang].inputPlaceholder;
+                document.getElementById('new-note-submit').textContent = translations[lang].addNoteButton;
+                document.getElementById('new-note-cancel').textContent = translations[lang].cancelButton;
+            }
+
+            // Update existing notes' delete buttons (re-render notes)
+            renderNotes();
+
+            // Update active language button style
+            document.querySelectorAll('.lang-button').forEach(button => {
+                if (button.dataset.lang === lang) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        // Function to display a temporary message
+        function showMessage(messageKey, type = 'error') {
+            messageBox.textContent = translations[currentLanguage][messageKey];
+            messageBox.className = `message-box show`; // Reset classes and add 'show'
+            if (type === 'error') {
+                messageBox.style.backgroundColor = 'var(--color-accent-red)';
+            } else if (type === 'success') {
+                messageBox.style.backgroundColor = 'var(--color-button-dark)'; // Use dark gray for success messages
+            }
+            setTimeout(() => {
+                messageBox.classList.remove('show');
+            }, 3000); // Hide after 3 seconds
+        }
+
+        function getHighestNoteId() {
+            let highest = -1;
+            notes.forEach(note => {
+                if (note.id > highest) {
+                    highest = note.id;
+                }
+            });
+            return highest;
+        }
+
+        function padTo2Digits(num) {
+            return num.toString().padStart(2, '0');
+        }
+
+        function formatDateForCreation(date) {
+            return [
+                date.getFullYear(),
+                padTo2Digits(date.getMonth() + 1),
+                padTo2Digits(date.getDate()),
+            ].join('-') + 'T' +
+            [
+                padTo2Digits(date.getHours()),
+                padTo2Digits(date.getMinutes()),
+                padTo2Digits(date.getSeconds())
+            ].join(':');
+        }
+
+        function formatDateForPresentation(dateString) {
+            const date = new Date(dateString);
+            return [
+                padTo2Digits(date.getDate()),
+                padTo2Digits(date.getMonth() + 1),
+                date.getFullYear(),
+            ].join('/') + ' ' +
+            [
+                padTo2Digits(date.getHours()),
+                padTo2Digits(date.getMinutes())
+            ].join(':');
+        }
+
+        function handleNewNote(event) {
+            const newNoteInput = document.getElementById("new-note-input");
+            if (newNoteInput.value.trim() === "") {
+                showMessage("noteEmptyError", 'error');
+                return;
+            }
+            notes.push({ id: getHighestNoteId() + 1, body: newNoteInput.value, date: formatDateForCreation(new Date()) });
+            renderNotes();
+            returnToAddButton();
+            showMessage("noteAddedSuccess", 'success');
+        }
+
+        function returnToAddButton() {
+            newNoteWrapper.innerHTML = `<button class="new-note" id="new-note">${translations[currentLanguage].newNoteButton}</button>`;
+            setUpNewNoteButtonListener();
+        }
+
+        function handleDeleteNote(event) {
+            notes = notes.filter(note => { return note.id !== parseInt(event.target.dataset.noteid) });
+            renderNotes();
+            showMessage("noteDeletedSuccess", 'success');
+        }
+
+        function setUpNewNoteButtonListener() {
+            document.getElementById("new-note").addEventListener("click", function (event) {
+                newNoteWrapper.innerHTML = `
+                    <textarea class="new-note-input" id="new-note-input" placeholder="${translations[currentLanguage].inputPlaceholder}" onkeypress="handleTextSubmit(event)"></textarea>
+                    <button class="new-note-submit" id="new-note-submit">${translations[currentLanguage].addNoteButton}</button>
+                    <button class="new-note-cancel" id="new-note-cancel">${translations[currentLanguage].cancelButton}</button>
+                `;
+                document.getElementById("new-note-input").focus();
+                document.getElementById("new-note-submit").addEventListener("click", handleNewNote);
+                document.getElementById("new-note-cancel").addEventListener("click", returnToAddButton);
+            });
+        }
+
+        function handleTextSubmit(event){
+            if (event.keyCode == 13 && !event.shiftKey) { // Enter without Shift
+                event.preventDefault(); // Prevent new line in textarea
+                handleNewNote(event);
+            }
+        }
+
+        function defaultDragDescriptor() {
+            return {
+                initialX: 0,
+                initialY: 0,
+                targetNote: null,
+                isDragging: false,
+                gapIndex: -1,
+                indexDifference: 0,
+                upTransitionWait: 200,
+                upTransitionTime: 200,
+                upTransitionElapsed: 0,
+                upTransitionLastTick: 0,
+                upTransitionStart: null,
+                upTransitionNodes: [],
+                upTransitionFinished: false,
+                releaseTransitionTime: 200,
+                releaseTransitionStart: null,
+                releaseTransitionLastTick: 0,
+                releaseTransitionElapsed: 0,
+                releaseTransitionDraggingNoteX: -1,
+                releaseTransitionDraggingNoteY: -1,
+                releaseDownTransitionNotes: [],
+                releaseReturnTransitionNotes: [],
+            }
+        }
+        let dragDescriptor;
+
+        function handleMouseDownOnNote(event) {
+            if(event.target.tagName=="BUTTON"){
+                return;
+            }
+            event.preventDefault();
+            const targetNote = event.target.closest(".note");
+            targetNote.style.zIndex = 10;
+            targetNote.style.backgroundColor = "var(--color-note-drag-bg)"; // Highlight on drag
+            dragDescriptor = {
+                ...defaultDragDescriptor(),
+                initialX: event.clientX,
+                initialY: event.clientY,
+                targetNote: targetNote,
+                isDragging: true
+            }
+            window.addEventListener("mousemove", handleMouseMoveWhileDraggingNote);
+            window.addEventListener("mouseup", handleMouseUpWhileDraggingNote);
+            window.setTimeout(() => { transitionNonDraggedNotes(parseInt(targetNote.dataset.noteindex)) }, dragDescriptor.upTransitionWait)
+        }
+
+        function handleMouseMoveWhileDraggingNote(event) {
+            event.preventDefault();
+            const xTranslate = event.clientX - dragDescriptor.initialX;
+            const yTranslate = event.clientY - dragDescriptor.initialY;
+            dragDescriptor.targetNote.style.transform = `translate(${xTranslate}px,${yTranslate}px)`;
+            dragDescriptor.xTranslate = xTranslate;
+            dragDescriptor.yTranslate = yTranslate;
+            if (dragDescriptor.upTransitionFinished) {
+                if (isInsideBox(event.clientX, event.clientY, notesDiv.getBoundingClientRect())) {
+                    const gapIndex = getNewPositionIndex(
+                        event.clientY,
+                        notesDiv.getBoundingClientRect(),
+                        notes.length)
+                    dragDescriptor.gapIndex = gapIndex;
+
+                    pointerDiv.style.display = "block"
+                    pointerDiv.style.top = `${window.pageYOffset + notesDiv.getBoundingClientRect().top + getHeightFromGapIndex(gapIndex, notesDiv.getBoundingClientRect(), notes.length)}px`;
+                    pointerDiv.style.left = `${notesDiv.getBoundingClientRect().left + 25}px`; // Adjust for container padding
+                } else {
+                    pointerDiv.style.display = "none";
+                    dragDescriptor.gapIndex = -1;
+                }
+            }
+        }
+
+        function isInsideBox(x, y, rect) {
+            const xInside = x > rect.left && x < rect.right;
+            const yInside = y > rect.top && y < rect.bottom;
+            return xInside && yInside;
+        }
+
+        function getHeightFromGapIndex(gapIndex, containerRect, notesLength) {
+            if (notesLength === 0) return 0;
+            if (gapIndex === 0) {
+                return 0;
+            }
+            const singleNoteHeight = document.querySelector(".note") ? document.querySelector(".note").offsetHeight + 10 : 0;
+            return Math.ceil(gapIndex / 2) * singleNoteHeight;
+        }
+
+        function getNewPositionIndex(y, containerRect, notesLength) {
+            if (notesLength === 0) return 0;
+            const heightInBox = y - containerRect.top;
+            const singleNoteHeightWithGap = document.querySelector(".note") ? document.querySelector(".note").offsetHeight + 10 : 0;
+            if (singleNoteHeightWithGap === 0) return 0;
+
+            let result = Math.floor(heightInBox / (singleNoteHeightWithGap / 2));
+            if (result > (notesLength * 2) - 1) {
+                result = (notesLength * 2) - 1;
+            }
+            return result;
+        }
+
+        function handleMouseUpWhileDraggingNote(event) {
+            event.preventDefault();
+            window.removeEventListener("mousemove", handleMouseMoveWhileDraggingNote);
+            window.removeEventListener("mouseup", handleMouseUpWhileDraggingNote);
+
+            if (dragDescriptor.gapIndex !== -1 && notes.length > 0) {
+                const oldIndex = parseInt(dragDescriptor.targetNote.dataset.noteindex);
+                const newIndex = Math.ceil(dragDescriptor.gapIndex / 2);
+
+                dragDescriptor.releaseTransitionDraggingNoteX = dragDescriptor.xTranslate;
+                dragDescriptor.releaseTransitionDraggingNoteY = dragDescriptor.yTranslate;
+                dragDescriptor.indexDifference = newIndex - oldIndex;
+
+                const direction = (oldIndex === newIndex ? "same" : oldIndex < newIndex ? "down" : "up");
+
+                if(direction === "down" || direction === "same"){
+                    dragDescriptor.releaseReturnTransitionNotes = [...document.getElementsByClassName("note")]
+                        .filter(note => {
+                            const noteIndex = parseInt(note.dataset.noteindex);
+                            return noteIndex > oldIndex && noteIndex <= newIndex && noteIndex !== oldIndex;
+                        });
+                }
+                if(direction === "up"){
+                    dragDescriptor.releaseDownTransitionNotes = [...document.getElementsByClassName("note")]
+                        .filter(note => {
+                            const noteIndex = parseInt(note.dataset.noteindex);
+                            return noteIndex < oldIndex && noteIndex >= newIndex;
+                        });
+                    dragDescriptor.releaseReturnTransitionNotes = [...document.getElementsByClassName("note")]
+                        .filter(note => {
+                            const noteIndex = parseInt(note.dataset.noteindex);
+                            return noteIndex >= newIndex && noteIndex !== oldIndex;
+                        });
+                }
+                requestAnimationFrame(releaseTransitionTick);
+            } else {
+                onChangeComplete();
+            }
+        }
+
+        function onChangeComplete() {
+            const oldIndex = parseInt(dragDescriptor.targetNote.dataset.noteindex);
+            const newIndex = Math.ceil(dragDescriptor.gapIndex / 2);
+
+            if (dragDescriptor.gapIndex !== -1 && oldIndex !== newIndex && notes.length > 0) {
+                const removedNote = notes.splice(oldIndex, 1)[0];
+                notes.splice(newIndex, 0, removedNote);
+            }
+
+            renderNotes();
+            if (dragDescriptor.targetNote) {
+                dragDescriptor.targetNote.style.zIndex = 1;
+                dragDescriptor.targetNote.style.transform = `translate(0px,0px)`;
+                dragDescriptor.targetNote.style.backgroundColor = `var(--color-background-card)`;
+            }
+            dragDescriptor.isDragging = false;
+            pointerDiv.style.display = "none";
+            [...document.getElementsByClassName("note")].forEach(note => {
+                note.style.transform = "";
+            });
+            dragDescriptor = defaultDragDescriptor();
+        }
+
+        function transitionNonDraggedNotes(draggedIndex) {
+            if (dragDescriptor.isDragging) {
+                dragDescriptor.upTransitionNodes = [...document.getElementsByClassName("note")].filter(note => { return (parseInt(note.dataset.noteindex) > draggedIndex ) });
+                window.requestAnimationFrame(upTransionTick);
+            }
+        }
+
+        function upTransionTick(timestamp) {
+            if (dragDescriptor.upTransitionStart === null) {
+                dragDescriptor.upTransitionStart = timestamp;
+            }
+
+            dragDescriptor.upTransitionElapsed = timestamp - dragDescriptor.upTransitionStart;
+
+            if (dragDescriptor.upTransitionLastTick !== timestamp) {
+                const singleNoteHeightWithGap = document.querySelector(".note") ? document.querySelector(".note").offsetHeight + 10 : 0;
+
+                dragDescriptor.upTransitionNodes.forEach(note => {
+                    const endOffset = singleNoteHeightWithGap;
+                    const currentOffset = endOffset * dragDescriptor.upTransitionElapsed / dragDescriptor.upTransitionTime;
+                    note.style.transform = `translate(0px,${-Math.min(endOffset, currentOffset)}px)`;
+                });
+            }
+            if (!dragDescriptor.isDragging) {
+                dragDescriptor.upTransitionNodes.forEach(note => {
+                    note.style.transform = `translate(0px,0px)`;
+                });
+            }
+            if (dragDescriptor.upTransitionElapsed < dragDescriptor.upTransitionTime && dragDescriptor.isDragging) {
+                dragDescriptor.upTransitionLastTick = timestamp
+                window.requestAnimationFrame(upTransionTick);
+            } else {
+                dragDescriptor.upTransitionFinished = true;
+                dragDescriptor.upTransitionNodes.forEach(note => {
+                    note.style.transform = `translate(0px,0px)`;
+                });
+            }
+        }
+
+        function releaseTransitionTick(timestamp) {
+            if (dragDescriptor.releaseTransitionStart === null) {
+                dragDescriptor.releaseTransitionStart = timestamp;
+            }
+
+            dragDescriptor.releaseTransitionElapsed = timestamp - dragDescriptor.releaseTransitionStart;
+            const singleNoteHeightWithGap = document.querySelector(".note") ? document.querySelector(".note").offsetHeight + 10 : 0;
+
+            if (dragDescriptor.releaseTransitionLastTick !== timestamp) {
+                const targetNoteCurrentIndex = parseInt(dragDescriptor.targetNote.dataset.noteindex);
+                const newIndex = Math.ceil(dragDescriptor.gapIndex / 2);
+
+                const endX = 0;
+                const endY = (newIndex - targetNoteCurrentIndex) * singleNoteHeightWithGap;
+
+                const startX = dragDescriptor.releaseTransitionDraggingNoteX;
+                const startY = dragDescriptor.releaseTransitionDraggingNoteY;
+
+                const currentX = startX + (endX - startX) * (dragDescriptor.releaseTransitionElapsed / dragDescriptor.releaseTransitionTime);
+                const currentY = startY + (endY - startY) * (dragDescriptor.releaseTransitionElapsed / dragDescriptor.releaseTransitionTime);
+
+                dragDescriptor.targetNote.style.transform = `translate(${currentX}px,${currentY}px)`;
+
+                dragDescriptor.releaseReturnTransitionNotes.forEach(note=>{
+                    const initialTransformedY = parseFloat(note.style.transform.split(',')[1]) || 0;
+                    const currentY = initialTransformedY * (1 - dragDescriptor.releaseTransitionElapsed / dragDescriptor.releaseTransitionTime);
+                    note.style.transform = `translate(0px,${currentY}px)`
+                });
+
+                dragDescriptor.releaseDownTransitionNotes.forEach(note=>{
+                    const initialTransformedY = parseFloat(note.style.transform.split(',')[1]) || 0;
+                    const itemEndY = singleNoteHeightWithGap;
+                    const currentY = initialTransformedY + (itemEndY - initialTransformedY) * (dragDescriptor.releaseTransitionElapsed / dragDescriptor.releaseTransitionTime);
+                    note.style.transform = `translate(0px,${currentY}px)`
+                });
+            }
+
+            if (dragDescriptor.releaseTransitionElapsed < dragDescriptor.releaseTransitionTime) {
+                dragDescriptor.releaseTransitionLastTick = timestamp
+                window.requestAnimationFrame(releaseTransitionTick);
+            } else {
+                onChangeComplete();
+            }
+        }
+
+        function renderNotes() {
+            notesDiv.innerHTML = notes.map(getSingleNoteString).join("\n");
+
+            [...document.getElementsByClassName("delete-button")].forEach(deleteButton => {
+                deleteButton.addEventListener("click", handleDeleteNote);
+            });
+
+            [...document.getElementsByClassName("note")].forEach(note => {
+                note.addEventListener("mousedown", handleMouseDownOnNote);
+                note.addEventListener("touchstart", handleTouchStartOnNote);
+            });
+        }
+
+        function getSingleNoteString(note, index) {
+            const { id, date, body } = note;
+            return `
+                <div class="note" data-noteindex="${index}" data-noteid="${id}">
+                    <div class="note-info-wrapper">
+                        <p class="date">${formatDateForPresentation(date)}</p>
+                        <button data-noteid="${id}" class="delete-button">${translations[currentLanguage].deleteButton}</button>
+                    </div>
+                    <p class="note-body">${body}</p>
+                </div>
+            `;
+        }
+
+        // --- Touch Event Handlers for Mobile Dragging ---
+        function handleTouchStartOnNote(event) {
+            if (event.target.tagName == "BUTTON") {
+                return;
+            }
+            event.preventDefault();
+            const targetNote = event.target.closest(".note");
+            targetNote.style.zIndex = 10;
+            targetNote.style.backgroundColor = "var(--color-note-drag-bg)";
+            
+            const touch = event.touches[0];
+            dragDescriptor = {
+                ...defaultDragDescriptor(),
+                initialX: touch.clientX,
+                initialY: touch.clientY,
+                targetNote: targetNote,
+                isDragging: true
+            }
+            window.addEventListener("touchmove", handleTouchMoveWhileDraggingNote);
+            window.addEventListener("touchend", handleTouchEndWhileNote);
+            window.setTimeout(() => { transitionNonDraggedNotes(parseInt(targetNote.dataset.noteindex)) }, dragDescriptor.upTransitionWait)
+        }
+
+        function handleTouchMoveWhileDraggingNote(event) {
+            event.preventDefault();
+            const touch = event.touches[0];
+            const xTranslate = touch.clientX - dragDescriptor.initialX;
+            const yTranslate = touch.clientY - dragDescriptor.initialY;
+            dragDescriptor.targetNote.style.transform = `translate(${xTranslate}px,${yTranslate}px)`;
+            dragDescriptor.xTranslate = xTranslate;
+            dragDescriptor.yTranslate = yTranslate;
+
+            if (dragDescriptor.upTransitionFinished) {
+                if (isInsideBox(touch.clientX, touch.clientY, notesDiv.getBoundingClientRect())) {
+                    const gapIndex = getNewPositionIndex(
+                        touch.clientY,
+                        notesDiv.getBoundingClientRect(),
+                        notes.length)
+                    dragDescriptor.gapIndex = gapIndex;
+
+                    pointerDiv.style.display = "block"
+                    pointerDiv.style.top = `${window.pageYOffset + notesDiv.getBoundingClientRect().top + getHeightFromGapIndex(gapIndex, notesDiv.getBoundingClientRect(), notes.length)}px`;
+                    pointerDiv.style.left = `${notesDiv.getBoundingClientRect().left + 25}px`;
+                } else {
+                    pointerDiv.style.display = "none";
+                    dragDescriptor.gapIndex = -1;
+                }
+            }
+        }
+
+        function handleTouchEndWhileDraggingNote(event) {
+            event.preventDefault();
+            window.removeEventListener("touchmove", handleTouchMoveWhileDraggingNote);
+            window.removeEventListener("touchend", handleTouchEndWhileDraggingNote);
+
+            handleMouseUpWhileDraggingNote(event);
+        }
+
+        // Initialize language toggle listeners
+        document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
+        document.getElementById('lang-kr').addEventListener('click', () => setLanguage('kr'));
+
+        // Initial render and language setup
+        renderNotes();
+        setUpNewNoteButtonListener();
+        setLanguage(currentLanguage); // Set initial language texts
+    </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+    <link rel="stylesheet" href="pomodoro.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <div id="pomodoro-timer">
+        <h1 class="title" id="message">Time to focus!</h1>
+
+        <div class="row settings-row" id="settings-row">
+            <div class="setting">
+                <h2 class="setting-title">Break</h2>
+                <div class="setting-controls"> <i class="bi bi-arrow-left-circle" id="break-minus"></i>
+                    <span id="break-duration">5</span>
+                    <i class="bi bi-arrow-right-circle" id="break-plus"></i>
+                </div>
+            </div>
+            
+            <div class="setting">
+                <h2 class="setting-title">Work</h2>
+                <div class="setting-controls"> <i class="bi bi-arrow-left-circle" id="work-minus"></i>
+                    <span id="work-duration">25</span>
+                    <i class="bi bi-arrow-right-circle" id="work-plus"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="timer">
+            <svg class="circular-progress-bar" viewBox="0 0 100 100">
+                <circle class="circular-progress-bar-trail" cx="50" cy="50" r="45"></circle>
+                <circle class="circular-progress-bar-path" cx="50" cy="50" r="45"></circle>
+            </svg>
+            <div class="timer-content">
+                <div class="timer-text" id="display-time">25:00</div>
+                <div class="controls" id="timer-controls">
+                    <i class="bi bi-play-circle" id="toggle-timer-btn"></i>
+                    <i class="bi bi-arrow-counterclockwise hidden" id="reset-timer-btn"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

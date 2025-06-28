@@ -61,8 +61,8 @@ h1 {
     right: 4vw;
     bottom: 6vw;
     z-index: 3;
-    background: var(--text-primary-color);
-    color: var(--text-inverted-color);
+    background: #fff;
+    color: #111;
     border: none;
     border-radius: 6px;
     font-size: 1rem;

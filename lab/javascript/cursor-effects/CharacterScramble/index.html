@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Optimized Cursor Scramble Effect</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: monospace;
+      background-color: #111;
+      color: #aaa;
+      cursor: none; /* Hide default cursor */
+    }
+    
+    #text-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+    }
+    
+    .text-char {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      text-align: center;
+      font-size: 14px;
+    }
+    
+    /* Simple cursor */
+    #cursor {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #fff;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+  <div id="text-container"></div>
+  <div id="cursor"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const container = document.getElementById('text-container');
+      const cursor = document.getElementById('cursor');
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{}|;:,.<>?/\\';
+      
+      // Configuration
+      const cellSize = 20; // Larger for better performance
+      const scrambleRadius = 100; // How far from cursor to scramble
+      const scrambleIntensity = 0.7; // How likely chars are to scramble (0-1)
+      
+      // Performance optimization: reduce updates per second
+      const fps = 30;
+      const fpsInterval = 1000 / fps;
+      let lastFrameTime = 0;
+      
+      // Calculate how many characters we need to fill the screen
+      const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
+      const cols = Math.floor(screenWidth / cellSize);
+      const rows = Math.floor(screenHeight / cellSize);
+      const totalChars = cols * rows;
+      
+      // Create random original chars
+      const originalChars = [];
+      for (let i = 0; i < totalChars; i++) {
+        originalChars.push(chars.charAt(Math.floor(Math.random() * chars.length)));
+      }
+      
+      // Create all character elements
+      const charElements = [];
+      const charPositions = [];
+      
+      for (let i = 0; i < totalChars; i++) {
+        const charElement = document.createElement('span');
+        charElement.className = 'text-char';
+        charElement.textContent = originalChars[i];
+        
+        container.appendChild(charElement);
+        charElements.push(charElement);
+        
+        // Pre-calculate positions for performance
+        const col = i % cols;
+        const row = Math.floor(i / cols);
+        charPositions.push({
+          x: col * cellSize + cellSize / 2,
+          y: row * cellSize + cellSize / 2
+        });
+      }
+      
+      // Mouse move handler
+      let mouseX = 0;
+      let mouseY = 0;
+      
+      document.addEventListener('mousemove', function(e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        
+        // Update cursor position
+        cursor.style.left = mouseX + 'px';
+        cursor.style.top = mouseY + 'px';
+      });
+      
+      // Optimization: Only update characters that need updating
+      const needsUpdate = new Set();
+      
+      // Pre-calculate character indices within scramble radius for each position
+      const getAffectedIndices = (x, y, radius) => {
+        const affected = new Set();
+        const startCol = Math.max(0, Math.floor((x - radius) / cellSize));
+        const endCol = Math.min(cols - 1, Math.floor((x + radius) / cellSize));
+        const startRow = Math.max(0, Math.floor((y - radius) / cellSize));
+        const endRow = Math.min(rows - 1, Math.floor((y + radius) / cellSize));
+        
+        for (let row = startRow; row <= endRow; row++) {
+          for (let col = startCol; col <= endCol; col++) {
+            const index = row * cols + col;
+            if (index < totalChars) {
+              const dx = x - charPositions[index].x;
+              const dy = y - charPositions[index].y;
+              const distance = Math.sqrt(dx * dx + dy * dy);
+              
+              if (distance < radius) {
+                affected.add(index);
+              }
+            }
+          }
+        }
+        
+        return affected;
+      };
+      
+      // Animation loop
+      function animate(timestamp) {
+        // Throttle frame rate for performance
+        if (timestamp - lastFrameTime < fpsInterval) {
+          requestAnimationFrame(animate);
+          return;
+        }
+        lastFrameTime = timestamp;
+        
+        // Find characters within range of cursor
+        const affectedIndices = getAffectedIndices(mouseX, mouseY, scrambleRadius);
+        
+        // Mark characters that need updating
+        for (let i = 0; i < totalChars; i++) {
+          if (affectedIndices.has(i)) {
+            needsUpdate.add(i);
+          } else if (needsUpdate.has(i)) {
+            // Character was previously affected but is now out of range
+            // Reset it to original and remove from update list
+            charElements[i].textContent = originalChars[i];
+            needsUpdate.delete(i);
+          }
+        }
+        
+        // Update only needed characters
+        for (const i of needsUpdate) {
+          const dx = mouseX - charPositions[i].x;
+          const dy = mouseY - charPositions[i].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          
+          // Calculate scramble probability based on distance
+          const scrambleProbability = scrambleIntensity * (1 - distance / scrambleRadius);
+          
+          if (Math.random() < scrambleProbability) {
+            // Scramble the character
+            charElements[i].textContent = chars.charAt(Math.floor(Math.random() * chars.length));
+          } else {
+            // Restore original character with probability
+            charElements[i].textContent = originalChars[i];
+          }
+        }
+        
+        requestAnimationFrame(animate);
+      }
+      
+      // Start animation
+      animate(0);
+      
+      // Handle window resize efficiently
+      let resizeTimeout;
+      window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+          // Clear container
+          container.innerHTML = '';
+          charElements.length = 0;
+          charPositions.length = 0;
+          needsUpdate.clear();
+          
+          // Recalculate grid
+          const screenWidth = window.innerWidth;
+          const screenHeight = window.innerHeight;
+          const cols = Math.floor(screenWidth / cellSize);
+          const rows = Math.floor(screenHeight / cellSize);
+          const totalChars = cols * rows;
+          
+          // Create new random original chars
+          const originalChars = [];
+          for (let i = 0; i < totalChars; i++) {
+            originalChars.push(chars.charAt(Math.floor(Math.random() * chars.length)));
+          }
+          
+          // Recreate all character elements
+          for (let i = 0; i < totalChars; i++) {
+            const charElement = document.createElement('span');
+            charElement.className = 'text-char';
+            charElement.textContent = originalChars[i];
+            
+            container.appendChild(charElement);
+            charElements.push(charElement);
+            
+            // Pre-calculate positions
+            const col = i % cols;
+            const row = Math.floor(i / cols);
+            charPositions.push({
+              x: col * cellSize + cellSize / 2,
+              y: row * cellSize + cellSize / 2
+            });
+          }
+        }, 200);
+      });
+    });
+  </script>
+</body>
+</html>

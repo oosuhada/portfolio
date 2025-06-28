@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dotted Image Converter</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom Inter font (Tailwind uses sans-serif by default, but ensuring Inter) */
+    html {
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* 글라스모피즘 효과 개선 (Monochrome) */
+    .glass {
+      background: rgba(255, 255, 255, 0.1); /* Lighter, more transparent white */
+      box-shadow:
+        0 4px 20px 0 rgba(0, 0, 0, 0.08), /* Subtle, desaturated shadow */
+        inset 0 1px 0 rgba(255, 255, 255, 0.2); /* Lighter inner shadow */
+      backdrop-filter: blur(15px) saturate(110%); /* Reduced blur, less saturation */
+      -webkit-backdrop-filter: blur(15px) saturate(110%);
+      border-radius: 1rem; /* Slightly smaller border radius */
+      border: 1px solid rgba(255, 255, 255, 0.15); /* Subtler border */
+    }
+
+    .glass-strong {
+      background: rgba(255, 255, 255, 0.15); /* More transparent white */
+      box-shadow:
+        0 8px 30px 0 rgba(0, 0, 0, 0.1), /* Desaturated, slightly stronger shadow */
+        inset 0 1px 0 rgba(255, 255, 255, 0.25); /* Lighter inner shadow */
+      backdrop-filter: blur(20px) saturate(115%); /* Reduced blur, less saturation */
+      -webkit-backdrop-filter: blur(20px) saturate(115%);
+      border-radius: 1.25rem; /* Adjusted border radius */
+      border: 1px solid rgba(255, 255, 255, 0.2); /* Subtler border */
+    }
+
+    /* 파일 업로드 스타일 개선 (Monochrome) */
+    .file-hidden { display: none; }
+    .file-label {
+      background: linear-gradient(135deg, rgba(75, 85, 99, 0.9), rgba(31, 41, 55, 0.9)); /* Grayscale gradient */
+      color: white;
+      border: none;
+      padding: 0.75rem 1.6rem; /* Adjusted padding */
+      border-radius: 0.75rem; /* Adjusted border-radius */
+      font-weight: 500; /* Slightly lighter font-weight */
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Desaturated shadow */
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem; /* Adjusted gap */
+      min-width: 150px; /* Adjusted min-width */
+      font-size: 0.95rem; /* Adjusted font size */
+    }
+
+    .file-label:hover {
+      transform: translateY(-1px); /* More subtle lift */
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3); /* Stronger desaturated shadow */
+      background: linear-gradient(135deg, rgba(75, 85, 99, 1), rgba(31, 41, 55, 1)); /* More opaque on hover */
+    }
+
+    /* 슬라이더 스타일 개선 (Monochrome) */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px; /* Thinner slider track */
+      background: #e5e7eb; /* Light gray track */
+      border-radius: 3px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px; /* Slightly smaller thumb */
+      height: 18px; /* Slightly smaller thumb */
+      background: linear-gradient(135deg, #4b5563, #1f2937); /* Grayscale gradient for thumb */
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* Desaturated shadow */
+      transition: all 0.2s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.05); /* More subtle scale */
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3); /* Stronger desaturated shadow */
+    }
+
+    /* 체크박스 스타일 (Monochrome) */
+    .custom-checkbox {
+      appearance: none;
+      width: 16px; /* Smaller checkbox */
+      height: 16px; /* Smaller checkbox */
+      border: 2px solid #4b5563; /* Darker gray border */
+      border-radius: 3px; /* Slightly smaller radius */
+      background: rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .custom-checkbox:checked {
+      background: #4b5563; /* Darker gray background when checked */
+      border-color: #4b5563;
+    }
+
+    .custom-checkbox:checked::after {
+      content: '✓';
+      position: absolute;
+      top: -1px; /* Adjusted position */
+      left: 2px;
+      color: white;
+      font-size: 11px; /* Smaller checkmark */
+      font-weight: bold;
+    }
+
+    /* 버튼 애니메이션 (Monochrome, except red accent) */
+    .btn-primary {
+      background: linear-gradient(135deg, #4b5563, #1f2937); /* Grayscale gradient */
+      color: white;
+      border: none;
+      padding: 0.65rem 1.6rem; /* Adjusted padding */
+      border-radius: 0.75rem; /* Adjusted border-radius */
+      font-weight: 500; /* Lighter font-weight */
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Desaturated shadow */
+      min-width: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      font-size: 0.95rem; /* Adjusted font size */
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.4; /* Slightly more opaque when disabled */
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Red accent for delete/cancel related buttons */
+    .btn-danger {
+      background: linear-gradient(135deg, #dc3545, #b02a37); /* Red gradient */
+      color: white;
+      border: none;
+      padding: 0.65rem 1.6rem;
+      border-radius: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(220, 53, 69, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      font-size: 0.95rem;
+    }
+
+    .btn-danger:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(220, 53, 69, 0.3);
+    }
+    .btn-danger:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+
+    /* 캔버스 컨테이너 */
+    .canvas-container {
+      background: rgba(255, 255, 255, 0.2); /* Lighter transparent background */
+      border-radius: 0.75rem;
+      padding: 0.75rem; /* Adjusted padding */
+      box-shadow: inset 0 1px 6px rgba(0, 0, 0, 0.08); /* Subtler inner shadow */
+    }
+
+    /* 반응형 그리드 개선 */
+    @media (max-width: 768px) {
+      .mobile-stack {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .mobile-full {
+        width: 100%;
+      }
+    }
+
+    /* Overriding default Tailwind `bg-gradient-to-br from-violet-400/20 via-pink-300/20 to-cyan-300/20` */
+    /* Custom monochrome body background */
+    body {
+      background: linear-gradient(to bottom right, #f8f8f8, #e8e8e8); /* Soft grayscale gradient */
+      padding: 2.5rem 6rem; /* Increased horizontal padding */
+    }
+
+    /* Header text color for monochrome */
+    .text-transparent {
+      background-image: linear-gradient(to right, #333333, #1a1a1a); /* Darker grayscale gradient for text */
+    }
+
+    /* Text colors for labels and descriptions */
+    .text-gray-600 {
+      color: #555555; /* Darker gray for descriptions */
+    }
+    .text-gray-700 {
+      color: #444444; /* Darker gray for section titles */
+    }
+    .text-gray-500 {
+      color: #777777; /* Lighter gray for small helper text */
+    }
+
+    /* Dot size/spacing value color */
+    .text-indigo-600 {
+      color: #333333; /* Darker gray for values */
+    }
+
+    /* Adjusting max-width for overall spaciousness */
+    .max-w-6xl {
+      max-width: 64rem; /* Equivalent to max-w-4xl (1024px) - Tailwind's default max-w-6xl is 72rem */
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- 헤더 -->
+  <div class="text-center mb-7"> <!-- Adjusted margin-bottom -->
+    <h1 class="text-3xl md:text-4xl font-bold mb-2 bg-clip-text text-transparent drop-shadow-sm"> <!-- Adjusted font sizes, shadow -->
+      Dotted Image Converter
+    </h1>
+    <p class="text-gray-600 text-sm max-w-xl mx-auto"> <!-- Reduced text size, max-width -->
+      Transform your images into beautiful dotted art with customizable settings
+    </p>
+  </div>
+
+  <!-- 메인 컨테이너 -->
+  <div class="max-w-4xl mx-auto"> <!-- Changed to max-w-4xl for more side padding -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5"> <!-- Adjusted gap -->
+
+      <!-- 왼쪽: 업로드 및 미리보기 -->
+      <div class="lg:col-span-1 space-y-5"> <!-- Adjusted space-y -->
+
+        <!-- 업로드 섹션 -->
+        <div class="glass-strong p-4 text-center"> <!-- Adjusted padding -->
+          <h3 class="text-base font-semibold text-gray-700 mb-3">Upload Image</h3> <!-- Adjusted text size -->
+          <label class="file-label">
+            <input type="file" id="upload" accept="image/*" class="file-hidden" />
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"> <!-- Smaller icon -->
+              <path d="M12 4v16m8-8H4"></path>
+            </svg>
+            Choose File
+          </label>
+          <p class="text-xs text-gray-500 mt-2">PNG, JPG, GIF up to 10MB</p> <!-- Adjusted margin -->
+        </div>
+
+        <!-- 원본 미리보기 -->
+        <div id="preview-container" class="glass p-3 hidden"> <!-- Adjusted padding -->
+          <h4 class="text-sm font-semibold text-gray-700 mb-2 text-center">Original Preview</h4> <!-- Adjusted text size -->
+          <div class="flex justify-center">
+            <img id="preview" src="" alt="Uploaded preview" class="max-w-full h-auto rounded-md shadow-sm" style="max-height: 150px;" /> <!-- Adjusted max-height, shadow -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 가운데: 캔버스 -->
+      <div class="lg:col-span-1">
+        <div class="glass-strong p-4"> <!-- Adjusted padding -->
+          <h3 class="text-base font-semibold text-gray-700 mb-3 text-center">Dotted Result</h3> <!-- Adjusted text size -->
+          <div class="canvas-container">
+            <div class="flex justify-center">
+              <canvas id="canvas" class="rounded-md shadow-sm max-w-full h-auto" style="max-height: 300px;"></canvas> <!-- Adjusted max-height, shadow -->
+            </div>
+          </div>
+          <p class="text-xs text-gray-500 text-center mt-2">Live preview updates as you adjust settings</p> <!-- Adjusted margin -->
+        </div>
+      </div>
+
+      <!-- 오른쪽: 컨트롤 -->
+      <div class="lg:col-span-1 space-y-5"> <!-- Adjusted space-y -->
+
+        <!-- 설정 섹션 -->
+        <div class="glass-strong p-4"> <!-- Adjusted padding -->
+          <h3 class="text-base font-semibold text-gray-700 mb-5">Settings</h3> <!-- Adjusted text size -->
+
+          <div class="space-y-5"> <!-- Adjusted space-y -->
+            <!-- 점 크기 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"> <!-- Adjusted text size, margin -->
+                Dot Size: <span id="dotSizeValue" class="text-indigo-600 font-semibold">12</span>px
+              </label>
+              <input type="range" id="dotSizeRange" min="1" max="30" value="12" class="w-full" />
+            </div>
+
+            <!-- 점 간격 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"> <!-- Adjusted text size, margin -->
+                Dot Spacing: <span id="spacingValue" class="text-indigo-600 font-semibold">18</span>px
+              </label>
+              <input type="range" id="spacingRange" min="5" max="40" value="18" class="w-full" />
+            </div>
+
+            <!-- 점 색상 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Dot Color</label> <!-- Adjusted margin -->
+              <div class="flex items-center gap-2 mb-2"> <!-- Adjusted gap, margin -->
+                <input type="color" id="dotColor" value="#1f2937" class="w-10 h-10 rounded-md shadow border-2 border-white/20" /> <!-- Smaller color picker, shadow -->
+                <div class="flex-1">
+                  <label class="flex items-center gap-1 cursor-pointer text-sm"> <!-- Adjusted gap -->
+                    <input type="checkbox" id="dotAutoColor" class="custom-checkbox" checked />
+                    <span class="text-gray-700">Extract from image</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 다운로드 섹션 -->
+        <div class="glass-strong p-4 text-center"> <!-- Adjusted padding -->
+          <h3 class="text-base font-semibold text-gray-700 mb-3">Download</h3> <!-- Adjusted text size -->
+          <button id="saveBtn" disabled class="btn-primary w-full">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"></path>
+            </svg>
+            Save Dotted Image
+          </button>
+          <p class="text-xs text-gray-500 mt-2">High quality PNG format</p> <!-- Adjusted margin -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const upload = document.getElementById('upload');
+    const previewContainer = document.getElementById('preview-container');
+    const preview = document.getElementById('preview');
+    const dotSizeRange = document.getElementById('dotSizeRange');
+    const spacingRange = document.getElementById('spacingRange');
+    const dotColorInput = document.getElementById('dotColor');
+    const dotAutoColor = document.getElementById('dotAutoColor');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const saveBtn = document.getElementById('saveBtn');
+    const dotSizeValue = document.getElementById('dotSizeValue');
+    const spacingValue = document.getElementById('spacingValue');
+
+    let img = new Image();
+    let imgData = null;
+
+    // 값 표시 업데이트
+    dotSizeRange.addEventListener('input', () => {
+      dotSizeValue.textContent = dotSizeRange.value;
+    });
+
+    spacingRange.addEventListener('input', () => {
+      spacingValue.textContent = spacingRange.value;
+    });
+
+    // 밝기 계산 함수
+    function brightness(r, g, b) {
+      return 0.299 * r + 0.587 * g + 0.114 * b;
+    }
+
+    // 점으로 이미지 변환 (개선된 렌더링)
+    function drawDottedImage() {
+      if (!imgData) return;
+
+      const maxDotRadius = parseInt(dotSizeRange.value);
+      const spacing = parseInt(spacingRange.value);
+      const useAutoColor = dotAutoColor.checked;
+      const dotColor = dotColorInput.value;
+
+      const width = canvas.width;
+      const height = canvas.height;
+
+      ctx.clearRect(0, 0, width, height);
+
+      // 배경을 더 깔끔하게
+      ctx.fillStyle = "#ffffff"; /* Use white background for the dotted image */
+      ctx.fillRect(0, 0, width, height);
+
+      for (let y = spacing/2; y < height; y += spacing) {
+        for (let x = spacing/2; x < width; x += spacing) {
+          const idx = (Math.floor(y) * width + Math.floor(x)) * 4;
+          const r = imgData.data[idx];
+          const g = imgData.data[idx + 1];
+          const b = imgData.data[idx + 2];
+          const alpha = imgData.data[idx + 3] / 255;
+
+          if(alpha < 0.1) continue;
+
+          const bright = brightness(r, g, b);
+          // Adjust radius calculation for subtle effect in monochrome
+          const radius = maxDotRadius * (1 - bright / 255) * alpha;
+
+          if (radius > 0.5) {
+            ctx.save();
+            ctx.beginPath();
+            // Use extracted color or user-selected color
+            ctx.fillStyle = useAutoColor ? `rgba(${r},${g},${b},${Math.max(0.3, alpha)})` : dotColor;
+            // For monochrome, let's adjust how the extracted color looks
+            // If auto-color is checked, convert the extracted color to grayscale to fit the theme
+            if (useAutoColor) {
+                const gray = Math.round(brightness(r, g, b));
+                ctx.fillStyle = `rgba(${gray},${gray},${gray},${Math.max(0.3, alpha)})`;
+            } else {
+                ctx.fillStyle = dotColor;
+            }
+
+            ctx.globalAlpha = Math.max(0.3, alpha);
+            ctx.shadowColor = 'rgba(0,0,0,0.05)'; /* Very subtle shadow for dots */
+            ctx.shadowBlur = 0.5; /* Reduced blur */
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+        }
+      }
+    }
+
+    // 이미지 업로드 시 캔버스 로드 (개선된 크기 조정)
+    function loadImageToCanvas(image) {
+      const maxDim = 300; // Adjusted max dimension for canvas
+      let w = image.width;
+      let h = image.height;
+
+      if (w > maxDim || h > maxDim) {
+        if (w > h) {
+          h = (maxDim / w) * h;
+          w = maxDim;
+        } else {
+          w = (maxDim / h) * w;
+          h = maxDim;
+        }
+      }
+
+      canvas.width = Math.round(w);
+      canvas.height = Math.round(h);
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.drawImage(image, 0, 0, w, h);
+      imgData = ctx.getImageData(0, 0, w, h);
+
+      drawDottedImage();
+    }
+
+    // 파일 업로드 이벤트
+    upload.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        img = new Image();
+        img.onload = function () {
+          preview.src = img.src;
+          previewContainer.classList.remove('hidden');
+          loadImageToCanvas(img);
+          saveBtn.disabled = false;
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // 옵션별 실시간 적용
+    dotSizeRange.addEventListener('input', drawDottedImage);
+    spacingRange.addEventListener('input', drawDottedImage);
+    dotColorInput.addEventListener('input', () => {
+      if(!dotAutoColor.checked) drawDottedImage();
+    });
+    dotAutoColor.addEventListener('change', () => {
+      dotColorInput.disabled = dotAutoColor.checked;
+      drawDottedImage();
+    });
+
+    // 저장 버튼
+    saveBtn.addEventListener('click', () => {
+      if (!canvas.width || !canvas.height) {
+        // Using a custom message box instead of alert()
+        const messageBox = document.createElement('div');
+        messageBox.className = 'fixed bottom-5 left-1/2 -translate-x-1/2 bg-red-500 text-white px-5 py-3 rounded-md shadow-lg z-[1000] opacity-0 transition-opacity duration-300 ease-in-out';
+        messageBox.innerHTML = `
+          <p class="mb-3 text-sm">Please upload an image first!</p>
+          <button class="bg-white text-red-500 text-xs font-semibold px-3 py-1 rounded-md hover:bg-gray-100 transition-colors" onclick="this.parentNode.remove()">OK</button>
+        `;
+        document.body.appendChild(messageBox);
+        setTimeout(() => messageBox.classList.add('opacity-100'), 10); // Show message with transition
+        setTimeout(() => messageBox.classList.remove('opacity-100'), 3000); // Hide after 3 seconds
+        setTimeout(() => messageBox.remove(), 3300); // Remove from DOM after transition
+        return;
+      }
+      const link = document.createElement('a');
+      link.download = 'dotted-image.png';
+      link.href = canvas.toDataURL('image/png', 1.0);
+      link.click();
+    });
+
+    // 초기 설정
+    dotColorInput.disabled = dotAutoColor.checked;
+  </script>
+
+</body>
+</html>
