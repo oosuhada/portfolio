@@ -62,7 +62,7 @@
 
   "navigation_map": {
     "_label": "Mapping of high-level topics to their respective pages and anchor IDs for direct navigation.",
-    "portfolio": {"page": "../portfolioMain/portfolio.html", "name": {"en": "Portfolio page", "ko": "포트폴리오 페이지"}, "keywords": ["go to portfolio", "move to portfolio", "portfolio page", "포트폴리오로 이동", "포트폴리오 페이지", "포폴 이동", "프로젝트 페이지", "작품 페이지"]},
+    "portfolio": {"page": "../project/project.html", "name": {"en": "Portfolio page", "ko": "포트폴리오 페이지"}, "keywords": ["go to portfolio", "move to portfolio", "portfolio page", "포트폴리오로 이동", "포트폴리오 페이지", "포폴 이동", "프로젝트 페이지", "작품 페이지"]},
     "about": {"page": "../about/about.html", "name": {"en": "About page", "ko": "About 페이지"}, "keywords": ["go to about", "move to about", "about page", "소개 페이지로 이동", "어바웃 페이지", "어바웃 이동", "나에 대해", "소개 페이지", "가치관 페이지", "프로세스 페이지", "재미있는사실 페이지"]},
     "career": {"page": "../career/career.html", "name": {"en": "Career page", "ko": "경력 페이지"}, "keywords": ["go to career", "move to career", "career page", "경력 페이지로 이동", "커리어 이동", "이력 페이지", "업무 경험 페이지", "학력 페이지", "수상 페이지"]},
     "lab": {"page": "../lab/lab.html", "name": {"en": "Lab page", "ko": "Lab 페이지"}, "keywords": ["go to lab", "move to lab", "lab page", "랩 페이지로 이동", "실험실 이동", "취미 페이지", "크리에이티브 코딩 페이지"]},
@@ -404,7 +404,7 @@
         "en": "Oosu's portfolio features diverse projects from cross-platform apps to responsive websites, each a deep dive into problem-solving, showcasing a blend of design and technical skills. Here are some highlights:",
         "ko": "Oosu님의 포트폴리오는 크로스 플랫폼 앱부터 반응형 웹사이트에 이르기까지 다양한 프로젝트들을 선보이며, 각 프로젝트는 문제 해결 과정을 깊이 있게 탐구하며 디자인과 기술 역량의 조화를 보여줍니다. 몇 가지 주요 프로젝트는 다음과 같습니다:"
       },
-      "url_fragment": "../portfolioMain/portfolio.html#",
+      "url_fragment": "../project/project.html#",
       "keywords": ["project", "projects", "work", "portfolio", "작품", "포트폴리오", "프로젝트", "프로젝트목록", "case study", "케이스 스터디", "구체적인 프로젝트"],
       "response_type": "cards_and_link",
       "items": [
@@ -413,7 +413,7 @@
           "title": {"en": "Nomad Market (Cross-platform App)", "ko": "노마드 마켓 (크로스 플랫폼 앱)"},
           "description": {"en": "A cross-platform app for nomadic lifestyles, focusing on used item trading with intuitive UX. (Flutter, Figma, Firebase)", "ko": "유목 생활자를 위한 중고거래 크로스플랫폼 앱으로, 직관적인 UX에 중점을 두었습니다. (Flutter, Figma, Firebase)"},
           "tags": ["Flutter", "Figma", "Firebase", "Cross-platform", "UI/UX", "Mobile Development"],
-          "link": "../portfolioMain/portfolio.html#project1",
+          "link": "../project/project.html#project1",
           "keywords": ["nomad market", "노마드 마켓", "중고거래 앱", "프로젝트 1", "노마드 마켓 프로젝트", "nomad market project"],
           "details": {
             "motivation": {"en": "Inspired by the growing digital nomad community and the need for a localized, reliable trading platform for transient users.", "ko": "성장하는 디지털 노마드 커뮤니티와 임시적인 사용자들을 위한 현지화되고 신뢰할 수 있는 거래 플랫폼의 필요성에서 영감을 받았습니다."},
@@ -469,7 +469,7 @@
           "title": {"en": "Onjung (Cross-platform App)", "ko": "온정 (크로스 플랫폼 앱)"},
           "description": {"en": "An app designed to foster social warmth and community connection, built with Flutter.", "ko": "사회적 온정 경험과 커뮤니티 연결을 촉진하기 위해 Flutter로 개발된 앱입니다."},
           "tags": ["Flutter", "Community App", "UX Design"],
-          "link": "../portfolioMain/portfolio.html#project2",
+          "link": "../project/project.html#project2",
           "keywords": ["onjung", "온정", "커뮤니티 앱", "프로젝트 2"],
           "details": {
             "motivation": {"en": "Inspired by the growing need for genuine human connection in an increasingly digital world, especially in local communities.", "ko": "점점 더 디지털화되는 세상에서, 특히 지역 커뮤니티에서 진정한 인간적 연결에 대한 필요성이 커지는 것에 영감을 받았습니다."},
@@ -522,7 +522,7 @@
           "title": {"en": "Oosu Salon (Responsive Website)", "ko": "Oosu 살롱 (반응형 웹사이트)"},
           "description": {"en": "Responsive website for a premium wine bar brand, ensuring optimal viewing across devices.", "ko": "프리미엄 와인바 브랜드의 반응형 웹사이트로, 모든 기기에서 최적의 보기 경험을 제공합니다."},
           "tags": ["HTML", "CSS", "JavaScript", "Responsive Web"],
-          "link": "../portfolioMain/portfolio.html#project3",
+          "link": "../project/project.html#project3",
           "keywords": ["oosu salon", "오수 살롱", "와인바 웹사이트", "프로젝트 3"],
           "details": {
             "motivation": {"en": "Having run Oosu Salon, I understood the direct impact a strong digital presence has on customer engagement and business success. This project was a chance to apply my design and development skills to elevate a real-world business.", "ko": "Oosu 살롱을 운영하면서 강력한 디지털 존재감이 고객 참여와 사업 성공에 미치는 직접적인 영향을 이해했습니다. 이 프로젝트는 제 디자인 및 개발 기술을 실제 비즈니스에 적용하여 성과를 높일 기회였습니다."},
@@ -576,7 +576,7 @@
           "title": {"en": "Skyscanner App Redesign (UX Focus)", "ko": "스카이스캐너 앱 리디자인 (UX 중심)"},
           "description": {"en": "Conceptual redesign of the Skyscanner app, improving user experience and visual aesthetics through Figma.", "ko": "스카이스캐너 앱의 개념적인 리디자인으로, Figma를 통해 사용자 경험과 시각적 미학 개선에 중점을 두었습니다."},
           "tags": ["Figma", "UI/UX Design", "App Redesign", "Travel App"],
-          "link": "../portfolioMain/portfolio.html#project5",
+          "link": "../project/project.html#project5",
           "keywords": ["skyscanner", "스카이스캐너", "앱 리디자인", "프로젝트 5", "skyscanner redesign"],
           "details": {
             "motivation": {"en": "As a frequent traveler myself, I often found existing flight comparison apps clunky. This redesign was driven by a personal passion to create a truly seamless and enjoyable travel planning experience.", "ko": "저 역시 잦은 여행자로서 기존 항공권 비교 앱들이 불편하다고 느꼈습니다. 이 리디자인은 진정으로 원활하고 즐거운 여행 계획 경험을 만들고자 하는 개인적인 열정에서 비롯되었습니다."},
@@ -630,7 +630,7 @@
           "title": {"en": "Sticks and Stones (Responsive Website)", "ko": "스틱스 앤 스톤스 (반응형 웹사이트)"},
           "description": {"en": "Developed a visually engaging, responsive website, showcasing strong frontend skills.", "ko": "시각적으로 매력적인 반응형 웹사이트를 개발하며 강력한 프론트엔드 기술을 선보였습니다."},
           "tags": ["HTML", "CSS", "JavaScript", "Responsive Web"],
-          "link": "../portfolioMain/portfolio.html#project4",
+          "link": "../project/project.html#project4",
           "keywords": ["sticks and stones", "스틱스 앤 스톤스", "프로젝트 4", "sticks and stones website"],
           "details": {
             "motivation": {"en": "This project was a deeply personal one, combining my passion for art with my technical skills. I wanted to create a digital space that truly honored the artist's work and provided a unique viewing experience.", "ko": "이 프로젝트는 예술에 대한 저의 열정과 기술적 능력을 결합한 매우 개인적인 작업이었습니다. 예술가의 작품을 진정으로 존중하고 독특한 감상 경험을 제공하는 디지털 공간을 만들고 싶었습니다."},
@@ -1006,7 +1006,7 @@
         "ko": "Oosu님의 포트폴리오는 여러분의 탐색을 돕기 위해 체계적으로 구성되어 있습니다. 주요 섹션은 다음과 같습니다:"
       },
       "items": [
-        {"name": {"en": "1. Portfolio", "ko": "1. 포트폴리오"}, "description": {"en": "Dive into Oosu's main projects and case studies.", "ko": "Oosu님의 주요 프로젝트와 케이스 스터디를 자세히 탐색하세요."}, "link": "../portfolioMain/portfolio.html"},
+        {"name": {"en": "1. Portfolio", "ko": "1. 포트폴리오"}, "description": {"en": "Dive into Oosu's main projects and case studies.", "ko": "Oosu님의 주요 프로젝트와 케이스 스터디를 자세히 탐색하세요."}, "link": "../project/project.html"},
         {"name": {"en": "2. About", "ko": "2. About"}, "description": {"en": "Discover Oosu's personal story, skills, values, and design process.", "ko": "Oosu님의 이야기, 스킬, 가치관, 디자인 프로세스를 알아보세요."}, "link": "../about/about.html"},
         {"name": {"en": "3. Career", "ko": "3. 경력"}, "description": {"en": "Explore professional experiences, education, and awards with detailed narratives.", "ko": "전문 경력, 학력, 수상 내역을 상세한 서사와 함께 확인하세요."}, "link": "../career/career.html"},
         {"name": {"en": "4. Lab", "ko": "4. Lab"}, "description": {"en": "See creative experiments and side projects, often with code demos.", "ko": "창의적인 실험과 사이드 프로젝트(종종 코드 데모 포함)를 구경하세요."}, "link": "../lab/lab.html"},

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfoli-oh! - Interactive Portfolio Case Study</title>
+
+    <link rel="icon" href="https://placehold.co/32x32/000000/FFFFFF/png?text=P" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,100..900;1,100..900&family=Monda:wght@400..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
+
+    <link rel="stylesheet" href="css/project-detail.css">
+
+    <link rel="stylesheet" href="css/project-detail-hero.css">
+    <link rel="stylesheet" href="css/project-detail-project-details.css">
+    <link rel="stylesheet" href="css/project-detail-discover.css">
+    <link rel="stylesheet" href="css/project-detail-define.css">
+    <link rel="stylesheet" href="css/project-detail-design.css">
+    <link rel="stylesheet" href="css/project-detail-deliver.css">
+    <link rel="stylesheet" href="css/project-detail-footer.css">
+</head>
+<body>
+    <noscript>You need to enable JavaScript to run this site.</noscript>
+
+    <div id="scroll-progress-indicator" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+        <svg class="progress-circle" viewBox="0 0 100 100" width="50" height="50">
+            <circle class="bg-circle" cx="50" cy="50" r="45" fill="none" stroke="#eee" stroke-width="5"/>
+            <circle class="progress-circle-fill" cx="50" cy="50" r="45" fill="none" stroke="#007bff" stroke-width="5" stroke-dasharray="282.7" stroke-dashoffset="282.7" transform="rotate(-90 50 50)"/>
+        </svg>
+    </div>
+
+    <div class="top-navigation">
+        <a href="#" class="back-to-portfolio">
+            <span class="arrow">←</span>
+            <span class="nav-text">Back to Portfolio</span>
+        </a>
+    </div>
+
+    <div id="loader" class="loader-container">
+        <p class="load-head">Portfoli-oh!</p>
+        <span class="small-text-load1">Less Boring, More Exploring</span>
+    </div>
+
+    <main class="App" data-scroll-container>
+        <section id="hero" class="section-wrapper hero-section">
+            <video src="https://videos.pexels.com/video-files/3401407/3401407-hd_1920_1080_24fps.mp4" type="video/mp4" autoplay muted loop playsinline alt="Abstract animation" class="parallax-background-image"></video>
+            <p class="small-text-load2">Clever AI interactions meet thoughtful storytelling</p>
+            <h1 class="cover-head-vid">Portfoli-oh!</h1>
+        </section>
+
+        <section id="project-details" class="section-wrapper project-details-section">
+            <div class="pin-wrapper">
+                <div class="details-content section-main-content">
+                    <div class="top-content">
+                        <div class="top-main">
+                            <div class="header">
+                                <div class="project-title">Portfoli-oh!</div>
+                                <div class="project-subtitle">Responsive AI-powered Personal Portfolio</div>
+                            </div>
+                            <div class="insights">
+                                <h3>Key Insights</h3>
+                                <ul>
+                                    <li>Addresses portfolio fatigue by blending clever interaction with thoughtful storytelling.</li>
+                                    <li>Turns passive scrolling into active engagement through features like an AI chatbot and text highlighter.</li>
+                                    <li>Focuses on demonstrating real-world problem-solving skills, not just surface-level polish.</li>
+                                </ul>
+                            </div>
+                            <div class="skills-values">
+                                <h3>Skills & Values</h3>
+                                <div class="tags">
+                                    <span class="tag">HTML/CSS</span>
+                                    <span class="tag">JavaScript</span>
+                                    <span class="tag">GSAP</span>
+                                    <span class="tag">OpenAI API</span>
+                                    <span class="tag">Interaction Design</span>
+                                    <span class="tag">Problem-Solving</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="top-sidebar">
+                            <div class="sidebar-section">
+                                <span class="sidebar-label">Date</span>
+                                <div class="sidebar-value">Jun 2025 - Jul 2025</div>
+                            </div>
+                            <div class="sidebar-section">
+                                <span class="sidebar-label">Roles</span>
+                                <div class="sidebar-value">
+                                    UX/UI Design<br>
+                                    Frontend Development<br>
+                                    AI Integration
+                                </div>
+                            </div>
+                            <div class="sidebar-section">
+                                <span class="sidebar-label">Tools Used</span>
+                                <div class="sidebar-value">
+                                    Figma<br>
+                                    VS Code<br>
+                                    GSAP<br>
+                                    OpenAI API
+                                </div>
+                            </div>
+                            <div class="sidebar-section">
+                                <span class="sidebar-label">Deployment</span>
+                                <div class="sidebar-value">
+                                    Vercel / GitHub Pages
+                                </div>
+                            </div>
+                            <div class="sidebar-section">
+                                <a href="#">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://github.com" alt="QR Code for Live Project">
+                                    <div class="qr-caption">Live Site (Coming Soon)</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="discover" class="section-wrapper discover-section">
+            <div class="pin-wrapper">
+                <p class="discover-header">THE PROBLEM WITH PORTFOLIOS</p>
+                <div class="discover-content-left section-main-content hide-scrollbar">
+                    I’ve clicked through a lot of portfolios—some are visually stunning but quickly forgotten, while others are packed with so much text that they become overwhelming. 
+                    <br><br>
+                    Conversations with recruiters and designers made it obvious: what really matters in a portfolio isn’t surface-level polish or endless explanations, but clear proof of real-world problem solving and skills. 
+                    <br><br>
+                    That’s when I realized my own portfolio needed to be interactive, memorable, and truly showcase my problem solving approach as well as my design and programming skills.
+                    <span class="discover-small-text">–</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="define" class="section-wrapper define-section">
+            <div class="pin-wrapper">
+                <div class="define-header">CLARIFYING THE ISSUE</div>
+                <div class="define-container section-main-content hide-scrollbar">
+                    <div class="define-box issue-box">
+                        <h4>Core Issue</h4>
+                        <p>The core problem? Most portfolio examples are pretty on the outside yet hollow on the inside. You see eye-catching project images, but when you actually click through, there’s little about the creator’s real role—or you’ll see a long list of skills without any real evidence of how those skills were applied.</p>
+                    </div>
+                    <div class="define-main-text">
+                        <p>I set out to design a site from scratch where users could actively highlight information, interact with different UI elements, and even generate message drafts with AI—making every visit unique. My target audience: recruiters seeking proof of ability, fellow designers looking for inspiration, and future-me tracking my own progress.</p>
+                    </div>
+                    <div class="define-box success-box">
+                        <h4>Success Measure</h4>
+                        <p>For me, success means every visitor leaves not just impressed, but with a true, clear understanding of what I can bring to the table.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="design-1" class="section-wrapper design-section-1">
+            <div class="pin-wrapper">
+                <div class="design-header-1">VISUAL EXPLORATION - LONG IMAGES</div>
+                <p class="section-intro-text">
+                    I approached the website design as an ongoing experiment—building a variety of layouts, integrating 3D effects, and layering in interactive touches like highlighters, carousels, and chatbot features. Every detail, from micro-animations to color modes, was chosen to reward curiosity and give each page its own personality, without losing sight of the big picture. The result is a site that feels cohesive yet playful, encouraging visitors to explore and interact rather than just scroll and forget.
+                </p>
+                <div class="design-long-gallery">
+                    <div class="long-gallery-item">
+                        <img src="https://placehold.co/1200x300/222/fff?text=Wireframe+to+mockup+comparison" alt="Wireframe to mockup comparison of the hero section">
+                    </div>
+                    <div class="long-gallery-item">
+                        <img src="https://placehold.co/1200x300/2a2a2a/fff?text=Website+style+guide+(colors,+fonts)" alt="Website style guide for colors and fonts">
+                    </div>
+                    <div class="long-gallery-item">
+                        <img src="https://placehold.co/1200x300/333/fff?text=UI+component+design+(buttons,+tags)" alt="UI component design for buttons, tags, and chatbot">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="design-2" class="section-wrapper design-section-2">
+            <div class="pin-wrapper">
+                <div class="design-header-2">VISUAL EXPLORATION - GALLERY</div>
+                <div class="design-gallery-wrapper">
+                    <div class="design-gallery">
+                        <div class="gallery-row gallery-row-1">
+                            <div class="gallery-item"><img src="https://placehold.co/800x600/222/fff?text=Figma+prototype+of+interaction+design" alt="Figma prototype showing interaction design"></div>
+                            <div class="gallery-item"><img src="https://placehold.co/800x600/2a2a2a/fff?text=Initial+rendering+test+of+3D+effects" alt="Initial rendering test of 3D effects"></div>
+                            <div class="gallery-item"><img src="https://placehold.co/800x600/333/fff?text=Layout+variations+for+project+gallery" alt="Layout variations for the project gallery"></div>
+                            <div class="gallery-item"><img src="https://placehold.co/800x600/3a3a3a/fff?text=Dark+and+light+mode+UI+design" alt="Dark and light mode UI design"></div>
+                            <div class="gallery-item"><img src="https://placehold.co/800x600/444/fff?text=Mobile+responsive+design+mockup" alt="Mobile responsive design mockup"></div>
+                        </div>
+                        <div class="gallery-row gallery-row-2">
+                            <div class="gallery-item"><img src="https://placehold.co/800x600/555/fff?text=User+flow+diagram+for+the+portfolio" alt="User flow diagram for the portfolio"></div>
+                            <div class="gallery-item"><img src="https://placehold.co/800x600/5a5a5a/fff?text=Moodboard+for+visual+direction" alt="Moodboard for visual direction"></div>
+                            <div class="gallery-item"><img src="https://placehold.co/800x600/666/fff?text=Early+sketches+of+the+main+page" alt="Early sketches of the main page"></div>
+                            <div class="gallery-item"><img src="https://placehold.co/800x600/6a6a6a/fff?text=Typography+exploration+and+selection" alt="Typography exploration and selection"></div>
+                            <div class="gallery-item"><img src="https://placehold.co/800x600/777/fff?text=Accessibility+contrast+check" alt="Accessibility contrast check for color palette"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="deliver-1" class="section-wrapper deliver-section-1">
+            <div class="pin-wrapper">
+                <div class="deliver-header-1">INTERACTIVE FEATURES - LONG IMAGES</div>
+                <div class="features-summary">
+                    <h4>Key Features & Technical Implementation</h4>
+                    <ul>
+                        <li><b>Interactive Highlighter:</b> Developed custom vanilla JS modules for a personalized content exploration experience.</li>
+                        <li><b>AI-Powered Features:</b> Integrated the OpenAI API for a smart chatbot and contact message drafting based on user highlights.</li>
+                        <li><b>Advanced Animation:</b> Used GSAP for fluid micro-animations and page transitions, and Three.js for engaging real-time 3D effects.</li>
+                        <li><b>Challenges:</b> The main challenge was learning advanced animation libraries from scratch and integrating multiple interactive elements without sacrificing site speed or performance.</li>
+                    </ul>
+                </div>
+                <div class="deliver-long-gallery">
+                    <div class="deliver-long-gallery-item">
+                        <img src="https://placehold.co/1200x300/222/fff?text=JavaScript+code+for+interactive+highlighter" alt="JavaScript code snippet for the interactive highlighter">
+                    </div>
+                    <div class="deliver-long-gallery-item">
+                        <img src="https://placehold.co/1200x300/333/fff?text=GSAP+animation+code+for+scroll-triggers" alt="GSAP animation code for scroll-triggered effects">
+                    </div>
+                    <div class="deliver-long-gallery-item">
+                        <img src="https://placehold.co/1200x300/444/fff?text=Lighthouse+performance+report+(98+score)" alt="Lighthouse performance report showing a 98 score">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="deliver-2" class="section-wrapper deliver-section-2">
+            <div class="pin-wrapper">
+                <div class="deliver-header-2">INTERACTIVE FEATURES - GALLERY</div>
+                <div class="deliver-gallery-wrapper">
+                    <div class="deliver-gallery">
+                        <div class="gallery-row gallery-row-1">
+                            <div class="gallery-item"><img src="https://placehold.co/800x600/222/fff?text=Live+demo+of+the+AI+chatbot+(GIF)" alt="Live demonstration of the AI chatbot feature (GIF)"></div>
+                            <div class="gallery-item"><img src="https://placehold.co/800x600/333/fff?text=Code+for+OpenAI+API+integration" alt="Code for OpenAI API integration"></div>
+                            <div class="gallery-item"><img src="https://placehold.co/800x600/444/fff?text=Demonstration+of+dark/light+mode+switch" alt="Demonstration of dark/light mode switch with smooth transition"></div>
+                            <div class="gallery-item"><img src="https://placehold.co/800x600/555/fff?text=Diagram+of+front-end+architecture" alt="Diagram of the front-end architecture"></div>
+                        </div>
+                        <div class="gallery-row gallery-row-2">
+                            <div class="gallery-item"><img src="https://placehold.co/800x600/666/fff?text=Responsive+design+check+on+multiple+devices" alt="Responsive design check on multiple devices"></div>
+                            <div class="gallery-item"><img src="https://placehold.co/800x600/777/fff?text=Git+version+control+history" alt="Version control history in Git showing feature branches"></div>
+                            <div class="gallery-item"><img src="https://placehold.co/800x600/888/fff?text=Deployment+process+to+Vercel/GitHub+Pages" alt="Deployment process to Vercel/GitHub Pages"></div>
+                            <div class="gallery-item"><img src="https://placehold.co/800x600/999/fff?text=Final+UI+of+the+delivered+project" alt="Final UI of the delivered project home page"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="footer" class="section-wrapper footer-section">
+            <div class="logo-container">
+                <h3 data-scroll data-scroll-speed="-1">Portfoli-oh!</h3>
+            </div>
+            <div class="bottom">
+                <div class="credit-container">
+                    <div class="nav-circle prev-circle">
+                        <span class="arrow">←</span>
+                        <span class="nav-text">PREV</span>
+                    </div>
+                    <span class="credit" data-scroll data-scroll-speed="2" data-scroll-direction="horizontal">
+                        © 2025. Portfoli-oh! Case Study
+                    </span>
+                </div>
+                <div class="link-ig-container">
+                    <div class="nav-circle next-circle">
+                        <span class="arrow">→</span>
+                        <span class="nav-text">NEXT</span>
+                    </div>
+                    <span class="link-ig" data-scroll data-scroll-speed="-2" data-scroll-direction="horizontal">
+                        Designed by - Your Name
+                    </span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    <script src="js/project-detail-hero.js"></script>
+    <script src="js/project-detail-project-details.js"></script>
+    <script src="js/project-detail-discover.js"></script>
+    <script src="js/project-detail-define.js"></script>
+    <script src="js/project-detail-design.js"></script>
+    <script src="js/project-detail-deliver.js"></script>
+    <script src="js/project-detail-footer.js"></script>
+
+    <script src="js/project-detail.js"></script>
+</body>
+</html>

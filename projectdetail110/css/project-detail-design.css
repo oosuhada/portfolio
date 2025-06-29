@@ -1,0 +1,150 @@
+/* =========================================
+   Design & Deliver Sections - New Styling
+   ========================================= */
+
+/* 섹션 기본 설정 */
+.design-section-1, .design-section-2,
+.deliver-section-1, .deliver-section-2 {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: #f0f0f0; /* 배경색 살짝 변경 */
+    color: #333;
+    overflow: hidden;
+}
+
+/* 스크롤 애니메이션을 위한 최소 높이 (데스크톱 전용) */
+.design-section-1 { min-height: 400vh; }
+.design-section-2 { min-height: 500vh; }
+.deliver-section-1 { min-height: 400vh; }
+.deliver-section-2 { min-height: 500vh; }
+
+/* Pin Wrapper 설정 */
+.pin-wrapper {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative; /* 자식 요소의 absolute 기준 */
+}
+
+/* 애니메이션 될 모든 자식 요소의 기본 상태 (Header, Text, Images) */
+.design-header-1, .design-header-2,
+.deliver-header-1, .deliver-header-2,
+.section-intro-text, .features-summary,
+.long-gallery-item, .gallery-item {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0; /* 기본적으로 숨김 */
+    will-change: opacity, transform;
+    text-align: center;
+}
+
+/* 헤더 스타일 */
+.design-header-1, .design-header-2,
+.deliver-header-1, .deliver-header-2 {
+    font-family: 'Monda', sans-serif;
+    font-weight: 700;
+    font-size: 3.5vw;
+    text-transform: uppercase;
+    width: 90%;
+}
+
+/* 요약 텍스트 스타일 */
+.section-intro-text {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    max-width: 600px;
+    width: 90%;
+}
+
+/* Deliver 섹션 요약 리스트 스타일 */
+.features-summary {
+    max-width: 700px;
+    width: 90%;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 2rem;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0,0,0,0.1);
+}
+.features-summary h4 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+.features-summary ul {
+    list-style: none;
+    padding-left: 0;
+}
+.features-summary li {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+.features-summary b {
+    color: #0056b3;
+}
+
+/* 이미지 아이템 스타일 */
+.long-gallery-item {
+    width: 70vw;
+    max-width: 1200px;
+    height: auto;
+}
+.gallery-item {
+    width: 45vw;
+    max-width: 800px;
+    height: auto;
+}
+.long-gallery-item img,
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* 이미지가 잘리지 않도록 contain으로 변경 */
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* 반응형 (모바일) */
+@media (max-width: 768px) {
+    /* 모바일에서는 Pin과 애니메이션 비활성화, 수직 나열 */
+    .design-section-1, .design-section-2,
+    .deliver-section-1, .deliver-section-2 {
+        min-height: auto;
+        padding: 10vh 5vw;
+    }
+    .pin-wrapper {
+        height: auto;
+        flex-direction: column;
+    }
+    .design-header-1, .design-header-2,
+    .deliver-header-1, .deliver-header-2,
+    .section-intro-text, .features-summary,
+    .long-gallery-item, .gallery-item {
+        position: relative; /* static으로 변경 */
+        top: auto;
+        left: auto;
+        transform: none;
+        opacity: 1; /* 바로 보이도록 */
+        margin-bottom: 5vh;
+        width: 100%;
+    }
+    .design-header-1, .design-header-2,
+    .deliver-header-1, .deliver-header-2 {
+        font-size: 2.5em;
+        text-align: left;
+    }
+    .features-summary {
+        padding: 1.5rem;
+    }
+    .long-gallery-item, .gallery-item {
+        width: 90vw; /* 모바일에서 꽉차게 */
+    }
+}

@@ -1,0 +1,80 @@
+.discover-section {
+    background-color: #ffffff;
+    color: #000000;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    flex-direction: column;
+}
+
+.discover-section .pin-wrapper {
+    width: 100%;
+    min-height: 110vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+    padding-bottom: 5vh;
+}
+
+.discover-header {
+    font-family: domaine;
+    text-transform: uppercase;
+    font-size: 3em;
+    color: #555555b1;
+    width: 100%;
+    text-align: left;
+    padding: 0 5vw;
+    position: absolute;
+    top: 10%;
+    left: 5%;
+    z-index: 10;
+    opacity: 0;
+    transform: translateY(80px);
+    will-change: opacity, transform;
+}
+
+.discover-section .discover-content-left {
+    font-size: 1.5em;
+    text-transform: uppercase;
+    text-align: center;
+    align-content: center;
+    z-index: 10;
+    padding: 40px;
+    width: 80%;
+    min-height: 60vh;
+    overflow-y: auto;
+}
+
+.discover-section .discover-small-text {
+    font-size: 0.6em;
+    display: block;
+    margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+    .discover-section .discover-content-left.section-main-content { margin-top: 5vh; }
+
+    .discover-header {
+        font-size: 3em;
+        left: 4vw;
+        text-align: left;
+        position: relative;
+        top: auto;
+        transform: none !important;
+        opacity: 1 !important;
+        margin-top: 20px;
+        padding: 0;
+    }
+
+    .discover-section .discover-content-left {
+        font-size: 1.2em;
+        padding: 20px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .discover-header { font-size: 2.5em; }
+}

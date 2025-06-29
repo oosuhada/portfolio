@@ -1,0 +1,107 @@
+.footer-section {
+    min-height: 100vh;
+    background-color: #1a1a1a;
+    color: whitesmoke;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.footer-section .logo-container {
+    font-family: domaine;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10em;
+}
+
+.footer-section .logo-container h3 {
+    font-family: domaine;
+    font-size: 3em;
+    color: whitesmoke;
+}
+
+.footer-section .bottom {
+    font-family: domaine;
+    color: white;
+    font-size: 1em;
+    width: 60%;
+    position: absolute;
+    bottom: 2em;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 10rem 10rem 10rem;
+}
+
+.footer-section .credit-container,
+.footer-section .link-ig-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-circle {
+    width: 100px;
+    height: 100px;
+    background-color: #000;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s ease;
+    opacity: 1;
+    margin-bottom: 10px;
+}
+.nav-circle .arrow {
+    font-size: 2em;
+    color: #a0a0a0;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+.nav-circle .nav-text {
+    position: absolute;
+    color: white;
+    font-size: 0.9em;
+    font-family: 'Monda', sans-serif;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    white-space: nowrap;
+}
+.nav-circle:hover {
+    background-color: #222;
+}
+.nav-circle:hover .arrow {
+    color: #fff;
+    transform: translateY(-5px);
+}
+.nav-circle:hover .nav-text {
+    opacity: 1;
+    transform: translateY(15px);
+}
+
+.footer-section .credit,
+.footer-section .link-ig {
+    font-family: domaine;
+    font-size: 1.2em;
+    color: whitesmoke;
+    opacity: 0;
+    transform: translateY(40px);
+}
+
+@media (max-width: 768px) {
+    .footer-section .bottom {
+        flex-direction: column;
+        align-items: center;
+        bottom: 1em;
+        /* Reset margins for centering */
+        width: 100%;
+        margin: 0; 
+        padding: 0;
+    }
+}

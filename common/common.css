@@ -34,7 +34,7 @@
   --ai-text-primary: #E3E3E3; /* Main text color */
   --ai-text-secondary: #828282; /* Subheadings, less emphasized */
   --ai-text-inverted: #ffffff; /* White text on dark/colored backgrounds */
-  --ai-border-color: #31373f;
+  --ai-border-color: #383838;
 
   /* --- Dynamic Theme Variables (Light Mode Defaults) --- */
   /* These variables will change based on the 'data-theme' attribute on the body. */

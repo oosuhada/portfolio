@@ -1,0 +1,113 @@
+.deliver-section-1,
+.deliver-section-2 {
+    flex-direction: column;
+    justify-content: flex-start;
+    background-color: #f0f0f0;
+    padding: 10vh 0;
+    overflow-x: hidden;
+    align-items: center;
+}
+.deliver-section-1 { min-height: 200vh; }
+.deliver-section-2 { min-height: 150vh; }
+
+.deliver-section-1 .pin-wrapper,
+.deliver-section-2 .pin-wrapper {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+}
+
+.deliver-header-1,
+.deliver-header-2 {
+    font-family: domaine;
+    text-transform: uppercase;
+    font-size: 3em;
+    color: #333333;
+    width: 100%;
+    text-align: left;
+    padding: 0 5vw;
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    z-index: 10;
+    opacity: 0;
+    transform: translateY(40px);
+    will-change: opacity, transform;
+}
+
+/* Deliver Section 1 */
+.deliver-long-gallery {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2vw;
+    padding-top: 25vh;
+}
+.deliver-long-gallery-item {
+    width: 150vw;
+    height: 30vh;
+    flex-shrink: 0;
+}
+.deliver-long-gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Deliver Section 2 */
+.deliver-gallery-wrapper {
+    height: auto;
+    width: 100vw;
+    overflow: visible;
+    padding-top: 25vh;
+}
+.deliver-gallery {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2vw;
+}
+/* .gallery-row and .gallery-item are reused from design section */
+
+@media (max-width: 768px) {
+    .deliver-long-gallery,
+    .deliver-gallery-wrapper {
+        margin-top: 5vh;
+        padding-top: 0;
+    }
+    .deliver-header-1,
+    .deliver-header-2 {
+        font-size: 3em;
+        left: 4vw;
+        text-align: left;
+        position: relative;
+        top: auto;
+        transform: none !important;
+        opacity: 1 !important;
+        margin-top: 20px;
+        padding: 0;
+    }
+    .deliver-long-gallery-item {
+        width: 80vw;
+        height: auto;
+    }
+    .deliver-section-1,
+    .deliver-section-2 {
+        min-height: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .deliver-header-1,
+    .deliver-header-2 {
+        font-size: 2.5em;
+    }
+    .deliver-long-gallery-item {
+        width: 90vw;
+    }
+}

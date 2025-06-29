@@ -1,0 +1,159 @@
+/* FONT & BASIC SETUP */
+@font-face {
+    font-family: domaine;
+    src: url(https://cdna.fontspring.com/css/webfont.css?projectid=32A07519-2597-4299-9408-2A2733A0349A&ver=2.6.2);
+}
+
+*, *::before, *::after, h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Monda", sans-serif;
+    overflow-x: hidden;
+    background-color: #ffffff;
+    color: #000;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    font-family: "Monda", sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    line-height: 1.7;
+}
+
+p {
+    line-height: 2;
+}
+
+:root {
+    --body-color: #ffffff;
+    --text-color: #000;
+    --grey-color: #333333;
+}
+
+/* UTILITIES */
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* COMMON COMPONENTS */
+#scroll-progress-indicator {
+    pointer-events: none;
+}
+.progress-circle {
+    transform-origin: center;
+    transition: stroke 0.3s ease;
+}
+.bg-circle {
+    stroke: #e0e0e0;
+}
+.progress-circle-fill {
+    transition: stroke 0.3s ease-out;
+}
+
+.top-navigation {
+    position: fixed;
+    top: 40px;
+    left: 30px;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(-20px);
+}
+.back-to-portfolio {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Monda', sans-serif;
+    font-size: 1em;
+    color: #333;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+.back-to-portfolio .arrow {
+    font-size: 1.5em;
+    transition: transform 0.3s ease;
+}
+.back-to-portfolio .nav-text {
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+.back-to-portfolio:hover .arrow {
+    transform: translateX(-5px);
+}
+.back-to-portfolio:hover .nav-text {
+    opacity: 1;
+}
+
+.loader-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    touch-action: none;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--body-color);
+    color: var(--text-color);
+    transition: opacity 2s ease-out, visibility 2s ease-out;
+}
+.loader-container.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+.load-head {
+    font-size: 2em;
+    position: relative;
+    font-family: domaine;
+    margin-bottom: 10px;
+}
+.small-text-load1 {
+    text-align: center;
+    font-family: domaine;
+    font-size: 1.2rem;
+    position: relative;
+    width: 100%;
+}
+
+.section-wrapper {
+    min-height: 100vh;
+    width: 100vw;
+    position: relative;
+    display: flex;
+    margin: 0 auto;
+    color: #000;
+    font-family: 'Albert Sans', sans-serif;
+    background-color: var(--body-color);
+    z-index: 2;
+}
+
+/* COMMON RESPONSIVE STYLES */
+@media (max-width: 768px) {
+    .section-wrapper .pin-wrapper {
+        height: auto;
+        min-height: auto;
+        padding-top: 0;
+        padding-bottom: 50px;
+    }
+
+    .section-main-content {
+        max-height: none;
+        overflow-y: visible;
+        margin-top: 5vh;
+    }
+}

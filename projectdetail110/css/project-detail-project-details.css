@@ -1,0 +1,159 @@
+.project-details-section {
+    background-color: #f8f8f8;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20vh 5vw 10vh 5vw;
+}
+
+.project-details-section .details-content {
+    max-width: 1200px;
+    width: 100%;
+}
+
+.project-details-section .top-content {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.project-details-section .top-sidebar {
+    flex: 0 0 200px;
+    padding-left: 20px;
+    border-left: 3px solid #000;
+    order: 2;
+}
+
+.project-details-section .top-main {
+    flex: 1;
+    order: 1;
+}
+
+.project-details-section .header {
+    border-bottom: 2px solid #000;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.project-details-section .project-title {
+    font-size: 36px;
+    font-weight: 900;
+    color: #000;
+    margin-bottom: 8px;
+    letter-spacing: -1px;
+}
+
+.project-details-section .project-subtitle {
+    font-size: 16px;
+    font-weight: 400;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.project-details-section .sidebar-section {
+    margin-bottom: 30px;
+}
+
+.project-details-section .sidebar-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.project-details-section .sidebar-value {
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+    line-height: 1.4;
+}
+
+.project-details-section .qr-section img {
+    width: 100px;
+    height: 100px;
+    border-radius: 4px;
+    margin: 0 auto 8px;
+    display: block;
+}
+
+.project-details-section .qr-caption {
+    font-size: 10px;
+    color: #666;
+    margin-top: 8px;
+}
+
+.project-details-section .insights {
+    margin-bottom: 40px;
+}
+
+.project-details-section .insights h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 16px;
+}
+
+.project-details-section .insights ul {
+    list-style: none;
+    padding: 0;
+}
+
+.project-details-section .insights li {
+    font-size: 16px;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    position: relative;
+    padding-left: 20px;
+}
+
+.project-details-section .insights li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #000;
+    font-size: 18px;
+}
+
+.project-details-section .skills-values h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 16px;
+}
+
+.project-details-section .tags {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.project-details-section .tag {
+    background: #e0e0e0;
+    color: #666;
+    padding: 0.5em 1em;
+    border-radius: 5px;
+    font-family: 'Monda', sans-serif;
+    font-size: 0.9em;
+    text-align: center;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+}
+
+.project-details-section .tag:hover {
+    background: #d0d0d0;
+    color: #333;
+}
+
+
+@media (max-width: 768px) {
+    .project-details-section .top-content { flex-direction: column; }
+    .project-details-section .top-sidebar { order: 2; border-left: none; border-top: 3px solid #000; padding-left: 0; padding-top: 20px; }
+    .project-details-section .tags { grid-template-columns: repeat(2, 1fr); }
+    .project-details-section .details-content.section-main-content { margin-top: 5vh; }
+}

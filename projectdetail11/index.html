@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfoli-oh! - Interactive Portfolio Case Study</title>
+    <link rel="icon" href="https://placehold.co/32x32/000000/FFFFFF/png?text=P" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,100..900;1,100..900&family=Monda:wght@400..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
+    <style>
+        @font-face {
+            font-family: domaine;
+            src: url(https://cdna.fontspring.com/css/webfont.css?projectid=32A07519-2597-4299-9408-2A2733A0349A&ver=2.6.2);
+        }
+
+        *, *::before, *::after, h1, h2, h3, h4, h5, h6 {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Monda", sans-serif;
+            overflow-x: hidden;
+            background-color: #ffffff;
+            color: #000;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            font-family: "Monda", sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            line-height: 1.7;
+        }
+
+        p {
+            line-height: 2;
+        }
+
+        :root {
+            --body-color: #ffffff;
+            --text-color: #000;
+            --grey-color: #333333;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        #scroll-progress-indicator {
+            pointer-events: none;
+        }
+
+        .progress-circle {
+            transform-origin: center;
+            transition: stroke 0.3s ease;
+        }
+
+        .bg-circle {
+            stroke: #e0e0e0;
+        }
+
+        .progress-circle-fill {
+            transition: stroke 0.3s ease-out;
+        }
+
+        .top-navigation {
+            position: fixed;
+            top: 40px;
+            left: 30px;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        .back-to-portfolio {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Monda', sans-serif;
+            font-size: 1em;
+            color: #333;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .back-to-portfolio .arrow {
+            font-size: 1.5em;
+            transition: transform 0.3s ease;
+        }
+
+        .back-to-portfolio .nav-text {
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .back-to-portfolio:hover .arrow {
+            transform: translateX(-5px);
+        }
+
+        .back-to-portfolio:hover .nav-text {
+            opacity: 1;
+        }
+
+        .nav-circle {
+            width: 100px;
+            height: 100px;
+            background-color: #000;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.3s ease;
+            opacity: 1;
+            margin-bottom: 10px;
+        }
+
+        .nav-circle .arrow {
+            font-size: 2em;
+            color: #a0a0a0;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .nav-circle .nav-text {
+            position: absolute;
+            color: white;
+            font-size: 0.9em;
+            font-family: 'Monda', sans-serif;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-circle:hover {
+            background-color: #222;
+        }
+
+        .nav-circle:hover .arrow {
+            color: #fff;
+            transform: translateY(-5px);
+        }
+
+        .nav-circle:hover .nav-text {
+            opacity: 1;
+            transform: translateY(15px);
+        }
+
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            touch-action: none;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--body-color);
+            color: var(--text-color);
+            transition: opacity 2s ease-out, visibility 2s ease-out;
+        }
+
+        .loader-container.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .load-head {
+            font-size: 2em;
+            position: relative;
+            font-family: domaine;
+            margin-bottom: 10px;
+        }
+
+        .small-text-load1 {
+            text-align: center;
+            font-family: domaine;
+            font-size: 1.2rem;
+            position: relative;
+            width: 100%;
+        }
+
+        .hero-section {
+            min-height: 100vh;
+            width: 100vw;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .hero-section video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .small-text-load2,
+        .cover-head-vid {
+            position: absolute;
+            z-index: 2;
+            color: #fff;
+            text-shadow: 0 4px 32px rgba(0,0,0,0.4);
+        }
+
+        .small-text-load2 {
+            top: 18%;
+            left: 8vw;
+            font-family: domaine;
+            font-size: 1.7em;
+        }
+
+        .cover-head-vid {
+            top: 55%;
+            right: 8vw;
+            font-size: 6em;
+            font-family: 'Albert Sans', sans-serif;
+        }
+
+        @media (max-width: 768px) {
+            .cover-head-vid { font-size: 3em; left: 4vw; }
+            .small-text-load2 { font-size: 1.1em; left: 4vw; }
+        }
+
+        .section-wrapper {
+            min-height: 100vh;
+            width: 100vw;
+            position: relative;
+            display: flex;
+            margin: 0 auto;
+            color: #000;
+            font-family: 'Albert Sans', sans-serif;
+            background-color: var(--body-color);
+            z-index: 2;
+        }
+
+        .discover-header {
+            font-family: domaine;
+            text-transform: uppercase;
+            font-size: 3em;
+            color: #333333;
+            width: 100%;
+            text-align: left;
+            padding: 0 5vw;
+            position: absolute;
+            top: 20%;
+            left: 5%;
+            z-index: 10;
+            opacity: 0;
+            transform: translateY(80px);
+            will-change: opacity, transform;
+        }
+
+        .define-header {
+            font-family: domaine;
+            text-transform: uppercase;
+            font-size: 3em;
+            color: #333333;
+            width: 100%;
+            text-align: right;
+            padding: 0 5vw;
+            position: absolute;
+            top: 10%;
+            left: 0%;
+            z-index: 10;
+            opacity: 0;
+            transform: translateY(80px);
+            will-change: opacity, transform;
+        }
+
+        .design-header-1,
+        .design-header-2,
+        .deliver-header-1,
+        .deliver-header-2 {
+            font-family: domaine;
+            text-transform: uppercase;
+            font-size: 3em;
+            color: #333333;
+            width: 100%;
+            text-align: left;
+            padding: 0 5vw;
+            position: absolute;
+            top: 5%;
+            left: 5%;
+            z-index: 10;
+            opacity: 0;
+            transform: translateY(40px);
+            will-change: opacity, transform;
+        }
+
+        .project-details-section {
+            background-color: #f8f8f8;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20vh 5vw 10vh 5vw;
+        }
+
+        .project-details-section .details-content {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .project-details-section .top-content {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .project-details-section .top-sidebar {
+            flex: 0 0 200px;
+            padding-left: 20px;
+            border-left: 3px solid #000;
+            order: 2;
+        }
+
+        .project-details-section .top-main {
+            flex: 1;
+            order: 1;
+        }
+
+        .project-details-section .header {
+            border-bottom: 2px solid #000;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .project-details-section .project-title {
+            font-size: 36px;
+            font-weight: 900;
+            color: #000;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+
+        .project-details-section .project-subtitle {
+            font-size: 16px;
+            font-weight: 400;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .project-details-section .sidebar-section {
+            margin-bottom: 30px;
+        }
+
+        .project-details-section .sidebar-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .project-details-section .sidebar-value {
+            font-size: 13px;
+            font-weight: 500;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .project-details-section .qr-section img {
+            width: 100px;
+            height: 100px;
+            border-radius: 4px;
+            margin: 0 auto 8px;
+            display: block;
+        }
+
+        .project-details-section .qr-caption {
+            font-size: 10px;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .project-details-section .insights {
+            margin-bottom: 40px;
+        }
+
+        .project-details-section .insights h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 16px;
+        }
+
+        .project-details-section .insights ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .project-details-section .insights li {
+            font-size: 16px;
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .project-details-section .insights li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #000;
+            font-size: 18px;
+        }
+
+        .project-details-section .skills-values h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 16px;
+        }
+
+        .project-details-section .tags {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .project-details-section .tag {
+            background: #e0e0e0;
+            color: #666;
+            padding: 0.5em 1em;
+            border-radius: 5px;
+            font-family: 'Monda', sans-serif;
+            font-size: 0.9em;
+            text-align: center;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+
+        .project-details-section .tag:hover {
+            background: #d0d0d0;
+            color: #333;
+        }
+
+        .discover-section {
+            background-color: #ffffff;
+            color: #000000;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            flex-direction: column;
+        }
+
+        .discover-section .pin-wrapper {
+            width: 100%;
+            min-height: 110vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            position: relative;
+            padding-bottom: 5vh;
+        }
+
+        .discover-section .discover-content-left {
+            font-size: 1.5em;
+            text-transform: uppercase;
+            text-align: center;
+            align-content: center;
+            z-index: 10;
+            padding: 40px;
+            width: 80%;
+            min-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .discover-section .discover-small-text {
+            font-size: 0.6em;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .define-section {
+            background-color: #ffffff;
+            color: #000;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 5vh 5vw;
+        }
+
+        .define-section .pin-wrapper {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            position: relative;
+            padding-top: 0;
+        }
+
+        .define-container {
+            width: 100%;
+            max-width: 1200px;
+            height: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto auto auto;
+            gap: 4rem 4rem;
+            align-items: start;
+            overflow-y: visible;
+            min-height: 90vh;
+            margin-bottom: 5vh;
+            margin-top: 0;
+        }
+
+        .define-box {
+            background-color: #f5f5f5;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .define-box h4 {
+            font-family: 'Albert Sans', sans-serif;
+            font-weight: 800;
+            font-size: 1.2em;
+            margin-bottom: 1em;
+            color: #000;
+        }
+
+        .define-box p {
+            font-family: 'Monda', sans-serif;
+            line-height: 1.8;
+            font-size: 0.95em;
+            color: #333;
+        }
+
+        .issue-box {
+            grid-column: 1 / 2;
+            grid-row: 2 / 3;
+            justify-self: start;
+        }
+
+        .success-box {
+            grid-column: 2 / 3;
+            grid-row: 4 / 5;
+            justify-self: end;
+        }
+
+        .define-main-text {
+            grid-column: 1 / 3;
+            grid-row: 3 / 4;
+            max-width: 60%;
+            margin: 0 auto;
+            text-align: center;
+            font-size: 1.1em;
+            line-height: 2;
+            color: #444;
+        }
+
+        .design-section-1 {
+            min-height: 200vh;
+            flex-direction: column;
+            justify-content: flex-start;
+            background-color: #e0e0e0;
+            padding: 10vh 0;
+            overflow-x: hidden;
+            align-items: center;
+        }
+
+        .design-section-1 .pin-wrapper {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            position: relative;
+        }
+
+        .design-long-gallery {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 2vw;
+            padding-top: 25vh;
+        }
+
+        .long-gallery-item {
+            width: 150vw;
+            height: 30vh;
+            flex-shrink: 0;
+        }
+
+        .long-gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            opacity: 0; /* Initial state for animation */
+            transform: translateY(50px); /* Start below for fade-in effect */
+        }
+
+        .design-section-2 {
+            min-height: 150vh;
+            flex-direction: column;
+            justify-content: flex-start;
+            background-color: #e0e0e0;
+            padding: 10vh 0;
+            overflow-x: hidden;
+            align-items: center;
+        }
+
+        .design-section-2 .pin-wrapper {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            position: relative;
+        }
+
+        .design-gallery-wrapper {
+            height: auto;
+            width: 100vw;
+            overflow: visible;
+            padding-top: 25vh;
+        }
+
+        .design-gallery {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 2vw;
+        }
+
+        .gallery-row {
+            display: flex;
+            flex-shrink: 0;
+            gap: 2vw;
+            width: max-content;
+        }
+
+        .gallery-item {
+            flex-shrink: 0;
+            width: 25vw;
+            height: auto;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            opacity: 0; /* Initial state for animation */
+            transform: translateY(50px); /* Start below for fade-in effect */
+        }
+
+        .deliver-section-1 {
+            min-height: 200vh;
+            flex-direction: column;
+            justify-content: flex-start;
+            background-color: #f0f0f0;
+            padding: 10vh 0;
+            overflow-x: hidden;
+            align-items: center;
+        }
+
+        .deliver-section-1 .pin-wrapper {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            position: relative;
+        }
+
+        .deliver-long-gallery {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 2vw;
+            padding-top: 25vh;
+        }
+
+        .deliver-long-gallery-item {
+            width: 150vw;
+            height: 30vh;
+            flex-shrink: 0;
+        }
+
+        .deliver-long-gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .deliver-section-2 {
+            min-height: 150vh;
+            flex-direction: column;
+            justify-content: flex-start;
+            background-color: #f0f0f0;
+            padding: 10vh 0;
+            overflow-x: hidden;
+            align-items: center;
+        }
+
+        .deliver-section-2 .pin-wrapper {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            position: relative;
+        }
+
+        .deliver-gallery-wrapper {
+            height: auto;
+            width: 100vw;
+            overflow: visible;
+            padding-top: 25vh;
+        }
+
+        .deliver-gallery {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 2vw;
+        }
+
+        .footer-section {
+            min-height: 100vh;
+            background-color: #1a1a1a;
+            color: whitesmoke;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .footer-section .logo-container {
+            font-family: domaine;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10em;
+        }
+
+        .footer-section .logo-container h3 {
+            font-family: domaine;
+            font-size: 3em;
+            color: whitesmoke;
+        }
+
+        .footer-section .bottom {
+            font-family: domaine;
+            color: white;
+            font-size: 1em;
+            width: 60%;
+            position: absolute;
+            bottom: 2em;
+            display: flex;
+            justify-content: space-between;
+            margin: 0 10rem 10rem 10rem;
+        }
+
+        .footer-section .credit-container,
+        .footer-section .link-ig-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-section .credit,
+        .footer-section .link-ig {
+            font-family: domaine;
+            font-size: 1.2em;
+            color: whitesmoke;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        @media (max-width: 768px) {
+            .cover-head-vid { font-size: 4em; }
+            .project-details-section .top-content { flex-direction: column; }
+            .project-details-section .top-sidebar { order: 2; border-left: none; border-top: 3px solid #000; padding-left: 0; padding-top: 20px; }
+            .project-details-section .tags { grid-template-columns: repeat(2, 1fr); }
+
+            .discover-section .pin-wrapper,
+            .define-section .pin-wrapper,
+            .design-section-1 .pin-wrapper,
+            .design-section-2 .pin-wrapper,
+            .deliver-section-1 .pin-wrapper,
+            .deliver-section-2 .pin-wrapper,
+            .project-details-section .pin-wrapper {
+                height: auto;
+                min-height: auto;
+                padding-top: 0;
+                padding-bottom: 50px;
+            }
+
+            .discover-section .discover-content-left,
+            .define-container,
+            .design-long-gallery,
+            .design-gallery-wrapper,
+            .deliver-long-gallery,
+            .deliver-gallery-wrapper,
+            .project-details-section .details-content {
+                max-height: none;
+                overflow-y: visible;
+                margin-top: 5vh;
+            }
+
+            .discover-header,
+            .define-header,
+            .design-header-1,
+            .design-header-2,
+            .deliver-header-1,
+            .deliver-header-2 {
+                font-size: 3em;
+                left: 4vw;
+                text-align: left;
+                position: relative;
+                top: auto;
+                transform: none !important;
+                opacity: 1 !important;
+                margin-top: 20px;
+                padding: 0;
+            }
+
+            .discover-section .discover-content-left {
+                font-size: 1.2em;
+                padding: 20px 0;
+            }
+
+            .define-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .issue-box,
+            .success-box,
+            .define-main-text {
+                grid-column: 1 / -1;
+                justify-self: stretch;
+            }
+
+            .define-main-text {
+                max-width: 100%;
+                margin: 2rem 0;
+            }
+
+            .gallery-item,
+            .long-gallery-item,
+            .deliver-long-gallery-item {
+                width: 80vw;
+                height: auto;
+            }
+
+            .design-section-1,
+            .design-section-2,
+            .deliver-section-1,
+            .deliver-section-2 {
+                min-height: auto;
+            }
+
+            .design-long-gallery,
+            .design-gallery-wrapper,
+            .deliver-long-gallery,
+            .deliver-gallery-wrapper {
+                padding-top: 0;
+            }
+
+            .footer-section .bottom {
+                flex-direction: column;
+                align-items: center;
+                bottom: 1em;
+                padding: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .discover-header,
+            .define-header,
+            .design-header-1,
+            .design-header-2,
+            .deliver-header-1,
+            .deliver-header-2 {
+                font-size: 2.5em;
+            }
+
+            .gallery-item,
+            .long-gallery-item,
+            .deliver-long-gallery-item {
+                width: 90vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <noscript>You need to enable JavaScript to run this site.</noscript>
+
+    <div id="scroll-progress-indicator" style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
+        <svg class="progress-circle" viewBox="0 0 100 100" width="50" height="50">
+            <circle class="bg-circle" cx="50" cy="50" r="45" fill="none" stroke="#eee" stroke-width="5"/>
+            <circle class="progress-circle-fill" cx="50" cy="50" r="45" fill="none" stroke="#007bff" stroke-width="5" stroke-dasharray="282.7" stroke-dashoffset="282.7" transform="rotate(-90 50 50)"/>
+        </svg>
+    </div>
+
+    <div class="top-navigation">
+        <a href="#" class="back-to-portfolio">
+            <span class="arrow">←</span>
+            <span class="nav-text">Back to Portfolio</span>
+        </a>
+    </div>
+
+    <div id="loader" class="loader-container">
+        <p class="load-head">Portfoli-oh!</p>
+        <span class="small-text-load1">Less Boring, More Exploring</span>
+    </div>
+
+    <main class="App" data-scroll-container>
+        <section id="hero" class="section-wrapper hero-section">
+            <video src="https://videos.pexels.com/video-files/3401407/3401407-hd_1920_1080_24fps.mp4" type="video/mp4" autoplay muted loop playsinline alt="Abstract animation" class="parallax-background-image"></video>
+            <p class="small-text-load2">Clever AI interactions meet thoughtful storytelling</p>
+            <h1 class="cover-head-vid">Portfoli-oh!</h1>
+        </section>
+
+        <section id="project-details" class="section-wrapper project-details-section">
+            <div class="pin-wrapper">
+                <div class="details-content section-main-content">
+                    <div class="top-content">
+                        <div class="top-main">
+                            <div class="header">
+                                <div class="project-title">Portfoli-oh!</div>
+                                <div class="project-subtitle">Responsive AI-powered Personal Portfolio</div>
+                            </div>
+                            <div class="insights">
+                                <h3>Key Insights</h3>
+                                <ul>
+                                    <li>Addresses portfolio fatigue by blending clever interaction with thoughtful storytelling.</li>
+                                    <li>Turns passive scrolling into active engagement through features like an AI chatbot and text highlighter.</li>
+                                    <li>Focuses on demonstrating real-world problem-solving skills, not just surface-level polish.</li>
+                                </ul>
+                            </div>
+                            <div class="skills-values">
+                                <h3>Skills & Values</h3>
+                                <div class="tags">
+                                    <span class="tag">HTML/CSS</span>
+                                    <span class="tag">JavaScript</span>
+                                    <span class="tag">GSAP</span>
+                                    <span class="tag">OpenAI API</span>
+                                    <span class="tag">Interaction Design</span>
+                                    <span class="tag">Problem-Solving</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="top-sidebar">
+                            <div class="sidebar-section">
+                                <span class="sidebar-label">Date</span>
+                                <div class="sidebar-value">Jun 2025 - Jul 2025</div>
+                            </div>
+                            <div class="sidebar-section">
+                                <span class="sidebar-label">Roles</span>
+                                <div class="sidebar-value">
+                                    UX/UI Design<br>
+                                    Frontend Development<br>
+                                    AI Integration
+                                </div>
+                            </div>
+                            <div class="sidebar-section">
+                                <span class="sidebar-label">Tools Used</span>
+                                <div class="sidebar-value">
+                                    Figma<br>
+                                    VS Code<br>
+                                    GSAP<br>
+                                    OpenAI API
+                                </div>
+                            </div>
+                            <div class="sidebar-section">
+                                <span class="sidebar-label">Deployment</span>
+                                <div class="sidebar-value">
+                                    Vercel / GitHub Pages
+                                </div>
+                            </div>
+                            <div class="sidebar-section">
+                                <a href="#">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://github.com" alt="QR Code for Live Project">
+                                    <div class="qr-caption">Live Site (Coming Soon)</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="discover" class="section-wrapper discover-section">
+            <div class="pin-wrapper">
+                <p class="discover-header">THE PROBLEM WITH PORTFOLIOS</p>
+                <div class="discover-content-left section-main-content hide-scrollbar">
+                    I’ve clicked through countless portfolios—some are visually stunning but quickly forgotten, while others are packed with so much text that they become overwhelming. What really matters isn't just polish, but clear proof of real-world problem solving.
+                    <span class="discover-small-text">– a user-centric mission</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="define" class="section-wrapper define-section">
+            <div class="pin-wrapper">
+                <div class="define-header">CLARIFYING THE ISSUE</div>
+                <div class="define-container section-main-content hide-scrollbar">
+                    <div class="define-box issue-box">
+                        <h4>Core Issue</h4>
+                        <p>The core problem? Most portfolio examples are pretty on the outside yet hollow on the inside. You see eye-catching images, but little about the creator’s real role or how skills were actually applied.</p>
+                    </div>
+                    <div class="define-main-text">
+                        <p>I set out to design a site from scratch where users could actively highlight information, interact with different UI elements, and even generate message drafts with AI—making every visit unique. My target audience: recruiters seeking proof of ability, fellow designers looking for inspiration, and future-me tracking my own progress.</p>
+                    </div>
+                    <div class="define-box success-box">
+                        <h4>Success Measure</h4>
+                        <p>For me, success means every visitor leaves not just impressed, but with a true, clear understanding of what I can bring to the table.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="design-1" class="section-wrapper design-section-1">
+            <div class="pin-wrapper">
+                <div class="design-header-1">VISUAL EXPLORATION - LONG IMAGES</div>
+                <div class="design-long-gallery">
+                    <div class="long-gallery-item">
+                        <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80" alt="Wireframe to UI" onerror="this.onerror=null;this.src='https://placehold.co/1200x300/222/fff?text=Long+Image+1';">
+                    </div>
+                    <div class="long-gallery-item">
+                        <img src="https://images.unsplash.com/photo-1541462608143-67571c6738dd?auto=format&fit=crop&w=1200&q=80" alt="Design components" onerror="this.onerror=null;this.src='https://placehold.co/1200x300/2a2a2a/fff?text=Long+Image+2';">
+                    </div>
+                    <div class="long-gallery-item">
+                        <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=1200&q=80" alt="Code on screen" onerror="this.onerror=null;this.src='https://placehold.co/1200x300/333/fff?text=Long+Image+3';">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="design-2" class="section-wrapper design-section-2">
+            <div class="pin-wrapper">
+                <div class="design-header-2">VISUAL EXPLORATION - GALLERY</div>
+                <div class="design-gallery-wrapper">
+                    <div class="design-gallery">
+                        <div class="gallery-row gallery-row-1">
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80" alt="Wireframe to UI" onerror="this.onerror=null;this.src='https://placehold.co/800x600/222/fff?text=Image+1';"></div>
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1541462608143-67571c6738dd?auto=format&fit=crop&w=800&q=80" alt="Design components" onerror="this.onerror=null;this.src='https://placehold.co/800x600/2a2a2a/fff?text=Image+2';"></div>
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=800&q=80" alt="Code on screen" onerror="this.onerror=null;this.src='https://placehold.co/800x600/333/fff?text=Image+3';"></div>
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80" alt="Laptop setup" onerror="this.onerror=null;this.src='https://placehold.co/800x600/3a3a3a/fff?text=Image+4';"></div>
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?auto=format&fit=crop&w=800&q=80" alt="Creative workspace" onerror="this.onerror=null;this.src='https://placehold.co/800x600/444/fff?text=Image+5';"></div>
+                        </div>
+                        <div class="gallery-row gallery-row-2">
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80" alt="Light and dark mode" onerror="this.onerror=null;this.src='https://placehold.co/800x600/555/fff?text=Image+6';"></div>
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=800&q=80" alt="Minimal interior" onerror="this.onerror=null;this.src='https://placehold.co/800x600/5a5a5a/fff?text=Image+7';"></div>
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=800&q=80" alt="Modern desk" onerror="this.onerror=null;this.src='https://placehold.co/800x600/666/fff?text=Image+8';"></div>
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1509048191080-d2984bad6ae5?auto=format&fit=crop&w=800&q=80" alt="Phone UI" onerror="this.onerror=null;this.src='https://placehold.co/800x600/6a6a6a/fff?text=Image+9';"></div>
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1516116216624-53e697300947?auto=format&fit=crop&w=800&q=80" alt="Developer screen" onerror="this.onerror=null;this.src='https://placehold.co/800x600/777/fff?text=Image+10';"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="deliver-1" class="section-wrapper deliver-section-1">
+            <div class="pin-wrapper">
+                <div class="deliver-header-1">INTERACTIVE FEATURES - LONG IMAGES</div>
+                <div class="deliver-long-gallery">
+                    <div class="deliver-long-gallery-item">
+                        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80" alt="Code snippet" onerror="this.onerror=null;this.src='https://placehold.co/1200x300/222/fff?text=Deliver+Long+1';">
+                    </div>
+                    <div class="deliver-long-gallery-item">
+                        <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1200&q=80" alt="GSAP easing curve" onerror="this.onerror=null;this.src='https://placehold.co/1200x300/333/fff?text=Deliver+Long+2';">
+                    </div>
+                    <div class="deliver-long-gallery-item">
+                        <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1200&q=80" alt="Lighthouse report" onerror="this.onerror=null;this.src='https://placehold.co/1200x300/444/fff?text=Deliver+Long+3';">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="deliver-2" class="section-wrapper deliver-section-2">
+            <div class="pin-wrapper">
+                <div class="deliver-header-2">INTERACTIVE FEATURES - GALLERY</div>
+                <div class="deliver-gallery-wrapper">
+                    <div class="deliver-gallery">
+                        <div class="gallery-row gallery-row-1">
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80" alt="Code snippet" onerror="this.onerror=null;this.src='https://placehold.co/800x600/222/fff?text=Deliver+1';"></div>
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=800&q=80" alt="GSAP easing curve" onerror="this.onerror=null;this.src='https://placehold.co/800x600/333/fff?text=Deliver+2';"></div>
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80" alt="Lighthouse report" onerror="this.onerror=null;this.src='https://placehold.co/800x600/444/fff?text=Deliver+3';"></div>
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=800&q=80" alt="Deployment process" onerror="this.onerror=null;this.src='https://placehold.co/800x600/555/fff?text=Deliver+4';"></div>
+                        </div>
+                        <div class="gallery-row gallery-row-2">
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80" alt="Code snippet" onerror="this.onerror=null;this.src='https://placehold.co/800x600/666/fff?text=Deliver+5';"></div>
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=800&q=80" alt="GSAP easing curve" onerror="this.onerror=null;this.src='https://placehold.co/800x600/777/fff?text=Deliver+6';"></div>
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80" alt="Lighthouse report" onerror="this.onerror=null;this.src='https://placehold.co/800x600/888/fff?text=Deliver+7';"></div>
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=800&q=80" alt="Deployment process" onerror="this.onerror=null;this.src='httpshttps://placehold.co/800x600/999/fff?text=Deliver+8';"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="footer" class="section-wrapper footer-section">
+            <div class="logo-container">
+                <h3 data-scroll data-scroll-speed="-1">Portfoli-oh!</h3>
+            </div>
+            <div class="bottom">
+                <div class="credit-container">
+                    <div class="nav-circle prev-circle">
+                        <span class="arrow">←</span>
+                        <span class="nav-text">PREV</span>
+                    </div>
+                    <span class="credit" data-scroll data-scroll-speed="2" data-scroll-direction="horizontal">
+                        © 2025. Portfoli-oh! Case Study
+                    </span>
+                </div>
+                <div class="link-ig-container">
+                    <div class="nav-circle next-circle">
+                        <span class="arrow">→</span>
+                        <span class="nav-text">NEXT</span>
+                    </div>
+                    <span class="link-ig" data-scroll data-scroll-speed="-2" data-scroll-direction="horizontal">
+                        Designed by - Your Name
+                    </span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loader = document.getElementById('loader');
+            const mainContent = document.querySelector('main.App');
+            const topNavigation = document.querySelector('.top-navigation');
+            const coverHeadVid = document.querySelector('.cover-head-vid');
+            const smallTextLoad2 = document.querySelector('.small-text-load2');
+
+            // Global GSAP Configuration
+            gsap.config({ force3D: true });
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Locomotive Scroll & ScrollTrigger Setup
+            const scroll = new LocomotiveScroll({
+                el: mainContent,
+                smooth: true,
+                lerp: 0.08,
+                multiplier: 0.9,
+                smartphone: { smooth: true },
+                tablet: { smooth: true },
+            });
+
+            scroll.on('scroll', ScrollTrigger.update);
+
+            ScrollTrigger.scrollerProxy(mainContent, {
+                scrollTop(value) {
+                    return arguments.length
+                        ? scroll.scrollTo(value, { duration: 0, disableLerp: true })
+                        : scroll.scroll.instance.scroll.y;
+                },
+                getBoundingClientRect() {
+                    return {
+                        top: 0,
+                        left: 0,
+                        width: window.innerWidth,
+                        height: window.innerHeight,
+                    };
+                },
+                pinType: mainContent.style.transform ? 'transform' : 'fixed',
+            });
+
+            // Loader Animation
+            if (loader) {
+                gsap.to(loader, {
+                    opacity: 0,
+                    duration: 1,
+                    delay: 1.5,
+                    onComplete: () => loader.remove(),
+                    ease: 'power2.out'
+                });
+            }
+
+            // Initial Page Animations
+            const tlIntro = gsap.timeline({ delay: 1.8 });
+            tlIntro.fromTo(
+                [mainContent, topNavigation, coverHeadVid, smallTextLoad2],
+                { opacity: 0, y: 50 },
+                { opacity: 1, y: 0, duration: 1, ease: 'power2.out', stagger: 0.1 }
+            );
+
+            // Hero Section Video Parallax
+            gsap.to('.hero-section video', {
+                scrollTrigger: {
+                    scroller: mainContent,
+                    trigger: '.hero-section',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: true,
+                },
+                yPercent: 20,
+                ease: 'none',
+            });
+
+            // Pinning & Fading Sections (Project Details, Discover, Define)
+            function setupSectionAnimationsFromFirst() {
+                ScrollTrigger.matchMedia({
+                    "(min-width: 769px)": function() {
+                        const sections = gsap.utils.toArray('.project-details-section, .discover-section, .define-section');
+                        sections.forEach(section => {
+                            const pinWrapper = section.querySelector('.pin-wrapper');
+                            const header = section.querySelector('.discover-header, .define-header');
+                            const content = section.querySelector('.section-main-content');
+                            if (!pinWrapper || !content) return;
+
+                            let tl = gsap.timeline({
+                                scrollTrigger: {
+                                    trigger: section,
+                                    scroller: mainContent,
+                                    pin: pinWrapper,
+                                    start: "top top",
+                                    scrub: 2,
+                                    end: () => section.classList.contains('project-details-section')
+                                        ? `+=${content.offsetHeight * 1.4}`
+                                        : `+=${content.offsetHeight * 1.4}`
+                                }
+                            });
+
+                            if (header) {
+                                // MODIFICATION: Adjusted animation timing for headers.
+                                // This makes the header appear and then disappear more quickly,
+                                // which is especially noticeable for the "define-header" as requested.
+                                tl.fromTo(header,
+                                    { y: 40, opacity: 0 },
+                                    { y: 0, opacity: 1, ease: 'power2.out', duration: 0.2 },
+                                    0
+                                );
+
+                                tl.to(header,
+                                    { y: -40, opacity: 0, ease: 'power1.in', duration: 0.2 },
+                                    0.1
+                                );
+                            }
+
+                            tl.to(content, {
+                                y: () => -(content.offsetHeight * (section.classList.contains('project-details-section') ? 1.5 : 1.5)),
+                                ease: "none"
+                            }, 0);
+                        });
+                    }
+                });
+            }
+            setupSectionAnimationsFromFirst();
+
+            // Design Section 1: Long Horizontal Images Scroll with Header and Image Animations
+            function createDesignLongScroll() {
+                ScrollTrigger.matchMedia({
+                    "(min-width: 769px)": function() {
+                        const designSection1 = document.querySelector('.design-section-1');
+                        if (!designSection1) return;
+
+                        const pinWrapper = designSection1.querySelector('.pin-wrapper');
+                        const designHeader = designSection1.querySelector('.design-header-1');
+                        const longGalleryItems = gsap.utils.toArray('.long-gallery-item img');
+                        let tl = gsap.timeline({
+                            scrollTrigger: {
+                                trigger: designSection1,
+                                scroller: mainContent,
+                                pin: pinWrapper,
+                                scrub: 2,
+                                start: "top top",
+                                end: "+=4000"
+                            }
+                        });
+
+                        tl.fromTo(designHeader,
+                            { y: 40, opacity: 0 },
+                            { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
+                            0
+                        ).to(designHeader,
+                            { y: -50, opacity: 0, ease: 'power1.in' },
+                            0.5
+                        );
+
+                        // MODIFICATION: Added duration to tweens and a gap to create a "virtual row".
+                        longGalleryItems.forEach((item, index) => {
+                            tl.to(item.parentElement, {
+                                xPercent: (index % 2 === 0 ? -20 : 20),
+                                ease: 'none',
+                                duration: 1 // Constrain animation to the first part of the timeline
+                            }, 0);
+                        });
+                        tl.to({}, {}, "+=1"); // Add a gap for extra scrolling space after animations
+
+                        longGalleryItems.forEach((img, index) => {
+                            gsap.fromTo(img,
+                                { opacity: 0, y: 50 },
+                                {
+                                    opacity: 1,
+                                    y: 0,
+                                    duration: 0.8,
+                                    ease: 'power2.out',
+                                    scrollTrigger: {
+                                        trigger: img,
+                                        scroller: mainContent,
+                                        start: 'top 80%',
+                                        toggleActions: 'play none none none'
+                                    }
+                                }
+                            );
+                        });
+                    }
+                });
+            }
+            createDesignLongScroll();
+
+            // Design Section 2: Two Gallery Rows Scroll with Image Animations
+            function createDesignGalleryScrollFromSecond() {
+                ScrollTrigger.matchMedia({
+                    "(min-width: 769px)": function() {
+                        const designSection2 = document.querySelector('.design-section-2');
+                        if (!designSection2) return;
+
+                        const pinWrapper = designSection2.querySelector('.pin-wrapper');
+                        const designHeader = designSection2.querySelector('.design-header-2');
+                        const galleryItems = gsap.utils.toArray('.gallery-item img');
+                        let tl = gsap.timeline({
+                            scrollTrigger: {
+                                trigger: designSection2,
+                                scroller: mainContent,
+                                pin: pinWrapper,
+                                scrub: 2,
+                                start: "top top",
+                                end: "+=4000"
+                            }
+                        });
+
+                        tl.fromTo(designHeader,
+                            { y: 40, opacity: 0 },
+                            { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
+                            0
+                        ).to(designHeader,
+                            { y: -50, opacity: 0, ease: 'power1.in' },
+                            0.5
+                        );
+
+                        // MODIFICATION: Added duration and a gap for the "virtual row" effect.
+                        tl.to('.gallery-row-1', { xPercent: -20, ease: 'none', duration: 1 }, 0)
+                          .to('.gallery-row-2', { xPercent: 20, ease: 'none', duration: 1 }, 0);
+                        tl.to({}, {}, "+=1");
+
+                        galleryItems.forEach((img, index) => {
+                            gsap.fromTo(img,
+                                { opacity: 0, y: 50 },
+                                {
+                                    opacity: 1,
+                                    y: 0,
+                                    duration: 0.8,
+                                    ease: 'power2.out',
+                                    scrollTrigger: {
+                                        trigger: img,
+                                        scroller: mainContent,
+                                        start: 'top 80%',
+                                        toggleActions: 'play none none none'
+                                    }
+                                }
+                            );
+                        });
+                    }
+                });
+            }
+            createDesignGalleryScrollFromSecond();
+
+            // Deliver Section 1: Long Horizontal Images Scroll
+            function createDeliverLongScrollFromSecond() {
+                ScrollTrigger.matchMedia({
+                    "(min-width: 769px)": function() {
+                        const deliverSection1 = document.querySelector('.deliver-section-1');
+                        if (!deliverSection1) return;
+
+                        const pinWrapper = deliverSection1.querySelector('.pin-wrapper');
+                        const deliverHeader = deliverSection1.querySelector('.deliver-header-1');
+                        const longGalleryItems = gsap.utils.toArray('.deliver-long-gallery-item');
+                        let tl = gsap.timeline({
+                            scrollTrigger: {
+                                trigger: deliverSection1,
+                                scroller: mainContent,
+                                pin: pinWrapper,
+                                scrub: 2,
+                                start: "top top",
+                                end: "+=4000"
+                            }
+                        });
+
+                        tl.fromTo(deliverHeader,
+                            { y: 40, opacity: 0 },
+                            { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
+                            0
+                        ).to(deliverHeader,
+                            { y: -50, opacity: 0, ease: 'power1.in' },
+                            0.5
+                        );
+
+                        // MODIFICATION: Added duration and a gap for the "virtual row" effect.
+                        longGalleryItems.forEach((item, index) => {
+                            tl.to(item, {
+                                xPercent: (index % 2 === 0 ? -20 : 20),
+                                ease: 'none',
+                                duration: 1
+                            }, 0);
+                        });
+                        tl.to({}, {}, "+=1");
+                    }
+                });
+            }
+            createDeliverLongScrollFromSecond();
+
+            // Deliver Section 2: Two Gallery Rows Scroll
+            function createDeliverGalleryScrollFromSecond() {
+                ScrollTrigger.matchMedia({
+                    "(min-width: 769px)": function() {
+                        const deliverSection2 = document.querySelector('.deliver-section-2');
+                        if (!deliverSection2) return;
+
+                        const pinWrapper = deliverSection2.querySelector('.pin-wrapper');
+                        const deliverHeader = deliverSection2.querySelector('.deliver-header-2');
+                        let tl = gsap.timeline({
+                            scrollTrigger: {
+                                trigger: deliverSection2,
+                                scroller: mainContent,
+                                pin: pinWrapper,
+                                scrub: 1,
+                                start: "top top",
+                                end: "+=4000"
+                            }
+                        });
+
+                        tl.fromTo(deliverHeader,
+                            { y: 40, opacity: 0 },
+                            { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
+                            0
+                        ).to(deliverHeader,
+                            { y: -50, opacity: 0, ease: 'power1.in' },
+                            0.5
+                        );
+                        
+                        // MODIFICATION: Added duration and a gap for the "virtual row" effect.
+                        tl.to('.gallery-row-1', { xPercent: -10, ease: 'none', duration: 1 }, 0)
+                          .to('.gallery-row-2', { xPercent: 10, ease: 'none', duration: 1 }, 0);
+                        tl.to({}, {}, "+=1");
+                    }
+                });
+            }
+            createDeliverGalleryScrollFromSecond();
+
+            // Footer Section Animations
+            const footerSection = document.querySelector('.footer-section');
+            if (footerSection) {
+                const footerTimeline = gsap.timeline({
+                    scrollTrigger: {
+                        scroller: mainContent,
+                        trigger: footerSection,
+                        start: 'top 30%',
+                        toggleActions: 'play none none reverse',
+                    },
+                });
+                footerTimeline
+                    .from('.footer-section .logo-container h3', { opacity: 0, y: 50, duration: 1, ease: 'power2.out' })
+                    .from('.nav-circle', { opacity: 0, y: 20, stagger: 0.3, duration: 0.8, ease: 'power2.out' }, '+=0.1')
+                    .fromTo('.credit', { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 0.8, ease: 'power2.out' }, '<0.2')
+                    .fromTo('.link-ig', { opacity: 0, x: 50 }, { opacity: 1, x: 0, duration: 0.8, ease: 'power2.out' }, '<');
+            }
+
+            // Final Refresh
+            ScrollTrigger.addEventListener('refresh', () => scroll.update());
+            ScrollTrigger.refresh();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+.define-section {
+    background-color: #ffffff;
+    color: #000;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 5vh 5vw;
+}
+
+.define-section .pin-wrapper {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+    padding-top: 0;
+}
+
+.define-header {
+    font-family: domaine;
+    text-transform: uppercase;
+    font-size: 3em;
+    color: #333333;
+    width: 100%;
+    text-align: right;
+    padding: 0 5vw;
+    position: absolute;
+    top: 10%;
+    left: 0%;
+    z-index: 10;
+    opacity: 0;
+    transform: translateY(80px);
+    will-change: opacity, transform;
+}
+
+.define-container {
+    width: 100%;
+    max-width: 1200px;
+    height: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto auto;
+    gap: 4rem 4rem;
+    align-items: start;
+    overflow-y: visible;
+    min-height: 90vh;
+    margin-bottom: 5vh;
+    margin-top: 0;
+}
+
+.define-box {
+    background-color: #f5f5f5;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.define-box h4 {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 800;
+    font-size: 1.2em;
+    margin-bottom: 1em;
+    color: #000;
+}
+
+.define-box p {
+    font-family: 'Monda', sans-serif;
+    line-height: 1.8;
+    font-size: 0.95em;
+    color: #333;
+}
+
+.issue-box {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+    justify-self: start;
+}
+
+.success-box {
+    grid-column: 2 / 3;
+    grid-row: 4 / 5;
+    justify-self: end;
+}
+
+.define-main-text {
+    grid-column: 1 / 3;
+    grid-row: 3 / 4;
+    max-width: 60%;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 1.1em;
+    line-height: 2;
+    color: #444;
+}
+
+@media (max-width: 768px) {
+    .define-container.section-main-content { margin-top: 5vh; }
+    .define-header {
+        font-size: 3em;
+        left: 4vw;
+        text-align: left;
+        position: relative;
+        top: auto;
+        transform: none !important;
+        opacity: 1 !important;
+        margin-top: 20px;
+        padding: 0;
+    }
+    .define-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    .issue-box,
+    .success-box,
+    .define-main-text {
+        grid-column: 1 / -1;
+        justify-self: stretch;
+    }
+    .define-main-text {
+        max-width: 100%;
+        margin: 2rem 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .define-header { font-size: 2.5em; }
+}
